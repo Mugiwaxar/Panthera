@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Panthera.Components;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -69,6 +70,13 @@ namespace Panthera.Utils
         public static string SetHeal(String text)
         {
             return String.Format("<style=cIsHealing>{0}</style>", text);
+        }
+
+        public static string GetColorForAbility(String text, int abilityID, int level)
+        {
+            if (Preset.SelectedPreset == null) return text;
+            if (Preset.SelectedPreset.getAbilityLevel(abilityID) == level) return SetGreen(text);
+            return text;
         }
 
     }

@@ -31,6 +31,7 @@ namespace Panthera.Skills
         public float lastDamageTime = 0;
         public bool stealed = false;
         public float lastFuryGeneratedTime = 0;
+        public float lastShieldGeneratedTime = 0;
         public float lastShieldDamageTime = 0;
         public float destroyedShieldTime = 0;
 
@@ -82,16 +83,19 @@ namespace Panthera.Skills
             {
                 float lastDamage = Time.time - this.lastShieldDamageTime;
                 float lastBroken = Time.time - this.destroyedShieldTime;
-                if (lastDamage > PantheraConfig.FrontShield_rechargeDelayAfterDamage && lastBroken > PantheraConfig.FrontShield_rechargeDelayAfterDestroyed)
+                float lastRecharge = Time.time - this.lastShieldGeneratedTime;
+                if (lastDamage > PantheraConfig.FrontShield_rechargeDelayAfterDamage 
+                    && lastBroken > PantheraConfig.FrontShield_rechargeDelayAfterDestroyed
+                    && lastRecharge > PantheraConfig.FrontShield_rechargeRatetime)
                 {
                     if (base.pantheraObj.frontShield.active == false)
-                        base.characterBody.shield += (base.pantheraObj.activePreset.maxShield * PantheraConfig.FrontShield_rechargeRatePercent) / 60f;
+                    {
+                        float recharge = base.pantheraObj.activePreset.maxShield * (PantheraConfig.FrontShield_rechargeRatePercent * PantheraConfig.FrontShield_rechargeRatetime);
+                        this.lastShieldGeneratedTime = Time.time;
+                        base.characterBody.shield += recharge;
+                    }
                 }
             }
-
-            // Send the Shield to the Server //
-            if (NetworkServer.active == false) new ServerSendFrontShield(base.characterBody.gameObject, base.characterBody.shield).Send(NetworkDestination.Server);
-
         }
 
         public override void FixedUpdate()

@@ -74,6 +74,7 @@ namespace Panthera
         public static int DestructionAbilityID = 1;
         public static int GuardianAbilityID = 2;
         public static int RuseAbilityID = 3;
+        public static int ImprovedLeapAbilityID = 4;
         #endregion
         #region Buffs and Dots
         public static BuffDef cloakBuff = RoR2Content.Buffs.Cloak;
@@ -167,14 +168,17 @@ namespace Panthera
         public static float Leap_coolDownReduction = 2;
         public static float Leap_airControl = 0.10f;
         public static float Leap_airControlTarget = 0.50f;
-        public static float Leap_minimumY = 0.35f;
-        public static float Leap_minimumYTarget = 0.40f;
-        public static float Leap_aimVelocity = 4;
-        public static float Leap_maxMoveSpeed = 13;
-        public static float Leap_forwardVelocity = 4;
-        public static float Leap_upwardVelocity = 6;
+        public static float Leap_aimRayYMultiplier = 15;
+        public static float Leap_minimumY = 5f;
+        public static float Leap_minimumYTarget = 10f;
+        public static float Leap_speedMultiplier = 3.5f;
+        public static float Leap_targetSpeedMultiplier = 4;
+        public static float Leap_maxMoveSpeed = 100;
+        public static float Leap_upwardVelocity = 2.7f;
+        public static float Leap_downwardMultiplier = 2.2f;
         public static float Leap_minimumDuration = 0.7f;
-        public static float Leap_leapStopDistance = 1.5f;
+        public static float Leap_leapStopDistance = 2f;
+        public static float Leap_leapScanRadius = 2.5f;
         public static float Leap_destroyComponentDelay = 0.5f;
         #endregion
         #region Mighty Roar
@@ -186,7 +190,7 @@ namespace Panthera
         #endregion
         #region ClawsStorm
         public static string ClawsStorm_hitboxName = "ClawStorm";
-        public static float ClawsStorm_cooldown = 0.3f;
+        public static float ClawsStorm_cooldown = 5;
         public static int ClawsStorm_requiredFury = 5;
         public static int ClawsStorm_continuousConsumedFury = 1;
         public static float ClawsStorm_continuousConsumeTime = 0.5f;
@@ -205,13 +209,14 @@ namespace Panthera
         public static float ClawsStorm_grabScanRadius = 2.5f;
         public static float ClawsStorm_grabDistanceMultiplier = 1f;
         #endregion
-        #region Shield
+        #region Front Shield
         public static float FrontShield_cooldown = 0.1f;
         public static float FrontShield_rechargeDelayAfterDamage = 3;
         public static float FrontShield_rechargeDelayAfterDestroyed = 5;
         public static float FrontShield_maxShieldHealthPercent = 0.25f;
         public static float FrontShield_rechargeRatePercent = 0.1f;
-        public static float FrontShield_decreaseMultiplier = 0.8f;
+        public static float FrontShield_rechargeRatetime = 0.10f;
+        public static float FrontShield_damageDecreaseMultiplier = 0.8f;
         #endregion
         #region Prowl
         public static float Prowl_coolDown = 30;
@@ -242,6 +247,14 @@ namespace Panthera
         public static float Guardian_addedHealthRegenLevel = 0.5f;
         public static float Guardian_addedDefense = 15;
         public static float Guardian_addedDefenseLevel = 0.2f;
+        #endregion
+        #region Improved Leap
+        public static float ImprovedLeap_cooldownReduction1 = 1;
+        public static float ImprovedLeap_cooldownReduction2 = 2;
+        public static float ImprovedLeap_cooldownReduction3 = 3;
+        public static float ImprovedLeap_targetReduction1 = 1;
+        public static float ImprovedLeap_targetReduction2 = 2;
+        public static float ImprovedLeap_targetReduction3 = 3;
         #endregion
 
         #region Steal

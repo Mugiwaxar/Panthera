@@ -75,7 +75,7 @@ namespace Panthera.NetworkMessages
             if (ptraObj == null) return;
             PantheraBody body = this.character.GetComponent<PantheraObj>().characterBody;
             if (body == null) return;
-            this.character.GetComponent<PantheraObj>().characterBody.shield -= this.damage * PantheraConfig.FrontShield_decreaseMultiplier;
+            this.character.GetComponent<PantheraObj>().characterBody.shield -= this.damage * PantheraConfig.FrontShield_damageDecreaseMultiplier;
             BigCatPassive bcp = ptraObj.GetPassiveScript();
             if (bcp == null) return;
             bcp.lastShieldDamageTime = Time.time;

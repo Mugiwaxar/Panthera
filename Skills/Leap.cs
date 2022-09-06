@@ -100,7 +100,7 @@ namespace Panthera.Skills
 			this.playerCollider = base.GetComponent<Collider>();
 
 			// Set the move speed //
-			this.moveSpeed = Math.Min(PantheraConfig.Leap_maxMoveSpeed, this.moveSpeedStat);
+			this.moveSpeed = Math.Min(PantheraConfig.Leap_maxMoveSpeed, this.moveSpeedStat * PantheraConfig.Leap_speedMultiplier);
 			float minimumY = PantheraConfig.Leap_minimumY;
 
             // Get where to leap //
@@ -147,11 +147,12 @@ namespace Panthera.Skills
             // Make the Character Sprint //
             base.pantheraObj.pantheraMotor.startSprint = true;
 
-            // Calculate the Velocity //
+			// Calculate the Velocity //
+			direction.y *= PantheraConfig.Leap_aimRayYMultiplier;
             direction.y = Mathf.Max(direction.y, minimumY);
 			Vector3 upVelocity = new Vector3(0, direction.y, 0) * PantheraConfig.Leap_upwardVelocity;
-			Vector3 forwardVelocity = new Vector3(direction.x, 0, direction.z) * PantheraConfig.Leap_forwardVelocity;
-			Vector3 totalVelocity = (upVelocity + forwardVelocity) * this.moveSpeed;
+			Vector3 forwardVelocity = new Vector3(direction.x, 0, direction.z);
+			Vector3 totalVelocity = upVelocity + forwardVelocity  * this.moveSpeed;
 			base.characterMotor.Motor.ForceUnground();
 			base.characterMotor.velocity = totalVelocity;
 			this.originalVelocity = totalVelocity;
@@ -198,10 +199,10 @@ namespace Panthera.Skills
 			{
 				base.characterDirection.forward = this.leapDirection;
 				Vector3 charPos = base.characterBody.corePosition;
-				Vector3 targetPos = this.targetCollider == null ? this.targetCollider.ClosestPoint(charPos) : this.targetPosition;
+				Vector3 targetPos = this.targetCollider != null ? this.targetCollider.ClosestPoint(charPos) : this.targetPosition;
                 Vector3 relativePos = targetPos - charPos;
 				this.lastDirection = relativePos.normalized;
-				base.characterMotor.velocity = relativePos.normalized * PantheraConfig.Leap_aimVelocity * this.moveSpeed * PantheraConfig.Leap_forwardVelocity;
+				base.characterMotor.velocity = relativePos.normalized * this.moveSpeed * PantheraConfig.Leap_targetSpeedMultiplier;
 			}
 
 			// Stop if the character hit the ground //
@@ -219,20 +220,20 @@ namespace Panthera.Skills
 			}
 
 			// Check if the target was hit //
-			if (this.targetHit == false && this.targetFound == true)
-			{
-                Vector3 targetPos = this.targetCollider == null ? this.targetCollider.ClosestPoint(base.characterBody.corePosition) : this.targetPosition;
-                if (Vector3.Distance(base.characterBody.corePosition, targetPos) <= PantheraConfig.Leap_leapStopDistance)
-				{
-                    OnTargetHit();
-                    return;
-                }
-			}
+			//if (this.targetHit == false && this.targetFound == true)
+			//{
+   //             Vector3 targetPos = this.targetCollider == null ? this.targetCollider.ClosestPoint(base.characterBody.corePosition) : this.targetPosition;
+   //             if (Vector3.Distance(base.characterBody.corePosition, targetPos) <= PantheraConfig.Leap_leapStopDistance)
+			//	{
+   //                 OnTargetHit();
+   //                 return;
+   //             }
+			//}
 
 			// Check if the Target can be hit //
 			if (this.targetHit == false && this.targetFound == true)
 			{
-				Collider[] colliders = Physics.OverlapSphere(base.characterBody.corePosition, PantheraConfig.Leap_leapStopDistance, LayerIndex.entityPrecise.mask.value);
+				Collider[] colliders = Physics.OverlapSphere(base.characterBody.corePosition + base.characterDirection.forward * PantheraConfig.Leap_leapStopDistance, PantheraConfig.Leap_leapScanRadius, LayerIndex.entityPrecise.mask.value);
 				foreach (Collider collider in colliders)
 				{
 					HurtBox hurtbox = collider.GetComponent<HurtBox>();
@@ -248,8 +249,8 @@ namespace Panthera.Skills
 			// Smash the target to the ground //
 			if (this.targetHit == true && this.targetFound == true)
 			{
-				base.characterMotor.velocity = this.characterDirection.forward * this.moveSpeed * PantheraConfig.Leap_forwardVelocity * 2.3f;
-				base.characterMotor.velocity.y = 0 - (PantheraConfig.Leap_upwardVelocity * this.moveSpeed) / 1.3f;
+				base.characterMotor.velocity = this.characterDirection.forward * this.moveSpeed;
+				base.characterMotor.velocity.y = 0 - PantheraConfig.Leap_downwardMultiplier * this.moveSpeed;
 			}
 
 		}
@@ -265,7 +266,7 @@ namespace Panthera.Skills
             }
 
             // Save the distance //
-            this.reachDistance = Vector3.Distance(base.characterBody.corePosition, this.targetBody.corePosition);
+            this.reachDistance = PantheraConfig.Leap_leapStopDistance + Vector3.Distance(this.targetCollider.ClosestPoint(base.characterBody.corePosition), this.targetBody.corePosition);
 
 			// A Target was hit, set targetHit to true //
 			this.targetHit = true;
@@ -293,7 +294,7 @@ namespace Panthera.Skills
             if (obj.GetComponent<HoldTarget>() == null)
             {
                 HoldTarget comp = obj.AddComponent<HoldTarget>();
-                float relativeDistance = Vector3.Distance(obj.transform.position, base.characterBody.corePosition);
+                float relativeDistance = reachDistance;
                 comp.skillScript = this;
                 comp.ptraObj = base.pantheraObj;
                 comp.relativeDistance = relativeDistance;

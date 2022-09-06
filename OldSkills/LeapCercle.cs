@@ -121,7 +121,7 @@ namespace Panthera.OldSkills
             Vector3 charPos = characterBody.footPosition;
             Vector3 cerclePos = leapCerclePosition;
             Vector3 relativePos = cerclePos - charPos;
-            characterMotor.velocity = relativePos.normalized * PantheraConfig.Leap_aimVelocity * speed * PantheraConfig.Leap_forwardVelocity;
+            //characterMotor.velocity = relativePos.normalized * PantheraConfig.Leap_aimVelocity * speed * PantheraConfig.Leap_forwardVelocity;
 
         }
 

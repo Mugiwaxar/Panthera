@@ -1,5 +1,6 @@
 ﻿using Panthera.Skills;
 using R2API;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,6 +44,8 @@ namespace Panthera.Utils
         public static string GuardianAbilityDesc;
         public static string RuseAbilityName;
         public static string RuseAbilityDesc;
+        public static string ImprovedLeapAbilityName;
+        public static string ImprovedLeapAbilityDesc;
         #endregion
 
         public static void RegisterTokens()
@@ -199,6 +202,17 @@ namespace Panthera.Utils
                 + Utils.ColorHelper.SetUtility(RipSkillName)
                 + Utils.ColorHelper.SetFury(" do damage.");
 
+            // Improved Leap Ability //
+            ImprovedLeapAbilityName = "Improved Leap";
+            ImprovedLeapAbilityDesc = "Decrease the " + Language.GetString("PANTHERA_LEAP_NAME") + " cooldown, also decrease the cooldown when a target was hit." + Environment.NewLine + Environment.NewLine
+                + "Cooldown reduction:" + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 1: " + PantheraConfig.ImprovedLeap_cooldownReduction1 + "s", PantheraConfig.ImprovedLeapAbilityID, 1) + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 2: " + PantheraConfig.ImprovedLeap_cooldownReduction2 + "s", PantheraConfig.ImprovedLeapAbilityID, 2) + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 3: " + PantheraConfig.ImprovedLeap_cooldownReduction3 + "s", PantheraConfig.ImprovedLeapAbilityID, 3) + Environment.NewLine + Environment.NewLine
+                + "Target hit Cooldown reduction:" + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 1: " + PantheraConfig.ImprovedLeap_targetReduction1 + "s", PantheraConfig.ImprovedLeapAbilityID, 1) + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 2: " + PantheraConfig.ImprovedLeap_targetReduction2 + "s", PantheraConfig.ImprovedLeapAbilityID, 2) + Environment.NewLine
+                + Utils.ColorHelper.GetColorForAbility("Level 3: " + PantheraConfig.ImprovedLeap_targetReduction3 + "s", PantheraConfig.ImprovedLeapAbilityID, 3);
 
             // Ray Slash //
             //desc = "Absorb all damage around you and create <style=cIsUtility>Energy Stacks</style> (Max <style=cIsUtility>" + PantheraConfig.RaySlash_maxRaySlashBuff + "</style>).";

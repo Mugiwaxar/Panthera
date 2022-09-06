@@ -336,6 +336,8 @@ namespace Panthera.GUI
             this.updateSkillBars();
             // Update all Keys Bind //
             this.updateAllKeyBindTexts();
+            // Update all Tockens //
+            Tokens.RegisterTokens();
             // Save //
             PantheraSaveSystem.SetValue("LastPresetUsed", Preset.ActivePreset.presetID.ToString());
             PantheraSaveSystem.Save();

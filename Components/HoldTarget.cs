@@ -32,7 +32,8 @@ namespace Panthera.Components
         public CharacterDirection playerDirection;
         public Transform playerModelTransform;
         public float relativeDistance;
-        public Vector3 LastPosition;
+        public Vector3 lastPosition;
+        public bool destroying;
 
         public void Start()
         {
@@ -96,9 +97,16 @@ namespace Panthera.Components
                 this.stun.SetStun(0.5f);
             }
 
+            Debug.LogWarning("------------------------");
+            Debug.LogWarning("this.relativeDistance -> " + this.relativeDistance);
+            Debug.LogWarning("this.playerBody.corePosition -> " + this.playerBody.corePosition);
+
             // Calcule the Position and rotation //
             Vector3 position = this.playerBody.corePosition + (this.playerDirection.forward * this.relativeDistance);
+            Debug.LogWarning("position -> " + position);
+            if (this.destroying == true) position = this.lastPosition;
             Quaternion direction = this.playerModelTransform.rotation;
+            if (this.destroying == true) direction = this.modelTransform.rotation;
 
             // Move the Motor //
             if (this.motor)
@@ -138,14 +146,19 @@ namespace Panthera.Components
 
             // Check if the Skill is still Active //
             MachineScript script = this.playerBody.GetComponent<PantheraSkillsMachine>()?.GetCurrentScript();
-            if (NetworkClient.active == true && (script == null || script != this.skillScript))
+            if (NetworkClient.active == true && (script == null || script != this.skillScript) && this.destroying == false)
             {
-
-                GameObject.Destroy(this);
                 if (NetworkServer.active == false)
                 {
-                    this.LastPosition = position;
+                    GameObject.Destroy(this, 0.5f);
+                    this.lastPosition = position;
+                    this.destroying = true;
                     new ServerDetachHoldTargetComp(base.gameObject).Send(NetworkDestination.Server);
+                    new ServerHoldTargetLastPosition(base.gameObject, this.lastPosition).Send(NetworkDestination.Server);
+                }
+                else
+                {
+                    GameObject.Destroy(this);
                 }
             }
 
@@ -156,7 +169,7 @@ namespace Panthera.Components
 
             // Tell the Server the last Position //
             if(NetworkClient.active == true && NetworkServer.active == false)
-                new ServerHoldTargetLastPosition(base.gameObject, this.LastPosition).Send(NetworkDestination.Server);
+                new ServerHoldTargetLastPosition(base.gameObject, this.lastPosition).Send(NetworkDestination.Server);
 
             // Enable Model Locator //
             if (this.modelLocator) this.modelLocator.enabled = true;

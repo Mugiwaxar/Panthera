@@ -1,6 +1,9 @@
 ﻿using Panthera.Components;
 using Panthera.GUI;
+using Panthera.NetworkMessages;
 using Panthera.Skills;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -94,8 +97,8 @@ namespace Panthera.Components
 					this._shield = ptraObj.activePreset.maxShield;
 				if (this._shield < 0)
 					this._shield = 0;
-
-			}
+                if (NetworkServer.active == false) new ServerSendFrontShield(this.gameObject, this.shield).Send(NetworkDestination.Server);
+            }
 			get
 			{
 				if (this._shield > ptraObj.activePreset.maxShield)
@@ -111,7 +114,7 @@ namespace Panthera.Components
 			if (NetworkClient.active == false) return;
 			this.energy = ptraObj.activePreset.maxEnergy;
 			this.power = 0;
-			this.fury = 100;
+			this.fury = 0;
 			this.comboPoint = 0;
 			this.shield = ptraObj.activePreset.maxShield;
 		}

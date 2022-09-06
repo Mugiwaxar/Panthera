@@ -1,5 +1,6 @@
 ﻿using Panthera.Ability.Destruction;
 using Panthera.Ability.Ruse;
+using Panthera.Ability.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -62,6 +63,7 @@ namespace Panthera.Components
             DestructionAbility.RegisterAbility();
             GuardianAbility.RegisterAbility();
             RuseAbility.RegisterAbility();
+            ImprovedLeapAbility.RegisterAbility();
         }
 
         public static bool CanBeUpgraded(PantheraAbility ability)

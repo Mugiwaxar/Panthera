@@ -85,6 +85,9 @@ namespace Panthera.Skills
             // Set in combat //
             characterBody.outOfCombatStopwatch = 0f;
 
+            // Set the Cooldown //
+            PantheraSkill.SetCooldownTime(SkillDef.skillID, Time.time);
+
             // Set the camera to ClawsStorm //
             CamHelper.applyAimType(CamHelper.AimType.ClawsStorm);
 

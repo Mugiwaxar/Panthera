@@ -342,11 +342,15 @@ namespace Panthera.GUI
                 if (this.ptraObj.activePreset.slotsSkillsLinkList.ContainsKey(i + j))
                     skill = this.ptraObj.activePreset.slotsSkillsLinkList[i + j];
 
+                // Find all Components //
+                Image image = actionBarSLot.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
+                TextMeshProUGUI CDText = actionBarSLot.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
+                Image CDImage = actionBarSLot.transform.Find("CooldownFill").GetComponent<Image>();
+
                 // Check if there is a skill //
                 if (skill != null)
                 {
                     // Set the Image //
-                    Image image = actionBarSLot.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
                     image.sprite = skill.icon;
                     image.color = new Color(image.color.r, image.color.g, image.color.b, 255);
                     // Calcule the Cooldown //
@@ -355,29 +359,26 @@ namespace Panthera.GUI
                     float cooldownRemaining = skill.cooldown - lastUsedTime;
                     float fillAmount = cooldownRemaining / skill.cooldown;
                     // Set the Cooldown //
-                    TextMeshProUGUI CDText = actionBarSLot.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
-                    Image CDImage = actionBarSLot.transform.Find("CooldownFill").GetComponent<Image>();
                     CDImage.gameObject.SetActive(true);
                     CDImage.fillAmount = fillAmount;
-                    if (cooldownRemaining > 1f)
+                    if (cooldownRemaining > 0f)
                     {
-                        CDText.text = ((int)cooldownRemaining).ToString() + "s";
+                        CDText.text = ((int)Math.Ceiling(cooldownRemaining)).ToString() + "s";
                         CDText.gameObject.SetActive(true);
+                        CDImage.gameObject.SetActive(true);
                     }
                     else
                     {
                         CDText.gameObject.SetActive(false);
+                        CDImage.gameObject.SetActive(false);
                     }
                 }
                 else
                 {
                     // Remove the Image //
-                    Image image = actionBarSLot.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
                     image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
                     // Remove the Cooldown //
-                    TextMeshProUGUI CDText = actionBarSLot.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
                     CDText.gameObject.SetActive(false);
-                    Image CDImage = actionBarSLot.transform.Find("CooldownFill").GetComponent<Image>();
                     CDImage.gameObject.SetActive(false);
                 }
 

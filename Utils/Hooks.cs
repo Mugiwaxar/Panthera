@@ -63,9 +63,9 @@ namespace Panthera.Utils
             AddHooks(typeof(RoR2.CharacterDeathBehavior), nameof(RoR2.CharacterDeathBehavior.OnDeath), BodyComponents.PantheraDeathBehavior.CharacterDeathBehaviorHook);
             AddHooks(typeof(RoR2.CharacterBody), nameof(RoR2.CharacterBody.RecalculateStats), PantheraBody.RecalculateStatsHook);
             AddHooks(typeof(RoR2.DamageInfo), nameof(RoR2.DamageInfo.ModifyDamageInfo), PantheraHealthComponent.ModifyDamageInfoHook);
-            //AddHooks(typeof(RoR2.HealthComponent), nameof(RoR2.HealthComponent.TakeDamage), PantheraHealthComponent.TakeDamageHook);
+            AddHooks(typeof(RoR2.HealthComponent), nameof(RoR2.HealthComponent.TakeDamage), PantheraHealthComponent.TakeDamageHook);
             AddHooks(typeof(RoR2.UI.CharacterSelectController), nameof(RoR2.UI.CharacterSelectController.Awake), GUI.ConfigPanel.AddConfigPanelHook);
-            AddHooks(typeof(RoR2.UI.CharacterSelectController), nameof(RoR2.UI.CharacterSelectController.Awake), GUI.PantheraPanel.PantheraPanelHook);
+            //AddHooks(typeof(RoR2.UI.CharacterSelectController), nameof(RoR2.UI.CharacterSelectController.Awake), GUI.PantheraPanel.PantheraPanelHook);
             AddHooks(typeof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController), nameof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController.ApplyLoadoutToMannequinInstance), Base.Skin.SkinChangeHook);
             AddHooks(typeof(RoR2.HuntressTracker), nameof(RoR2.HuntressTracker.SearchForTarget), BodyComponents.PantheraTracker.SearchForTarget);
             AddHooks(typeof(RoR2.Interactor), nameof(RoR2.Interactor.FindBestInteractableObject), new Type[] { typeof(Ray), typeof(float), typeof(Vector3), typeof(float) }, PantheraInteractor.FindBestInteractableObjectHook);

@@ -6,3 +6,7 @@ libs/
 obj/
 
 Properties/
+
+gitkraken_rsa
+
+gitkraken_rsa.pub

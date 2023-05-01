@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Panthera.Machines
 {
-    class PantheraSkillsMachine : PantheraMachine
+    public class PantheraSkillsMachine : PantheraMachine
     {
 
     }

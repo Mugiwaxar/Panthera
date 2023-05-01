@@ -1,0 +1,688 @@
+﻿using System.Collections.Generic;
+using R2API;
+using EntityStates;
+using RoR2;
+using UnityEngine;
+using UnityEngine.Networking;
+using KinematicCharacterController;
+using RoR2.Skills;
+using System;
+using RoR2.Networking;
+using Panthera.Components;
+using Panthera.Machines;
+using Panthera.Skills;
+using Panthera.MachineScripts;
+using Panthera.Utils;
+using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
+using static R2API.LoadoutAPI;
+using System.Reflection;
+using MonoMod.RuntimeDetour.HookGen;
+using Panthera;
+using Panthera.Base;
+using Panthera.BodyComponents;
+
+namespace Panthera.Base
+{
+    class Prefab
+    {
+        public static List<GameObject> bodyPrefabs = new List<GameObject>();
+        public static List<GameObject> networkedObjectPrefabs = new List<GameObject>();
+        public static List<SkillFamily> skillFamilies = new List<SkillFamily>();
+        public static List<SkillDef> skillDefs = new List<SkillDef>();
+        public static List<Type> entityStates = new List<Type>();
+        public static GameObject CharacterPrefab;
+        public static GameObject CharacterDisplayPrefab;
+        public static CharacterSelectSurvivorPreviewDisplayController PantheraCSSPreviewController;
+        public static SkinChangeResponse[] DefaultResponses;
+
+        public static GameObject CreateCharacterPrefab(GameObject prefab, string name)
+        {
+            #region Prefab
+            GameObject CharacterPrefab = new GameObject(name);
+            GameObject disabledGameObject = new GameObject(name + "DisabledObj");
+            disabledGameObject.SetActive(false);
+            CharacterPrefab.transform.parent = disabledGameObject.transform;
+            UnityEngine.Object.DontDestroyOnLoad(disabledGameObject);
+            #endregion
+            #region NetworkIdentity
+            CharacterPrefab.AddComponent<NetworkIdentity>().localPlayerAuthority = true;
+            #endregion
+            #region PantheraObj
+            PantheraObj pantheraObj = CharacterPrefab.AddComponent<PantheraObj>();
+            #endregion
+            #region Loading Model
+            GameObject model = prefab;
+            //model.AddComponent<NetworkIdentity>().localPlayerAuthority = true;
+            #endregion
+            #region ChildLocator
+            ChildLocator childLocator = model.GetComponent<ChildLocator>();
+            #endregion
+            #region Transform
+            GameObject gameObject = new GameObject("ModelBase");
+            gameObject.transform.parent = CharacterPrefab.transform;
+            gameObject.transform.localPosition = new Vector3(0f, 0f, 0f);
+            gameObject.transform.localRotation = Quaternion.identity;
+            gameObject.transform.localScale = new Vector3(1, 1, 1);
+
+            GameObject gameObject2 = new GameObject("CameraPivot");
+            gameObject2.transform.parent = gameObject.transform;
+            gameObject2.transform.localPosition = new Vector3(0f, 0f, 0f);
+            gameObject2.transform.localRotation = Quaternion.identity;
+            gameObject2.transform.localScale = Vector3.one;
+
+            GameObject gameObject3 = new GameObject("AimOrigin");
+            gameObject3.transform.parent = gameObject.transform;
+            gameObject3.transform.localPosition = new Vector3(0f, 1.4f, 0f);
+            gameObject3.transform.localRotation = Quaternion.identity;
+            gameObject3.transform.localScale = Vector3.one;
+
+            Transform transform = model.transform;
+            transform.parent = gameObject.transform;
+            transform.localScale = new Vector3(PantheraConfig.Model_defaultModelScale, PantheraConfig.Model_defaultModelScale, PantheraConfig.Model_defaultModelScale);
+            #endregion
+            #region SkillLocator
+            PantheraSkillLocator skillLocator = CharacterPrefab.AddComponent<PantheraSkillLocator>();
+            skillLocator.ptraObj = pantheraObj;
+            #endregion
+            #region CharacterDirection
+            CharacterDirection characterDirection = CharacterPrefab.AddComponent<CharacterDirection>();
+            characterDirection.moveVector = Vector3.zero;
+            characterDirection.targetTransform = gameObject.transform;
+            characterDirection.overrideAnimatorForwardTransform = null;
+            characterDirection.rootMotionAccumulator = null;
+            characterDirection.modelAnimator = model.GetComponentInChildren<Animator>();
+            characterDirection.driveFromRootRotation = false;
+            characterDirection.turnSpeed = 720f;
+            #endregion
+            #region Panthera Body
+            PantheraBody bodyComponent = CharacterPrefab.AddComponent<PantheraBody>();
+            bodyComponent.bodyIndex = (BodyIndex)(-1);
+            bodyComponent.name = "PantheraBody";
+            bodyComponent.baseNameToken = PantheraTokens.Get("PANTHERA_NAME");
+            bodyComponent.subtitleNameToken = PantheraTokens.Get("PANTHERA_SUBTITLE");
+            //bodyComponent.masterObject = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody");
+            bodyComponent.bodyFlags = CharacterBody.BodyFlags.IgnoreFallDamage;
+            bodyComponent.bodyColor = Character.CharacterColor;
+            bodyComponent.rootMotionInMainState = false;
+            bodyComponent.mainRootSpeed = 0;
+            bodyComponent.baseMaxHealth = 180;
+            bodyComponent.levelMaxHealth = 30;
+            bodyComponent.baseRegen = 1.5f;
+            bodyComponent.levelRegen = 0.15f;
+            bodyComponent.baseMaxShield = 0;
+            bodyComponent.levelMaxShield = 0;
+            bodyComponent.baseMoveSpeed = 9;
+            bodyComponent.levelMoveSpeed = 0.03f;
+            bodyComponent.baseAcceleration = 80;
+            bodyComponent.baseJumpPower = 18;
+            bodyComponent.levelJumpPower = 0;
+            bodyComponent.baseDamage = 15;
+            bodyComponent.levelDamage = 2;
+            bodyComponent.baseAttackSpeed = 1f;
+            bodyComponent.levelAttackSpeed = 0.03f;
+            bodyComponent.baseCrit = 15;
+            bodyComponent.levelCrit = 0.5f;
+            bodyComponent.baseArmor = 15;
+            bodyComponent.levelArmor = 0.5f;
+            bodyComponent.baseJumpCount = 1;
+            bodyComponent.sprintingSpeedMultiplier = 1.4f;
+            bodyComponent.wasLucky = false;
+            bodyComponent.hideCrosshair = true;
+            bodyComponent.aimOriginTransform = gameObject3.transform;
+            bodyComponent.hullClassification = HullClassification.Human;
+            bodyComponent.portraitIcon = Assets.DefaultPortrait;
+            bodyComponent.isChampion = false;
+            bodyComponent.currentVehicle = null;
+            bodyComponent.skinIndex = 0U;
+            bodyComponent.preferredPodPrefab = null;
+            #endregion
+            #region Panthera Motor
+            PantheraMotor characterMotor = CharacterPrefab.AddComponent<PantheraMotor>();
+            characterMotor.walkSpeedPenaltyCoefficient = 1f;
+            characterMotor.characterDirection = characterDirection;
+            characterMotor.muteWalkMotion = false;
+            characterMotor.mass = 430f;
+            characterMotor.airControl = 0.50f;
+            characterMotor.disableAirControlUntilCollision = false;
+            characterMotor.generateParametersOnAwake = true;
+            characterMotor.useGravity = true;
+            characterMotor.isFlying = false;
+            #endregion
+            #region Panthera input bank
+            PantheraInputBank inputBankTest = CharacterPrefab.AddComponent<PantheraInputBank>();
+            inputBankTest.moveVector = Vector3.zero;
+            inputBankTest.enabled = false;
+            #endregion
+            #region CameraTargetParams
+            CameraTargetParams cameraTargetParams = CharacterPrefab.AddComponent<CameraTargetParams>();
+            cameraTargetParams.cameraParams = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponent<CameraTargetParams>().cameraParams;
+            cameraTargetParams.cameraPivotTransform = null;
+            cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Standard);
+            cameraTargetParams.recoil = Vector2.zero;
+            cameraTargetParams.dontRaycastToPivot = false;
+            #endregion
+            #region ModelLocator
+            ModelLocator modelLocator = CharacterPrefab.AddComponent<ModelLocator>();
+            modelLocator.modelTransform = transform;
+            modelLocator.modelBaseTransform = gameObject.transform;
+            modelLocator.dontReleaseModelOnDeath = false;
+            modelLocator.autoUpdateModelTransform = true;
+            modelLocator.dontDetatchFromParent = false;
+            modelLocator.noCorpse = false;
+            modelLocator.normalizeToFloor = true;
+            modelLocator.preserveModel = false;
+            #endregion
+            #region CharacterModel
+            //Material mat1 = Assets.mainAssetBundle.LoadAsset<Material>("7020102");
+            //Material mat2 = Assets.mainAssetBundle.LoadAsset<Material>("effect_7020102_L");
+            //Material mat3 = Assets.mainAssetBundle.LoadAsset<Material>("7020102_Alpha");
+
+            CharacterModel CharacterModel = model.AddComponent<CharacterModel>();
+            CharacterModel.body = bodyComponent;
+            CharacterModel.baseRendererInfos = new CharacterModel.RendererInfo[]
+            {
+                //new CharacterModel.RendererInfo
+                //{
+                //    defaultMaterial = mat1,
+                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
+                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                //    ignoreOverlays = true
+                //},
+                //new CharacterModel.RendererInfo
+                //{
+                //    defaultMaterial = mat2,
+                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
+                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                //    ignoreOverlays = true
+                //},
+                //new CharacterModel.RendererInfo
+                //{
+                //    defaultMaterial = mat3,
+                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
+                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                //    ignoreOverlays = true
+                //}
+            };
+            CharacterModel.autoPopulateLightInfos = true;
+            CharacterModel.invisibilityCount = 0;
+            CharacterModel.temporaryOverlays = new List<TemporaryOverlay>();
+            CharacterModel.mainSkinnedMeshRenderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
+            #endregion
+            #region TeamComponent
+            TeamComponent teamComponent = CharacterPrefab.GetComponent<TeamComponent>();
+            teamComponent.hideAllyCardDisplay = false;
+            teamComponent.teamIndex = TeamIndex.None;
+            #endregion
+            #region Panthera Heal Component
+            PantheraHealthComponent healthComponent = CharacterPrefab.AddComponent<PantheraHealthComponent>();
+            healthComponent.health = 90f;
+            healthComponent.shield = 0f;
+            healthComponent.barrier = 0f;
+            healthComponent.magnetiCharge = 0f;
+            healthComponent.body = null;
+            healthComponent.dontShowHealthbar = false;
+            healthComponent.globalDeathEventChanceCoefficient = 1f;
+            #endregion
+            #region Interactor
+            PantheraInteractor interactor = CharacterPrefab.AddComponent<PantheraInteractor>();
+            interactor.ptraObj = pantheraObj;
+            interactor.maxInteractionDistance = 3f;
+            #endregion
+            #region InteractionDriver
+            CharacterPrefab.AddComponent<InteractionDriver>().highlightInteractor = true;
+            #endregion
+            #region CharacterNetworkTransform
+            CharacterPrefab.AddComponent<CharacterNetworkTransform>();
+            #endregion
+            #region SfxLocator
+            SfxLocator sfxLocator = CharacterPrefab.AddComponent<SfxLocator>();
+            sfxLocator.deathSound = "Play_ui_player_death";
+            sfxLocator.barkSound = "";
+            sfxLocator.openSound = "";
+            sfxLocator.landingSound = "Play_char_land";
+            sfxLocator.fallDamageSound = "Play_char_land_fall_damage";
+            sfxLocator.aliveLoopStart = "";
+            sfxLocator.aliveLoopStop = "";
+            #endregion
+            #region Rigidbody
+            Rigidbody rigidbody = CharacterPrefab.AddComponent<Rigidbody>();
+            rigidbody.mass = 100f;
+            rigidbody.drag = 0f;
+            rigidbody.angularDrag = 0f;
+            rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
+            rigidbody.interpolation = RigidbodyInterpolation.None;
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            rigidbody.constraints = RigidbodyConstraints.None;
+            #endregion
+            #region CapsuleCollider
+            CapsuleCollider capsuleCollider = CharacterPrefab.AddComponent<CapsuleCollider>();
+            capsuleCollider.isTrigger = false;
+            capsuleCollider.material = null;
+            capsuleCollider.direction = 0;
+            capsuleCollider.radius = 0.4f;
+            capsuleCollider.height = 2;
+            capsuleCollider.center = Vector3.zero;
+            #endregion
+            #region Kinematic Panthera Motor
+            PantheraKinematicMotor kinematicCharacterMotor = CharacterPrefab.AddComponent<PantheraKinematicMotor>();
+            kinematicCharacterMotor.CharacterController = characterMotor;
+            kinematicCharacterMotor.Capsule = capsuleCollider;
+            kinematicCharacterMotor.CapsuleRadius = capsuleCollider.radius;
+            kinematicCharacterMotor.CapsuleHeight = capsuleCollider.height;
+            kinematicCharacterMotor.Rigidbody = rigidbody;
+            kinematicCharacterMotor.DetectDiscreteCollisions = false;
+            kinematicCharacterMotor.GroundDetectionExtraDistance = 0f;
+            kinematicCharacterMotor.MaxStepHeight = 0.2f;
+            kinematicCharacterMotor.MinRequiredStepDepth = 0.1f;
+            kinematicCharacterMotor.MaxStableSlopeAngle = 45f;
+            kinematicCharacterMotor.MaxStableDistanceFromLedge = 0.5f;
+            kinematicCharacterMotor.PreventSnappingOnLedges = false;
+            kinematicCharacterMotor.MaxStableDenivelationAngle = 55f;
+            kinematicCharacterMotor.RigidbodyInteractionType = RigidbodyInteractionType.None;
+            kinematicCharacterMotor.PreserveAttachedRigidbodyMomentum = true;
+            kinematicCharacterMotor.HasPlanarConstraint = false;
+            kinematicCharacterMotor.PlanarConstraintAxis = Vector3.up;
+            kinematicCharacterMotor.StepHandling = StepHandlingMethod.None;
+            kinematicCharacterMotor.LedgeHandling = true;
+            kinematicCharacterMotor.InteractiveRigidbodyHandling = true;
+            kinematicCharacterMotor.SafeMovement = false;
+            #endregion
+            #region HurtBoxGroup
+            HurtBoxGroup hurtBoxGroup = model.AddComponent<HurtBoxGroup>();
+            HurtBox mainHurtbox = childLocator.FindChild("MainHurtbox").gameObject.AddComponent<HurtBox>();
+            mainHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
+            mainHurtbox.healthComponent = healthComponent;
+            mainHurtbox.isBullseye = true;
+            mainHurtbox.damageModifier = HurtBox.DamageModifier.Normal;
+            mainHurtbox.hurtBoxGroup = hurtBoxGroup;
+            mainHurtbox.indexInGroup = 0;
+            HurtBox shieldHurtbox = childLocator.FindChild("ShieldHurtbox").gameObject.AddComponent<HurtBox>();
+            shieldHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
+            shieldHurtbox.healthComponent = healthComponent;
+            shieldHurtbox.isBullseye = false;
+            shieldHurtbox.damageModifier = HurtBox.DamageModifier.Barrier;
+            shieldHurtbox.hurtBoxGroup = hurtBoxGroup;
+            shieldHurtbox.indexInGroup = 1;
+            hurtBoxGroup.hurtBoxes = new HurtBox[]
+            {
+                mainHurtbox,
+                shieldHurtbox
+            };
+            hurtBoxGroup.mainHurtBox = mainHurtbox;
+            hurtBoxGroup.bullseyeCount = 1;
+            #endregion
+            #region FootstepHandler
+            FootstepHandler footstepHandler = model.AddComponent<FootstepHandler>();
+            footstepHandler.baseFootstepString = "Play_player_footstep";
+            footstepHandler.sprintFootstepOverrideString = "";
+            footstepHandler.enableFootstepDust = true;
+            footstepHandler.footstepDustPrefab = Resources.Load<GameObject>("Prefabs/GenericFootstepDust");
+            #endregion
+            #region RagdollController
+            RagdollController ragdollController = model.AddComponent<RagdollController>();
+            ragdollController.bones = null;
+            ragdollController.componentsToDisableOnRagdoll = null;
+            #endregion
+            #region AimAnimator
+            AimAnimator aimAnimator = model.AddComponent<AimAnimator>();
+            aimAnimator.inputBank = inputBankTest;
+            aimAnimator.directionComponent = characterDirection;
+            aimAnimator.pitchRangeMax = 55f;
+            aimAnimator.pitchRangeMin = -50f;
+            aimAnimator.yawRangeMin = -44f;
+            aimAnimator.yawRangeMax = 44f;
+            aimAnimator.pitchGiveupRange = 30f;
+            aimAnimator.yawGiveupRange = 10f;
+            aimAnimator.giveupDuration = 8f;
+            #endregion
+            #region EquipmentSlot
+            CharacterPrefab.AddComponent<EquipmentSlot>();
+            #endregion
+            #region Main Panthera Machine
+            PantheraMainMachine mainStateMachine = CharacterPrefab.AddComponent<PantheraMainMachine>();
+            mainStateMachine.name = "Main Machine";
+            mainStateMachine.enabled = false;
+            #endregion
+            #region Passive Panthera Machine
+            PantheraPassiveMachine pantheraPassiveMachine = CharacterPrefab.AddComponent<PantheraPassiveMachine>();
+            pantheraPassiveMachine.name = "Passive Machine";
+            pantheraPassiveMachine.enabled = false;
+            #endregion
+            #region Skill Machine 1
+            PantheraSkillsMachine skillMachine1 = CharacterPrefab.AddComponent<PantheraSkillsMachine>();
+            skillMachine1.name = "Skill Machine 1";
+            skillMachine1.enabled = false;
+            #endregion
+            #region Skill Machine 2
+            PantheraSkillsMachine skillMachine2 = CharacterPrefab.AddComponent<PantheraSkillsMachine>();
+            skillMachine2.name = "Skill Machine 2";
+            skillMachine2.enabled = false;
+            #endregion
+            #region Panthera Network Machine
+            PantheraNetworkMachine networkMachine = CharacterPrefab.AddComponent<PantheraNetworkMachine>();
+            networkMachine.name = "Network Machine";
+            networkMachine.enabled = false;
+            #endregion
+            #region Panthera Death Behavion
+            PantheraDeathBehavior characterDeathBehavior = CharacterPrefab.AddComponent<PantheraDeathBehavior>();
+            characterDeathBehavior.ptraObj = pantheraObj;
+            characterDeathBehavior.deathMachine = skillMachine1;
+            characterDeathBehavior.deathState = new SerializableEntityStateType(typeof(GenericCharacterDeath));
+            #endregion
+            #region SetStateOnHurt  < -------- TO SEE
+            SetStateOnHurt stateOnHurt = CharacterPrefab.AddComponent<SetStateOnHurt>();
+            stateOnHurt.canBeStunned = false;
+            stateOnHurt.canBeHitStunned = false;
+            stateOnHurt.canBeFrozen = false;
+            //stateOnHurt.targetStateMachine = bodyMachine;
+            Array.Resize(ref stateOnHurt.idleStateMachine, 1);
+            //stateOnHurt.idleStateMachine[0] = weaponMachine;
+            stateOnHurt.hurtState = new SerializableEntityStateType(typeof(Idle));
+            #endregion
+            #region Panthera FX
+            PantheraFX pantheraFX = CharacterPrefab.AddComponent<PantheraFX>();
+            #endregion
+            #region Tracker
+            var tracker = CharacterPrefab.AddComponent<HuntressTracker>();
+            tracker.maxTrackingDistance = PantheraConfig.Tracker_maxDistance;
+            tracker.maxTrackingAngle = PantheraConfig.Tracker_maxAngle;
+            tracker.enabled = true;
+            #endregion
+            #region Hitboxes
+            Functions.CreateHitbox(model, childLocator.FindChild("RipHitBox"), "Rip");
+            Functions.CreateHitbox(model, childLocator.FindChild("FrontRipHitBox"), "FrontRip");
+            Functions.CreateHitbox(model, childLocator.FindChild("RightRipHitBox"), "RightRip");
+            Functions.CreateHitbox(model, childLocator.FindChild("LeftRipHitBox"), "LeftRip");
+            Functions.CreateHitbox(model, childLocator.FindChild("ClawsStormHitBox"), "ClawStorm");
+            #endregion
+            #region ItemChange
+            PantheraItemChange itemChange = CharacterPrefab.AddComponent<PantheraItemChange>();
+            itemChange.ptraObj = pantheraObj;
+            #endregion
+            #region Register
+            bodyPrefabs.Add(CharacterPrefab);
+            CharacterPrefab.RegisterNetworkPrefab();
+            return CharacterPrefab;
+            #endregion
+        }
+
+        public static GameObject CreateDisplayPrefab(GameObject prefab, string name, GameObject mainPrefab)
+        {
+
+            // Create the display prefab //
+            GameObject DisplayCharacterPrefab = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").InstantiateClone(name + "Display");
+            UnityEngine.Object.DestroyImmediate(DisplayCharacterPrefab.transform.Find("ModelBase").gameObject);
+            UnityEngine.Object.DestroyImmediate(DisplayCharacterPrefab.transform.Find("CameraPivot").gameObject);
+            UnityEngine.Object.DestroyImmediate(DisplayCharacterPrefab.transform.Find("AimOrigin").gameObject);
+
+            // Get the display model //
+            GameObject model = prefab;
+
+            // Set up the display model //
+            GameObject modelBase = new GameObject("ModelBase");
+            modelBase.transform.parent = DisplayCharacterPrefab.transform;
+            modelBase.transform.position = new Vector3(0f, 0f, 0f);
+            modelBase.transform.localPosition = new Vector3(0f, 0f, 0f);
+            modelBase.transform.localRotation = Quaternion.identity;
+            modelBase.transform.localScale = new Vector3(1, 1, 1);
+
+            GameObject cameraPivot = new GameObject("CameraPivot");
+            cameraPivot.transform.parent = modelBase.transform;
+            cameraPivot.transform.localPosition = new Vector3(0f, 1.6f, 0f);
+            cameraPivot.transform.localRotation = Quaternion.identity;
+            cameraPivot.transform.localScale = Vector3.one;
+
+            GameObject aimOrigin = new GameObject("AimOrigin");
+            aimOrigin.transform.parent = modelBase.transform;
+            aimOrigin.transform.localPosition = new Vector3(0f, 2.2f, 0f);
+            aimOrigin.transform.localRotation = Quaternion.identity;
+            aimOrigin.transform.localScale = Vector3.one;
+            DisplayCharacterPrefab.GetComponent<CharacterBody>().aimOriginTransform = aimOrigin.transform;
+
+            model.transform.parent = modelBase.transform;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+
+            // Create the Model Renderer //
+            CharacterModel characterModel = model.AddComponent<CharacterModel>();
+            characterModel.baseRendererInfos = DisplayCharacterPrefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
+
+            // Add the Sound Component //
+            model.gameObject.AddComponent<DisplayPrefabSound>();
+
+            // Return the Display Prefab //
+            return model;
+
+        }
+
+        public static void RegisterSkills(GameObject prefab)
+        {
+
+            // Get the skill locator //
+            SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
+
+            UnityEngine.Object.DestroyImmediate(skillLocator.primary);
+            UnityEngine.Object.DestroyImmediate(skillLocator.secondary);
+            UnityEngine.Object.DestroyImmediate(skillLocator.utility);
+            UnityEngine.Object.DestroyImmediate(skillLocator.special);
+
+            // Add skill family 1 //
+            skillLocator.primary = prefab.AddComponent<GenericSkill>();
+            skillLocator.primary.skillName = PantheraTokens.Get("RIP_SKILL_NAME");
+            SkillFamily primaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            (primaryFamily as ScriptableObject).name = prefab.name + "PrimaryFamily";
+            primaryFamily.variants = new SkillFamily.Variant[0];
+            skillLocator.primary._skillFamily = primaryFamily;
+            skillFamilies.Add(primaryFamily);
+
+            //// Add skill family 2 //
+            skillLocator.secondary = prefab.AddComponent<GenericSkill>();
+            skillLocator.secondary.skillName = PantheraTokens.Get("AIR_CLEAVE_SKILL_DESC");
+            SkillFamily secondaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            (secondaryFamily as ScriptableObject).name = prefab.name + "SecondaryFamily";
+            secondaryFamily.variants = new SkillFamily.Variant[0];
+            skillLocator.secondary._skillFamily = secondaryFamily;
+            skillFamilies.Add(secondaryFamily);
+
+            // Add skill family 3 //
+            //skillLocator.utility = prefab.AddComponent<GenericSkill>();
+            //skillLocator.utility.skillName = PantheraTokens.Get("LEAP_SKILL_NAME");
+            //SkillFamily utilityFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            //(utilityFamily as ScriptableObject).name = prefab.name + "UtilityFamily";
+            //utilityFamily.variants = new SkillFamily.Variant[0];
+            //skillLocator.utility._skillFamily = utilityFamily;
+            //skillFamilies.Add(utilityFamily);
+
+            // Add skill family 4 //
+            //skillLocator.special = prefab.AddComponent<GenericSkill>();
+            //skillLocator.special.skillName = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
+            //SkillFamily specialFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            //(specialFamily as ScriptableObject).name = prefab.name + "SpecialFamily";
+            //specialFamily.variants = new SkillFamily.Variant[0];
+            //skillLocator.special._skillFamily = specialFamily;
+            //skillFamilies.Add(specialFamily);
+
+            // Create all skills //
+            RegisterFakePassive(prefab);
+            //Skills.PantheraSpawn.register();
+            RegisterFakeSkill1(primaryFamily);
+            RegisterFakeSkill2(secondaryFamily);
+            //RegisterFakeSkill3(utilityFamily);
+            //RegisterFakeSkill4(specialFamily);
+
+        }
+
+        public static void RegisterFakePassive(GameObject prefab)
+        {
+
+
+            SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
+
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "PANTHERA_PASSIVE_NAME";
+            skillLocator.passiveSkill.skillDescriptionToken = "PANTHERA_PASSIVE_DESCRIPTION";
+            skillLocator.passiveSkill.icon = Assets.PassiveSkill;
+
+            // Register the Skill inside the Content Pack //
+            //Prefab.entityStates.Add(typeof(BigCatPassive));
+
+        }
+
+        public static void RegisterFakeSkill1(SkillFamily family)
+        {
+
+            // Build the Skill //
+            SkillDef skill1Def = ScriptableObject.CreateInstance<SkillDef>();
+            skill1Def.skillNameToken = PantheraTokens.Get("RIP_SKILL_NAME");
+            skill1Def.skillDescriptionToken = PantheraTokens.Get("RIP_SKILL_DESC");
+            skill1Def.skillName = PantheraTokens.Get("RIP_SKILL_NAME");
+            skill1Def.keywordTokens = new string[] { };
+            skill1Def.icon = Assets.RipMenu;
+            skill1Def.baseMaxStock = 1;
+            skill1Def.baseRechargeInterval = 1.5f;
+            skill1Def.beginSkillCooldownOnSkillEnd = false;
+            skill1Def.fullRestockOnAssign = false;
+            skill1Def.rechargeStock = 1;
+            skill1Def.requiredStock = 1;
+            skill1Def.stockToConsume = 1;
+            skill1Def.activationState = new SerializableEntityStateType(typeof(Rip));
+            skill1Def.interruptPriority = InterruptPriority.Any;
+            skill1Def.isCombatSkill = true;
+            skill1Def.mustKeyPress = false;
+            skill1Def.cancelSprintingOnActivation = false;
+            skill1Def.canceledFromSprinting = false;
+            skill1Def.activationStateMachineName = "Weapon";
+
+            // Save the skill //
+            Array.Resize(ref family.variants, 1);
+            family.variants[0] = new SkillFamily.Variant
+            {
+                skillDef = skill1Def,
+                viewableNode = new ViewablesCatalog.Node(skill1Def.skillNameToken, false, null)
+            };
+
+            // Register the Skill inside the Content Pack //
+            //Prefab.skillDefs.Add(skill1Def);
+            //Prefab.entityStates.Add(typeof(Rip));
+        }
+
+        public static void RegisterFakeSkill2(SkillFamily family)
+        {
+
+            // Build the Skill //
+            SkillDef skill2Def = ScriptableObject.CreateInstance<SkillDef>();
+            skill2Def.skillNameToken = PantheraTokens.Get("AIR_CLEAVE_SKILL_NAME");
+            skill2Def.skillDescriptionToken = PantheraTokens.Get("AIR_CLEAVE_SKILL_DESC");
+            skill2Def.skillName = PantheraTokens.Get("AIR_CLEAVE_SKILL_NAME");
+            skill2Def.keywordTokens = new string[] { };
+            skill2Def.icon = Assets.AirCleaveMenu;
+            skill2Def.baseMaxStock = 1;
+            skill2Def.baseRechargeInterval = 1.5f;
+            skill2Def.beginSkillCooldownOnSkillEnd = false;
+            skill2Def.fullRestockOnAssign = false;
+            skill2Def.rechargeStock = 0;
+            skill2Def.requiredStock = 0;
+            skill2Def.stockToConsume = 0;
+            //skill2Def.activationState = new SerializableEntityStateType(typeof(Rip));
+            //skill2Def.interruptPriority = InterruptPriority.Any;
+            //skill2Def.isCombatSkill = true;
+            //skill2Def.mustKeyPress = false;
+            //skill2Def.cancelSprintingOnActivation = false;
+            //skill2Def.canceledFromSprinting = false;
+            //skill2Def.activationStateMachineName = "Weapon";
+
+            // Save the skill //
+            Array.Resize(ref family.variants, 1);
+            family.variants[0] = new SkillFamily.Variant
+            {
+                skillDef = skill2Def,
+                viewableNode = new ViewablesCatalog.Node(skill2Def.skillNameToken, false, null)
+            };
+
+            // Register the Skill inside the Content Pack //
+            //Prefab.skillDefs.Add(skill2Def);
+            //Prefab.entityStates.Add(typeof(AirCleave));
+        }
+
+        public static void RegisterFakeSkill3(SkillFamily family)
+        {
+
+            //// Build the Skill //
+            //SkillDef skill3Def = ScriptableObject.CreateInstance<SkillDef>();
+            //skill3Def.skillNameToken = PantheraTokens.Get("LEAP_SKILL_NAME");
+            //skill3Def.skillDescriptionToken = PantheraTokens.Get("LEAP_SKILL_DESC");
+            //skill3Def.skillName = PantheraTokens.Get("LEAP_SKILL_NAME");
+            //skill3Def.keywordTokens = new string[] {};
+            //skill3Def.icon = Assets.LeapMenu;
+            //skill3Def.baseMaxStock = 2;
+            //skill3Def.baseRechargeInterval = 5f;
+            //skill3Def.beginSkillCooldownOnSkillEnd = false;
+            //skill3Def.fullRestockOnAssign = false;
+            //skill3Def.rechargeStock = 1;
+            //skill3Def.requiredStock = 1;
+            //skill3Def.stockToConsume = 1;
+            ////skill3Def.activationState = new SerializableEntityStateType(typeof(Leap));
+            ////skill3Def.activationStateMachineName = "Weapon";
+            ////skill3Def.canceledFromSprinting = false;
+            ////skill3Def.interruptPriority = InterruptPriority.Skill;
+            ////skill3Def.isCombatSkill = true;
+            ////skill3Def.mustKeyPress = false;
+            ////skill3Def.cancelSprintingOnActivation = false;
+
+
+
+            //// Save the skill //
+            //Array.Resize(ref family.variants, 1);
+            //family.variants[0] = new SkillFamily.Variant
+            //{
+            //    skillDef = skill3Def,
+            //    viewableNode = new ViewablesCatalog.Node(skill3Def.skillNameToken, false, null)
+            //};
+
+            //// Register the Skill inside the Content Pack //
+            ////Prefab.skillDefs.Add(skill3Def);
+            ////Prefab.entityStates.Add(typeof(Leap));
+
+        }
+
+        public static void RegisterFakeSkill4(SkillFamily family)
+        {
+
+            //// Build the Skill //
+            //SkillDef skill4Def = ScriptableObject.CreateInstance<SkillDef>();
+            //skill4Def.skillNameToken = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
+            //skill4Def.skillDescriptionToken = PantheraTokens.Get("MIGHTY_ROAR_SKILL_DESC");
+            //skill4Def.skillName = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
+            //skill4Def.keywordTokens = new string[] { };
+            //skill4Def.icon = Assets.MightyRoarMenu;
+            //skill4Def.baseMaxStock = 0;
+            //skill4Def.baseRechargeInterval = 1.5f;
+            //skill4Def.beginSkillCooldownOnSkillEnd = false;
+            //skill4Def.fullRestockOnAssign = false;
+            //skill4Def.rechargeStock = 0;
+            //skill4Def.requiredStock = 0;
+            //skill4Def.stockToConsume = 0;
+            ////skill4Def.activationState = new SerializableEntityStateType(typeof(Rip));
+            ////skill4Def.interruptPriority = InterruptPriority.Any;
+            ////skill4Def.isCombatSkill = true;
+            ////skill4Def.mustKeyPress = false;
+            ////skill4Def.cancelSprintingOnActivation = false;
+            ////skill4Def.canceledFromSprinting = false;
+            ////skill4Def.activationStateMachineName = "Weapon";
+
+            //// Save the skill //
+            //Array.Resize(ref family.variants, 1);
+            //family.variants[0] = new SkillFamily.Variant
+            //{
+            //    skillDef = skill4Def,
+            //    viewableNode = new ViewablesCatalog.Node(skill4Def.skillNameToken, false, null)
+            //};
+
+            //// Register the Skill inside the Content Pack //
+            ////Prefab.skillDefs.Add(skill4Def);
+            ////Prefab.entityStates.Add(typeof(MightyRoar));
+        }
+
+    }
+}

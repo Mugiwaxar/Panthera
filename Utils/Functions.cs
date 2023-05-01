@@ -1,5 +1,6 @@
 ﻿using EntityStates;
 using Panthera.NetworkMessages;
+using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -14,8 +15,21 @@ using UnityEngine.Networking;
 
 namespace Panthera.Utils
 {
-    class Functions
+    public class Functions
     {
+
+        public static T CopyComponent<T>(T original, GameObject destination) where T : Component
+        {
+            System.Type type = original.GetType();
+            Component copy = destination.AddComponent(type);
+            System.Reflection.FieldInfo[] fields = type.GetFields();
+            foreach (System.Reflection.FieldInfo field in fields)
+            {
+                field.SetValue(copy, field.GetValue(original));
+            }
+            return copy as T;
+        }
+
         public static void CreateHitbox(GameObject prefab, Transform hitboxTransform, string hitboxName)
         {
             HitBoxGroup hitBoxGroup = prefab.AddComponent<HitBoxGroup>();
@@ -31,127 +45,7 @@ namespace Panthera.Utils
             hitBoxGroup.groupName = hitboxName;
         }
 
-        public static GameObject SpawnEffect(GameObject creator, GameObject prefab, Vector3 origin, float scale = 1, GameObject parent = null, Quaternion rotation = new Quaternion(), bool transmit = true)
-        {
-
-            // The effect can only be created by the client //
-            if (NetworkClient.active == false) return null;
-
-            // Create the effect data //
-            EffectData effectData = new EffectData();
-
-            // Find the effect index //
-            EffectIndex effectIndex = EffectCatalog.FindEffectIndexFromPrefab(prefab);
-
-            // Check if the effect must be send to the others clients //
-            if (transmit  == true)
-            {
-                // Send the effect //
-                new ClientSpawnEffect(creator, prefab, origin, scale, parent, rotation).Send(NetworkDestination.Clients);
-            }
-
-            // Start the sound //
-            if (effectData.networkSoundEventIndex != NetworkSoundEventIndex.Invalid)
-            {
-                PointSoundManager.EmitSoundLocal(NetworkSoundEventCatalog.GetAkIdFromNetworkSoundEventIndex(effectData.networkSoundEventIndex), effectData.origin);
-            }
-
-            // Get the effect def //
-            EffectDef effectDef = EffectCatalog.GetEffectDef(effectIndex);
-            if (effectDef == null)
-            {
-                return null;
-            }
-
-            // Play the sound attached to the effect def //
-            string spawnSoundEventName = effectDef.spawnSoundEventName;
-            if (!string.IsNullOrEmpty(spawnSoundEventName))
-            {
-                PointSoundManager.EmitSoundLocal((AkEventIdArg)spawnSoundEventName, origin);
-            }
-
-            // Play the sound related to the surface where the effect is spawned //
-            SurfaceDef surfaceDef = SurfaceDefCatalog.GetSurfaceDef(effectData.surfaceDefIndex);
-            if (surfaceDef != null)
-            {
-                string impactSoundString = surfaceDef.impactSoundString;
-                if (!string.IsNullOrEmpty(impactSoundString))
-                {
-                    PointSoundManager.EmitSoundLocal((AkEventIdArg)impactSoundString, effectData.origin);
-                }
-            }
-
-            // Check if the effect can be spawned //
-            if (!VFXBudget.CanAffordSpawn(effectDef.prefabVfxAttributes))
-            {
-                return null;
-            }
-
-            // Check the culling method ? //
-            if (effectDef.cullMethod != null && !effectDef.cullMethod(effectData))
-            {
-                return null;
-            }
-
-            // Clone the effect data //
-            EffectData effectData2 = effectData.Clone();
-
-            // Instantiate the effect //
-            GameObject effectObject = UnityEngine.Object.Instantiate<GameObject>(effectDef.prefab, effectData2.origin, effectData2.rotation);
-            EffectComponent component = effectObject.GetComponent<EffectComponent>();
-
-            // Set the effect data of the component with the clone //
-            if (component)
-            {
-                component.effectData = effectData2.Clone();
-            }
-
-            // Set the parrent //
-            if (parent != null) effectObject.transform.parent = parent.transform;
-
-            // Set the Position/Rotation/Scale //
-            effectObject.transform.position = origin;
-            effectObject.transform.rotation = rotation;
-            effectObject.transform.localScale = new Vector3(scale, scale, scale);
-
-            // Return the effect object //
-            return effectObject;
-
-        }
-
-        public static void PlayAnimation(GameObject character, string layerName, string animationName, bool transmit = true)
-        {
-            ModelLocator locator = character.GetComponent<ModelLocator>();
-            if (locator == null || locator.modelTransform == null) return;
-            Animator animator = locator.modelTransform.GetComponent<Animator>();
-            if (animator == null) return;
-            EntityState.PlayAnimationOnAnimator(animator, layerName, animationName);
-            if (NetworkServer.active == false && transmit == true) new ClientPlayAnimation(character, layerName, animationName).Send(NetworkDestination.Clients);
-        }
-
-        public static void SetAnimatorBoolean(GameObject character, string paramName, bool setValue, bool transmit = true)
-        {
-            ModelLocator locator = character.GetComponent<ModelLocator>();
-            if (locator == null || locator.modelTransform == null) return;
-            Animator animator = locator.modelTransform.GetComponent<Animator>();
-            if (animator == null) return;
-            animator.SetBool(paramName, setValue);
-            if (NetworkServer.active == false && transmit == true)
-                new ClientSetAnimatorBoolean(character, paramName, setValue).Send(NetworkDestination.Clients);
-        }
-
-        public static void SetAnimatorFloat(GameObject character, string paramName, float value1, float value2 = 0, float value3 = 0, bool transmit = true)
-        {
-            ModelLocator locator = character.GetComponent<ModelLocator>();
-            if (locator == null || locator.modelTransform == null) return;
-            Animator animator = locator.modelTransform.GetComponent<Animator>();
-            if (animator == null) return;
-            animator.SetFloat(paramName, value1, value2, value3);
-            if (NetworkServer.active == false && transmit == true)
-                new ClientSetAnimatorFloat(character, paramName, value1, value2, value3).Send(NetworkDestination.Clients);
-        }
-
-        public static OverlapAttack CreateOverlapAttack(GameObject attacker, float damageCoefficient, string hitBoxName)
+        public static OverlapAttack CreateOverlapAttack(GameObject attacker, float damage, bool isCrit, string hitBoxName, Vector3 forceVector = new Vector3(), GameObject hitEffect = null)
         {
             // Get the HitBox //
             HitBoxGroup hitBoxGroup = null;
@@ -161,24 +55,53 @@ namespace Panthera.Utils
                 hitBoxGroup = Array.Find<HitBoxGroup>(modelTransform.GetComponents<HitBoxGroup>(), (HitBoxGroup element) => element.groupName == hitBoxName);
             }
 
-            // Create the Attack //
-            OverlapAttack attack;
+            // Get the Body //
             CharacterBody body = attacker.GetComponent<CharacterBody>();
-            attack = new OverlapAttack();
+
+            // Create the Attack //
+            OverlapAttack attack = new OverlapAttack();
             attack.damageType = PantheraConfig.Rip_damageType;
             attack.attacker = attacker;
             attack.inflictor = attacker;
             attack.teamIndex = TeamComponent.GetObjectTeam(attacker);
-            attack.damage = damageCoefficient * body.damage;
+            attack.damage = damage;
             attack.procCoefficient = PantheraConfig.Rip_procCoefficient;
-            //this.attack.hitEffectPrefab = this.hitEffectPrefab;
-            attack.forceVector = PantheraConfig.Rip_bonusForce;
+            attack.hitEffectPrefab = hitEffect;
+            attack.forceVector = forceVector;
             attack.pushAwayForce = PantheraConfig.Rip_pushForce;
             attack.hitBoxGroup = hitBoxGroup;
-            attack.isCrit = Util.CheckRoll(body.crit, body.master);
-            //this.attack.impactSound = this.impactSound;
+            attack.isCrit = isCrit;
+            //attack.impactSound = hitSound;
 
             return attack;
+
+        }
+
+        public static BlastAttack CreateBlastAttack(GameObject attacker, float damage, BlastAttack.FalloffModel falloffModel, bool isCrit, Vector3 position, float radius, Vector3 forceVector = new Vector3(), GameObject hitEffect = null)
+        {
+
+            // Get the Body //
+            CharacterBody body = attacker.GetComponent<CharacterBody>();
+
+            // Create the Attack //
+            BlastAttack attack = new BlastAttack();
+            attack.damageType = PantheraConfig.Rip_damageType;
+            attack.attacker = attacker;
+            attack.inflictor = attacker;
+            attack.position = position;
+            attack.teamIndex = TeamComponent.GetObjectTeam(attacker);
+            attack.baseDamage = damage;
+            attack.falloffModel = falloffModel;
+            attack.procCoefficient = PantheraConfig.Rip_procCoefficient;
+            //attack.hitEffectPrefab = hitEffect;
+            attack.bonusForce = forceVector;
+            attack.baseForce = PantheraConfig.Rip_pushForce;
+            attack.radius = radius;
+            attack.crit = isCrit;
+            //attack.impactSound = hitSound;
+
+            return attack;
+
         }
 
         public static float getCollideDistance(Rigidbody r1, Rigidbody r2)
@@ -197,6 +120,92 @@ namespace Panthera.Utils
 
             return Vector3.Distance(vcp1, vcp2);
 
+        }
+
+        public static float getCollideDistance(CharacterBody b1, CharacterBody b2)
+        {
+
+            if (b1 == null || b2 == null)
+                return 999999;
+
+            Collider c1 = b1.GetComponent<Collider>();
+            Collider c2 = b2.GetComponent<Collider>();
+
+            if (c1 == null || c2 == null) return 999999;
+
+            Vector3 vcp1 = c1.ClosestPoint(b2.corePosition);
+            Vector3 vcp2 = c2.ClosestPoint(b1.corePosition);
+
+            return Vector3.Distance(vcp1, vcp2);
+
+        }
+
+        public static bool IsSinglePlayer()
+        {
+            return RoR2Application.isInSinglePlayer;
+        }
+
+        public static bool IsMultiplayer()
+        {
+            return RoR2Application.isInMultiPlayer;
+        }
+
+        public static bool IsHost()
+        {
+            if (RoR2Application.isInMultiPlayer == true && NetworkClient.active == true && NetworkServer.active == true)
+                return true;
+            return false;
+        }
+
+        public static bool IsClient()
+        {
+            if (RoR2Application.isInMultiPlayer == true && NetworkClient.active == true && NetworkServer.active == false)
+                return true;
+            return false;
+        }
+
+        public static bool IsServer()
+        {
+            if (NetworkClient.active == false && NetworkServer.active == true) return true;
+            return false;
+        }
+
+        public static bool IsSingleOrHost()
+        {
+            if (NetworkClient.active == true && NetworkServer.active == true) return true;
+            return false;
+        }
+
+        public static bool IsHostOrClient()
+        {
+            if (NetworkClient.active == true && RoR2Application.isInMultiPlayer == true) return true;
+            return false;
+        }
+
+        public static void ToOpaqueMode(Material material)
+        {
+            material.SetOverrideTag("RenderType", "");
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+            material.SetFloat("_Mode", 0);
+            material.SetInt("_ZWrite", 1);
+            material.EnableKeyword("_EMISSION");
+            material.DisableKeyword("_ALPHABLEND_ON");
+            material.DisableKeyword("_ALPHABLEND_ON_EMISSION");
+            material.renderQueue = -1;
+        }
+
+        public static void ToFadeMode(Material material)
+        {
+            material.SetOverrideTag("RenderType", "Transparent");
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetFloat("_Mode", 2);
+            material.SetInt("_ZWrite", 0);
+            material.EnableKeyword("_EMISSION");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.EnableKeyword("_ALPHABLEND_ON_EMISSION");
+            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
 
     }

@@ -1,4 +1,6 @@
 ﻿using EntityStates;
+using Panthera.Base;
+using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
@@ -21,15 +23,6 @@ namespace Panthera.Skills
     class AirCleave : MachineScript
     {
 
-        //public static float aimVelocity = 0.3f;
-        //public static float maxRushDistance = 2;
-        //public static float rushDistanceStop = 1;
-
-        public static GameObject projectilePrefab1 = Assets.LeftRipProjectile;
-        public static GameObject projectilePrefab2 = Assets.RightRipProjectile;
-        public static int comboNumber = 1;
-        public static PantheraSkill SkillDef;
-
         public OverlapAttack attack;
         public float damageMultiplier;
         public string swingSoundString = "";
@@ -41,6 +34,7 @@ namespace Panthera.Skills
         public float startTime;
         public float baseDuration;
         public bool hasFired = false;
+        public bool isFireAirCleave = false;
 
         public AirCleave()
         {
@@ -52,10 +46,10 @@ namespace Panthera.Skills
             // Create the Skill //
             PantheraSkill skill = new PantheraSkill();
             skill.skillID = PantheraConfig.AirCleave_SkillID;
-            skill.name = Tokens.AirCleaveSkillName;
-            skill.desc = Tokens.AirCleaveSkillDesc;
+            skill.name = "AIR_CLEAVE_SKILL_NAME";
+            skill.desc = "AIR_CLEAVE_SKILL_DESC";
             skill.icon = Assets.AirCleave;
-            skill.iconPrefab = ConfigPanel.ActiveSkillPrefab;
+            skill.iconPrefab = Assets.ActiveSkillPrefab;
             skill.type = PantheraSkill.SkillType.active;
             skill.associatedSkill = typeof(AirCleave);
             skill.priority = PantheraConfig.AirCleave_priority;
@@ -64,38 +58,53 @@ namespace Panthera.Skills
             skill.requiredEnergy = PantheraConfig.AirCleave_requiredEnergy;
 
             // Save this Skill //
-            SkillDef = skill;
             PantheraSkill.SkillDefsList.Add(skill.skillID, skill);
         }
 
         public override PantheraSkill getSkillDef()
         {
-            return SkillDef;
+            return base.pantheraObj.activePreset.getSkillByID(PantheraConfig.AirCleave_SkillID);
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.characterBody.energy < SkillDef.requiredEnergy) return false;
-            if (Time.time - PantheraSkill.GetCooldownTime(SkillDef.skillID) < SkillDef.cooldown) return false;
+            base.pantheraObj = ptraObj;
+            if (ptraObj.characterBody.energy < this.getSkillDef().requiredEnergy) return false;
+            if (ptraObj.skillLocator.getCooldownInSecond(this.getSkillDef().skillID) > 0) return false;
             return true;
         }
 
         public override void Start()
         {
 
+            // Get the The Rip-per buff count //
+            int ripperBuffCount = base.characterBody.GetBuffCount(Base.Buff.TheRipperBuff);
+
+            // Check if Fire Air Cleave //
+            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.BurningSpiritAbilityID) > 0 && ripperBuffCount >= PantheraConfig.BurningSpirit_ripperStackNeeded)
+            {
+                this.isFireAirCleave = true;
+            }
+
             // Create the projectile info //
             GameObject projectile = null;
             float damage = 0;
-            if (comboNumber == 1)
+            if (base.pantheraObj.aircleaveComboNumber == 1)
             {
-                projectile = AirCleave.projectilePrefab1;
+                projectile = Assets.AirCleaveLeftProjectile;
+                if (this.isFireAirCleave) projectile = Assets.FireAirCleaveLeftProjectile;
                 damage = PantheraConfig.AirCleave_atk1DamageMultiplier * base.damageStat;
             }
-            else if (comboNumber == 2)
+            else if (base.pantheraObj.aircleaveComboNumber == 2)
             {
-                projectile = AirCleave.projectilePrefab2;
+                projectile = Assets.AirCleaveRightProjectile;
+                if (this.isFireAirCleave) projectile = Assets.FireAirCleaveRightProjectile;
                 damage = PantheraConfig.AirCleave_atk2DamageMultiplier * base.damageStat;
             }
+
+            float projScale = base.pantheraObj.modelScale * PantheraConfig.AirCleave_projScale;
+            projectile.transform.localScale = new Vector3(projScale, projScale, projScale);
+            projectile.GetComponent<ProjectileController>().ghostPrefab.transform.localScale = new Vector3(projScale, projScale, projScale);
             this.projectileInfo.projectilePrefab = projectile;
             this.projectileInfo.damageTypeOverride = DamageType.Generic;
             this.projectileInfo.damageColorIndex = DamageColorIndex.Default;
@@ -105,19 +114,22 @@ namespace Panthera.Skills
             this.projectileInfo.speedOverride = PantheraConfig.AirCleave_projectileSpeed;
             this.projectileInfo.useSpeedOverride = true;
             this.projectileInfo.owner = base.gameObject;
-            this.projectileInfo.position = base.characterBody.corePosition + (Vector3.up * PantheraConfig.Model_generalScale);
+            this.projectileInfo.position = base.characterBody.corePosition + (base.characterDirection.forward * base.pantheraObj.modelScale);
             this.projectileInfo.rotation = Util.QuaternionSafeLookRotation(base.GetAimRay().direction);
 
             // Set the character to forward //
             base.characterDirection.forward = base.GetAimRay().direction;
 
             // Save the time //
-            PantheraSkill.SetCooldownTime(SkillDef.skillID, Time.time);
+            base.skillLocator.startCooldown(this.getSkillDef().skillID);
             this.startTime = Time.time;
 
+            // Unstealth //
+            Passives.Stealth.DidDamageUnstealth(base.pantheraObj);
+
             // Get the duration //
-            if (comboNumber == 1) this.baseDuration = PantheraConfig.AirCleave_atk1BaseDuration;
-            else if (comboNumber == 2) this.baseDuration = PantheraConfig.AirCleave_atk2BaseDuration;
+            if (base.pantheraObj.aircleaveComboNumber == 1) this.baseDuration = PantheraConfig.AirCleave_atk1BaseDuration;
+            else if (base.pantheraObj.aircleaveComboNumber == 2) this.baseDuration = PantheraConfig.AirCleave_atk2BaseDuration;
 
             // Set the attack //
             this.baseDuration = this.baseDuration / this.attackSpeedStat;
@@ -126,7 +138,7 @@ namespace Panthera.Skills
             base.pantheraObj.pantheraMotor.startSprint = false;
 
             // Remove the Energy //
-            this.characterBody.energy -= SkillDef.requiredEnergy;
+            this.characterBody.energy -= this.getSkillDef().requiredEnergy;
 
         }
 
@@ -152,24 +164,26 @@ namespace Panthera.Skills
             if (this.hasFired == false)
             {
 
+                // Set as Fired //
                 this.hasFired = true;
 
                 // Combo 1 //
-                if (comboNumber == 1)
+                if (base.pantheraObj.aircleaveComboNumber == 1)
                 {
                     Sound.playSound(Utils.Sound.AirCleave1, base.gameObject);
-                    base.PlayAnimation("Gesture", "LeftRip");
+                    if (this.isFireAirCleave == true) Sound.playSound(Utils.Sound.FireRip1, base.gameObject);
+                    base.PlayAnimation("LeftRip", 0.2f);
                 }
                 // Combo 2 //
-                else if (comboNumber == 2)
+                else if (base.pantheraObj.aircleaveComboNumber == 2)
                 {
                     Sound.playSound(Utils.Sound.AirCleave2, base.gameObject);
-                    base.PlayAnimation("Gesture", "RightRip");
+                    if (this.isFireAirCleave == true) Sound.playSound(Utils.Sound.FireRip1, base.gameObject);
+                    base.PlayAnimation("RightRip", 0.2f);
                 }
 
                 // Fire projectiles //
                 ProjectileManager.instance.FireProjectile(this.projectileInfo);
-                base.skillLocator.secondary.stock -= 1;
 
             }
 
@@ -178,10 +192,10 @@ namespace Panthera.Skills
         public override void Stop()
         {
             // Change the combo number //
-            if (comboNumber == 1)
-                comboNumber = 2;
-            else if (comboNumber == 2)
-                comboNumber = 1;
+            if (base.pantheraObj.aircleaveComboNumber == 1)
+                base.pantheraObj.aircleaveComboNumber = 2;
+            else if (base.pantheraObj.aircleaveComboNumber == 2)
+                base.pantheraObj.aircleaveComboNumber = 1;
         }
 
     }

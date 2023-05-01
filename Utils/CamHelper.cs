@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using Panthera.BodyComponents;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,48 +14,55 @@ namespace Panthera.Utils
 		public enum AimType
 		{
 			Standard,
+			Death,
 			ClawsStorm
 		}
 
-
-        public static CameraTargetParams pantheraCamParam;
-		public static CameraParamsOverrideHandle lastCamHandle;
-
 		// Used to apply all parameters after the camera data was changed //
-		public static void applyParam(CharacterCameraParamsData data)
+		public static void ApplyParam(CharacterCameraParamsData data, PantheraObj ptraObj)
 
         {
 			// Check if the camera parameters are not null //
-			if (pantheraCamParam == null) return;
+			if (ptraObj.pantheraCamParam == null) return;
 
 			// Create the request //
 			CameraParamsOverrideRequest camRequest = new CameraParamsOverrideRequest();
 			camRequest.cameraParamsData = data;
 
-			// Send the Data //
-			pantheraCamParam.RemoveParamsOverride(lastCamHandle);
-			lastCamHandle = pantheraCamParam.AddParamsOverride(camRequest, 0.3f);
+            // Send the Data //
+			ptraObj.pantheraCamParam.RemoveParamsOverride(ptraObj.lastCamHandle);
+            ptraObj.lastCamHandle = ptraObj.pantheraCamParam.AddParamsOverride(camRequest, 0.3f);
 
 		}
 
 		// Used to apply an Aim type //
-		public static void applyAimType(AimType type)
+		public static void ApplyAimType(AimType type, PantheraObj ptraObj)
         {
 			// Default camera parameters //
 			if (type == AimType.Standard)
 			{
-				pantheraCamParam.RemoveParamsOverride(lastCamHandle);
-				return;
+                CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
+				data.idealLocalCameraPos.value = ptraObj.defaultCamPos;
+                ApplyParam(data, ptraObj);
+                return;
 			}
 			// Clawstorm camera parameters //
-			if (type == AimType.ClawsStorm)
+			if (type == AimType.Death)
 			{
-				CharacterCameraParamsData data = pantheraCamParam.currentCameraParamsData;
-				data.idealLocalCameraPos.value += new Vector3(0f, 1.5f, -5f);
-				applyParam(data);
+				CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
+				data.idealLocalCameraPos.value = PantheraConfig.Death_cameraPos;
+                ApplyParam(data, ptraObj);
 				return;
 			}
-		}
+            // Clawstorm camera parameters //
+            if (type == AimType.ClawsStorm)
+            {
+                CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
+				data.idealLocalCameraPos.value = PantheraConfig.ClawsStorm_cameraPos;
+                ApplyParam(data, ptraObj);
+                return;
+            }
+        }
 
 	}
 }

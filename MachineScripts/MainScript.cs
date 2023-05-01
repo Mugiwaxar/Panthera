@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Panthera.MachineScripts
 {
-    class MainScript : MachineScript
+    public class MainScript : MachineScript
     {
 
         CharacterAnimParamAvailability characterAnimParamAvailability;
@@ -125,37 +125,39 @@ namespace Panthera.MachineScripts
             this.animatorWalkParamCalculator.Update(vector, base.characterDirection ? base.characterDirection.animatorForward : base.transform.forward, this.smoothingParameters, Time.fixedDeltaTime);
             if (this.characterAnimParamAvailability.walkSpeed)
             {
-                Utils.Functions.SetAnimatorFloat(this.gameObject, "walkSpeed", base.characterBody.moveSpeed);
+                Utils.Animation.SetFloat(this.pantheraObj, "walkSpeed", base.characterBody.moveSpeed);
             }
             if (this.characterAnimParamAvailability.isGrounded)
             {
-                Utils.Functions.SetAnimatorBoolean(this.gameObject, "isGrounded", base.characterMotor.isGrounded);
+                Utils.Animation.SetBoolean(this.pantheraObj, "isGrounded", base.characterMotor.isGrounded);
             }
             if (this.characterAnimParamAvailability.isMoving)
             {
-                Utils.Functions.SetAnimatorBoolean(this.gameObject, "isMoving", value);
+                Utils.Animation.SetBoolean(this.pantheraObj, "isMoving", value);
             }
             if (this.characterAnimParamAvailability.turnAngle)
             {
-                Utils.Functions.SetAnimatorFloat(this.gameObject, "turnAngle", this.animatorWalkParamCalculator.remainingTurnAngle, this.smoothingParameters.turnAngleSmoothDamp, Time.fixedDeltaTime);
+                Utils.Animation.SetFloat(this.pantheraObj, "turnAngle", this.animatorWalkParamCalculator.remainingTurnAngle, this.smoothingParameters.turnAngleSmoothDamp, Time.fixedDeltaTime);
             }
             if (this.characterAnimParamAvailability.isSprinting)
             {
-                Utils.Functions.SetAnimatorBoolean(this.gameObject, "isSprinting", base.characterBody.isSprinting);
+                Utils.Animation.SetBoolean(this.pantheraObj, "isSprinting", base.characterBody.isSprinting);
             }
             if (this.characterAnimParamAvailability.forwardSpeed)
             {
-                Utils.Functions.SetAnimatorFloat(this.gameObject, "forwardSpeed", this.animatorWalkParamCalculator.animatorWalkSpeed.x, this.smoothingParameters.forwardSpeedSmoothDamp, Time.deltaTime);
+                Utils.Animation.SetFloat(this.pantheraObj, "forwardSpeed", this.animatorWalkParamCalculator.animatorWalkSpeed.x, this.smoothingParameters.forwardSpeedSmoothDamp, Time.deltaTime);
             }
             if (this.characterAnimParamAvailability.rightSpeed)
             {
-                this.modelAnimator.SetFloat(AnimationParameters.rightSpeed, this.animatorWalkParamCalculator.animatorWalkSpeed.y, this.smoothingParameters.rightSpeedSmoothDamp, Time.deltaTime);
-                Utils.Functions.SetAnimatorFloat(this.gameObject, "rightSpeed", this.animatorWalkParamCalculator.animatorWalkSpeed.y, this.smoothingParameters.rightSpeedSmoothDamp, Time.deltaTime);
+                Utils.Animation.SetFloat(this.pantheraObj, "rightSpeed", this.animatorWalkParamCalculator.animatorWalkSpeed.y, this.smoothingParameters.rightSpeedSmoothDamp, Time.deltaTime);
             }
             if (this.characterAnimParamAvailability.upSpeed)
             {
-                this.modelAnimator.SetFloat(AnimationParameters.upSpeed, this.estimatedVelocity.y, 0.1f, Time.deltaTime);
-                Utils.Functions.SetAnimatorFloat(this.gameObject, "upSpeed", this.estimatedVelocity.y, 0.1f, Time.deltaTime);
+                Utils.Animation.SetFloat(this.pantheraObj, "upSpeed", this.estimatedVelocity.y, 0.1f, Time.deltaTime);
+            }
+            if (this.characterBody)
+            {
+                Utils.Animation.SetFloat(this.pantheraObj, "attackSpeed", this.characterBody.attackSpeed);
             }
         }
 

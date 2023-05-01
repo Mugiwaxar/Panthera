@@ -15,7 +15,7 @@ namespace Panthera.Passives
         {
             if (Vector3.Distance(body.corePosition, damagePosition) < PantheraConfig.Passive_maxLifeStealDistance && damageType == DamageType.Generic)
             {
-                new ServerHealSelf(body.gameObject, damage * PantheraConfig.Passive_lifeStealMultiplier).Send(NetworkDestination.Server);
+                new ServerHeal(body.gameObject, damage * PantheraConfig.Passive_lifeStealMultiplier).Send(NetworkDestination.Server);
             }
         }
 

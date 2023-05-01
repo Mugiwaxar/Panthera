@@ -1,4 +1,7 @@
-﻿using Panthera.MachineScripts;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
+using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -11,18 +14,17 @@ using UnityEngine.Networking;
 
 namespace Panthera.Machines
 {
-    class PantheraMachine : MonoBehaviour
+    public class PantheraMachine : MonoBehaviour
     {
 
-        public string mainScript;
         public string name;
-        private MachineScript currentScript;
-        private MachineScript nextScript;
+        public MachineScript currentScript;
+        public MachineScript nextScript;
 
         public GameObject player;
         public PantheraObj ptraObj;
 
-        public virtual void Init()
+        public virtual void Start()
         {
             this.player = this.gameObject;
             this.ptraObj = player.GetComponent<PantheraObj>();
@@ -39,27 +41,21 @@ namespace Panthera.Machines
 
         public virtual void FixedUpdate()
         {
-            // Create a new script machine from the main script //
-            if (this.currentScript == null && String.IsNullOrEmpty(this.mainScript) == false && Type.GetType(this.mainScript).IsSubclassOf(typeof(MachineScript)))
-            {
-                this.currentScript = (MachineScript) Activator.CreateInstance(Type.GetType(this.mainScript));
-                this.currentScript.SetUpScript(this.player, this);
-                return;
-            }
 
             // Check if there are a next script //
             if (this.nextScript != null)
             {
-                if (this.currentScript != null)
+                if (this.currentScript != null && this.currentScript.stateType == PantheraMachineState.HaveToUpdate)
                 {
                     this.currentScript.wasInterrupted = true;
-                    if(this.currentScript.stateType == PantheraMachineState.HaveToUpdate) this.currentScript.Stop();
                     this.currentScript.stateType = PantheraMachineState.HaveToStop;
                 }
-                this.currentScript = this.nextScript;
-                this.currentScript.SetUpScript(this.player, this);
-                this.nextScript = null;
-                return;
+                else
+                {
+                    this.currentScript = this.nextScript;
+                    this.currentScript.SetUpScript(player, this);
+                    this.nextScript = null;
+                }
             }
 
             // Return if they are no current script //
@@ -68,8 +64,8 @@ namespace Panthera.Machines
             // Start the script machine //
             if (this.currentScript.stateType == PantheraMachineState.HaveToStart)
             {
-                this.currentScript.Start();
                 this.currentScript.stateType = PantheraMachineState.HaveToUpdate;
+                this.currentScript.Start();
                 return;
             }
 
@@ -83,8 +79,8 @@ namespace Panthera.Machines
             // Stop the script machine //
             if (this.currentScript.stateType == PantheraMachineState.HaveToStop)
             {
-                this.currentScript.Stop();
                 this.currentScript.stateType = PantheraMachineState.HaveToDestroy;
+                this.currentScript.Stop();
                 return;
             }
 
@@ -146,6 +142,14 @@ namespace Panthera.Machines
             if (forceInterupt == false && this.currentScript != null && this.currentScript.GetType() == script.GetType()) return;
             if (forceInterupt == false && this.currentScript != null && script.getSkillDef().interruptPower <= this.currentScript.getSkillDef().priority) return;
             this.nextScript = script;
+        }
+
+        public void OnDestroy()
+        {
+            if (this.currentScript != null)
+            {
+                this.currentScript.Stop();
+            }
         }
 
     }

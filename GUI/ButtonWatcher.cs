@@ -1,4 +1,6 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.Components;
+using Panthera.GUI;
 using Panthera.Utils;
 using Rewired;
 using System;
@@ -29,6 +31,8 @@ namespace Panthera.GUI
                 KeysBinder.GamepadSetEnable(true);
                 PantheraSaveSystem.SavePreset(Preset.SelectedPreset.presetID, Preset.SelectedPreset.saveData());
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject);
+                this.configPanel.leftPanel.SetActive(true);
+                this.configPanel.rightPanel.SetActive(true);
                 return;
             }
 
@@ -39,7 +43,7 @@ namespace Panthera.GUI
                 this.configPanel.skillTreesTab.active = false;
                 this.configPanel.skillsTab.active = false;
                 this.configPanel.keysBindTab.active = false;
-                this.configPanel.updateOverviewTab();
+                this.configPanel.updateAllValues();
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject);
                 return;
             }
@@ -63,7 +67,7 @@ namespace Panthera.GUI
                 this.configPanel.skillTreesTab.active = false;
                 this.configPanel.skillsTab.active = true;
                 this.configPanel.keysBindTab.active = false;
-                this.configPanel.updateSkillsIconsList();
+                this.configPanel.updateAllValues();
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject);
                 return;
             }
@@ -75,7 +79,7 @@ namespace Panthera.GUI
                 this.configPanel.skillTreesTab.active = false;
                 this.configPanel.skillsTab.active = false;
                 this.configPanel.keysBindTab.active = true;
-                this.configPanel.updateAllKeyBindTexts();
+                this.configPanel.updateAllValues();
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject);
                 return;
             }
@@ -134,6 +138,7 @@ namespace Panthera.GUI
                 Preset.SelectedPreset.addAbilityPoint(ability.abilityID);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject);
                 this.configPanel.updateAllValues();
+                this.configPanel.updateAbilityTooltip(ability);
             }
 
             // Bar Skill Button pressed //
@@ -308,20 +313,22 @@ namespace Panthera.GUI
                 string abilitIDString = Regex.Replace(this.gameObject.name, @"[^\d]", "");
                 int abilityID = Int32.Parse(abilitIDString);
                 PantheraAbility ability = PantheraAbility.AbilitytiesDefsList[abilityID];
-                this.configPanel.createAbilityTooltip(ability);
+                this.configPanel.tooltipObj.tooltipGUI.gameObject.SetActive(true);
+                this.configPanel.updateAbilityTooltip(ability);
             }
 
-            // Skills Ability Buttons //
-            if (this.name == "SkillIconActive(Clone)" || this.name == "SkillIconPassive(Clone)")
+            // Skills Skill Buttons //
+            if (this.name == "SkillIconActive(Clone)" || this.name == "SkillIconPassive(Clone)" || this.name == "SkillIconHybrid(Clone)")
             {
                 // Change the color //
                 Image image = this.transform.Find("FrameBackground").GetComponent<Image>();
                 this.defaultColor = image.color;
                 image.color = PantheraConfig.AbilityButtonHoveredColor;
-                this.configPanel.createSkillsTooltip(this.attachedSkill);
+                this.configPanel.tooltipObj.tooltipGUI.gameObject.SetActive(true);
+                this.configPanel.updateSkillTooltip(this.attachedSkill);
             }
 
-            // Skill Bar Button //
+            // Skills Skill Bar Button //
             if(this.name.Contains("BarSkill"))
             {
                 // Change the Color //
@@ -410,19 +417,19 @@ namespace Panthera.GUI
             {
                 Image image = this.transform.Find("FrameBackground").GetComponent<Image>();
                 image.color = this.defaultColor;
-                this.configPanel.abilitiesTooltip.SetActive(false);
+                this.configPanel.tooltipObj.tooltipGUI.gameObject.SetActive(false);
             }
 
-            // Skills Ability Buttons //
-            if (this.name == "SkillIconActive(Clone)" || this.name == "SkillIconPassive(Clone)")
+            // Skills skill Buttons //
+            if (this.name == "SkillIconActive(Clone)" || this.name == "SkillIconPassive(Clone)" || this.name == "SkillIconHybrid(Clone)")
             {
                 // Change the color //
                 Image image = this.transform.Find("FrameBackground")?.GetComponent<Image>();
                 image.color = this.defaultColor;
-                this.configPanel.skillsTooltip.SetActive(false);
+                this.configPanel.tooltipObj.tooltipGUI.gameObject.SetActive(false);
             }
 
-            // Skill Bar Button //
+            // Skills Skill Bar Button //
             if (this.name.Contains("BarSkill"))
             {
                 // Change the Color //

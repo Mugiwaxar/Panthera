@@ -1,4 +1,6 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
@@ -15,8 +17,6 @@ namespace Panthera.Skills
     internal class Prowl : MachineScript
     {
 
-        public static PantheraSkill SkillDef;
-
         public float startTime;
 
         public Prowl()
@@ -29,10 +29,10 @@ namespace Panthera.Skills
             // Create the Skill //
             PantheraSkill skill = new PantheraSkill();
             skill.skillID = PantheraConfig.Prowl_SkillID;
-            skill.name = Tokens.ProwlSkillName;
-            skill.desc = Tokens.ProwlSkillDesc;
+            skill.name = "PROWL_SKILL_NAME";
+            skill.desc = "PROWL_SKILL_DESC";
             skill.icon = Assets.Prowl;
-            skill.iconPrefab = ConfigPanel.ActiveSkillPrefab;
+            skill.iconPrefab = Assets.ActiveSkillPrefab;
             skill.type = PantheraSkill.SkillType.active;
             skill.associatedSkill = typeof(Prowl);
             skill.priority = PantheraConfig.Prowl_priority;
@@ -40,19 +40,19 @@ namespace Panthera.Skills
             skill.cooldown = PantheraConfig.Prowl_coolDown;
 
             // Save this Skill //
-            SkillDef = skill;
             PantheraSkill.SkillDefsList.Add(skill.skillID, skill);
         }
 
         public override PantheraSkill getSkillDef()
         {
-            return SkillDef;
+            return base.pantheraObj.activePreset.getSkillByID(PantheraConfig.Prowl_SkillID);
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.GetPassiveScript().stealed == true) return true;
-            if (Time.time - PantheraSkill.GetCooldownTime(SkillDef.skillID) < SkillDef.cooldown) return false;
+            base.pantheraObj = ptraObj;
+            if (ptraObj.stealthed == true) return true;
+            if (ptraObj.skillLocator.getCooldownInSecond(this.getSkillDef().skillID) > 0) return false;
             return true;
         }
 
@@ -63,14 +63,15 @@ namespace Panthera.Skills
             this.startTime = Time.time;
 
             // Steal the Character //
-            if (isStealed() == true)
+            if (isStealthed() == true)
             {
-                Passives.Steal.UnSteal(this.pantheraObj);
+                Passives.Stealth.UnStealth(this.pantheraObj);
                 return;
             }
             else
             {
-                Passives.Steal.DoSteal(this.pantheraObj);
+                Passives.Stealth.DoStealth(this.pantheraObj);
+                base.pantheraObj.prowlActivationTime = Time.time;
             }
 
         }
@@ -95,9 +96,9 @@ namespace Panthera.Skills
 
         }
 
-        public bool isStealed()
+        public bool isStealthed()
         {
-            if (this.pantheraObj.GetPassiveScript().stealed == true) return true;
+            if (this.pantheraObj.stealthed == true) return true;
             else return false;
         }
 

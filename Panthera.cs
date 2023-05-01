@@ -1,20 +1,21 @@
-using System;
 using BepInEx;
-using UnityEngine;
-using RoR2;
-using R2API;
-using R2API.Utils;
-using System.Collections.Generic;
-using Panthera.Skills;
-using Panthera.Utils;
-using R2API.Networking;
+using MonoMod.RuntimeDetour.HookGen;
+using Panthera.Base;
 using Panthera.Components;
+using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.GUI;
+using Panthera.Skills;
+using Panthera.Utils;
+using R2API;
+using R2API.Networking;
+using R2API.Utils;
+using RoR2;
 using RoR2.CameraModes;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
-using MonoMod.RuntimeDetour.HookGen;
+using UnityEngine;
 
 // Creating the Panthera Namespace //
 namespace Panthera
@@ -48,24 +49,20 @@ namespace Panthera
             Panthera.Instance = this;
 
             PantheraSaveSystem.Init();
+            Utils.Hooks.RegisterHooks();
             Tokens.RegisterTokens();
             Assets.PopulateAssets();
             Utils.Sound.PopulateSounds();
-            Prefab.CreatePrefab();
             Character.RegisterCharacter();
-            Prefab.RegisterSkills();
-            PantheraSkill.RegisterSkills();
+            Skin.RegisterSkins();
             PantheraAbility.RegisterAbilities();
+            PantheraSkill.RegisterSkills();
             Buff.RegisterBuffs();
-            ConfigPanel.Init();
-            PantheraHUD.Init();
             KeysBinder.Init();
             MessagesRegister.Register();
+            Character.CalculMaxExperiencePerLevel();
 
             CreateDoppelganger();
-
-            PantheraHealthComponent.barrierDamageType = DamageAPI.ReserveDamageType();
-            On.RoR2.DamageInfo.ModifyDamageInfo += PantheraHealthComponent.ModifyDamageInfo;
 
             new Utils.ContentPacks().Initialize();
 
@@ -75,7 +72,7 @@ namespace Panthera
         {
 
             GameObject newMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterMasters/CommandoMonsterMaster"), "PantheraMonster", true);
-            newMaster.GetComponent<CharacterMaster>().bodyPrefab = Prefab.characterPrefab;
+            newMaster.GetComponent<CharacterMaster>().bodyPrefab = Prefab.CharacterPrefab;
 
             masterPrefabs.Add(newMaster);
         }

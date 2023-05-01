@@ -1,5 +1,8 @@
 ﻿using EntityStates;
 using KinematicCharacterController;
+using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
@@ -17,6 +20,7 @@ namespace Panthera.Components
     internal class HoldTarget : MonoBehaviour
     {
 
+        public float startTime;
         public MachineScript skillScript;
         public CharacterBody body;
         public CharacterMotor motor;
@@ -31,9 +35,16 @@ namespace Panthera.Components
         public CharacterBody playerBody;
         public CharacterDirection playerDirection;
         public Transform playerModelTransform;
+        public Transform playerMouthTransform;
         public float relativeDistance;
+        public Vector3 relativeModelDistance;
         public Vector3 lastPosition;
         public bool destroying;
+        public float startDestroyingTime;
+        public bool wasElite;
+        public bool isAlly;
+        public int healFX;
+        public float lastHealTime;
 
         public void Start()
         {
@@ -50,9 +61,23 @@ namespace Panthera.Components
             this.playerBody = this.ptraObj.characterBody;
             this.playerDirection = this.ptraObj.direction;
             this.playerModelTransform = this.ptraObj.modelTransform;
+            this.playerMouthTransform = this.ptraObj.findModelChild("Mouth");
+
+            // Set the Start Time //
+            this.startTime = Time.time;
 
             // Tell the Server to attach the Component //
-            if (NetworkServer.active == false) new ServerAttachHoldTargetComp(this.ptraObj.gameObject, this.gameObject, this.relativeDistance).Send(NetworkDestination.Server);
+            if (Utils.Functions.IsMultiplayer() && this.ptraObj.hasAuthority() == true) new ServerAttachHoldTargetComp(this.ptraObj.gameObject, this.gameObject, this.relativeDistance, this.isAlly).Send(NetworkDestination.Server);
+
+            // Check Elite //
+            if (this.body != null && this.body.isElite)
+            {
+                // Save elite state //
+                wasElite = this.body.isElite;
+
+                // Set elite to false //
+                this.body.isElite = false;
+            }
 
             // Disable Direction //
             if (this.direction)
@@ -80,33 +105,63 @@ namespace Panthera.Components
                 kinMotor.CollidableLayers = LayerIndex.fakeActor.intVal;
             }
 
+            // Calcule the Relative Core Distance //
+            this.relativeModelDistance = this.modelTransform.position - this.transform.position;
+
+            // Start the Heal FX //
+            if (this.isAlly == true && Utils.Functions.IsServer() == false && this.ptraObj.hasAuthority() == true)
+            {
+                this.healFX = Utils.FXManager.SpawnEffect(base.gameObject, Base.Assets.LoopHealFX, this.body.corePosition, 1, base.gameObject, new Quaternion(), false, false);
+            }
+
         }
 
-        public void Update()
+        public void LateUpdate()
         {
 
-            // Check the prey health //
-            if (this.body != null && this.body.healthComponent == null || this.body.healthComponent.alive == false)
+            // Check the Target //
+            if (base.gameObject == null || this.body == null || this.body.healthComponent == null || this.body.healthComponent.alive == false)
             {
+                GameObject.Destroy(this);
                 return;
             }
 
+            // Check if must be destroyed //
+            if (this.destroying == true)
+            {
+                // Check if this should be destroyed //
+                float destroyingTime = Time.time - this.startDestroyingTime;
+                if (destroyingTime > 1)
+                    GameObject.DestroyImmediate(this);
+            }
+
             // Stun the target //
-            if (NetworkServer.active == true && this.stun != null && this.stun.targetStateMachine.state is StunState == false)
+            if (this.stun != null && this.stun.targetStateMachine != null && this.stun.targetStateMachine.state is StunState == false && NetworkServer.active == true)
             {
                 this.stun.SetStun(0.5f);
             }
 
-            Debug.LogWarning("------------------------");
-            Debug.LogWarning("this.relativeDistance -> " + this.relativeDistance);
-            Debug.LogWarning("this.playerBody.corePosition -> " + this.playerBody.corePosition);
+            // Active the Barrier //
+            if (this.isAlly == true && NetworkServer.active == true)
+            {
+                this.body.healthComponent.barrier = this.body.maxBarrier;
+            }
+
+            // Heal Player //
+            float lastHeal = Time.time - this.lastHealTime;
+            if (this.isAlly == true && lastHeal > PantheraConfig.SaveMyFriend_healInterval && NetworkServer.active == true)
+            {
+                this.lastHealTime = Time.time;
+                float healAmount = this.playerBody.maxHealth * PantheraConfig.SaveMyFriend_healPercent;
+                body.healthComponent.Heal(healAmount, default(ProcChainMask));
+                Utils.Sound.playSound(Utils.Sound.ZoneHeal, base.gameObject);
+            }
 
             // Calcule the Position and rotation //
-            Vector3 position = this.playerBody.corePosition + (this.playerDirection.forward * this.relativeDistance);
-            Debug.LogWarning("position -> " + position);
+            Vector3 position = this.playerMouthTransform.position;
             if (this.destroying == true) position = this.lastPosition;
-            Quaternion direction = this.playerModelTransform.rotation;
-            if (this.destroying == true) direction = this.modelTransform.rotation;
+            Quaternion rotation = this.playerModelTransform.rotation;
+            if (this.destroying == true) rotation = this.modelTransform.rotation;
 
             // Move the Motor //
             if (this.motor)
@@ -116,60 +171,43 @@ namespace Panthera.Components
                 this.motor.rootMotion = Vector3.zero;
             }
 
-            // Move the Kinematic Motor //
+            // Move the Kinematic Motor or the Transform //
             if (this.kinMotor != null)
             {
-                this.kinMotor.MoveCharacter(position);
-                this.kinMotor.RotateCharacter(direction);
+                this.kinMotor.SetPosition(position);
             }
-
-            // Rotate the Character Direction //
-            if (this.direction != null)
-            {
-                this.direction.forward = direction.eulerAngles;
-            }
-
-            // Move the Transform //
-            if (this.transform != null)
+            else if (this.transform != null)
             {
                 this.transform.position = position;
-                this.transform.rotation = direction;
             }
-            
 
             // Move the Model Transform //
             if (this.modelTransform)
             {
-                this.modelTransform.position = position;
-                this.modelTransform.rotation = direction;
-            }
-
-            // Check if the Skill is still Active //
-            MachineScript script = this.playerBody.GetComponent<PantheraSkillsMachine>()?.GetCurrentScript();
-            if (NetworkClient.active == true && (script == null || script != this.skillScript) && this.destroying == false)
-            {
-                if (NetworkServer.active == false)
-                {
-                    GameObject.Destroy(this, 0.5f);
-                    this.lastPosition = position;
-                    this.destroying = true;
-                    new ServerDetachHoldTargetComp(base.gameObject).Send(NetworkDestination.Server);
-                    new ServerHoldTargetLastPosition(base.gameObject, this.lastPosition).Send(NetworkDestination.Server);
-                }
-                else
-                {
-                    GameObject.Destroy(this);
-                }
+                this.modelTransform.position = position + this.relativeModelDistance;
+                this.modelTransform.rotation = rotation;
             }
 
         }
 
+        public void SetToDestroy()
+        {
+            // Check if the Target still exist //
+            if (base.gameObject == null)
+                return;
+            // Set the Component as destroying //
+            this.lastPosition = this.transform.position;
+            if (Utils.Functions.IsMultiplayer() == true)
+            {
+                new ServerDetachHoldTargetComp(this.playerBody.gameObject, base.gameObject).Send(NetworkDestination.Server);
+                new ServerHoldTargetLastPosition(base.gameObject, this.lastPosition).Send(NetworkDestination.Server);
+            }
+            this.startDestroyingTime = Time.time;
+            this.destroying = true;
+        }
+
         public void OnDestroy()
         {
-
-            // Tell the Server the last Position //
-            if(NetworkClient.active == true && NetworkServer.active == false)
-                new ServerHoldTargetLastPosition(base.gameObject, this.lastPosition).Send(NetworkDestination.Server);
 
             // Enable Model Locator //
             if (this.modelLocator) this.modelLocator.enabled = true;
@@ -183,10 +221,22 @@ namespace Panthera.Components
                 this.kinMotor.CollidableLayers = this.previousLayerMask;
             }
 
+            // Restore Elite //
+            if (this.wasElite == true && this.body != null)
+            {
+                this.body.isElite = true;
+            }
+
             // Enable the collider //
             if (this.collider != null)
             {
                 this.collider.enabled = true;
+            }
+
+            // Stop the FX //
+            if (this.isAlly == true && Utils.Functions.IsServer() == false && this.ptraObj.hasAuthority() == true)
+            {
+                Utils.FXManager.DestroyFX(this.healFX);
             }
 
         }

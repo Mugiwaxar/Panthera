@@ -1,4 +1,6 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
@@ -17,10 +19,8 @@ namespace Panthera.Skills
     class MightyRoar : MachineScript
     {
 
-        public static PantheraSkill SkillDef;
-
         public float startTime;
-        public bool fired = false;
+        public bool hasFired = false;
 
         public MightyRoar()
         {
@@ -32,10 +32,10 @@ namespace Panthera.Skills
             // Create the Skill //
             PantheraSkill skill = new PantheraSkill();
             skill.skillID = PantheraConfig.MightyRoar_SkillID;
-            skill.name = Tokens.MightyRoarSkillName;
-            skill.desc = Tokens.MightyRoarSkillDesc;
+            skill.name = "MIGHTY_ROAR_SKILL_NAME";
+            skill.desc = "MIGHTY_ROAR_SKILL_DESC";
             skill.icon = Assets.MightyRoar;
-            skill.iconPrefab = ConfigPanel.ActiveSkillPrefab;
+            skill.iconPrefab = Assets.ActiveSkillPrefab;
             skill.type = PantheraSkill.SkillType.active;
             skill.associatedSkill = typeof(MightyRoar);
             skill.priority = PantheraConfig.MightyRoar_priority;
@@ -44,29 +44,32 @@ namespace Panthera.Skills
             skill.requiredEnergy = PantheraConfig.MightyRoar_energyRequired;
 
             // Save this Skill //
-            SkillDef = skill;
             PantheraSkill.SkillDefsList.Add(skill.skillID, skill);
         }
 
         public override PantheraSkill getSkillDef()
         {
-            return SkillDef;
+            return base.pantheraObj.activePreset.getSkillByID(PantheraConfig.MightyRoar_SkillID);
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.characterBody.energy < SkillDef.requiredEnergy) return false;
-            if (Time.time - PantheraSkill.GetCooldownTime(SkillDef.skillID) < SkillDef.cooldown) return false;
+            base.pantheraObj = ptraObj;
+            if (ptraObj.characterBody.energy < this.getSkillDef().requiredEnergy) return false;
+            if (ptraObj.skillLocator.getCooldownInSecond(this.getSkillDef().skillID) > 0) return false;
             return true;
         }
 
         public override void Start()
         {
+            // Set the cooldown //
+            base.skillLocator.startCooldown(this.getSkillDef().skillID);
             // Save the time //
-            PantheraSkill.SetCooldownTime(SkillDef.skillID, Time.time);
             this.startTime = Time.time;
             // Remove the Energy //
-            this.characterBody.energy -= SkillDef.requiredEnergy;
+            this.characterBody.energy -= this.getSkillDef().requiredEnergy;
+            // Unstealth //
+            Passives.Stealth.DidDamageUnstealth(base.pantheraObj);
         }
         
         public override void Update()
@@ -88,11 +91,49 @@ namespace Panthera.Skills
             }
 
             // Do the Mighty Roar //
-            if (this.fired == false)
+            if (this.hasFired == false)
             {
-                this.fired = true;
-                Utils.Functions.SpawnEffect(base.gameObject, Assets.MightyRoarFX, modelTransform.position, PantheraConfig.Model_generalScale, this.characterBody.gameObject);
-                new ServerDoMightyRoar(base.gameObject).Send(NetworkDestination.Server);
+
+                // Set Fired //
+                this.hasFired = true;
+
+                // Create the Effect //
+                Utils.FXManager.SpawnEffect(base.gameObject, Assets.MightyRoarFX, base.modelTransform.position, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+
+                // Play the Animation //
+                Utils.Animation.PlayAnimation(base.pantheraObj, "Roar");
+
+                // Get all Stats Radius //
+                float radius = base.pantheraObj.activePreset.mightyRoar_radius;
+                float stunDuration = base.pantheraObj.activePreset.mightyRoar_stunDuration;
+                float bleedingDuration = base.pantheraObj.activePreset.mightyRoar_bleedDuration;
+                float bleedDamage = base.pantheraObj.activePreset.mightyRoar_bleedDamage;
+
+                // Get all Enemies //
+                Collider[] colliders = Physics.OverlapSphere(player.transform.position, radius, LayerIndex.entityPrecise.mask.value);
+
+                // Itinerate all Enemies found //
+                List<GameObject> enemiesHit = new List<GameObject>();
+                foreach (Collider collider in colliders)
+                {
+                    HurtBox hb = collider.GetComponent<HurtBox>();
+                    if (hb == null) continue;
+                    HealthComponent hc = hb.healthComponent;
+                    if (hc == null) continue;
+                    if (enemiesHit.Contains(hc.gameObject)) continue;
+                    enemiesHit.Add(hc.gameObject);
+                    TeamComponent tc = hc?.body?.teamComponent;
+                    if (tc == null || tc.teamIndex != TeamIndex.Monster) continue;
+
+                    // Stun the Target //
+                    new ServerStunTarget(hc.gameObject, stunDuration).Send(NetworkDestination.Server);
+
+                    // Bleed the Target //
+                    if (bleedingDuration > 0)
+                        new ServerInflictDot(base.gameObject, hc.gameObject, PantheraConfig.BleedDotIndex, bleedingDuration, bleedDamage).Send(NetworkDestination.Server);
+
+                }
+
             }
 
         }

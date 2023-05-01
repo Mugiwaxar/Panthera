@@ -1,10 +1,14 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
+using Panthera.SkillsHybrid;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,8 +20,6 @@ namespace Panthera.Skills
     internal class FrontShield : MachineScript
     {
 
-        public static PantheraSkill SkillDef;
-
         public FrontShield()
         {
 
@@ -28,10 +30,10 @@ namespace Panthera.Skills
             // Create the Skill //
             PantheraSkill skill = new PantheraSkill();
             skill.skillID = PantheraConfig.FrontShield_SkillID;
-            skill.name = Tokens.FrontShieldName;
-            skill.desc = Tokens.FrontShieldDesc;
+            skill.name = "FRONT_SHIELD_SKILL_NAME";
+            skill.desc = "FRONT_SHIELD_SKILL_DESC";
             skill.icon = Assets.FrontShield;
-            skill.iconPrefab = ConfigPanel.ActiveSkillPrefab;
+            skill.iconPrefab = Assets.ActiveSkillPrefab;
             skill.type = PantheraSkill.SkillType.active;
             skill.associatedSkill = typeof(FrontShield);
             skill.priority = PantheraConfig.FrontShield_priority;
@@ -39,39 +41,27 @@ namespace Panthera.Skills
             skill.cooldown = PantheraConfig.FrontShield_cooldown;
 
             // Save this Skill //
-            SkillDef = skill;
             PantheraSkill.SkillDefsList.Add(skill.skillID, skill);
         }
 
         public override PantheraSkill getSkillDef()
         {
-            return SkillDef;
+            return base.pantheraObj.activePreset.getSkillByID(PantheraConfig.FrontShield_SkillID);
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (Time.time - PantheraSkill.GetCooldownTime(SkillDef.skillID) < SkillDef.cooldown) return false;
+            base.pantheraObj = ptraObj;
+            if (ptraObj.skillLocator.getCooldownInSecond(this.getSkillDef().skillID) > 0) return false;
             if (ptraObj.characterBody.shield <= 0) return false;
             return true;
-        }
-
-        public static void EnableShield(PantheraObj obj)
-        {
-            obj.frontShield.SetActive(true);
-            if (NetworkServer.active == false) new ServerSetFrontShield(obj.gameObject, true).Send(NetworkDestination.Server);
-        }
-
-        public static void DisableShield(PantheraObj obj)
-        {
-            obj.frontShield.SetActive(false);
-            if (NetworkServer.active == false) new ServerSetFrontShield(obj.gameObject, false).Send(NetworkDestination.Server);
         }
 
         public override void Start()
         {
 
             // Set the Cooldown //
-            PantheraSkill.SetCooldownTime(SkillDef.skillID, Time.time);
+            base.skillLocator.startCooldown(this.getSkillDef().skillID);
 
             // Set the character to forward //
             base.characterDirection.forward = base.GetAimRay().direction;
@@ -80,7 +70,7 @@ namespace Panthera.Skills
             base.StartAimMode(1, false);
 
             // Enable the Shield //
-            EnableShield(base.pantheraObj);
+            //EnableShield(base.pantheraObj);
 
         }
 
@@ -94,10 +84,18 @@ namespace Panthera.Skills
 
 
             // Check if the Shield must stop //
-            if(base.characterBody.shield <= 0 || base.wasInterrupted == true || base.inputBank.isSkillPressed(SkillDef.skillID) == false)
+            if (base.characterBody.shield <= 0 || base.wasInterrupted == true || base.inputBank.isSkillPressed(this.getSkillDef().skillID) == false)
             {
                 base.EndScript();
                 return;
+            }
+
+            // Check if Rip is pressed //
+            if (base.inputBank.isSkillPressed(PantheraConfig.Rip_SkillID))
+            {
+                MachineScript script = (MachineScript)Activator.CreateInstance(typeof(ShieldBash), true);
+                if (script.CanBeUsed(base.pantheraObj))
+                    base.pantheraObj.skillsMachine2.SetScript(script);
             }
 
             // Restart the Aim mode //
@@ -108,7 +106,7 @@ namespace Panthera.Skills
         public override void Stop()
         {
             // Disable the Shield //
-            DisableShield(base.pantheraObj);
+            //DisableShield(base.pantheraObj);
         }
 
     }

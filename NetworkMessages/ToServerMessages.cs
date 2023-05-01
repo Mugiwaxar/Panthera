@@ -1,4 +1,8 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
+using R2API;
+using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using System;
@@ -6,10 +10,13 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Panthera.Base.PantheraSkill;
+using static Rewired.UI.ControlMapper.ControlMapper;
 using static RoR2.DotController;
 
 namespace Panthera.NetworkMessages
 {
+
     class ServerSyncPreset : INetMessage
     {
 
@@ -33,6 +40,7 @@ namespace Panthera.NetworkMessages
             PantheraObj ptraObj = character.GetComponent<PantheraObj>();
             if (ptraObj == null) return;
             ptraObj.activePreset = new Preset();
+            ptraObj.activePreset.ptraObj = ptraObj;
             ptraObj.activePreset.unlockedAbilitiesList = abilitiesList;
             ptraObj.applyStats();
         }
@@ -63,6 +71,49 @@ namespace Panthera.NetworkMessages
 
     }
 
+    class ServerChangePantheraScale : INetMessage
+    {
+
+        GameObject player;
+        float scale;
+
+        public ServerChangePantheraScale()
+        {
+
+        }
+
+        public ServerChangePantheraScale(GameObject player, float scale)
+        {
+            this.player = player;
+            this.scale = scale;
+        }
+
+        public void OnReceived()
+        {
+            PantheraObj ptraobj = this.player.GetComponent<PantheraObj>();
+            if (ptraobj == null) return;
+            Transform modelTransform = ptraobj.modelTransform;
+            ptraobj.modelScale = scale;
+            ptraobj.transform.localScale = new Vector3(scale, scale, scale);
+            if (modelTransform == null) return;
+            modelTransform.localScale = new Vector3(scale, scale, scale);
+            new ClientChangePantheraScale(this.player, scale).Send(NetworkDestination.Clients);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.scale);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.scale = reader.ReadSingle();
+        }
+
+    }
+
     class ServerAddBuff : INetMessage
     {
 
@@ -75,7 +126,7 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ServerAddBuff(GameObject player, int buffId, float duration)
+        public ServerAddBuff(GameObject player, int buffId, float duration = 0)
         {
             this.player = player;
             this.buffId = buffId;
@@ -150,18 +201,96 @@ namespace Panthera.NetworkMessages
 
     }
 
-    class ServerHealSelf : INetMessage
+    class ServerRemoveBuff : INetMessage
+    {
+
+        public GameObject player;
+        public int buffId;
+
+        public ServerRemoveBuff()
+        {
+
+        }
+
+        public ServerRemoveBuff(GameObject player, int buffId)
+        {
+            this.player = player;
+            this.buffId = buffId;
+        }
+
+        public void OnReceived()
+        {
+            if (this.player == null) return;
+            CharacterBody body = player.GetComponent<CharacterBody>();
+            if (body == null) return;
+            body.RemoveBuff((BuffIndex)this.buffId);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.buffId);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.buffId = reader.ReadInt32();
+        }
+
+    }
+
+    class ServerClearBuffs : INetMessage
+    {
+
+        public GameObject player;
+        public int buffId;
+
+        public ServerClearBuffs()
+        {
+            
+        }
+
+        public ServerClearBuffs(GameObject player, int buffId)
+        {
+            this.player = player;
+            this.buffId = buffId;
+        }
+
+        public void OnReceived()
+        {
+            if (this.player == null) return;
+            CharacterBody body = player.GetComponent<CharacterBody>();
+            if (body == null) return;
+            body.ClearTimedBuffs((BuffIndex)this.buffId);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.buffId);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.buffId = reader.ReadInt32();
+        }
+
+    }
+
+    class ServerHeal : INetMessage
     {
 
         public GameObject player;
         public float amount;
 
-        public ServerHealSelf()
+        public ServerHeal()
         {
 
         }
 
-        public ServerHealSelf(GameObject player, float amount)
+        public ServerHeal(GameObject player, float amount)
         {
             this.player = player;
             this.amount = amount;
@@ -237,13 +366,13 @@ namespace Panthera.NetworkMessages
 
         public void Serialize(NetworkWriter writer)
         {
-            writer.Write(attacker);
-            writer.Write(target);
-            writer.Write(position);
-            writer.Write(damage);
-            writer.Write(isCrit);
-            writer.Write(damageType);
-            writer.Write(damageColor);
+            writer.Write(this.attacker);
+            writer.Write(this.target);
+            writer.Write(this.position);
+            writer.Write(this.damage);
+            writer.Write(this.isCrit);
+            writer.Write(this.damageType);
+            writer.Write(this.damageColor);
         }
 
         public void Deserialize(NetworkReader reader)
@@ -374,7 +503,7 @@ namespace Panthera.NetworkMessages
             if (this.target == null) return;
             CharacterBody body = this.target.GetComponent<CharacterBody>();
             if (body == null) return;
-            body.AddTimedBuff(PantheraConfig.weakDebuffDef.buffIndex, PantheraConfig.Rip_weakDuration);
+            body.AddTimedBuff(PantheraConfig.WeakDebuffDef.buffIndex, PantheraConfig.Rip_weakDuration);
         }
 
         public void Serialize(NetworkWriter writer)
@@ -427,6 +556,49 @@ namespace Panthera.NetworkMessages
         {
             this.target = reader.ReadGameObject();
             this.setValue = reader.ReadBoolean();
+        }
+
+    }
+
+    class ServerRespawn : INetMessage
+    {
+
+        GameObject target;
+        Vector3 position;
+        Quaternion rotation;
+
+        public ServerRespawn()
+        {
+
+        }
+
+        public ServerRespawn(GameObject target, Vector3 position, Quaternion rotation)
+        {
+            this.target = target;
+            this.position = position;
+            this.rotation = rotation;
+        }
+
+        public void OnReceived()
+        {
+            if (target == null) return;
+            CharacterMaster master = this.target.GetComponent<CharacterMaster>();
+            if (master == null) return;
+            master.Respawn(this.position, this.rotation);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.target);
+            writer.Write(this.position);
+            writer.Write(this.rotation);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.target = reader.ReadGameObject();
+            this.position = reader.ReadVector3();
+            this.rotation = reader.ReadQuaternion();
         }
 
     }

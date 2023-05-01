@@ -1,4 +1,5 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.Components;
 using Panthera.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,12 @@ namespace Panthera.Ability.Ruse
         {
             PantheraAbility ability = new PantheraAbility();
             ability.abilityID = PantheraConfig.RuseAbilityID;
-            ability.name = Tokens.RuseAbilityName;
-            ability.desc = Tokens.RuseAbilityDesc;
+            ability.name = "RUSE_ABILITY_NAME";
+            ability.desc = "RUSE_ABILITY_DESC";
             ability.type = PantheraAbility.AbilityType.primary;
             ability.icon = Assets.RuseAbility;
             ability.unlockLevel = 0;
             ability.maxLevel = 1;
-            ability.cooldown = 0;
             PantheraAbility.AbilitytiesDefsList.Add(ability.abilityID, ability);
         }
 

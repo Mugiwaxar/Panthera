@@ -1,4 +1,5 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.Components;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +13,12 @@ namespace Panthera.Utils
         public static string PowerColor = "6F00EC";
         public static string FuryColor = "FF4A00";
         public static string ShieldColor = "B0E0E6";
-        public static string CPColor = "0000FF";
+        public static string ComboPointColor = "AFAF00";
+        public static string StaminaColor = "87CEEB";
         public static string Green = "50C878";
         public static string Red = "FF0000";
         public static string Cyan = "30F9FF";
+        public static string Blue = "1D59FE";        
 
         public static string SetEnergy(String text)
         {
@@ -37,9 +40,14 @@ namespace Panthera.Utils
             return String.Format("<color=#{0}>{1}</color>", ShieldColor, text);
         }
 
-        public static string SetCP(String text)
+        public static string SetComboPoint(String text)
         {
-            return String.Format("<color=#{0}>{1}</color>", CPColor, text);
+            return String.Format("<color=#{0}>{1}</color>", ComboPointColor, text);
+        }
+
+        public static string SetStamina(string text)
+        {
+            return String.Format("<color=#{0}>{1}</color>", StaminaColor, text);
         }
 
         public static string SetGreen(String text)
@@ -55,6 +63,11 @@ namespace Panthera.Utils
         public static string SetCyan(String text)
         {
             return String.Format("<color=#{0}>{1}</color>", Cyan, text);
+        }
+
+        public static string SetBlue(String text)
+        {
+            return String.Format("<color=#{0}>{1}</color>", Blue, text);
         }
 
         public static string SetDamage(String text)

@@ -1,4 +1,5 @@
-﻿using Panthera.Components;
+﻿using Panthera.Base;
+using Panthera.Components;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,8 +29,7 @@ namespace Panthera.GUI
             // Find the attached Skill //
             if (this.startingDragSlotID != 0)
             {
-                this.attachedSkill = Preset.SelectedPreset.slotsSkillsLinkList.ContainsKey(this.startingDragSlotID) ?
-                    Preset.SelectedPreset.slotsSkillsLinkList[this.startingDragSlotID] : null;
+                this.attachedSkill = Preset.SelectedPreset.getSkillBySlotID(this.startingDragSlotID);
                 if (this.attachedSkill == null) return;
             }
 
@@ -86,16 +86,14 @@ namespace Panthera.GUI
                     if (destSlotID != 0)
                     {
                         // Check if there is a Skill //
-                        PantheraSkill destSkill = null;
-                        if (Preset.SelectedPreset.slotsSkillsLinkList.ContainsKey(destSlotID))
-                            destSkill = Preset.SelectedPreset.slotsSkillsLinkList[destSlotID];
+                        PantheraSkill destSkill = Preset.SelectedPreset.getSkillBySlotID(destSlotID);
                         if (this.startingDragSlotID != null && destSkill != null)
                         {
                             // Add the Skill to the Slot //
-                            Preset.SelectedPreset.addSkillToSlot(this.startingDragSlotID, destSkill);
+                            Preset.SelectedPreset.addSkillToSlot(this.startingDragSlotID, destSkill.skillID);
                         }
                         // Change the assigned Skill //
-                        Preset.SelectedPreset.addSkillToSlot(destSlotID, this.attachedSkill);
+                        Preset.SelectedPreset.addSkillToSlot(destSlotID, this.attachedSkill.skillID);
                     }
 
                 }

@@ -1,4 +1,5 @@
 ﻿using Panthera;
+using Panthera.Base;
 using RoR2.ContentManagement;
 using UnityEngine;
 
@@ -28,9 +29,10 @@ namespace Panthera.Utils
             contentPack.skillFamilies.Add(Prefab.skillFamilies.ToArray());
             contentPack.skillDefs.Add(Prefab.skillDefs.ToArray());
             contentPack.entityStateTypes.Add(Prefab.entityStates.ToArray());
-            contentPack.buffDefs.Add(Skills.Buff.buffDefs.ToArray());
+            contentPack.buffDefs.Add(Base.Buff.buffDefs.ToArray());
             contentPack.effectDefs.Add(Assets.effectDefs.ToArray());
             contentPack.masterPrefabs.Add(Panthera.masterPrefabs.ToArray());
+            contentPack.networkedObjectPrefabs.Add(Prefab.networkedObjectPrefabs.ToArray());
             //contentPack.networkSoundEventDefs.Add(Assets.networkSoundEventDefs.ToArray());
             //contentPack.unlockableDefs.Add(Unlockables.unlockableDefs.ToArray());
 

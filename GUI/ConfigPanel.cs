@@ -1,4 +1,7 @@
-﻿using Panthera.Components;
+﻿using HG;
+using Panthera.Base;
+using Panthera.Components;
+using Panthera.GUI;
 using Panthera.Utils;
 using Rewired;
 using RoR2;
@@ -13,27 +16,20 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static Rewired.InputMapper;
 
 namespace Panthera.GUI
 {
-    internal class ConfigPanel : MonoBehaviour
+    public class ConfigPanel : MonoBehaviour
     {
 
         public static ConfigPanel instance;
 
-        public static GameObject ConfigButtonPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("ConfigButton");
-        public static GameObject ConfigPanelPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("PantheraPanel");
-        public static GameObject ActiveSkillPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("SkillIconActive");
-        public static GameObject PassiveSkillPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("SkillIconPassive");
-        public static GameObject KeyBindWindowPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("KeyBindWindow");
-        public static GameObject ActivePresetWindowPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("ActivatePresetWindow");
-        public static GameObject ResetPresetWindowPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("ResetPresetWindow");
-
         public CharacterSelectController origGUI;
-        public Player REPlayer;
 
         public GameObject canva;
-        public GameObject loadoutButton;
+        public GameObject leftPanel;
+        public GameObject rightPanel;
 
         public GameObject configButton;
         public GameObject levelUpIcon;
@@ -63,11 +59,9 @@ namespace Panthera.GUI
         public GameObject skillTree4;
         public TextMeshProUGUI skillsAvailableAmount;
         public TextMeshProUGUI skillsSpentAmount;
-        public GameObject abilitiesTooltip;
 
         public GameObject skillsZone;
-        public GameObject skillTreeTooltip;
-        public GameObject skillsTooltip;
+        public Tooltip tooltipObj;
 
         public GameObject keyBindWindow;
         public TextMeshProUGUI keyBindWindowText;
@@ -88,13 +82,7 @@ namespace Panthera.GUI
 
         public bool firstStart = false;
 
-        public static void Init()
-        {
-            // Create the hook //
-            On.RoR2.UI.CharacterSelectController.Awake += AddConfigPanel;
-        }
-
-        public static void AddConfigPanel(On.RoR2.UI.CharacterSelectController.orig_Awake orig, RoR2.UI.CharacterSelectController self)
+        public static void AddConfigPanelHook(Action<RoR2.UI.CharacterSelectController> orig, RoR2.UI.CharacterSelectController self)
         {
 
             // Use the original function //
@@ -104,6 +92,9 @@ namespace Panthera.GUI
             {
                 return;
             }
+
+            // Set XP to false, playing Panthera will set that to true //
+            Character.AllowXP = false;
 
             // Get the Character Selection Canva //
             GameObject canva = self.transform.Find("SafeArea").gameObject;
@@ -115,9 +106,9 @@ namespace Panthera.GUI
 
             // Get the Character Panel //
             Transform characterPanel = instance.canva.transform.Find("LeftHandPanel (Layer: Main)");
-            Transform characterInfoPanel = characterPanel.GetChild(3);
-            Transform buttonList = characterInfoPanel.GetChild(1);
-            instance.loadoutButton = buttonList.GetChild(3).gameObject;
+            instance.leftPanel = characterPanel.gameObject;
+            Transform utilsPanel = instance.canva.transform.Find("RightHandPanel");
+            instance.rightPanel = utilsPanel.gameObject;
 
         }
 
@@ -147,13 +138,13 @@ namespace Panthera.GUI
             PantheraSaveSystem.SetValue("LastPresetUsed", lastUsedPreset.ToString());
 
             // Read the Level  //
-            string levelString = PantheraSaveSystem.ReadValue("CharacterLevel");
-            if (levelString == null)
-            {
-                levelString = "1";
-                PantheraSaveSystem.SetValue("CharacterLevel", levelString);
-            }
-            Character.CharacterLevel = Int32.Parse(levelString);
+            //string levelString = PantheraSaveSystem.ReadValue("CharacterLevel");
+            //if (levelString == null)
+            //{
+            //    levelString = "1";
+            //    PantheraSaveSystem.SetValue("CharacterLevel", levelString);
+            //}
+            //Character.CharacterLevel = Int32.Parse(levelString);
 
             // Read the Experience //
             string experienceString = PantheraSaveSystem.ReadValue("CharacterExperience");
@@ -162,7 +153,7 @@ namespace Panthera.GUI
                 experienceString = "0";
                 PantheraSaveSystem.SetValue("CharacterExperience", experienceString);
             }
-            Character.Experience = Int32.Parse(experienceString);
+            Character.TotalExperience = Int32.Parse(experienceString);
 
             // Read the Last Viewed Level //
             string lastViewedLevelString = PantheraSaveSystem.ReadValue("LastViewedLevel");
@@ -184,7 +175,8 @@ namespace Panthera.GUI
             Preset.ActivePreset = Preset.SelectedPreset;
 
             // Create the Config Button //
-            this.configButton = UnityEngine.Object.Instantiate<GameObject>(ConfigButtonPrefab, canva.transform, false);
+            this.configButton = UnityEngine.Object.Instantiate<GameObject>(Assets.ConfigButtonPrefab, canva.transform, false);
+            this.configButton.transform.localPosition = this.configButton.transform.localPosition = new Vector3(this.configButton.transform.localPosition.x, -490, this.configButton.transform.localPosition.z);
             this.configButton.GetComponent<Button>().onClick.AddListener(this.configButtonClicked);
             this.levelUpIcon = configButton.transform.Find("LevelUpIcon").gameObject;
 
@@ -204,22 +196,26 @@ namespace Panthera.GUI
             // Down the button in Multiplayer //
             if (RoR2Application.isInMultiPlayer)
             {
-                this.configButton.transform.localPosition = new Vector3(this.configButton.transform.localPosition.x, this.configButton.transform.localPosition.y - 10, this.configButton.transform.localPosition.z);    
+                this.configButton.transform.localPosition = new Vector3(this.configButton.transform.localPosition.x, this.configButton.transform.localPosition.y - 13, this.configButton.transform.localPosition.z);    
             }
 
-                // Add the Button Watcher Component //
-                ButtonWatcher comp = this.configButton.AddComponent<ButtonWatcher>();
+            // Add the Button Watcher Component //
+            ButtonWatcher comp = this.configButton.AddComponent<ButtonWatcher>();
             comp.configPanel = this;
 
             // Create the Config Panel //
-            this.configPanelGUI = UnityEngine.Object.Instantiate<GameObject>(ConfigPanelPrefab, canva.transform, false);
+            this.configPanelGUI = UnityEngine.Object.Instantiate<GameObject>(Assets.ConfigPanelPrefab, canva.transform, false);
             this.dragArea = this.configPanelGUI.transform.Find("DragArea");
+            this.dragArea.gameObject.SetActive(true);
 
             // Disable the Config Panel //
             this.configPanelGUI.SetActive(false);
 
             // Init Presets Buttons from the Main GUI //
             this.initPresets();
+
+            // Find the Tooltip //
+            this.tooltipObj = new Tooltip(this.configPanelGUI.transform.Find("Tooltip").gameObject);
 
             // Register Tabs //
             this.registerTabs();
@@ -246,7 +242,7 @@ namespace Panthera.GUI
             this.registerAllKeysBind();
 
             // Create the Key Bind Window //
-            this.keyBindWindow = UnityEngine.Object.Instantiate<GameObject>(KeyBindWindowPrefab, canva.transform);
+            this.keyBindWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.KeyBindWindowPrefab, canva.transform);
             this.keyBindWindow.SetActive(false);
             this.keyBindWindowText = this.keyBindWindow.transform.Find("Content").Find("KeysBind").Find("Text").GetComponent<TextMeshProUGUI>();
             ButtonWatcher buttonWatcher1 = this.keyBindWindow.transform.Find("Content").Find("RemoveButton").gameObject.AddComponent<ButtonWatcher>();
@@ -255,7 +251,7 @@ namespace Panthera.GUI
             buttonWatcher2.configPanel = this;
 
             // Create the Active Preset Window //
-            this.activatePresetWindow = UnityEngine.Object.Instantiate<GameObject>(ActivePresetWindowPrefab, canva.transform);
+            this.activatePresetWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.ActivePresetWindowPrefab, canva.transform);
             this.activatePresetWindow.SetActive(false);
             ButtonWatcher buttonWatcher3 = this.activatePresetWindow.transform.Find("Content").Find("ActivatePrtButton").gameObject.AddComponent<ButtonWatcher>();
             ButtonWatcher buttonWatcher4 = this.activatePresetWindow.transform.Find("Content").Find("CancelActivatePrtButton").gameObject.AddComponent<ButtonWatcher>();
@@ -263,15 +259,12 @@ namespace Panthera.GUI
             buttonWatcher4.configPanel = this;
 
             // Create the Reset Preset Window //
-            this.resetPresetWindow = UnityEngine.Object.Instantiate<GameObject>(ResetPresetWindowPrefab, canva.transform);
+            this.resetPresetWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.ResetPresetWindowPrefab, canva.transform);
             this.resetPresetWindow.SetActive(false);
             ButtonWatcher buttonWatcher5 = this.resetPresetWindow.transform.Find("Content").Find("ResetPrtButton").gameObject.AddComponent<ButtonWatcher>();
             ButtonWatcher buttonWatcher6 = this.resetPresetWindow.transform.Find("Content").Find("CancelResetPrtButton").gameObject.AddComponent<ButtonWatcher>();
             buttonWatcher5.configPanel = this;
             buttonWatcher6.configPanel = this;
-
-            // Build the Skills List //
-            Preset.SelectedPreset.buildSkillList();
 
             // --------------------------------------------------------------------------------- //
             // --------------------------------------------------------------------------------- //
@@ -280,7 +273,7 @@ namespace Panthera.GUI
             // --------------------------------------------------------------------------------- //
             // --------------------------------------------------------------------------------- //
             //                                  TO REMOVE                                        //
-            this.lunarCoin = 52;
+            //this.lunarCoin = 52;
             // --------------------------------------------------------------------------------- //
             // --------------------------------------------------------------------------------- //
             // --------------------------------------------------------------------------------- //
@@ -306,16 +299,18 @@ namespace Panthera.GUI
                 // Activate the Config Button //
                 this.configButton.SetActive(true);
                 // Deactivate the Loadout Button //
-                this.loadoutButton.SetActive(false);
+                //this.loadoutButton.SetActive(false);
             }
             else
             {
                 // Deactivate the Config Button //
                 this.configButton.SetActive(false);
                 // Activate the Loadout Button //
-                this.loadoutButton.SetActive(true);
+                //this.loadoutButton.SetActive(true);
             }
 
+            // Update Tooltips //
+            this.tooltipObj.updateTooltipPosition();
         }
 
         public void updateAllValues()
@@ -353,8 +348,13 @@ namespace Panthera.GUI
             this.levelUpIcon.SetActive(false);
             PantheraSaveSystem.SetValue("LastViewedLevel", Character.CharacterLevel.ToString());
             PantheraSaveSystem.Save();
+            // Update the Config Panel //
+            this.updateAllValues();
             // Activate the Config Panel //
             this.configPanelGUI.SetActive(true);
+            // Disable the Panels because Hightlights cause bugs //
+            this.leftPanel.SetActive(false);
+            this.rightPanel.SetActive(false);
             // Disable the Gamepad //
             KeysBinder.GamepadSetEnable(false);
             // Play the Sound //
@@ -383,18 +383,10 @@ namespace Panthera.GUI
             this.overviewTab = this.configPanelGUI.transform.Find("MainPanel/TabContents/TabContentOverview").gameObject;
             // Find the Skill Trees Tab //
             this.skillTreesTab = this.configPanelGUI.transform.Find("MainPanel/TabContents/TabContentSkillTree").gameObject;
-            // Find the Skill Trees Tooltip //
-            this.skillTreeTooltip = this.skillTreesTab.transform.Find("Tooltip")?.gameObject;
-            this.skillTreeTooltip.SetActive(false);
             // Find the Skills Tab //
             this.skillsTab = this.configPanelGUI.transform.Find("MainPanel/TabContents/TabContentSkills").gameObject;
-            // Find the Skills Tooltip //
-            this.skillsTooltip = this.skillsTab.transform.Find("Tooltip")?.gameObject;
-            this.skillsTooltip.SetActive(false);
             // Find the Keys Bind Tab //
             this.keysBindTab = this.configPanelGUI.transform.Find("MainPanel/TabContents/TabContentKeysBind").gameObject;
-            // Find the Keys Bind Pages //
-
         }
 
         private void registerAllButtons()
@@ -431,12 +423,10 @@ namespace Panthera.GUI
             this.skillTree4 = this.skillTreesTab.transform.Find("TabsContent").Find("SkillTree4").gameObject;
             this.skillsAvailableAmount = this.skillTreesTab.transform.Find("SkillTreeAmountLimit").Find("AvailableBackground").Find("AvailableAmount").GetComponent<TextMeshProUGUI>();
             this.skillsSpentAmount = this.skillTreesTab.transform.Find("SkillTreeAmountLimit").Find("SpentBackground").Find("SpentAmount").GetComponent<TextMeshProUGUI>();
-            this.abilitiesTooltip = this.skillTreesTab.transform.Find("Tooltip").gameObject;
             this.skillTree1.SetActive(true);
             this.skillTree2.SetActive(false);
             this.skillTree3.SetActive(false);
             this.skillTree4.SetActive(false);
-            this.abilitiesTooltip.SetActive(false);
         }
 
         private void registerAllSkillsSlots()
@@ -483,6 +473,7 @@ namespace Panthera.GUI
                 keyBind.name = transform.GetChild(0).name;
 
                 // Get the Action ID //
+                if (KeysBinder.ActionList.ContainsKey(keyBind.name) == false) continue;
                 keyBind.actionID = KeysBinder.ActionList[keyBind.name];
 
                 // Gets Buttons //
@@ -544,11 +535,22 @@ namespace Panthera.GUI
         {
             // Get the Stats Object //
             Preset stats = Preset.SelectedPreset;
+            // Set the Character Image //
+            Image PantheraImage = this.overviewTab.transform.Find("PantheraImage").GetComponent<Image>();
+            int skinIndex = 1;
+            if (this.origGUI.localUser != null && this.origGUI.localUser.currentNetworkUser != null)
+                skinIndex = Base.Skin.GetActualSkinIndex(this.origGUI.localUser.currentNetworkUser);
+            if (skinIndex == 1)
+                PantheraImage.sprite = Base.Assets.OverviewPortrait1;
+            else if (skinIndex == 2)
+                PantheraImage.sprite = Base.Assets.OverviewPortrait2;
+            else if (skinIndex == 3)
+                PantheraImage.sprite = Base.Assets.OverviewPortrait3;
             // Set the Level //
-            this.overviewTab.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().SetText(String.Format("Level: {0}", Character.CharacterLevel));
+            this.overviewTab.transform.Find("LevelText").GetComponent<TextMeshProUGUI>().SetText(String.Format("Level: {0} / {1}", Character.CharacterLevel, Character.MaxLevel));
             // Set the Experience //
-            this.overviewTab.transform.Find("XPBar").Find("Text").GetComponent<TextMeshProUGUI>().SetText("{0}/{1}", Character.Experience, Character.MaxExperience);
-            this.overviewTab.transform.Find("XPBar").Find("Bar").GetComponent<Image>().fillAmount =  (float)Character.Experience / (float)Character.MaxExperience;
+            this.overviewTab.transform.Find("XPBar").Find("Text").GetComponent<TextMeshProUGUI>().SetText("{0}/{1}", Character.LevelExperience, Character.LevelMaxExperience);
+            this.overviewTab.transform.Find("XPBar").Find("Bar").GetComponent<Image>().fillAmount =  (float)Character.LevelExperience / (float)Character.LevelMaxExperience;
             // Set the Lunar Coin Text //
             this.overviewTab.transform.Find("LunarCoinImage").Find("Text").GetComponent<TextMeshProUGUI>().SetText(this.lunarCoin.ToString());
             // Get the Stats Panel //
@@ -598,10 +600,12 @@ namespace Panthera.GUI
                 GameObject.Destroy(child.gameObject);
             }
 
-
-            // Create the new List //
+            // Create the Active Skills List //
             foreach (PantheraSkill skill in Preset.SelectedPreset.unlockedSkillsList.Values)
             {
+
+                // Continue if not Active //
+                if (skill.type != PantheraSkill.SkillType.active) continue;
 
                 // Instansiate the Skill Icon //
                 GameObject skillIcon = GameObject.Instantiate<GameObject>(skill.iconPrefab, this.skillsZone.transform);
@@ -623,6 +627,51 @@ namespace Panthera.GUI
                 dragComp.configPanel = this;
 
             }
+
+            // Create the Hybrid Skills List //
+            foreach (PantheraSkill skill in Preset.SelectedPreset.unlockedSkillsList.Values)
+            {
+
+                // Continue if not Hybrid //
+                if (skill.type != PantheraSkill.SkillType.hybrid) continue;
+
+                // Instansiate the Skill Icon //
+                GameObject skillIcon = GameObject.Instantiate<GameObject>(skill.iconPrefab, this.skillsZone.transform);
+                skillIcon.SetActive(true);
+
+                // Add the Button Watcher //
+                ButtonWatcher comp = skillIcon.GetComponent<Button>().gameObject.AddComponent<ButtonWatcher>();
+                comp.configPanel = instance;
+                comp.attachedSkill = skill;
+
+                // Set the Ability image //
+                Image image = skillIcon.transform.Find("Icon").GetComponent<Image>();
+                image.sprite = skill.icon;
+
+            }
+
+            // Create the Passive Skills List //
+            foreach (PantheraSkill skill in Preset.SelectedPreset.unlockedSkillsList.Values)
+            {
+
+                // Continue if not Passive //
+                if (skill.type != PantheraSkill.SkillType.passive) continue;
+
+                // Instansiate the Skill Icon //
+                GameObject skillIcon = GameObject.Instantiate<GameObject>(skill.iconPrefab, this.skillsZone.transform);
+                skillIcon.SetActive(true);
+
+                // Add the Button Watcher //
+                ButtonWatcher comp = skillIcon.GetComponent<Button>().gameObject.AddComponent<ButtonWatcher>();
+                comp.configPanel = instance;
+                comp.attachedSkill = skill;
+
+                // Set the Ability image //
+                Image image = skillIcon.transform.Find("Icon").GetComponent<Image>();
+                image.sprite = skill.icon;
+
+            }
+
         }
 
         public void updateSkillBars()
@@ -633,8 +682,8 @@ namespace Panthera.GUI
                 // Get the associated Skill //
                 PantheraSkill skill = null;
                 int slotID = this.getSlotIdFromObject(slot);
-                if (slotID != 0 && Preset.SelectedPreset.slotsSkillsLinkList.ContainsKey(slotID))
-                    skill = Preset.SelectedPreset.slotsSkillsLinkList[slotID];
+                if (slotID != 0)
+                    skill = Preset.SelectedPreset.getSkillBySlotID(slotID);
                 Image image = slot.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
                 TextMeshProUGUI CDText = slot.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
 
@@ -642,6 +691,7 @@ namespace Panthera.GUI
                 if (skill == null)
                 {
                     image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
+                    CDText.text = "";
                     CDText.gameObject.SetActive(false);
                 }
                 else
@@ -653,202 +703,28 @@ namespace Panthera.GUI
                         CDText.gameObject.SetActive(true);
                         CDText.text = skill.cooldown.ToString();
                     }
+                    else
+                    {
+                        CDText.gameObject.SetActive(false);
+                        CDText.text = "";
+                    }
                 }
 
             }
         }
 
-        public void createAbilityTooltip(PantheraAbility ability)
+        public void updateAbilityTooltip(PantheraAbility ability)
         {
-            // Enable the Tooltip //
-            this.abilitiesTooltip.SetActive(true);
-
-            // Get the Content //
-            Transform content = this.abilitiesTooltip.transform.Find("Content");
-
-            // Set the Name //
-            this.abilitiesTooltip.transform.Find("Content")?.Find("Header")?.Find("AbilityName")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.name);
-
-            // Set the type //
-            if (ability.type == PantheraAbility.AbilityType.primary)
-                content.Find("Header")?.Find("SkillType")?.GetComponent<TextMeshProUGUI>()?.SetText("Primary");
-            else if (ability.type == PantheraAbility.AbilityType.active)
-                content.Find("Header")?.Find("SkillType")?.GetComponent<TextMeshProUGUI>()?.SetText("Active");
-            else if (ability.type == PantheraAbility.AbilityType.passive)
-                content.Find("Header")?.Find("SkillType")?.GetComponent<TextMeshProUGUI>()?.SetText("Passive");
-
-            // Set the Icon //
-            Image image = this.abilitiesTooltip.transform.Find("Content")?.Find("Header")?.Find("AbilityIcon")?.Find("Icon")?.GetComponent<Image>();
-            image.sprite = ability.icon;
-
-            // Set the Required Points //
-            if (ability.requiredPoint > 0)
-            {
-                if (Character.SpentPoint < ability.requiredPoint)
-                    content.Find("RequiredSkillPoint")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(Utils.ColorHelper.SetRed(ability.requiredPoint.ToString()));
-                else
-                    content.Find("RequiredSkillPoint")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(Utils.ColorHelper.SetGreen(ability.requiredPoint.ToString()));
-                content.Find("RequiredSkillPoint")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("RequiredSkillPoint")?.gameObject.SetActive(false);
-            }
-
-            // Set the Unlock Level //
-            if (ability.unlockLevel > 0)
-            {
-                content.Find("UnlockLevel")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.unlockLevel.ToString());
-                content.Find("UnlockLevel")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("UnlockLevel")?.gameObject.SetActive(false);
-            }
-
-            // Set the Cooldown //
-            if (ability.cooldown > 0)
-            {
-                content.Find("Cooldown")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.cooldown.ToString());
-                content.Find("Cooldown")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("Cooldown")?.gameObject.SetActive(false);
-            }
-
-            // Set the Energy cost //
-            if (ability.requiredEnergy > 0)
-            {
-                content.Find("EnergyCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.requiredEnergy.ToString());
-                content.Find("EnergyCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("EnergyCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Power cost //
-            if (ability.requiredPower > 0)
-            {
-                content.Find("GodPowerCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.requiredPower.ToString());
-                content.Find("GodPowerCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("GodPowerCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Fury cost //
-            if (ability.requiredFury > 0)
-            {
-                content.Find("FuryCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.requiredFury.ToString());
-                content.Find("FuryCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("FuryCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Required Skills //
-            if (ability.requiredSkills.Count > 0)
-            {
-                string skillsList = "";
-                foreach(KeyValuePair<int, int> entry in ability.requiredSkills)
-                {
-                    PantheraAbility abilityRequired = PantheraAbility.AbilitytiesDefsList[entry.Key];
-                    skillsList += "  -" + abilityRequired.name + " " + entry.Value + "/" + abilityRequired.maxLevel + Environment.NewLine;
-                }
-                content.Find("RequiredSkills")?.Find("Text")?.GetComponent<TextMeshProUGUI>()?.SetText(skillsList);
-            }
-            else
-            {
-                content.Find("RequiredSkills")?.gameObject.SetActive(false);
-            }
-
-            // Set the Description //
-            this.abilitiesTooltip.transform.Find("Content")?.Find("Description")?.GetComponent<TextMeshProUGUI>()?.SetText(ability.desc);
-
+            Tooltip.TooltipType type = (Tooltip.TooltipType)ability.type;
+            this.tooltipObj.updateTooltip(ability.name, type, ability.icon, ability.unlockLevel, ability.cooldown,
+                ability.requiredEnergy, ability.requiredPower, ability.requiredFury, ability.desc, ability.requiredAbilities);
         }
 
-        public void createSkillsTooltip(PantheraSkill skill)
+        public void updateSkillTooltip(PantheraSkill skill)
         {
-            // Enable the Tooltip //
-            this.skillsTooltip.SetActive(true);
-
-            // Get the Content //
-            Transform content = this.skillsTooltip.transform.Find("Content");
-
-            // Set the Name //
-            this.skillsTooltip.transform.Find("Content")?.Find("Header")?.Find("AbilityName")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.name);
-
-            // Set the type //
-            if (skill.type == PantheraSkill.SkillType.active)
-                content.Find("Header")?.Find("SkillType")?.GetComponent<TextMeshProUGUI>()?.SetText("Active");
-            else if (skill.type == PantheraSkill.SkillType.active)
-                content.Find("Header")?.Find("SkillType")?.GetComponent<TextMeshProUGUI>()?.SetText("Passive");
-
-            // Set the Icon //
-            Image image = this.skillsTooltip.transform.Find("Content")?.Find("Header")?.Find("AbilityIcon")?.Find("Icon")?.GetComponent<Image>();
-            image.sprite = skill.icon;
-
-            // Set the Unlock Level //
-            if (skill.unlockLevel > 0)
-            {
-                content.Find("UnlockLevel")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.unlockLevel.ToString());
-                content.Find("UnlockLevel")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("UnlockLevel")?.gameObject.SetActive(false);
-            }
-
-            // Set the Cooldown //
-            if (skill.cooldown > 0)
-            {
-                content.Find("Cooldown")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.cooldown.ToString());
-                content.Find("Cooldown")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("Cooldown")?.gameObject.SetActive(false);
-            }
-
-            // Set the Energy cost //
-            if (skill.requiredEnergy > 0)
-            {
-                content.Find("EnergyCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.requiredEnergy.ToString());
-                content.Find("EnergyCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("EnergyCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Power cost //
-            if (skill.requiredPower > 0)
-            {
-                content.Find("GodPowerCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.requiredPower.ToString());
-                content.Find("GodPowerCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("GodPowerCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Fury cost //
-            if (skill.requiredFury > 0)
-            {
-                content.Find("FuryCost")?.Find("Amount")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.requiredFury.ToString());
-                content.Find("FuryCost")?.gameObject.SetActive(true);
-            }
-            else
-            {
-                content.Find("FuryCost")?.gameObject.SetActive(false);
-            }
-
-            // Set the Description //
-            this.skillsTooltip.transform.Find("Content")?.Find("Description")?.GetComponent<TextMeshProUGUI>()?.SetText(skill.desc);
+            Tooltip.TooltipType type = (Tooltip.TooltipType)skill.type;
+            this.tooltipObj.updateTooltip(skill.name, type, skill.icon, 0, skill.cooldown,
+                skill.requiredEnergy, skill.requiredPower, skill.requiredFury, skill.desc, null);
         }
 
         public void updateAllKeyBindTexts()

@@ -1,6 +1,9 @@
 ﻿using EntityStates;
+using Panthera.Base;
+using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.Machines;
+using Panthera.MachineScripts;
 using Panthera.Skills;
 using Panthera.Utils;
 using RoR2;
@@ -11,7 +14,7 @@ using UnityEngine;
 
 namespace Panthera.MachineScripts
 {
-    abstract class MachineScript
+    public class MachineScript
     {
 
         public PantheraMachineState stateType;
@@ -24,8 +27,9 @@ namespace Panthera.MachineScripts
         public PantheraBody characterBody;
         public CharacterDirection characterDirection;
         public CameraTargetParams cameraTargetParams;
+        public SfxLocator sfxLocator;
         public PantheraInputBank inputBank;
-        public SkillLocator skillLocator;
+        public PantheraSkillLocator skillLocator;
         public HealthComponent healthComponent;
         public Rigidbody rigidbody;
         public PantheraMotor characterMotor;
@@ -36,6 +40,7 @@ namespace Panthera.MachineScripts
         public AimAnimator aimAnimator;
         public BigCatPassive bcp;
         public PantheraFX pantheraFX;
+        public PantheraMaster masterObj;
 
         public float attackSpeedStat = 1f;
         public float damageStat;
@@ -58,9 +63,9 @@ namespace Panthera.MachineScripts
             this.characterBody = player.GetComponent<PantheraBody>();
             this.characterDirection = player.GetComponent<CharacterDirection>();
             this.cameraTargetParams = player.GetComponent<CameraTargetParams>();
-            CamHelper.pantheraCamParam = this.cameraTargetParams;
+            this.sfxLocator = gameObject.GetComponent<SfxLocator>();
             this.inputBank = player.GetComponent<PantheraInputBank>();
-            this.skillLocator = player.GetComponent<SkillLocator>();
+            this.skillLocator = player.GetComponent<PantheraSkillLocator>();
             this.healthComponent = player.GetComponent<HealthComponent>();
             this.rigidbody = player.GetComponent<Rigidbody>();
             this.characterMotor = player.GetComponent<PantheraMotor>();
@@ -69,8 +74,9 @@ namespace Panthera.MachineScripts
             this.modelTransform = this.modelLocator.modelTransform;
             this.modelAnimator = this.modelLocator.modelTransform.GetComponent<Animator>();
             this.aimAnimator = this.modelTransform.GetComponent<AimAnimator>();
-            this.bcp = this.pantheraObj.GetPassiveScript();
+            this.bcp = this.pantheraObj.getPassiveScript();
             this.pantheraFX = player.GetComponent<PantheraFX>();
+            this.masterObj = this.pantheraObj.pantheraMaster;
 
             // Setup the characterBody
             this.attackSpeedStat = this.characterBody.attackSpeed;
@@ -90,10 +96,25 @@ namespace Panthera.MachineScripts
             return true;
         }
 
-        public abstract void Start();
-        public abstract void Update();
-        public abstract void FixedUpdate();
-        public abstract void Stop();
+        public virtual void Start()
+        {
+
+        }
+
+        public virtual void Update()
+        {
+
+        }
+
+        public virtual void FixedUpdate()
+        {
+
+        }
+
+        public virtual void Stop()
+        {
+
+        }
 
         public void EndScript()
         {
@@ -125,7 +146,7 @@ namespace Panthera.MachineScripts
         {
             get
             {
-                return this.pantheraObj.HasAuthority();
+                return this.pantheraObj.hasAuthority();
             }
         }
         public Ray GetAimRay()
@@ -172,9 +193,9 @@ namespace Panthera.MachineScripts
         {
             return Util.CheckRoll(this.critStat, this.characterBody.master);
         }
-        public void PlayAnimation(string layerName, string animationStateName)
+        public void PlayAnimation(string animationStateName, float crossFadeTime = 0)
         {
-            Utils.Functions.PlayAnimation(this.gameObject, layerName, animationStateName);
+            Utils.Animation.PlayAnimation(this.pantheraObj, animationStateName, crossFadeTime);
         }
         public TeamIndex GetTeam()
         {

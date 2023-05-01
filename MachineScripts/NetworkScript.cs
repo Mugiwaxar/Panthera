@@ -15,7 +15,7 @@ namespace Panthera.MachineScripts
 
         public override void Start()
         {
-            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEvent;
+            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEventServer;
         }
 
         public override void Update()
@@ -30,10 +30,10 @@ namespace Panthera.MachineScripts
 
         public override void Stop()
         {
-            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEvent;
+            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEventServer;
         }
 
-        public void OnCharacterDieEvent(DamageReport damageReport)
+        public void OnCharacterDieEventServer(DamageReport damageReport)
         {
             if (damageReport.attacker == null || damageReport.victim == null) return;
             new ClientCharacterDieEvent(damageReport.attacker, damageReport.victim.gameObject).Send(NetworkDestination.Clients);

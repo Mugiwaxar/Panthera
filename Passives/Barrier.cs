@@ -1,4 +1,5 @@
-﻿using Panthera.Components;
+﻿using Panthera.BodyComponents;
+using Panthera.Components;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -2,7 +2,6 @@
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
 using Panthera.OldSkills;
-using Panthera.Skills;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;

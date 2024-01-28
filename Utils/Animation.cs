@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Panthera.Utils
 {
-    internal class Animation
+    public class Animation
     {
 
         public static void PlayAnimation(PantheraObj ptraObj, string animName, float crossFadeTime = 0, bool transmit = true)
@@ -26,7 +26,7 @@ namespace Panthera.Utils
             else
                 animator.PlayInFixedTime(animName, -1, 0);
             if (RoR2Application.isInMultiPlayer == true && transmit == true)
-                new ClientPlayAnimation(ptraObj.gameObject, animName, crossFadeTime).Send(NetworkDestination.Clients);
+                new ServerPlayAnimation(ptraObj.gameObject, animName, crossFadeTime).Send(NetworkDestination.Server);
         }
 
         public static void SetBoolean(PantheraObj ptraObj, string paramName, bool setValue, bool transmit = true)
@@ -36,7 +36,7 @@ namespace Panthera.Utils
             if (animator == null) return;
             animator.SetBool(paramName, setValue);
             if (RoR2Application.isInMultiPlayer == true && transmit == true)
-                new ClientSetAnimatorBoolean(ptraObj.gameObject, paramName, setValue).Send(NetworkDestination.Clients);
+                new ServerSetAnimatorBoolean(ptraObj.gameObject, paramName, setValue).Send(NetworkDestination.Server);
         }
 
         public static void SetFloat(PantheraObj ptraObj, string paramName, float value1 = 0, float value2 = 0, float value3 = 0, bool transmit = true)
@@ -46,7 +46,7 @@ namespace Panthera.Utils
             if (animator == null) return;
             animator.SetFloat(paramName, value1, value2, value3);
             if (RoR2Application.isInMultiPlayer == true && transmit == true)
-                new ClientSetAnimatorFloat(ptraObj.gameObject, paramName, value1, value2, value3).Send(NetworkDestination.Clients);
+                new ServerSetAnimatorFloat(ptraObj.gameObject, paramName, value1, value2, value3).Send(NetworkDestination.Server);
         }
 
     }

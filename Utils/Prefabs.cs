@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Panthera.Utils
 {
-    internal class Prefabs
+    public class Prefabs
     {
         // (PrefabID, Prefab Object) The list of all Prefabs used for the mod, this will help for networking //
         public static Dictionary<int, GameObject> PrefabsList = new Dictionary<int, GameObject>();

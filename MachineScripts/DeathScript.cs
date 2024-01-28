@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 namespace Panthera.MachineScripts
 {
-    internal class DeathScript : MachineScript
+    public class DeathScript : MachineScript
     {
 
         public bool bodyMarkedForDestructionServer;
@@ -193,7 +193,7 @@ namespace Panthera.MachineScripts
             if (NetworkClient.active == true)
             {
                 Utils.Sound.playSound(Utils.Sound.Dead2, this.modelObj);
-                Utils.FXManager.DestroyFX(this.deathEffectID);
+                Utils.FXManager.DestroyEffect(this.deathEffectID);
             }
             // Dispose the Camera //
             CameraTargetParams.AimRequest aimRequest = this.aimRequest;

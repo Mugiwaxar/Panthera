@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Panthera.BodyComponents
 {
-    internal class PantheraTracker
+    public class PantheraTracker
     {
 
         public static void SearchForTarget(Action<HuntressTracker, Ray> orig, HuntressTracker self, Ray aimRay)
@@ -29,10 +29,10 @@ namespace Panthera.BodyComponents
             TeamMask teamMask = new TeamMask();
 
             // Check the Save My Friend Ability //
-            if (ptraObj.activePreset != null && ptraObj.activePreset.getAbilityLevel(PantheraConfig.SaveMyFriendAbilityID) > 0 && ptraObj.interactPressed == true)
-                teamMask.AddTeam(TeamIndex.Player);
-            else
-                teamMask.AddTeam(TeamIndex.Monster);
+            //if (ptraObj.activePreset != null && ptraObj.activePreset.getAbilityLevel(PantheraConfig.SaveMyFriendAbilityID) > 0 && ptraObj.interactPressed == true)
+            //    teamMask.AddTeam(TeamIndex.Player);
+            //else
+            //    teamMask.AddTeam(TeamIndex.Monster);
 
             // Search a Target //
             self.search.teamMaskFilter = teamMask;

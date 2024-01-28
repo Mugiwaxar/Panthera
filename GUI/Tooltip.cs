@@ -1,4 +1,5 @@
 ﻿using EntityStates.LunarGolem;
+using Panthera.Abilities;
 using Panthera.Base;
 using Panthera.Utils;
 using RoR2.UI;
@@ -18,8 +19,7 @@ namespace Panthera.GUI
         {
             passive,
             active,
-            primary,
-            hybrid
+            primary
         }
 
         public RectTransform tooltipGUI;
@@ -31,10 +31,6 @@ namespace Panthera.GUI
         public TextMeshProUGUI unlockLevelAmount;
         public GameObject cooldown;
         public TextMeshProUGUI cooldownAmount;
-        public GameObject requiredEnergy;
-        public TextMeshProUGUI requiredEnergyAmount;
-        public GameObject requiredPower;
-        public TextMeshProUGUI requiredPowerAmount;
         public GameObject requiredFury;
         public TextMeshProUGUI requiredFuryAmount;
         public TextMeshProUGUI description;
@@ -52,10 +48,6 @@ namespace Panthera.GUI
             this.unlockLevelAmount = this.unlockLevel.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
             this.cooldown = tooltipGUI.transform.Find("Cooldown").gameObject;
             this.cooldownAmount = this.cooldown.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
-            this.requiredEnergy = tooltipGUI.transform.Find("EnergyCost").gameObject;
-            this.requiredEnergyAmount = this.requiredEnergy.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
-            this.requiredPower = tooltipGUI.transform.Find("GodPowerCost").gameObject;
-            this.requiredPowerAmount = this.requiredPower.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
             this.requiredFury = tooltipGUI.transform.Find("FuryCost").gameObject;
             this.requiredFuryAmount = this.requiredFury.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
             this.description = tooltipGUI.transform.Find("Description").GetComponent<TextMeshProUGUI>();
@@ -65,8 +57,6 @@ namespace Panthera.GUI
             tooltipGUI.SetActive(false);
             this.unlockLevel.SetActive(false);
             this.cooldown.SetActive(false);
-            this.requiredEnergy.SetActive(false);
-            this.requiredPower.SetActive(false);
             this.requiredFury.SetActive(false);
             this.requiredAbilities.SetActive(false);
 
@@ -116,8 +106,6 @@ namespace Panthera.GUI
                 this.type.SetText("Active");
             else if (type == TooltipType.passive)
                 this.type.SetText("Passive");
-            else if (type == TooltipType.hybrid)
-                this.type.SetText("Hybrid");
 
             // Get the Icon Prefab //
             GameObject iconPrefab = Assets.PassiveSkillPrefab;
@@ -125,8 +113,6 @@ namespace Panthera.GUI
                 iconPrefab = Assets.PrimarySkillPrefab;
             else if (type == TooltipType.active)
                 iconPrefab = Assets.ActiveSkillPrefab;
-            else if (type == TooltipType.hybrid)
-                iconPrefab = Assets.HybridSkillPrefab;
             else if (type == TooltipType.passive)
                 iconPrefab = Assets.PassiveSkillPrefab;
             iconPrefab.SetActive(true);
@@ -141,20 +127,6 @@ namespace Panthera.GUI
             Image image = iconObj.transform.Find("Icon").GetComponent<Image>();
             image.sprite = icon;            
 
-            // Set the Unlock Level //
-            if (unlockLevel > 0)
-            {
-                if (Character.CharacterLevel < unlockLevel)
-                    this.unlockLevelAmount.SetText(Utils.ColorHelper.SetRed(unlockLevel.ToString()));
-                else
-                    this.unlockLevelAmount.SetText(Utils.ColorHelper.SetGreen(unlockLevel.ToString()));
-                this.unlockLevel.SetActive(true);
-            }
-            else
-            {
-                this.unlockLevel.SetActive(false);
-            }
-
             // Set the Cooldown //
             if (cooldown > 0)
             {
@@ -164,28 +136,6 @@ namespace Panthera.GUI
             else
             {
                 this.cooldown.SetActive(false);
-            }
-
-            // Set the Energy cost //
-            if (requiredEnergy > 0)
-            {
-                this.requiredEnergyAmount.SetText(requiredEnergy.ToString());
-                this.requiredEnergy.SetActive(true);
-            }
-            else
-            {
-                this.requiredEnergy.SetActive(false);
-            }
-
-            // Set the Power cost //
-            if (requiredPower > 0)
-            {
-                this.requiredPowerAmount.SetText(requiredPower.ToString());
-                this.requiredPower.SetActive(true);
-            }
-            else
-            {
-                this.requiredPower.SetActive(false);
             }
 
             // Set the Fury cost //
@@ -201,28 +151,6 @@ namespace Panthera.GUI
 
             // Set the Description //
             this.description.SetText(PantheraTokens.Get(description));
-
-            // Set the Required Skills //
-            if (requiredAbilities != null && requiredAbilities.Count > 0)
-            {
-                string skillsList = "";
-                foreach (KeyValuePair<int, int> entry in requiredAbilities)
-                {
-                    PantheraAbility abilityRequired = PantheraAbility.AbilitytiesDefsList[entry.Key];
-                    String text = "  - " + PantheraTokens.Get(abilityRequired.name) + ": " + entry.Value + Environment.NewLine;
-                    if (Preset.SelectedPreset.getAbilityLevel(entry.Key) >= entry.Value)
-                        text = Utils.ColorHelper.SetGreen(text);
-                    else
-                        text = Utils.ColorHelper.SetRed(text);
-                    skillsList += text;
-                }
-                this.requiredAbilitiesText.SetText(skillsList);
-                this.requiredAbilities.SetActive(true);
-            }
-            else
-            {
-                this.requiredAbilities.SetActive(false);
-            }
 
             // Updates all Layouts //
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.tooltipGUI);

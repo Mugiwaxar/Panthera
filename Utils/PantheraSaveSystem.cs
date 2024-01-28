@@ -9,10 +9,8 @@ using UnityEngine;
 
 namespace Panthera.Utils
 {
-    internal class PantheraSaveSystem
+    public class PantheraSaveSystem
     {
-
-        public static PantheraSaveSystem Instance;
 
         public static string saveDir = System.IO.Path.Combine(Application.persistentDataPath, "Panthera");
         public static string saveFileName;
@@ -38,11 +36,26 @@ namespace Panthera.Utils
         public static void Save()
         {
 
+            // Create the Table //
+            Dictionary<string,string> save = new Dictionary<string,string>();
+
+            // Add all Data to the Table //
+            foreach(string key in savedData.Keys)
+            {
+                save[key] = savedData[key];
+            }
+
+            // Add all Abilities to the Table //
+            foreach(int ID in Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList.Keys)
+            {
+                save["_ABILITY_" + ID.ToString()] = Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList[ID].ToString();
+            }
+
             // Create the full path //
             string fullFilePath = System.IO.Path.Combine(saveDir, saveFileName + "--Data");
 
             // Create the XML //
-            XElement root = new XElement("Root", from keyValue in savedData select new XElement(keyValue.Key, keyValue.Value));
+            XElement root = new XElement("Root", from keyValue in save select new XElement(keyValue.Key, keyValue.Value));
 
             // Create the File //
             try
@@ -85,8 +98,45 @@ namespace Panthera.Utils
                 return;
             }
 
+            // Create the Table //
+            Dictionary<string, string> save = new Dictionary<string, string>();
+
             // Create the Dictionary //
-            savedData = XElement.Parse(file).Elements().ToDictionary(k => k.Name.ToString(), v => v.Value.ToString());
+            try
+            {
+                // Get the Save //
+                save = XElement.Parse(file).Elements().ToDictionary(k => k.Name.ToString(), v => v.Value.ToString());
+            }
+            catch (System.Xml.XmlException e)
+            {
+                Debug.LogError("[Panthera] XML ERROR, creating a new save ...");
+                Debug.LogError(e);
+                File.Delete(fullFilePath);
+                Save();
+            }
+
+            // Load the Save //
+            foreach(KeyValuePair<string, string> kvp in save)
+            {
+                if (kvp.Key.Contains("_ABILITY_"))
+                {
+                    try
+                    {
+                        int ID = int.Parse(kvp.Key.Replace("_ABILITY_", ""));
+                        int level = int.Parse(kvp.Value);
+                        Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList[ID] = level; 
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Unable to Load a value -> " + kvp.Key);
+                        Debug.LogError(e);
+                    }
+                }
+                else
+                {
+                    savedData[kvp.Key] = kvp.Value;
+                }
+            }
 
         }
 

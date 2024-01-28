@@ -1,4 +1,5 @@
-﻿using Panthera.NetworkMessages;
+﻿using Panthera.BodyComponents;
+using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -13,9 +14,11 @@ namespace Panthera.MachineScripts
     class NetworkScript : MachineScript
     {
 
+        public float tenacityTimer = 0;
+
         public override void Start()
         {
-            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEventServer;
+            if (NetworkServer.active == true) GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEventServer;
         }
 
         public override void Update()
@@ -25,18 +28,25 @@ namespace Panthera.MachineScripts
 
         public override void FixedUpdate()
         {
-
+            // Apply Tenacity Buffs //
+            this.tenacityTimer = Time.time;
+            int tenacityBuffCount = base.characterBody.GetBuffCount(Base.Buff.TenacityBuff);
+            if (tenacityBuffCount > 0)
+            {
+                float barrierToAdd = base.characterBody.maxBarrier * PantheraConfig.Tenacity_blockAdded * tenacityBuffCount / 60;
+                base.healthComponent.AddBarrier(barrierToAdd);
+            }
         }
 
         public override void Stop()
         {
-            if (NetworkServer.active == true && NetworkClient.active == false) GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEventServer;
+            GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEventServer;
         }
 
         public void OnCharacterDieEventServer(DamageReport damageReport)
         {
             if (damageReport.attacker == null || damageReport.victim == null) return;
-            new ClientCharacterDieEvent(damageReport.attacker, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                new ClientCharacterDieEvent(damageReport.attacker, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
         }
 
     }

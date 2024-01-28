@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Panthera.Base
 {
-    internal class PantheraKinematicSystem : KinematicCharacterSystem
+    public class PantheraKinematicSystem : KinematicCharacterSystem
     {
 
         public static void SimulateHook1(Action<float> orig, float deltaTime)

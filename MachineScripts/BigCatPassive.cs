@@ -1,13 +1,14 @@
 ﻿using EntityStates;
 using KinematicCharacterController;
 using Panthera;
+using Panthera.Base;
 using Panthera.Components;
 using Panthera.GUI;
 using Panthera.Machines;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.Skills;
+using Panthera.OldSkills;
 using Panthera.Utils;
 using R2API;
 using R2API.Networking;
@@ -23,6 +24,7 @@ using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using static RoR2.DotController;
 using static UnityEngine.ParticleSystem;
+using TMPro;
 
 namespace Panthera.MachineScripts
 {
@@ -31,6 +33,7 @@ namespace Panthera.MachineScripts
 
         public float lastNineLivesTime;
         public float lastDamageTime = 0;
+        public float lastFuryDecreasedTime = 0;
         public float lastFuryGeneratedTime = 0;
         public float lastShieldGeneratedTime = 0;
         public float lastShieldDamageTime = 0;
@@ -41,8 +44,10 @@ namespace Panthera.MachineScripts
         public bool isSleeping;
         public bool unsleepAsked;
         public float unsleepTime;
-        public float lastFadeLevel;
-        public bool wasStealthed;
+        public int pantheraLastLevel;
+        public bool isOutOfCombat = true;
+        public bool wasOutOfCombat = true;
+        public float cupidityTimer = 0;
 
         public override void Start()
         {
@@ -51,7 +56,7 @@ namespace Panthera.MachineScripts
             base.pantheraObj.characterBody.GetComponent<CapsuleCollider>().radius = 0.5f;
 
             // Register all Events //
-            GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEventClient;
+            //GlobalEventManager.onCharacterDeathGlobal += OnCharacterDieEventClient;
             GlobalEventManager.onClientDamageNotified += OnDamage;
 
             // Set all Cooldowns to zero //
@@ -61,7 +66,7 @@ namespace Panthera.MachineScripts
             //new ServerSetBuffCount(this.gameObject, (int)Buff.nineLives.buffIndex, 1).Send(NetworkDestination.Server);
 
             // Init the HUD //
-            PantheraHUD.Instance.CreateHUD(base.pantheraObj);
+            //PantheraHUD.Instance.CreateHUD(base.pantheraObj);
 
             // Create the First spawn Animation //
             if (base.masterObj.firstStarted == false)
@@ -70,9 +75,8 @@ namespace Panthera.MachineScripts
                 this.isSleeping = true;
                 Utils.Animation.SetBoolean(base.pantheraObj, "IsSleeping", true);
                 Utils.Animation.PlayAnimation(base.pantheraObj, "SleepLoop");
-                base.characterDirection.enabled = false;
+                new ServerSetGodMode(base.gameObject, true).Send(NetworkDestination.Server);
                 base.characterBody.RecalculateStats();
-                new ServerAddBuff(base.gameObject, (int)PantheraConfig.InvincibilityBuffDef.buffIndex).Send(NetworkDestination.Server);
             }
             else
             {
@@ -80,127 +84,133 @@ namespace Panthera.MachineScripts
             }
 
             // Apply the Guardian Size //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
-            {
-                float modelScale = PantheraConfig.Guardian_modelScale;
-                base.pantheraObj.transform.localScale = new Vector3(modelScale, modelScale, modelScale);
-                base.modelTransform.localScale = new Vector3(modelScale, modelScale, modelScale);
-                new ServerChangePantheraScale(base.gameObject, modelScale).Send(NetworkDestination.Server);
-            }
+            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
+            //{
+            //    float modelScale = PantheraConfig.Guardian_modelScale;
+            //    base.pantheraObj.transform.localScale = new Vector3(modelScale, modelScale, modelScale);
+            //    base.modelTransform.localScale = new Vector3(modelScale, modelScale, modelScale);
+            //    new ServerChangePantheraScale(base.gameObject, modelScale).Send(NetworkDestination.Server);
+            //}
+
+            // Save the Last Level //
+            this.pantheraLastLevel = Panthera.PantheraCharacter.characterLevel;
 
         }
 
         public override void Update()
         {
 
-            // Calcule the last Damage Time //
-            float noDamageTime = Time.time - this.lastDamageTime;
-
-            // Add Energy //
-            base.characterBody.energy += base.pantheraObj.activePreset.energyRegen / 60;
-
-            // Add Stamina //
-            if (base.pantheraObj.dashing == false && base.pantheraObj.detectionActivated == false)
-                base.characterBody.stamina += base.pantheraObj.activePreset.staminaRegen / 60;
-
-            // Add Fury //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
+            // Remove Fury //
+            float lastFuryDecrease = Time.time - this.lastFuryDecreasedTime;
+            if (base.pantheraObj.furyMode == true && lastFuryDecrease >= PantheraConfig.Fury_furyPointsDecreaseTime)
             {
-                if (noDamageTime < PantheraConfig.Fury_damageTimeBeforStopGenerate &&
-                    Time.time - this.lastFuryGeneratedTime > PantheraConfig.Fury_pointsGenerationCooldown)
-                {
-                    base.characterBody.fury += 1;
-                    this.lastFuryGeneratedTime = Time.time;
-                }
+                this.lastFuryDecreasedTime = Time.time;
+                base.characterBody.fury--;
+                if (base.characterBody.fury <= 0)
+                   Skills.Passives.FuryMode.FuryOff(base.pantheraObj);
             }
 
+            //// Add Energy //
+            //base.characterBody.energy += PantheraConfig.Default_EnergyRegen / 60;
+
+            //// Add Stamina //
+            //if (base.pantheraObj.dashing == false && base.pantheraObj.detectionActivated == false)
+            //    base.characterBody.stamina += PantheraConfig.Default_StaminaRegen / 60;
+
+            // Add Fury //
+            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
+            //{
+            //    if (noDamageTime < PantheraConfig.Fury_damageTimeBeforStopGenerate &&
+            //        Time.time - this.lastFuryGeneratedTime > PantheraConfig.Fury_pointsGenerationCooldown)
+            //    {
+            //        base.characterBody.fury += 1;
+            //        this.lastFuryGeneratedTime = Time.time;
+            //    }
+            //}
+
             // Add Shield //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
+            if (base.pantheraObj.getAbilityLevel(PantheraConfig.Guardian_AbilityID) > 0 && base.pantheraObj.frontShieldDeployed == false)
             {
                 float lastDamage = Time.time - this.lastShieldDamageTime;
                 float lastBroken = Time.time - this.destroyedShieldTime;
                 float lastRecharge = Time.time - this.lastShieldGeneratedTime;
-                if (lastDamage > base.pantheraObj.activePreset.frontShield_rechargeDelayAfterDamage
-                    && lastBroken > base.pantheraObj.activePreset.frontShield_rechargeDelayAfterDestroyed
-                    && lastRecharge > PantheraConfig.FrontShield_rechargeRatetime)
+
+                // Check the Improved Shield Ability //
+                float rechargeRemoved = 0;
+                int improvedShieldAbilityLevel = base.pantheraObj.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
+                if (improvedShieldAbilityLevel == 1) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay1;
+                if (improvedShieldAbilityLevel == 2) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay2;
+                if (improvedShieldAbilityLevel == 3) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay3;
+
+                if (lastDamage > (PantheraConfig.FrontShield_rechargeDelayAfterDamage - rechargeRemoved) && lastBroken > (PantheraConfig.FrontShield_rechargeDelayAfterDestroyed - rechargeRemoved) && lastRecharge > PantheraConfig.FrontShield_rechargeRatetime)
                 {
-                    if (base.pantheraObj.frontShield.active == false)
-                    {
-                        float recharge = base.pantheraObj.activePreset.maxShield * (PantheraConfig.FrontShield_rechargeRatePercent * PantheraConfig.FrontShield_rechargeRatetime);
-                        this.lastShieldGeneratedTime = Time.time;
-                        base.characterBody.shield += recharge;
-                    }
+                    float recharge = base.characterBody.maxFrontShield * (PantheraConfig.FrontShield_rechargeRatePercent * PantheraConfig.FrontShield_rechargeRatetime);
+                    base.characterBody.frontShield += recharge;
+                    this.lastShieldGeneratedTime = Time.time;
                 }
             }
 
             // Apply Passive Power Ability //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.PassivePowerAbilityID) > 0 && base.characterBody.power < base.pantheraObj.activePreset.maxPower)
-            {
-                if (Time.time - this.lastPassivePowerTime > PantheraConfig.PassivePower_cooldown)
-                {
-                    base.characterBody.power += 1;
-                    this.lastPassivePowerTime = Time.time;
-                }
-            }
+            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.PassivePowerAbilityID) > 0 && base.characterBody.power < PantheraConfig.Default_MaxPower)
+            //{
+            //    if (Time.time - this.lastPassivePowerTime > PantheraConfig.PassivePower_cooldown)
+            //    {
+            //        base.characterBody.power += 1;
+            //        this.lastPassivePowerTime = Time.time;
+            //    }
+            //}
 
             // Apply Regeneration Ability //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.RegenerationAbilityID) > 0 && base.healthComponent.health < base.characterBody.maxHealth)
-            {
-                if (Time.time - this.lastRegenerationTime > PantheraConfig.Regeneration_cooldown)
-                {
-                    float heal = base.characterBody.maxHealth * base.pantheraObj.activePreset.regeneration_percentHeal;
-                    new ServerHeal(base.gameObject, heal).Send(NetworkDestination.Server);
-                    this.lastRegenerationTime = Time.time;
-                }
-            }
+            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.RegenerationAbilityID) > 0 && base.healthComponent.health < base.characterBody.maxHealth)
+            //{
+            //    if (Time.time - this.lastRegenerationTime > PantheraConfig.Regeneration_cooldown)
+            //    {
+            //        float heal = base.characterBody.maxHealth * PantheraConfig.Regeneration_percent1;
+            //        new ServerHeal(base.gameObject, heal).Send(NetworkDestination.Server);
+            //        this.lastRegenerationTime = Time.time;
+            //    }
+            //}
 
             // Apply the Shadow's Master Ability //
-            int shadowsMasterAbilityLevel = base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.ShadowsMasterAbilityID);
-            if (shadowsMasterAbilityLevel > 0
-                && base.characterBody.outOfCombat == true && base.characterBody.outOfDanger == true)
-            {
-                if (shadowsMasterAbilityLevel == 1 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction1)
-                    base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction1);
-                if (shadowsMasterAbilityLevel == 2 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction2)
-                    base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction2);
-                if (shadowsMasterAbilityLevel == 3 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction3)
-                    base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction3);
-            }
+            //int shadowsMasterAbilityLevel = CharacterAbilities.getAbilityLevel(PantheraConfig.ShadowsMasterAbilityID);
+            //if (shadowsMasterAbilityLevel > 0
+            //    && base.characterBody.outOfCombat == true && base.characterBody.outOfDanger == true)
+            //{
+            //    if (shadowsMasterAbilityLevel == 1 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction1)
+            //        base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction1);
+            //    if (shadowsMasterAbilityLevel == 2 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction2)
+            //        base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction2);
+            //    if (shadowsMasterAbilityLevel == 3 && base.skillLocator.getCooldownInSecond(PantheraConfig.Prowl_SkillID) > PantheraConfig.ShadowsMaster_cooldownReduction3)
+            //        base.skillLocator.setCooldownInSecond(PantheraConfig.Prowl_SkillID, PantheraConfig.ShadowsMaster_cooldownReduction3);
+            //}
 
-            // Check the Dash //
-            if (base.pantheraObj.dashing == true)
-            {
-                // Stop Dashing if no more Stamina //
-                if ((float)base.pantheraObj.activePreset.dash_staminaConsumed / 60 > base.characterBody.stamina)
-                    Passives.Dash.StopDash(base.pantheraObj);
+            //// Check the Dash //
+            //if (base.pantheraObj.dashing == true)
+            //{
+            //    // Stop Dashing if no more Stamina //
+            //    if (PantheraConfig.Dash_staminaConsumed1 / 60.0f > base.characterBody.stamina)
+            //        OldPassives.Dash.StopDash(base.pantheraObj);
 
-                // Stop Dashing if not running //
-                if (base.characterBody.isSprinting == false && base.characterMotor.startSprint == false)
-                    Passives.Dash.StopDash(base.pantheraObj);
+            //    // Stop Dashing if not running //
+            //    if (base.characterBody.isSprinting == false && base.characterMotor.isSprinting == false)
+            //        OldPassives.Dash.StopDash(base.pantheraObj);
 
-                // Check if still Dashing and consume Stamina //
-                if (base.pantheraObj.dashing == true)
-                    base.characterBody.stamina -= (float)base.pantheraObj.activePreset.dash_staminaConsumed / 60;
-            }
+            //    // Check if still Dashing and consume Stamina //
+            //    if (base.pantheraObj.dashing == true)
+            //        base.characterBody.stamina -= PantheraConfig.Dash_staminaConsumed1 / 60.0f;
+            //}
 
             // Check the Detection //
-            if (base.pantheraObj.detectionActivated == true)
+            if (base.pantheraObj.detectionMode == true)
             {
 
-                // Stop Detection if no more Stamine //
-                if ((float)base.pantheraObj.activePreset.detection_staminaConsumed / 60 >= base.characterBody.stamina)
-                    Passives.Detection.DisableDetection(base.pantheraObj);
-
                 // Check if Rescan //
-                if (Time.time - this.lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionActivated == true)
+                if (Time.time - this.lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionMode == true)
                 {
                     this.lastDetectionScanTime = Time.time;
-                    Passives.Detection.ReScanBody(base.pantheraObj);
+                    Skills.Passives.Detection.ReScanBody(base.pantheraObj);
                 }
 
-                // Check if Detection is still active and consume Stamina //
-                if (base.pantheraObj.detectionActivated == true)
-                    base.characterBody.stamina -= (float)base.pantheraObj.activePreset.detection_staminaConsumed / 60;
             }
 
         }
@@ -226,27 +236,56 @@ namespace Panthera.MachineScripts
                 {
                     this.unsleepAsked = false;
                     this.isSleeping = false;
-                    base.characterDirection.enabled = true;
-                    new ServerRemoveBuff(base.gameObject, (int)PantheraConfig.InvincibilityBuffDef.buffIndex).Send(NetworkDestination.Server);
+                    new ServerSetGodMode(base.gameObject, false).Send(NetworkDestination.Server);
                     base.characterBody.RecalculateStats();
+                    // Check the Golden Start Ability //
+                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.GoldenStart_AbilityID) > 0)
+                        new ServerAddGold(base.gameObject, PantheraConfig.GoldenStart_addedGold).Send(NetworkDestination.Server);
                 }
-            }
-
-
-            // Apply the Character Fade level //
-            float fadeLevel = base.pantheraObj.modelLocator.modelTransform.GetComponent<CharacterModel>().fade;
-            if (fadeLevel != this.lastFadeLevel || base.pantheraObj.stealthed != this.wasStealthed)
-            {
-                this.wasStealthed = base.pantheraObj.stealthed;
-                this.lastFadeLevel = fadeLevel;
-                base.pantheraFX.SetFadeLevel(fadeLevel);
             }
 
             // Stealth the player if he get the Cloak buff from an item //
             if (base.characterBody.hasCloakBuff == true)
             {
-                Stealth.DoStealth(base.pantheraObj);
+                Skills.Passives.Stealth.DoStealth(base.pantheraObj);
             }
+
+            // Check if Out of Combat //
+            if (Time.time - this.lastDamageTime > PantheraConfig.Prowl_outOfCombatTime)
+            {
+                this.isOutOfCombat = true;
+            }
+            else
+            {
+                this.isOutOfCombat = false;
+            }
+
+            // Check if the Out of Combat text must be displayed //
+            if (this.isOutOfCombat == true && this.wasOutOfCombat == false)
+            {
+                // Set wasOutOfCombat to true //
+                this.wasOutOfCombat = true;
+                // Create the Out of Combat Text //
+                Utils.FXManager.SpawnEffect(base.gameObject, Assets.OutOfCombatEffectPrefab, base.characterBody.corePosition + Vector3.up, 1, null, default, false, false);
+            }
+            else if (this.isOutOfCombat == false && this.wasOutOfCombat == true)
+            {
+                // Set wasOutOfCombat to false //
+                this.wasOutOfCombat = false;
+            }
+
+            // Decrease Cupidity Buffs //
+            if (this.pantheraObj.ambitionMode == false && Time.time - this.cupidityTimer > PantheraConfig.Cupidity_decreaseTime)
+            {
+                this.cupidityTimer = Time.time;
+                int cupidityBuffCount = base.characterBody.GetBuffCount(Base.Buff.CupidityBuff);
+                if (cupidityBuffCount > 0)
+                    new ServerSetBuffCount(base.gameObject, (int)Base.Buff.CupidityBuff.buffIndex, cupidityBuffCount - 1).Send(NetworkDestination.Server);
+            }
+
+            // Check if Ambition must Stop //
+            if (this.pantheraObj.ambitionMode == true && Time.time - this.pantheraObj.ambitionTimer > PantheraConfig.Ambition_buffDuration)
+                Skills.Passives.AmbitionMode.AmbitionOff(this.pantheraObj);
 
             // Apply nine lives buff if needed //
             //float nineLivesTime = Time.time - this.lastNineLivesTime;
@@ -276,7 +315,7 @@ namespace Panthera.MachineScripts
         public override void Stop()
         {
             // Stop all Events //
-            GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEventClient;
+            //GlobalEventManager.onCharacterDeathGlobal -= OnCharacterDieEventClient;
             GlobalEventManager.onClientDamageNotified -= OnDamage;
         }
 
@@ -284,17 +323,27 @@ namespace Panthera.MachineScripts
         {
             // Check the character //
             if (base.gameObject == null) return;
-            if (damageDealtMessage.attacker == base.gameObject) OnDamageDone(damageDealtMessage);
-            if (damageDealtMessage.victim == base.gameObject) OnDamageReceived(damageDealtMessage);
+            if (damageDealtMessage.attacker == base.gameObject) this.OnDamageDone(damageDealtMessage);
+            if (damageDealtMessage.victim == base.gameObject) this.OnDamageReceived(damageDealtMessage);
         }
 
         public void OnDamageDone(DamageDealtMessage damageDealtMessage)
         {
 
+            // Check all values //
+            if (damageDealtMessage.attacker == null || damageDealtMessage.victim == null || damageDealtMessage.victim == base.gameObject) return;
+
             // Get all values //
             float damage = damageDealtMessage.damage;
             bool crit = damageDealtMessage.crit;
             DamageType damageType = damageDealtMessage.damageType;
+
+            // Add the Predator Component //
+            if (damageDealtMessage.victim.GetComponent<PredatorComponent>() == null)
+            {
+                PredatorComponent comp = damageDealtMessage.victim.AddComponent<PredatorComponent>();
+                comp.ptraObj = base.pantheraObj;
+            }
 
             // Set the last damage time //
             this.lastDamageTime = Time.time;
@@ -338,22 +387,54 @@ namespace Panthera.MachineScripts
             this.lastDamageTime = Time.time;
 
             // Stop the Stealth //
-            Stealth.TookDamageUnstealth(base.pantheraObj);
+            Skills.Passives.Stealth.UnStealth(base.pantheraObj);
 
             // Generate Fury //
-            if (base.pantheraObj.activePreset.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
-                    base.characterBody.fury += 1;
+            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
+            //        base.characterBody.fury += 1;
 
         }
 
-        public void OnCharacterDieEventClient(DamageReport damageReport)
+        public void OnCharacterDieEventClient(GameObject attacker, GameObject victim)
         {
-            if (damageReport.attacker == null || damageReport.attacker != base.gameObject || damageReport.victim == null) return;
-            OnCharacterDie(damageReport.attacker, damageReport.victim.gameObject);
+            if (attacker == null || victim == null) return;
+            if (victim.GetComponent<TeamComponent>() == null || victim.GetComponent<TeamComponent>().teamIndex == TeamIndex.Player) return;
+            OnEnemyDie(attacker, victim);
         }
 
-        public void OnCharacterDie(GameObject attacker, GameObject victime)
+        public void OnEnemyDie(GameObject attacker, GameObject victim)
         {
+
+            // Add XP to P4N7H3RA //
+            PredatorComponent comp = victim.GetComponent<PredatorComponent>();
+            if (comp != null && comp.ptraObj == base.pantheraObj)
+            {
+
+                // Get the Victime Body //
+                CharacterBody victimBody = victim.GetComponent<CharacterBody>();
+
+                // Calculate the amount //
+                int amount = (int)victimBody.level;
+                if (victimBody.isElite == true) amount *= 2;
+                if (victimBody.isBoss == true) amount *= 5;
+
+                // Add the Experience //
+                Panthera.PantheraCharacter.totalExperience += Math.Max(amount, 1);
+
+                // Check if Level UP //
+                if (Panthera.PantheraCharacter.characterLevel != this.pantheraLastLevel)
+                {
+                    this.pantheraLastLevel = Panthera.PantheraCharacter.characterLevel;
+                    Utils.Sound.playSound(Utils.Sound.LevelUP, base.gameObject);
+                    Utils.FXManager.SpawnEffect(base.gameObject, Assets.LevelUPFX, modelTransform.position, pantheraObj.modelScale, base.characterBody.gameObject, base.modelTransform.rotation, true);
+                }
+            }
+
+            // Add the Cupidity Buff //
+            if (attacker == base.gameObject)
+            {
+                Skills.Passives.AmbitionMode.OnEnemyDie(base.pantheraObj);
+            }
 
         }
 

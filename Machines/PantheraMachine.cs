@@ -1,4 +1,5 @@
-﻿using Panthera.Base;
+﻿using EntityStates.LunarGolem;
+using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.MachineScripts;
@@ -104,44 +105,49 @@ namespace Panthera.Machines
             this.currentScript.stateType = PantheraMachineState.HaveToStop;
         }
 
-        public virtual void TryScript(Type type)
+        public static bool CanBeProcessed(PantheraObj ptraObj, MachineScript script)
         {
-            if (type == null) return;
-            TryScript(type.FullName);
-        }
-        public virtual void TryScript(string scriptType)
-        {
-            if (scriptType == null) return;
-            SetCurrentScript((MachineScript)Activator.CreateInstance(Type.GetType(scriptType)));
-        }
-        public virtual void TryScript(MachineScript script)
-        {
-            if (script == null) return;
-            SetCurrentScript(script);
+            if (script.machineToUse == 1 && ptraObj.skillsMachine1.CheckScript(script) == true)
+                return true;
+            if (script.machineToUse == 2 && ptraObj.skillsMachine2.CheckScript(script) == true)
+                return true;
+            return false;
         }
 
-        public virtual void SetScript(Type type)
+        public virtual bool CheckScript(MachineScript script)
         {
-            if (type == null) return;
-            SetScript(type.FullName);
-        }
-        public virtual void SetScript(string scriptType)
-        {
-            if (scriptType == null) return;
-            SetCurrentScript((MachineScript)Activator.CreateInstance(Type.GetType(scriptType)), true);
-        }        
-        public virtual void SetScript(MachineScript script)
-        {
-            if (script == null) return;
-            SetCurrentScript(script, true);
+            if (script == null) return false;
+            if (this.currentScript != null && this.currentScript.GetType() == script.GetType()) return false;
+            if (this.currentScript != null && script.interruptPower <= this.currentScript.priority) return false;
+            if (this.nextScript != null && script.interruptPower <= this.nextScript.priority) return false;
+            return true;
         }
 
-        private void SetCurrentScript(MachineScript script, bool forceInterupt = false)
+        public virtual bool TryScript(MachineScript script)
         {
-            if (script == null) return;
-            if (forceInterupt == false && this.currentScript != null && this.currentScript.GetType() == script.GetType()) return;
-            if (forceInterupt == false && this.currentScript != null && script.getSkillDef().interruptPower <= this.currentScript.getSkillDef().priority) return;
+            if (script == null) return false;
+            if (SetCurrentScript(script) == true)
+                return true;
+            else
+                return false;
+        }
+       
+        public virtual bool SetScript(MachineScript script)
+        {
+            if (script == null) return false;
+            if (SetCurrentScript(script, true) == true)
+                return true;
+            else
+                return false;
+        }
+
+        private bool SetCurrentScript(MachineScript script, bool forceInterupt = false)
+        {
+            if (script == null) return false;
+            if (forceInterupt == false && this.currentScript != null && this.currentScript.GetType() == script.GetType()) return false;
+            if (forceInterupt == false && this.currentScript != null && script.interruptPower <= this.currentScript.priority) return false;
             this.nextScript = script;
+            return true;
         }
 
         public void OnDestroy()

@@ -1,14 +1,21 @@
-﻿using R2API.Networking;
-using RoR2.Audio;
+﻿using EntityStates.Missions.Goldshores;
+using Panthera.Abilities.Passives;
+using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.NetworkMessages;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 using RoR2;
+using RoR2.Audio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using Panthera.NetworkMessages;
-using R2API.Networking.Interfaces;
+using static UnityEngine.ParticleSystem;
+using static UnityEngine.UI.Image;
 
 namespace Panthera.Utils
 {
@@ -31,28 +38,47 @@ namespace Panthera.Utils
             }
         }
 
-        public static void AddFX(int ID, GameObject effect)
+        public static void AddEffectToList(int ID, GameObject effect)
         {
             CleanList();
             if (EffectsList.ContainsKey(ID)) EffectsList[ID] = effect;
             else EffectsList.Add(ID, effect);
         }
 
-        public static GameObject GetFX(int ID)
-        {
-            CleanList();
-            if (EffectsList.ContainsKey(ID)) return EffectsList[ID];
-            return null;
-        }
-
-        public static void DestroyFX(int ID)
+        public static void DestroyEffectInternal(int ID, float delay)
         {
             CleanList();
             if (EffectsList.ContainsKey(ID))
             {
+                if (delay <= 0)
+                {
+                    GameObject.Destroy(EffectsList[ID]);
+                    EffectsList.Remove(ID);
+                }
+                else
+                {
+                    GlobalEventManager.instance.StartCoroutine(DelayDestroyEffect(EffectsList[ID], ID, delay));
+                }
+
+            }
+        }
+
+        public static IEnumerator DelayDestroyEffect(GameObject effect, int ID, float delay)
+        {
+            foreach(ParticleSystem particle in effect.GetComponentsInChildren<ParticleSystem>())
+            {
+                EmissionModule emission = particle.emission;
+                emission.enabled = false;
+            }
+
+            yield return new WaitForSeconds(delay);
+
+            if(EffectsList.ContainsKey(ID))
+            {
                 GameObject.Destroy(EffectsList[ID]);
                 EffectsList.Remove(ID);
             }
+            
         }
 
         public static GameObject CreateEffectInternal(GameObject creator, GameObject prefab, Vector3 origin, float scale = 1, GameObject parent = null, Quaternion rotation = new Quaternion(), bool isModelTransform = false)
@@ -144,22 +170,49 @@ namespace Panthera.Utils
         public static int SpawnEffect(GameObject creator, GameObject prefab, Vector3 origin, float scale = 1, GameObject parent = null, Quaternion rotation = new Quaternion(), bool isModelTransform = false, bool emit = true)
         {
 
-            // The effect can only be created by the client //
-            if (NetworkClient.active == false) return 0;
+            // Get the Effect ID //
+            int ID = GetID();
 
             // Create the Effect //
-            int ID = GetID();
             GameObject effect = CreateEffectInternal(creator, prefab, origin, scale, parent, rotation, isModelTransform);
 
             // Save the effect into the List //
-            AddFX(ID, effect);
+            AddEffectToList(ID, effect);
 
             // Check if Multiplayer //
             if (RoR2Application.isInMultiPlayer == true && emit == true)
-                new ClientSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Clients);
+            {
+                if (NetworkServer.active == true)
+                    new ClientSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Clients);
+                else
+                    new ServerSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Server);
+            }
 
             return ID;
 
+        }
+
+        public static GameObject GetEffect(int ID)
+        {
+            CleanList();
+            if (EffectsList.ContainsKey(ID)) return EffectsList[ID];
+            return null;
+        }
+
+        public static void DestroyEffect(int ID, float delay = 0, bool emit = true)
+        {
+
+            // Destroy the Effect //
+            DestroyEffectInternal(ID, delay);
+
+            // Check if Multiplayer //
+            if (RoR2Application.isInMultiPlayer == true && emit == true)
+            {
+                if (NetworkServer.active == true)
+                    new ClientDestroyEffect(ID, delay).Send(NetworkDestination.Clients);
+                else
+                    new ServerDestroyEffect(ID, delay).Send(NetworkDestination.Server);
+            }
         }
 
     }

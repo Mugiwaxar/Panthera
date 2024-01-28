@@ -2,16 +2,21 @@
 using Panthera;
 using Panthera.Components;
 using Panthera.GUI;
+using Panthera.GUI.Tabs;
 using Rewired;
 using Rewired.Data;
+using RoR2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Rewired.InputMapper;
+using static Rewired.Platforms.Custom.CustomInputSource;
 
 namespace Panthera.GUI
 {
@@ -20,65 +25,91 @@ namespace Panthera.GUI
     {
         public string name;
         public int actionID;
+        public AxisRange axisRange;
         public GameObject UIKeyboardButton;
         public GameObject UIMouseButton;
         public GameObject UIGamepadButton;
+        public ControllerType controllerType;
     }
 
-    internal class KeysBinder
+    public class KeysBinder
     {
 
-        public static Player REPlayer;
-        public static KeyboardMap REKeyboardMap;
-        public static MouseMap REMouseMap;
-        public static JoystickMap REGamepadMap;
+        public static KeyboardMap REKeyboardMap
+        {
+            get
+            {
+                return (KeyboardMap)Panthera.InputPlayer.controllers.maps.GetFirstMapInCategory(ControllerType.Keyboard, 0, 0);
+            }
+        }
+        public static MouseMap REMouseMap
+        {
+            get
+            {
+                return (MouseMap)Panthera.InputPlayer.controllers.maps.GetFirstMapInCategory(ControllerType.Mouse, 0, 0);
+            }
+        }
+        public static JoystickMap REJoystickMap
+        {
+            get
+            {
+                if (Panthera.InputPlayer.controllers.maps.GetFirstMapInCategory(ControllerType.Joystick, 0, 0) != null)
+                    return (JoystickMap)Panthera.InputPlayer.controllers.maps.GetFirstMapInCategory(ControllerType.Joystick, 0, 0);
+                return null;
+            }
+        }
 
+        // (Action Name, Action ID) Represent the List of all Action Name and ID //
         public static Dictionary<string, int> ActionList = new Dictionary<string, int>();
+
+        // (Action Name, Ingame Action Name) Represent the List of all Action Name and the Ingame Name //
+        public static Dictionary<string, string> ActionNameToGameName = new Dictionary<string, string>();
+
         public static InputMapper.Context CurrentContext;
-        public static InputMapper CurrentInputMapper;
+        public static InputMapper InputMapper;
         public static KeysBinder CurrentMapping;
 
-        public ConfigPanel configPanel;
-
-        public static void Init()
-        {
-            // I don't really know what is this, but it works //
-            MethodInfo userDataInit = typeof(UserData).GetMethod(nameof(UserData.wVZZKoPFwEvodLvLcYNvVAPKpUj), BindingFlags.NonPublic | BindingFlags.Instance);
-            HookEndpointManager.Add(userDataInit, KeysBinder.RegistersExtraInput);
-        }
+        public PantheraPanel pantheraPanel;
 
         public static void RegistersExtraInput(Action<UserData> orig, UserData self)
         {
+            // Clear the Action List //
+            ActionList.Clear();
+
             // Register all Inputs //
-            ActionList.Add("Jump", PantheraConfig.JumpKey);
-            ActionList.Add("Interact", PantheraConfig.InteractKey);
-            ActionList.Add("Equipment", PantheraConfig.EquipmentKey);
-            ActionList.Add("Sprint", PantheraConfig.SprintKey);
-            ActionList.Add("Ping", PantheraConfig.PingKey);
-            self.actions.Add(CreateRewiredAction(PantheraConfig.SwitchBarKey, "SwitchBar"));
-            ActionList.Add("PrimarySkill", PantheraConfig.Skill1Key);
-            ActionList.Add("SecondarySkill", PantheraConfig.Skill2Key);
-            ActionList.Add("UtilitySkill", PantheraConfig.Skill3Key);
-            ActionList.Add("SpecialSkill", PantheraConfig.Skill4Key);
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill5Key, "Skill5"));
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill6Key, "Skill6"));
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill7Key, "Skill7"));
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill8Key, "Skill8"));
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill9Key, "Skill9"));
-            self.actions.Add(CreateRewiredAction(PantheraConfig.Skill10Key, "Skill10"));
+            ActionList.Add(PantheraConfig.InteractKeyName, PantheraConfig.InteractKey);
+            ActionList.Add(PantheraConfig.EquipmentKeyName, PantheraConfig.EquipmentKey);
+            ActionList.Add(PantheraConfig.SprintKeyName, PantheraConfig.SprintKey);
+            ActionList.Add(PantheraConfig.InfoKeyName, PantheraConfig.InfoKey);
+            ActionList.Add(PantheraConfig.PingKeyName, PantheraConfig.PingKey);
+            ActionList.Add(PantheraConfig.ForwardKeyName, PantheraConfig.ForwardBackwardKey);
+            //ActionList.Add(PantheraConfig.BackwardKeyName, PantheraConfig.ForwardBackwardKey); // The same as Forward
+            ActionList.Add(PantheraConfig.LeftKeyName, PantheraConfig.LeftRightKey);
+            //ActionList.Add(PantheraConfig.RightKeyName, PantheraConfig.LeftRightKey); // The same as Left
+            ActionList.Add(PantheraConfig.JumpKeyName, PantheraConfig.JumpKey);
+            ActionList.Add(PantheraConfig.Skill1KeyName, PantheraConfig.Skill1Key);
+            ActionList.Add(PantheraConfig.Skill2KeyName, PantheraConfig.Skill2Key);
+            ActionList.Add(PantheraConfig.Skill3KeyName, PantheraConfig.Skill3Key);
+            ActionList.Add(PantheraConfig.Skill4KeyName, PantheraConfig.Skill4Key);
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_OpenPantheraPanelActionCode, PantheraConfig.Keys_OpenPantheraPanelActionName, PantheraConfig.Keys_OpenPantheraPanelActionDesc));
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_Ability1ActionCode, PantheraConfig.Keys_Ability1ActionName, PantheraConfig.Keys_Ability1ActionDesc));
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_Ability2ActionCode, PantheraConfig.Keys_Ability2ActionName, PantheraConfig.Keys_Ability2ActionDesc));
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_Ability3ActionCode, PantheraConfig.Keys_Ability3ActionName, PantheraConfig.Keys_Ability3ActionDesc));
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_Ability4ActionCode, PantheraConfig.Keys_Ability4ActionName, PantheraConfig.Keys_Ability4ActionDesc));
+            self.actions.Add(CreateRewiredAction(PantheraConfig.Keys_SpellsModeActionCode, PantheraConfig.Keys_SpellsModeActionName, PantheraConfig.Keys_SpellsModeActionDesc));
 
             orig(self);
 
         }
 
-        public static InputAction CreateRewiredAction(int id, string name)
+        public static InputAction CreateRewiredAction(int id, string name, string desc)
         {
             // Create the new Rewired Action //
             InputAction action = new InputAction();
             action.id = id;
             action.name = name;
             action.type = InputActionType.Button;
-            action.descriptiveName = name;
+            action.descriptiveName = desc;
             action.behaviorId = 0;
             action.userAssignable = true;
             action.categoryId = 0;
@@ -91,139 +122,20 @@ namespace Panthera.GUI
 
         }
 
-        public static void InitPlayer(Player player)
+        public static void InitPlayer()
         {
-            // Get the Rewired Maps //
-            REPlayer = player;
-            Player.ControllerHelper.MapHelper maps = REPlayer.controllers.maps;
-            REKeyboardMap = (KeyboardMap)maps.GetFirstMapInCategory(ControllerType.Keyboard, 0, 0);
-            REMouseMap = (MouseMap)maps.GetFirstMapInCategory(ControllerType.Mouse, 0, 0);
-            REGamepadMap = (JoystickMap)maps.GetFirstMapInCategory(ControllerType.Joystick, 0, 0);
-        }
-
-        public static void SetAllDefaultKeyBinds()
-        {
-            // Open Panthera Panel //
-            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_OpenPantheraPanelActionCode) == false)
-                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_OpenPantheraPanelActionCode, Pole.Positive, PantheraConfig.Keys_DefaultOpenPantheraPanelKey, ModifierKeyFlags.None);
-            //// Switch Bar //
-            //if (REKeyboardMap.ContainsAction(130) == false)
-            //    REKeyboardMap.CreateElementMap(130, Pole.Positive, KeyCode.LeftAlt, ModifierKeyFlags.None);
-            //if (REGamepadMap != null && REGamepadMap.ContainsAction(130) == false)
-            //    REGamepadMap.CreateElementMap(130, Pole.Positive, 7, ControllerElementType.Button, AxisRange.Full, false);
-            //// Skill 5 //
-            //if (REKeyboardMap.ContainsAction(135) == false)
-            //    REKeyboardMap.CreateElementMap(135, Pole.Positive, KeyCode.Alpha5, ModifierKeyFlags.None);
-            //if (REGamepadMap != null && REGamepadMap.ContainsAction(135) == false)
-            //    REGamepadMap.CreateElementMap(135, Pole.Positive, 16, ControllerElementType.Button, AxisRange.Full, false);
-            //// Skill 6 //
-            //if (REKeyboardMap.ContainsAction(136) == false)
-            //    REKeyboardMap.CreateElementMap(136, Pole.Positive, KeyCode.Alpha6, ModifierKeyFlags.None);
-            //if (REGamepadMap != null && REGamepadMap.ContainsAction(136) == false)
-            //    REGamepadMap.CreateElementMap(136, Pole.Positive, 17, ControllerElementType.Button, AxisRange.Full, false);
-            //// Skill 7 //
-            //if (REKeyboardMap.ContainsAction(137) == false)
-            //    REKeyboardMap.CreateElementMap(137, Pole.Positive, KeyCode.Alpha7, ModifierKeyFlags.None);
-            //if (REGamepadMap != null && REGamepadMap.ContainsAction(137) == false)
-            //    REGamepadMap.CreateElementMap(137, Pole.Positive, 18, ControllerElementType.Button, AxisRange.Full, false);
-            //// Skill 8 //
-            //if (REKeyboardMap.ContainsAction(138) == false)
-            //    REKeyboardMap.CreateElementMap(138, Pole.Positive, KeyCode.Alpha8, ModifierKeyFlags.None);
-            //if (REGamepadMap != null && REGamepadMap.ContainsAction(138) == false)
-            //    REGamepadMap.CreateElementMap(138, Pole.Positive, 19, ControllerElementType.Button, AxisRange.Full, false);
-            //// Skill 9 //
-            //if (REKeyboardMap.ContainsAction(139) == false)
-            //    REKeyboardMap.CreateElementMap(139, Pole.Positive, KeyCode.Alpha9, ModifierKeyFlags.None);
-            //// Skill 10 //
-            //if (REKeyboardMap.ContainsAction(1310) == false)
-            //    REKeyboardMap.CreateElementMap(1310, Pole.Positive, KeyCode.Alpha0, ModifierKeyFlags.None);
-        }
-
-        public static void GamepadSetEnable(bool set)
-        {
-            // Disable all Gamepad Maps //
-            foreach (JoystickMap map in REPlayer.controllers.maps.GetAllMaps(ControllerType.Joystick))
-            {
-                map.enabled = set;
-            }
-        }
-
-        public static void StartMapping(ButtonWatcher buttonWatcher)
-        {
-
-            // Get and check the Action ID //
-            int actionID = ConfigPanel.instance.getActionIdFromKeyBindObject(buttonWatcher.gameObject);
-            if (actionID == null) return;
-
-            // Get the Controllers //
-            Player.ControllerHelper controllers = REPlayer.controllers;
-
-            // Create the KeyBinder //
-            CurrentMapping = new KeysBinder();
-            CurrentMapping.configPanel = buttonWatcher.configPanel;
-
-            // Disable the UI Gamepad Map //
-            GamepadSetEnable(false);
-
-            ControllerMap map = null;
-
-            // Get the Controller Type //
-            if (buttonWatcher.name.Contains("Keyboard"))
-            {
-                map = REKeyboardMap;
-            }
-            else if (buttonWatcher.name.Contains("Mouse"))
-            {
-                map = REMouseMap;
-            }
-            else if (buttonWatcher.name.Contains("Gamepad") && controllers.Joysticks.Count > 0)
-            {
-                map = REGamepadMap;
-            }
-            else
-            {
-                return;
-            }
-
-            // Check the Map //
-            if (map == null) return;
-
-            // Set the Text //
-            ActionElementMap elementMap = map.GetFirstElementMapWithAction(actionID);
-            buttonWatcher.configPanel.keyBindWindowText.text = elementMap != null ? elementMap.elementIdentifierName : "";
-
-            // Create the Context //
-            CurrentMapping.mapInput(actionID, map);
-
-        }
-
-        public void mapInput(int actionId, ControllerMap map)
-        {
-
-            // Get the old Action //
-            ActionElementMap oldMapeElement = map.GetFirstElementMapWithAction(actionId);
-
-            // Create the Context //
-            CurrentContext = new InputMapper.Context()
-            {
-                actionElementMapToReplace = oldMapeElement,
-                actionId = actionId,
-                controllerMap = map,
-                actionRange = AxisRange.Full
-            };
-
             // Create the Mapper //
-            CurrentInputMapper = new InputMapper();
-            CurrentInputMapper.options = new InputMapper.Options
+            InputMapper = new InputMapper();
+            InputMapper.options = new InputMapper.Options
             {
                 allowAxes = true,
                 allowButtons = true,
                 allowKeyboardKeysWithModifiers = true,
                 allowKeyboardModifierKeyAsPrimary = true,
-                checkForConflicts = false,
+                checkForConflicts = true,
                 checkForConflictsWithAllPlayers = false,
                 checkForConflictsWithPlayerIds = Array.Empty<int>(),
-                checkForConflictsWithSelf = false,
+                checkForConflictsWithSelf = true,
                 checkForConflictsWithSystemPlayer = false,
                 defaultActionWhenConflictFound = InputMapper.ConflictResponse.Add,
                 holdDurationToMapKeyboardModifierKeyAsPrimary = 0.2f,
@@ -232,33 +144,287 @@ namespace Panthera.GUI
                 timeout = float.PositiveInfinity,
             };
 
-            // Create the Event //
-            CurrentInputMapper.InputMappedEvent += onInputMapped;
+            // Create the Mapper Event //
+            InputMapper.InputMappedEvent += onInputMapped;
+            InputMapper.ConflictFoundEvent += onConflictFound;
 
-            // Start the Mappper //
-            CurrentInputMapper.Start(CurrentContext);
+            // Clear the ActionNameToGameName Map //
+            ActionNameToGameName.Clear();
+
+            // Create the Ingame Action Name //
+            ActionNameToGameName.Add("Interact", PantheraConfig.InteractKeyName);
+            ActionNameToGameName.Add("Equipment", PantheraConfig.EquipmentKeyName);
+            ActionNameToGameName.Add("Sprint", PantheraConfig.SprintKeyName);
+            ActionNameToGameName.Add("Info", PantheraConfig.InfoKeyName);
+            ActionNameToGameName.Add("Ping", PantheraConfig.PingKeyName);
+            ActionNameToGameName.Add("Forward", PantheraConfig.ForwardKeyName);
+            ActionNameToGameName.Add("Backward", PantheraConfig.BackwardKeyName);
+            ActionNameToGameName.Add("Left", PantheraConfig.LeftKeyName);
+            ActionNameToGameName.Add("Right", PantheraConfig.RightKeyName);
+            ActionNameToGameName.Add("Jump", PantheraConfig.JumpKeyName);
+            ActionNameToGameName.Add("Skill1", PantheraConfig.Skill1KeyName);
+            ActionNameToGameName.Add("Skill2", PantheraConfig.Skill2KeyName);
+            ActionNameToGameName.Add("Skill3", PantheraConfig.Skill3KeyName);
+            ActionNameToGameName.Add("Skill4", PantheraConfig.Skill4KeyName);
+            ActionNameToGameName.Add("Ability1", PantheraConfig.Keys_Ability1ActionName);
+            ActionNameToGameName.Add("Ability2", PantheraConfig.Keys_Ability2ActionName);
+            ActionNameToGameName.Add("Ability3", PantheraConfig.Keys_Ability3ActionName);
+            ActionNameToGameName.Add("Ability4", PantheraConfig.Keys_Ability4ActionName);
+            ActionNameToGameName.Add("Spells", PantheraConfig.Keys_SpellsModeActionName);
+
+            // Create the Connected Controller Event //
+            ReInput.ControllerConnectedEvent += OnControllerConnected;
 
         }
 
-        public void onInputMapped(InputMapper.InputMappedEventData obj)
+        public static void SetAllDefaultKeyBinds()
+        {
+            // Open Panthera Panel //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_OpenPantheraPanelActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_OpenPantheraPanelActionCode, Pole.Positive, PantheraConfig.Keys_OpenPantheraPanelDefaultKey, ModifierKeyFlags.None);
+            // Ability 1 //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_Ability1ActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_Ability1ActionCode, Pole.Positive, PantheraConfig.Keys_Ability1DefaultKey, ModifierKeyFlags.None);
+            // Ability 2 //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_Ability2ActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_Ability2ActionCode, Pole.Positive, PantheraConfig.Keys_Ability2DefaultKey, ModifierKeyFlags.None);
+            // Ability 3 //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_Ability3ActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_Ability3ActionCode, Pole.Positive, PantheraConfig.Keys_Ability3DefaultKey, ModifierKeyFlags.None);
+            // Ability 4 //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_Ability4ActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_Ability4ActionCode, Pole.Positive, PantheraConfig.Keys_Ability4DefaultKey, ModifierKeyFlags.None);
+            // Spells Mode //
+            if (REKeyboardMap.ContainsAction(PantheraConfig.Keys_SpellsModeActionCode) == false)
+                REKeyboardMap.CreateElementMap(PantheraConfig.Keys_SpellsModeActionCode, Pole.Positive, PantheraConfig.Keys_SpellsModeDefaultKey, ModifierKeyFlags.None);
+
+            // Check if Controller Map //
+            if (REJoystickMap != null)
+            {
+                // Ability 1 //
+                if (REJoystickMap.ContainsAction(PantheraConfig.Keys_Ability1ActionCode) == false)
+                    REJoystickMap.CreateElementMap(PantheraConfig.Keys_Ability1ActionCode, Pole.Positive, PantheraConfig.Keys_Ability1DefaultJoystickIdentifierID, ControllerElementType.Button, AxisRange.Full, false);
+                // Ability 2 //
+                if (REJoystickMap.ContainsAction(PantheraConfig.Keys_Ability2ActionCode) == false)
+                    REJoystickMap.CreateElementMap(PantheraConfig.Keys_Ability2ActionCode, Pole.Positive, PantheraConfig.Keys_Ability2DefaultJoystickIdentifierID, ControllerElementType.Button, AxisRange.Full, false);
+                // Ability 3 //
+                if (REJoystickMap.ContainsAction(PantheraConfig.Keys_Ability3ActionCode) == false)
+                    REJoystickMap.CreateElementMap(PantheraConfig.Keys_Ability3ActionCode, Pole.Positive, PantheraConfig.Keys_Ability3DefaultJoystickIdentifierID, ControllerElementType.Button, AxisRange.Full, false);
+                // Ability 4 //
+                if (REJoystickMap.ContainsAction(PantheraConfig.Keys_Ability4ActionCode) == false)
+                    REJoystickMap.CreateElementMap(PantheraConfig.Keys_Ability4ActionCode, Pole.Positive, PantheraConfig.Keys_Ability4DefaultJoystickIdentifierID, ControllerElementType.Button, AxisRange.Full, false);
+                // Spell Mode //
+                if (REJoystickMap.ContainsAction(PantheraConfig.Keys_SpellsModeActionCode) == false)
+                    REJoystickMap.CreateElementMap(PantheraConfig.Keys_SpellsModeActionCode, Pole.Positive, PantheraConfig.Keys_SpellModeDefaultJoystickIdentifierID, ControllerElementType.Button, AxisRange.Full, false);
+            }
+
+        }
+
+        public static void OnControllerConnected(ControllerStatusChangedEventArgs args)
+        {
+            // Set all Default Key Binds //
+            SetAllDefaultKeyBinds();
+        }
+
+        public static void GamepadSetEnable(bool set)
+        {
+            // Disable all Gamepad Maps //
+            if (REJoystickMap != null)
+                REJoystickMap.enabled = set;
+        }
+
+        public static ActionElementMap GetElementMapFromKeyBind(KeyBind keyBind, ControllerType type)
+        {
+
+            // Create the Variables //
+            ActionElementMap returnedElementMap = null;
+            List<ActionElementMap> elementsList = null;
+
+            // Get the Elements List //
+            if (type == ControllerType.Keyboard)
+                elementsList = REKeyboardMap?.GetElementMapsWithAction(keyBind.actionID)?.ToList();
+            else if (type == ControllerType.Mouse)
+                elementsList = REMouseMap?.GetElementMapsWithAction(keyBind.actionID)?.ToList();
+            else if (type == ControllerType.Joystick)
+                elementsList = REJoystickMap?.GetElementMapsWithAction(keyBind.actionID)?.ToList();
+
+            if (elementsList == null) return null;
+
+            if (keyBind.name == PantheraConfig.ForwardKeyName || keyBind.name == PantheraConfig.BackwardKeyName || keyBind.name == PantheraConfig.RightKeyName || keyBind.name == PantheraConfig.LeftKeyName)
+            {
+                foreach (ActionElementMap elementMap in elementsList)
+                {
+                    if (elementMap.actionDescriptiveName == PantheraConfig.ForwardKeyName && keyBind.name == PantheraConfig.ForwardKeyName)
+                        returnedElementMap = elementMap;
+                    else if (elementMap.actionDescriptiveName == PantheraConfig.RightKeyName && keyBind.name == PantheraConfig.RightKeyName)
+                        returnedElementMap = elementMap;
+                    else if (elementMap.actionDescriptiveName == PantheraConfig.BackwardKeyName && keyBind.name == PantheraConfig.BackwardKeyName)
+                        returnedElementMap = elementMap;
+                    else if (elementMap.actionDescriptiveName == PantheraConfig.LeftKeyName && keyBind.name == PantheraConfig.LeftKeyName)
+                        returnedElementMap = elementMap;
+                }
+            }
+            else
+            {
+                if (elementsList.Count > 0)
+                    returnedElementMap = elementsList.First();
+            }
+
+            // Return the Element //
+            return returnedElementMap;
+
+        }
+
+        public static void ResetAllKeysBind()
+        {
+
+            if (Panthera.InputPlayer == null)
+            {
+                return;
+            }
+            if (Panthera.FirstLocalUser.userProfile != null)
+            {
+                Panthera.InputPlayer.controllers.maps.ClearAllMaps(false);
+                foreach (Rewired.Controller controller in Panthera.InputPlayer.controllers.Controllers)
+                {
+                    Panthera.InputPlayer.controllers.maps.LoadMap(controller.type, controller.id, 2, 0);
+                    Panthera.FirstLocalUser.userProfile.keyboardMap = new KeyboardMap(DefaultControllerMaps.defaultKeyboardMap);
+                    Panthera.FirstLocalUser.userProfile.mouseMap = new MouseMap(DefaultControllerMaps.defaultMouseMap);
+                    Panthera.FirstLocalUser.userProfile.joystickMap = new JoystickMap(DefaultControllerMaps.defaultJoystickMap);
+                    Panthera.FirstLocalUser.ApplyUserProfileBindingstoRewiredController(controller);
+                }
+                SetAllDefaultKeyBinds();
+                Panthera.InputPlayer.controllers.maps.SetAllMapsEnabled(true);
+            }
+
+            // Save the Profil //
+            Panthera.LoadedUserProfile.RequestEventualSave();
+
+        }
+
+        public static void StartMapping(string buttonName, KeyBind keyBind, KeysBindTab keyBindTab)
+        {
+
+            // Get the Controllers //
+            Player.ControllerHelper controllers = Panthera.InputPlayer.controllers;
+
+            // Disable the UI Gamepad Map //
+            GamepadSetEnable(false);
+
+            // Create the Variable //
+            ControllerMap map = null;
+            ActionElementMap elementMap = null;
+
+            // Get the Controller Type //
+            if (buttonName.Contains("Keyboard"))
+            {
+                map = REKeyboardMap;
+                elementMap = KeysBinder.GetElementMapFromKeyBind(keyBind, ControllerType.Keyboard);
+            }
+            else if (buttonName.Contains("Mouse"))
+            {
+                map = REMouseMap;
+                elementMap = KeysBinder.GetElementMapFromKeyBind(keyBind, ControllerType.Mouse);
+            }
+            else if (buttonName.Contains("Gamepad") && controllers.Joysticks.Count > 0)
+            {
+                map = REJoystickMap;
+                elementMap = KeysBinder.GetElementMapFromKeyBind(keyBind, ControllerType.Joystick);
+            }
+            else
+            {
+                keyBindTab.keysBindWindow.active = false;
+                return;
+            }
+
+            // Check the Map //
+            if (map == null)
+            {
+                keyBindTab.keysBindWindow.active = false;
+                return;
+            }
+
+            // Set the Text //
+            keyBindTab.keysBindWindowText.text = elementMap != null ? elementMap.elementIdentifierName : "";
+
+            // Create the Context //
+            MapInput(keyBind, map, elementMap);
+
+        }
+
+        public static void MapInput(KeyBind keyBind, ControllerMap map, ActionElementMap oldElementMap)
+        {
+
+            // Create the Context //
+            CurrentContext = new InputMapper.Context()
+            {
+                actionElementMapToReplace = oldElementMap,
+                actionId = keyBind.actionID,
+                controllerMap = map,
+                actionRange = keyBind.axisRange
+            };
+
+            // Start the Mappper //
+            InputMapper.Start(CurrentContext);
+
+        }
+
+        public static void onInputMapped(InputMapper.InputMappedEventData obj)
         {
 
             // Stop the Unput Mapper //
-            CurrentInputMapper.Clear();
-
-            // Stop the Event //
-            CurrentInputMapper.InputMappedEvent -= onInputMapped;
+            InputMapper.Stop();
 
             // Set the Current Mapping to null //
             CurrentMapping = null;
-            CurrentInputMapper = null;
 
             // Fill all Texts //
-            ConfigPanel.instance.updateAllKeyBindTexts();
+            //ConfigPanel.instance.updateAllKeyBindTexts();
 
             // Close the Keys Bind Window //
-            configPanel.keyBindWindow.SetActive(false);
+            Panthera.PantheraPanelController.keysBindTab.keysBindWindow.active = false;
 
+            // Save the Profil //
+            Panthera.LoadedUserProfile.RequestEventualSave();
+
+            // Refresh the GUI //
+            for (int j = 0; j < InputBindingDisplayController.instances.Count; j++)
+            {
+                InputBindingDisplayController.instances[j].Refresh(true);
+            }
+
+        }
+
+        public static void onConflictFound(InputMapper.ConflictFoundEventData data)
+        {
+            // Check if must Replace //
+            if (data.isProtected == false)
+                data.responseCallback(InputMapper.ConflictResponse.Replace);
+            else
+                data.responseCallback(InputMapper.ConflictResponse.Add);
+        }
+
+        public enum KeysEnum
+        {
+            Interact = 5,
+            Equipment = 6,
+            Sprint = 18,
+            Info = 19,
+            Ping = 28,
+            Forward = 1001,
+            Backward = 1002,
+            Left = 1003,
+            Right = 1004,
+            Jump = 4,
+            Skill1 = 7,
+            Skill2 = 8,
+            Skill3 = 9,
+            Skill4 = 10,
+            Ability1 = 1301,
+            Ability2 = 1302,
+            Ability3 = 1303,
+            Ability4 = 1304,
+            SpellsMode = 1310
         }
 
     }

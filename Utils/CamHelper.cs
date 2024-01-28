@@ -1,14 +1,16 @@
 ﻿using Panthera.BodyComponents;
 using RoR2;
+using RoR2.CameraModes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using static RoR2.CameraTargetParams;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.Utils
 {
-    internal class CamHelper
+    public class CamHelper
     {
 
 		public enum AimType
@@ -43,6 +45,7 @@ namespace Panthera.Utils
 			{
                 CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
 				data.idealLocalCameraPos.value = ptraObj.defaultCamPos;
+				data.idealLocalCameraPos.alpha = 1;
                 ApplyParam(data, ptraObj);
                 return;
 			}
@@ -51,6 +54,7 @@ namespace Panthera.Utils
 			{
 				CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
 				data.idealLocalCameraPos.value = PantheraConfig.Death_cameraPos;
+                data.idealLocalCameraPos.alpha = 1;
                 ApplyParam(data, ptraObj);
 				return;
 			}
@@ -59,6 +63,7 @@ namespace Panthera.Utils
             {
                 CharacterCameraParamsData data = ptraObj.pantheraCamParam.currentCameraParamsData;
 				data.idealLocalCameraPos.value = PantheraConfig.ClawsStorm_cameraPos;
+                data.idealLocalCameraPos.alpha = 1;
                 ApplyParam(data, ptraObj);
                 return;
             }

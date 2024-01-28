@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Panthera.BodyComponents
 {
-    internal class PantheraInteractor : Interactor
+    public class PantheraInteractor : Interactor
     {
 
         public PantheraObj ptraObj;
@@ -17,7 +17,7 @@ namespace Panthera.BodyComponents
             PantheraInteractor interactor = self as PantheraInteractor;
             //if (interactor == null || interactor.ptraObj == null || interactor.ptraObj.detectionActivated == false) return orig(self, raycastRay, maxRaycastDistance, overlapPosition, overlapRadius);
             if (interactor == null || interactor.ptraObj == null) return orig(self, raycastRay, maxRaycastDistance, overlapPosition, overlapRadius);
-            LayerMask interactable = LayerIndex.CommonMasks.interactable | (1 << PantheraConfig.DetectionLayerIndex);
+            LayerMask interactable = LayerIndex.CommonMasks.interactable | (1 << PantheraConfig.Detection_layerIndex);
             RaycastHit raycastHit;
             if (Physics.Raycast(raycastRay, out raycastHit, maxRaycastDistance, interactable, QueryTriggerInteraction.Collide))
             {

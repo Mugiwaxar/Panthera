@@ -1,4 +1,5 @@
-﻿using Panthera.BodyComponents;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
 using R2API;
 using RoR2;
 using System;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace Panthera.Components
 {
-    internal class XRayComponent : MonoBehaviour
+    public class XRayComponent : MonoBehaviour
     {
 
         public enum XRayObjectType
@@ -119,11 +120,11 @@ namespace Panthera.Components
             }
             if (this.type == XRayObjectType.TripleShopBase)
             {
-                this.renderer = base.transform.FindChild("mdlMultiShopTerminalCenter")?.GetComponent<Renderer>();
+                this.renderer = base.transform.Find("mdlMultiShopTerminalCenter")?.GetComponent<Renderer>();
             }
             if (this.type == XRayObjectType.TripleShopTerminal)
             {
-                this.renderer = base.transform.FindChild("Display")?.Find("mdlMultiShopTerminal")?.Find("MultiShopTerminalMesh")?.GetComponent<Renderer>();
+                this.renderer = base.transform.Find("Display")?.Find("mdlMultiShopTerminal")?.Find("MultiShopTerminalMesh")?.GetComponent<Renderer>();
             }
             if (this.type == XRayObjectType.Scrapper)
             {
@@ -139,7 +140,7 @@ namespace Panthera.Components
             }
             if (this.type == XRayObjectType.teleporterPart3)
             {
-                this.renderer = base.transform.FindChild("TeleporterBeacon")?.GetComponent<Renderer>();
+                this.renderer = base.transform.Find("TeleporterBeacon")?.GetComponent<Renderer>();
             }
             if (this.type == XRayObjectType.lunarTeleporterPart1)
             {
@@ -151,7 +152,7 @@ namespace Panthera.Components
             }
             if (this.type == XRayObjectType.lunarTeleporterPart3)
             {
-                this.renderer = base.transform.FindChild("TeleporterBeacon")?.GetComponent<Renderer>();
+                this.renderer = base.transform.Find("TeleporterBeacon")?.GetComponent<Renderer>();
             }
             this.origRenInfo = this.characterModel?.baseRendererInfos;
             this.origMats = this.renderer?.materials;
@@ -210,7 +211,7 @@ namespace Panthera.Components
         {
 
             // Check if must enable Detection //
-            if (this.ptraObj.detectionActivated == true && this.wasActive == false)
+            if (this.ptraObj.detectionMode == true && this.wasActive == false)
             {
                 // Set as enabled //
                 this.wasActive = true;
@@ -223,19 +224,24 @@ namespace Panthera.Components
             }
 
             // Check if must disable Detection //
-            if (this.ptraObj.detectionActivated == false && this.wasActive == true)
+            if (this.ptraObj.detectionMode == false && this.wasActive == true)
             {
                 // Set as disabled //
                 this.wasActive = false;
                 this.disableXRayMat();
             }
 
+            // Stop of Detection is not enabled //
+            if (this.ptraObj.detectionMode == false)
+                return;
+
+            // Uptade the Color of the Body //
+            if (this.type == XRayObjectType.Body)
+                this.updateBodyColor();
+
             // Update Colors //
-            if (this.ptraObj.detectionActivated == true && this.ptraObj.activePreset.getAbilityLevel(PantheraConfig.ConcentrationAbilityID) > 0)
+            if (this.ptraObj.detectionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
             {
-                // Uptade the Color of the Body //
-                if (this.type == XRayObjectType.Body)
-                    this.updateBodyColor();
                 // Update the Color of the Chest //
                 if (this.type == XRayObjectType.Purchase && this.name != "Duplicator(Clone)")
                     this.updateChestColor();
@@ -289,7 +295,7 @@ namespace Panthera.Components
             }
             // Change the Game Object Layer //
             if (this.renderer != null)
-                this.renderer.gameObject.layer = PantheraConfig.DetectionLayerIndex;
+                this.renderer.gameObject.layer = PantheraConfig.Detection_layerIndex;
         }
 
         public void disableXRayMat()

@@ -4,7 +4,6 @@ using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
-using Panthera.Skills;
 using Panthera.Utils;
 using RoR2;
 using System;
@@ -14,12 +13,11 @@ using UnityEngine;
 
 namespace Panthera.MachineScripts
 {
-    public class MachineScript
+    public class MachineScript : ICloneable
     {
 
         public PantheraMachineState stateType;
 
-        public GameObject player;
         public GameObject gameObject;
         public PantheraMachine machine;
         public Transform transform;
@@ -42,12 +40,88 @@ namespace Panthera.MachineScripts
         public PantheraFX pantheraFX;
         public PantheraMaster masterObj;
 
-        public float attackSpeedStat = 1f;
-        public float damageStat;
-        public float critStat;
-        public float moveSpeedStat;
-        public const float defaultAimDuration = 2f;
+        public float attackSpeedStat
+        {
+            get
+            {
+                if (this.characterBody != null)
+                    return this.characterBody.attackSpeed;
+                return 0;
+            }
+            set
+            {
+                if (this.characterBody != null)
+                    this.characterBody.attackSpeed = value;
+            }
+        }
+        public float damageStat
+        {
+            get
+            {
+                if (this.characterBody != null)
+                    return this.characterBody.damage;
+                return 0;
+            }
+            set
+            {
+                if (this.characterBody != null)
+                    this.characterBody.damage = value;
+            }
+        }
+        public float critStat
+        {
+            get
+            {
+                if (this.characterBody != null)
+                    return this.characterBody.crit;
+                return 0;
+            }
+            set
+            {
+                if (this.characterBody != null)
+                    this.characterBody.crit = value;
+            }
+        }
+        public float moveSpeedStat
+        {
+            get
+            {
+                if (this.characterBody != null)
+                    return this.characterBody.moveSpeed;
+                return 0;
+            }
+            set
+            {
+                if (this.characterBody != null)
+                    this.characterBody.moveSpeed = value;
+            }
+        }
         public bool wasInterrupted = false;
+
+        public Sprite icon;
+        public string name;
+        public float baseCooldown = 1;
+        public int stock = 1;
+        public int maxStock = 1;
+        public string desc1;
+        public string desc2;
+        public int skillID = -1;
+        public int requiredAbilityID = -1;
+        public bool locked
+        {
+            get
+            {
+                if (this.requiredAbilityID < 1 || Panthera.PantheraCharacter.characterAbilities.getAbilityLevel(this.requiredAbilityID) > 0)
+                    return false;
+                return true;
+            }
+        }
+        public int machineToUse = 1;
+        public bool showCooldown = false;
+        public bool removeStealth = true;
+        public float comboMaxTime = PantheraConfig.Combos_maxTime;
+        public ScriptPriority priority = ScriptPriority.NoPriority;
+        public ScriptPriority interruptPower = ScriptPriority.NoPriority;
 
         public void SetUpScript(GameObject player, PantheraMachine machine)
         {
@@ -55,7 +129,6 @@ namespace Panthera.MachineScripts
             this.stateType = PantheraMachineState.HaveToStart;
 
             // Setup pointers //
-            this.player = player;
             this.machine = machine;
             this.gameObject = player;
             this.transform = player.transform;
@@ -63,7 +136,7 @@ namespace Panthera.MachineScripts
             this.characterBody = player.GetComponent<PantheraBody>();
             this.characterDirection = player.GetComponent<CharacterDirection>();
             this.cameraTargetParams = player.GetComponent<CameraTargetParams>();
-            this.sfxLocator = gameObject.GetComponent<SfxLocator>();
+            this.sfxLocator = player.GetComponent<SfxLocator>();
             this.inputBank = player.GetComponent<PantheraInputBank>();
             this.skillLocator = player.GetComponent<PantheraSkillLocator>();
             this.healthComponent = player.GetComponent<HealthComponent>();
@@ -74,15 +147,9 @@ namespace Panthera.MachineScripts
             this.modelTransform = this.modelLocator.modelTransform;
             this.modelAnimator = this.modelLocator.modelTransform.GetComponent<Animator>();
             this.aimAnimator = this.modelTransform.GetComponent<AimAnimator>();
-            this.bcp = this.pantheraObj.getPassiveScript();
             this.pantheraFX = player.GetComponent<PantheraFX>();
             this.masterObj = this.pantheraObj.pantheraMaster;
-
-            // Setup the characterBody
-            this.attackSpeedStat = this.characterBody.attackSpeed;
-            this.damageStat = this.characterBody.damage;
-            this.critStat = this.characterBody.crit;
-            this.moveSpeedStat = this.characterBody.moveSpeed;
+            this.bcp = this.pantheraObj.getPassiveScript();
 
         }
 
@@ -120,27 +187,31 @@ namespace Panthera.MachineScripts
         {
             this.machine.EndScript();
         }
-        public void TryScript(MachineScript script)
+        public bool CheckScript(MachineScript script)
         {
-            this.machine.TryScript(script);
+            if (this.machine.CheckScript(script) == true)
+                return true;
+            else
+                return false;
         }
-        public void TryScript(Type type)
+        public bool TryScript(MachineScript script)
         {
-            this.machine.TryScript(type);
+            if (this.machine.TryScript(script) == true)
+                return true;
+            else
+                return false;
         }
-
-        public void SetScript(MachineScript script)
+        public bool SetScript(MachineScript script)
         {
-            this.machine.SetScript(script);
-        }
-        public void SetScript(Type type)
-        {
-            this.machine.SetScript(type);
+            if (this.machine.SetScript(script) == true)
+                return true;
+            else
+                return false;
         }
 
         public T GetComponent<T>()
         {
-            return player.GetComponent<T>();
+            return this.gameObject.GetComponent<T>();
         }
         public bool isAuthority
         {
@@ -200,6 +271,15 @@ namespace Panthera.MachineScripts
         public TeamIndex GetTeam()
         {
             return TeamComponent.GetObjectTeam(this.gameObject);
+        }
+
+        public int getAbilityLevel(int ID)
+        {
+            return this.pantheraObj.getAbilityLevel(ID);
+        }
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
 
     }

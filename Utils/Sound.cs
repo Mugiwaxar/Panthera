@@ -17,53 +17,38 @@ namespace Panthera.Utils
     {
 
         public static string Rip1 = "Rip1"; // Rip
-        public static string Rip2 = "Rip2"; // Rip
         public static string RipHit1 = "RipHit1"; // Rip
-        public static string RipHit2 = "RipHit2"; // Rip
         public static string IntroRoar = "IntroRoar"; // Intro
         public static string MightyRoar = "MightyRoar"; // Myghty Roar
         public static string AirCleave1 = "AirCleave1"; // Air Cleave
         public static string AirCleave2 = "AirCleave2"; // Air Cleave
         public static string AirCleaveHit = "AirCleaveHit"; // Air Cleave
-        public static string HealingCleave = "HealingCleave"; // Healing Cleave
         public static string ClawsStorm = "ClawsStorm"; // ClawsStorm
         public static string Leap = "Leap"; // Leap
-        public static string FuriousBite = "FuriousBite"; // Furious Bite
         public static string Prowl = "Prowl"; // Prowl
-        public static string Dash = "Dash"; // Dash
         public static string ShieldAbsorb = "ShieldAbsorb"; // Dash
         public static string FrontShieldBreak = "FrontShieldBreak"; // Front Shield
         public static string ShieldBash = "ShieldBash"; // Shield Bash
-        public static string ZoneHeal = "ZoneHeal"; // Zone Heal
         public static string GhostRip = "GhostRip"; // Ghost Rip
-        public static string FireRip1 = "FireRip1"; // Fire Rip
-        public static string FireRip2 = "FireRip2"; // Fire Rip
         public static string Slash = "Slash"; // Slash
-        public static string FireBird = "FireBird"; // Fire Bird
-        public static string FireBirdLoopStart = "FireBirdLoopStart"; // Fire Bird
-        public static string FireBirdLoopStop = "FireBirdLoopStop"; // Fire Bird
-        public static string Revive = "Revive"; // Revive
-        public static string ReviveFailed = "ReviveFailed"; // Revive
-        public static string ReviveLoopPlay = "ReviveLoopPlay"; // Revive
-        public static string ReviveLoopStop = "ReviveLoopStop"; // Revive
         public static string DetectionEnable = "DetectionEnable"; // Detection
         public static string DetectionDisable = "DetectionDisable"; // Detection
+        public static string FuryOn = "FuryOn"; // Fury Activated
+        public static string GardianOn = "GardianOn"; // Gardian Activated
+        public static string GardianOff = "GardianOff"; // Gardian Desactivated
+        public static string AmbitionOn = "AmbitionOn"; // Ambition Activated
+        public static string AmbitionBuff = "AmbitionBuff"; // Ambition Buff added
+        public static string AirSlash = "AirSlash"; // Air Slash
+        public static string GoldenRip = "GoldenRip"; // Golden Rip
+        public static string ArcaneAnchor = "ArcaneAnchor"; // Arcane Anchor
+        public static string ConvergenceHook = "ConvergenceHook"; // Convergence Hook
         public static string Dead1 = "Dead1"; // Death
         public static string Dead2 = "Dead2"; // Death
+        public static string LevelUP = "LevelUP"; // Level UP
         public static string Click1 = "Click1"; // GUI
-        public static string Page1 = "Page1"; // GUI
-        public static string Page2 = "Page2"; // GUI
-        public static string SwitchPreset = "SwitchPreset"; // GUI
-        public static string ResetPreset = "ResetPreset"; // GUI
-        //public static string Mangle = "Mangle"; // Mangle
-        //public static string RaySlashRoar = "RaySlashRoar"; // Ray Slash
-        //public static string RaySlashStart = "RaySlashStart"; // Ray Slash
-        //public static string RaySlashChargeStart = "RaySlashChargeStart"; // Ray Slash
-        //public static string RaySlashChargeStop = "RaySlashChargeStop"; // Ray Slash
-        //public static string RaySlashLoopStart = "RaySlashLoopStart"; // Ray Slash  
-        //public static string RaySlashLoopStop = "RaySlashLoopStop"; // Ray Slash
-        //public static string NineLives = "NineLives"; // NineLives
-        //public static string LeapCercle = "LeapCercle"; // Leap Cercle
+        public static string OpenGUI = "OpenGUI"; // GUI
+        public static string CloseGUI = "CloseGUI"; // GUI
+        public static string ResetChar = "ResetChar"; // GUI
 
         public static void PopulateSounds()
         {
@@ -81,22 +66,11 @@ namespace Panthera.Utils
             if (NetworkClient.active == true) AkSoundEngine.PostEvent(soundName, obj);
             if (emit == true)
             {
-                if (Utils.Functions.IsHost() == true) new ClientPlaySound(obj, soundName).Send(NetworkDestination.Clients);
-                else if (Utils.Functions.IsClient() == true) new ClientPlaySound(obj, soundName).Send(NetworkDestination.Clients);
-                else if (Utils.Functions.IsServer() == true) new ClientPlaySound(obj, soundName, true).Send(NetworkDestination.Clients);
+                if (Utils.Functions.IsHost() == true) new ServerPlaySound(obj, soundName).Send(NetworkDestination.Server);
+                else if (Utils.Functions.IsClient() == true) new ServerPlaySound(obj, soundName).Send(NetworkDestination.Server);
+                else if (Utils.Functions.IsServer() == true) new ServerPlaySound(obj, soundName, true).Send(NetworkDestination.Server);
             }
                 
-        }
-
-        public static void playSound(uint soundID, GameObject obj, bool emit = true)
-        {
-            if (NetworkClient.active == true) AkSoundEngine.PostEvent(soundID, obj);
-            if (emit == true)
-            {
-                if (Utils.Functions.IsHost() == true) new ClientPlaySound(obj, soundID).Send(NetworkDestination.Clients);
-                else if (Utils.Functions.IsClient() == true) new ClientPlaySound(obj, soundID).Send(NetworkDestination.Clients);
-                else if (Utils.Functions.IsServer() == true) new ClientPlaySound(obj, soundID, true).Send(NetworkDestination.Clients);
-            }
         }
 
     }

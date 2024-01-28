@@ -61,6 +61,10 @@ namespace Panthera.Base
             SkinDef model3SkinDef = CreateSkinDef(PantheraTokens.Get("PANTHERA_MODEL_NAME_3"), Assets.Portrait3, defaultRenderers, mainRenderer, model);
             skinDefs.Add(model3SkinDef);
 
+            // Create the Model4 SkinDef //
+            SkinDef model4SkinDef = CreateSkinDef(PantheraTokens.Get("PANTHERA_MODEL_NAME_4"), Assets.Portrait4, defaultRenderers, mainRenderer, model);
+            skinDefs.Add(model4SkinDef);
+
             // Save to the Skin Controller //
             skinController.skins = skinDefs.ToArray();
 
@@ -89,6 +93,7 @@ namespace Panthera.Base
             if (skinIndex == 0) ChangedToDisplayModel1(childLocator);
             else if (skinIndex == 1) ChangedToDisplayModel2(childLocator);
             else if (skinIndex == 2) ChangedToDisplayModel3(childLocator);
+            else if (skinIndex == 3) ChangedToDisplayModel4(childLocator);
 
         }
 
@@ -110,12 +115,19 @@ namespace Panthera.Base
             displayChildLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
             displayChildLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
             displayChildLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            displayChildLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
             // Change Display Mesh and Materials //
             SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
             Material[] displayMaterials = new Material[] { Assets.Body1Mat1, Assets.Body1Mat2 };
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = Assets.BodyMesh1;
+
+            // Remove Fade mode //
+            foreach (Material mat in displayMaterials)
+            {
+                Utils.Functions.ToOpaqueMode(mat);
+            }
 
         }
 
@@ -137,6 +149,7 @@ namespace Panthera.Base
             displayChildLocator.FindChild("Model2Tail1").gameObject.SetActive(true);
             displayChildLocator.FindChild("Model2Tail2").gameObject.SetActive(true);
             displayChildLocator.FindChild("Model2Tail3").gameObject.SetActive(true);
+            displayChildLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
 
             // Change Display Mesh and Materials //
@@ -144,6 +157,12 @@ namespace Panthera.Base
             Material[] displayMaterials = new Material[] { Assets.Body2Mat1, Assets.Body2Mat2 };
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = Assets.BodyMesh2;
+
+            // Remove Fade mode //
+            foreach (Material mat in displayMaterials)
+            {
+                Utils.Functions.ToOpaqueMode(mat);
+            }
 
         }
 
@@ -165,6 +184,7 @@ namespace Panthera.Base
             displayChildLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
             displayChildLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
             displayChildLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            displayChildLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
 
             // Change Display Mesh and Materials //
@@ -172,6 +192,48 @@ namespace Panthera.Base
             Material[] displayMaterials = new Material[] { Assets.Body3Mat1, Assets.Body3Mat2 };
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = Assets.BodyMesh3;
+
+            // Remove Fade mode //
+            foreach (Material mat in displayMaterials)
+            {
+                Utils.Functions.ToOpaqueMode(mat);
+            }
+
+        }
+
+        public static void ChangedToDisplayModel4(ChildLocator displayChildLocator)
+        {
+
+            // Set Display Model Objects //
+            displayChildLocator.FindChild("Model1ClawLeft").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model1ClawRight").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model1HeadEffect").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2ClawLeft").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2ClawRight").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Eye1").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Eye2").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Head1").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Head2").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Head3").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Head4").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
+            displayChildLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            displayChildLocator.FindChild("RedXIIIFire").gameObject.SetActive(true);
+
+
+            // Change Display Mesh and Materials //
+            SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
+            Material[] displayMaterials = new Material[] { Assets.Body4Mat1, Assets.Body4Mat2, Assets.Body4Mat3, Assets.Body4Mat4, Assets.Body4Mat5, Assets.Body4Mat6, Assets.Body4Mat7,
+                Assets.Body4Mat8, Assets.Body4Mat9, Assets.Body4Mat10, Assets.Body4Mat11, Assets.Body4Mat12, Assets.Body4Mat13 };
+            displaySmr.sharedMaterials = displayMaterials;
+            displaySmr.sharedMesh = Assets.BodyMesh4;
+
+            // Remove Fade mode //
+            foreach (Material mat in displayMaterials)
+            {
+                Utils.Functions.ToOpaqueMode(mat);
+            }
 
         }
 
@@ -193,6 +255,7 @@ namespace Panthera.Base
             childLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
             childLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
             childLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            childLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
@@ -220,6 +283,7 @@ namespace Panthera.Base
             childLocator.FindChild("Model2Tail1").gameObject.SetActive(true);
             childLocator.FindChild("Model2Tail2").gameObject.SetActive(true);
             childLocator.FindChild("Model2Tail3").gameObject.SetActive(true);
+            childLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
@@ -247,12 +311,42 @@ namespace Panthera.Base
             childLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
             childLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
             childLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            childLocator.FindChild("RedXIIIFire").gameObject.SetActive(false);
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
             Material[] materials = new Material[] { Assets.Body3Mat1, Assets.Body3Mat2 };
             smr.sharedMaterials = materials;
             smr.sharedMesh = Assets.BodyMesh3;
+
+        }
+
+        public static void ChangedToMainModel4(ChildLocator childLocator)
+        {
+
+            // Set Model Objects //
+            childLocator.FindChild("Model1ClawLeft").gameObject.SetActive(false);
+            childLocator.FindChild("Model1ClawRight").gameObject.SetActive(false);
+            childLocator.FindChild("Model1HeadEffect").gameObject.SetActive(false);
+            childLocator.FindChild("Model2ClawLeft").gameObject.SetActive(false);
+            childLocator.FindChild("Model2ClawRight").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Eye1").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Eye2").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Head1").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Head2").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Head3").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Head4").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Tail1").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Tail2").gameObject.SetActive(false);
+            childLocator.FindChild("Model2Tail3").gameObject.SetActive(false);
+            childLocator.FindChild("RedXIIIFire").gameObject.SetActive(true);
+
+            // Change Mesh and Materials //
+            SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
+            Material[] materials = new Material[] { Assets.Body4Mat1, Assets.Body4Mat2, Assets.Body4Mat3, Assets.Body4Mat4, Assets.Body4Mat5, Assets.Body4Mat6, Assets.Body4Mat7,
+                Assets.Body4Mat8, Assets.Body4Mat9, Assets.Body4Mat10, Assets.Body4Mat11, Assets.Body4Mat12, Assets.Body4Mat13 };
+            smr.sharedMaterials = materials;
+            smr.sharedMesh = Assets.BodyMesh4;
 
         }
 

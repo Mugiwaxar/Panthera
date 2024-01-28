@@ -1,7 +1,10 @@
-﻿using Panthera;
+﻿using EntityStates.LunarGolem;
+using EntityStates.TitanMonster;
+using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
+using Panthera.MachineScripts;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -14,105 +17,142 @@ namespace Panthera.BodyComponents
     {
 
         // (int SkillID 1 - ??, LastUsedTime) Represent the Current Cooldown of all Skills //
-        public Dictionary<int, float> cooldownList = new Dictionary<int, float>();
+        public Dictionary<int, RechargeSkill> rechargeSkillList = new Dictionary<int, RechargeSkill>();
 
         public PantheraObj ptraObj;
 
-        public float getMaxCooldown(int skillID)
+        public void createRechargeSkillsList()
         {
-            PantheraSkill skill = ptraObj.activePreset.getSkillByID(skillID);
-            if (skill == null) return 0;
-            float maxCD = skill.cooldown;
-
-            Inventory inventory = ptraObj.characterBody?.master?.inventory;
-            if (inventory != null)
+            this.rechargeSkillList.Clear();
+            foreach (KeyValuePair<int, MachineScript> pairs in this.ptraObj.characterSkills.SkillsList)
             {
-                int count = inventory.GetItemCount(PantheraConfig.ItemChange_magazineIndex);
-                if (count > 0)
+                MachineScript skill = pairs.Value;
+                RechargeSkill rechargeSkill = new RechargeSkill(skill, skill.maxStock, skill.baseCooldown);
+                this.rechargeSkillList.Add(skill.skillID, rechargeSkill);
+            }
+        }
+
+        public void FixedUpdate()
+        {
+            // Itinerate all RechargeSkill
+            foreach (KeyValuePair<int, RechargeSkill> pairs in this.rechargeSkillList)
+            {
+                // Check the RechargeSkill //
+                RechargeSkill rechargeSkill = pairs.Value;
+                if (rechargeSkill.stock < rechargeSkill.maxStock)
                 {
-                    for (int i = 0; i < count; i++)
+                    // Remove the interval from the Cooldown //
+                    rechargeSkill.cooldown -= Time.deltaTime;
+                    // Check if a Stock must be added //
+                    if (rechargeSkill.cooldown <= 0)
                     {
-                        maxCD *= PantheraConfig.ItemChange_magazinePercentCooldownReduction;
+                        rechargeSkill.stock++;
+                        rechargeSkill.cooldown = this.getMaxCooldown(pairs.Key);
                     }
                 }
-                int count2 = inventory.GetItemCount(PantheraConfig.ItemChange_alienHeadIndex);
-                if (count2 > 0)
+                else
                 {
-                    for (int i = 0; i < count2; i++)
-                    {
-                        maxCD *= PantheraConfig.ItemChange_alienHeadPercentCooldownReduction;
-                    }
-                }
-                int count3 = inventory.GetItemCount(PantheraConfig.ItemChange_hardlightAfterburnerIndex);
-                if (count3 > 0)
-                {
-                    for (int i = 0; i < count3; i++)
-                    {
-                        maxCD *= PantheraConfig.ItemChange_hardlightAfterburnerPercentCooldownReduction;
-                    }
-                }
-                int count4 = inventory.GetItemCount(PantheraConfig.ItemChange_lightFluxPauldronIndex);
-                if (count4 > 0)
-                {
-                    for (int i = 0; i < count4; i++)
-                    {
-                        maxCD *= PantheraConfig.ItemChange_lightFluxPauldronPercentCooldownReduction;
-                    }
-                }
-                int count5 = inventory.GetItemCount(PantheraConfig.ItemChange_purityIndex);
-                if (count5 > 0)
-                {
-                    for (int i = 0; i < count5; i++)
-                    {
-                        maxCD *= PantheraConfig.ItemChange_purityPercentCooldownReduction;
-                    }
-                }
-                int count6 = inventory.GetItemCount(PantheraConfig.ItemChange_lysateCellIndex);
-                if (count6 > 0)
-                {
-                    for (int i = 0; i < count6; i++)
-                    {
-                        maxCD *= PantheraConfig.ItemChange_lysateCellCooldownReduction;
-                    }
+                    rechargeSkill.cooldown = 0;
                 }
             }
 
-            return maxCD;
         }
 
-        public float getCooldownTime(int skillID)
+        public void setMaxStock(int skillID, int maxStock)
         {
-            if (cooldownList.ContainsKey(skillID) == true) return cooldownList[skillID];
-            return 0;
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+            this.rechargeSkillList[skillID].maxStock = maxStock;
         }
 
-        public float getCooldownInSecond(int skillID)
+        public int getStock(int skillID)
         {
-            if (cooldownList.ContainsKey(skillID) == false) return 0;
-            float maxCD = getMaxCooldown(skillID);
-            float timePassed = Time.time - cooldownList[skillID];
-            float cooldown = Math.Max(0, maxCD - timePassed);
-            return cooldown;
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return 0;
+            return this.rechargeSkillList[skillID].stock;
         }
 
-        public void setCooldownTime(int skillID, float time)
+        public void addOneStock (int skillID)
         {
-            if (cooldownList.ContainsKey(skillID) == true) cooldownList[skillID] = time;
-            else cooldownList.Add(skillID, time);
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+            RechargeSkill rechargeSkill = this.rechargeSkillList[skillID];
+            if (rechargeSkill.stock < rechargeSkill.maxStock)
+                rechargeSkill.stock++;
         }
 
-        public void setCooldownInSecond(int skillID, float seconds)
+        public float getMaxCooldown(int skillID)
         {
-            float maxCD = getMaxCooldown(skillID);
-            if (cooldownList.ContainsKey(skillID) == true) cooldownList[skillID] = Time.time - maxCD + seconds;
-            else cooldownList.Add(skillID, Time.time - maxCD + seconds);
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return 0;
+            return this.rechargeSkillList[skillID].baseCooldown;
         }
 
-        public void startCooldown(int skillID)
+        public void setMaxCooldown(int skillID, float baseCooldown)
         {
-            if (cooldownList.ContainsKey(skillID) == true) cooldownList[skillID] = Time.time;
-            else cooldownList.Add(skillID, Time.time);
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+            this.rechargeSkillList[skillID].baseCooldown = baseCooldown;
+        }
+
+        public float getCooldown(int skillID)
+        {
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return 0;
+            return this.rechargeSkillList[skillID].cooldown;
+        }
+
+        public void startCooldown(int skillID, float rechargeTime = 0)
+        {
+
+            // Check the Skill ID //
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+
+            // Get the RechargeSkill //
+            RechargeSkill rechargeSkill = this.rechargeSkillList[skillID];
+
+            // Check the Recharge Time //
+            if (rechargeTime <= 0)
+                rechargeTime = getMaxCooldown(skillID);
+
+            // Set the RechargeSkill //
+            rechargeSkill.stock--;
+            if (rechargeSkill.cooldown == 0)
+                rechargeSkill.cooldown = rechargeTime;
+
+        }
+
+        public static void applyAmmoPackHook(Action<SkillLocator> orig, SkillLocator self)
+        {
+            
+            // Call the Original Function //
+            orig(self);
+
+            // Check if Panthera //
+            if (self is not PantheraSkillLocator) return;
+            PantheraSkillLocator skillLocator = (PantheraSkillLocator)self;
+
+            // Add a Stock to all Skills //
+            skillLocator.addOneStock(PantheraConfig.Rip_SkillID);
+            skillLocator.addOneStock(PantheraConfig.Slash_SkillID);
+            skillLocator.addOneStock(PantheraConfig.Leap_SkillID);
+            skillLocator.addOneStock(PantheraConfig.MightyRoar_SkillID);
+
         }
 
     }
+
+    public class RechargeSkill
+    {
+
+        public MachineScript skill;
+        public int stock;
+        public int maxStock;
+        public float baseCooldown;
+        public float cooldown = 0;
+
+        public RechargeSkill(MachineScript skill, int maxStock, float baseCooldown)
+        {
+            this.skill = skill;
+            this.stock = maxStock;
+            this.maxStock = maxStock;
+            this.baseCooldown = baseCooldown;
+        }
+
+    }
+
 }

@@ -10,7 +10,6 @@ using System;
 using RoR2.Networking;
 using Panthera.Components;
 using Panthera.Machines;
-using Panthera.Skills;
 using Panthera.MachineScripts;
 using Panthera.Utils;
 using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
@@ -20,20 +19,51 @@ using MonoMod.RuntimeDetour.HookGen;
 using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
+using UnityEngine.AddressableAssets;
 
 namespace Panthera.Base
 {
     class Prefab
     {
+
+        public static List<GameObject> masterPrefabs = new List<GameObject>();
         public static List<GameObject> bodyPrefabs = new List<GameObject>();
-        public static List<GameObject> networkedObjectPrefabs = new List<GameObject>();
+        public static List<SurvivorDef> SurvivorDefinitions = new List<SurvivorDef>();
         public static List<SkillFamily> skillFamilies = new List<SkillFamily>();
         public static List<SkillDef> skillDefs = new List<SkillDef>();
         public static List<Type> entityStates = new List<Type>();
         public static GameObject CharacterPrefab;
         public static GameObject CharacterDisplayPrefab;
-        public static CharacterSelectSurvivorPreviewDisplayController PantheraCSSPreviewController;
-        public static SkinChangeResponse[] DefaultResponses;
+
+        public static readonly Color CharacterColor = new Color(1, 1, 1);
+        public static DamageAPI.ModdedDamageType BarrierDamageType;
+
+        public static void RegisterCharacter()
+        {
+
+            // Create the Prefabs //
+            Prefab.CharacterPrefab = Prefab.CreateCharacterPrefab(Assets.MainPrefab, PantheraConfig.Model_PrefabName);
+            Prefab.CharacterDisplayPrefab = Prefab.CreateDisplayPrefab(Assets.DisplayPrefab, PantheraConfig.Model_PrefabName, Prefab.CharacterPrefab);
+            Prefab.RegisterSkills(Prefab.CharacterPrefab);
+
+            // Create the survivor def //
+            SurvivorDef survivorDef = ScriptableObject.CreateInstance<SurvivorDef>();
+
+            survivorDef.bodyPrefab = Prefab.CharacterPrefab;
+            survivorDef.displayPrefab = Prefab.CharacterDisplayPrefab;
+            survivorDef.primaryColor = CharacterColor;
+            survivorDef.displayNameToken = PantheraTokens.Get("PANTHERA_NAME");
+            survivorDef.descriptionToken = PantheraTokens.Get("PANTHERA_DESC");
+            survivorDef.desiredSortPosition = 999;
+            //survivorDef.unlockableDef = unlockableDef;
+
+            // Register the survivor //
+            SurvivorDefinitions.Add(survivorDef);
+
+            // Register Damage Type //
+            BarrierDamageType = DamageAPI.ReserveDamageType();
+
+        }
 
         public static GameObject CreateCharacterPrefab(GameObject prefab, string name)
         {
@@ -72,7 +102,7 @@ namespace Panthera.Base
 
             GameObject gameObject3 = new GameObject("AimOrigin");
             gameObject3.transform.parent = gameObject.transform;
-            gameObject3.transform.localPosition = new Vector3(0f, 1.4f, 0f);
+            gameObject3.transform.localPosition = new Vector3(0f, 1.3f, 0.877f);
             gameObject3.transform.localRotation = Quaternion.identity;
             gameObject3.transform.localScale = Vector3.one;
 
@@ -102,7 +132,7 @@ namespace Panthera.Base
             bodyComponent.subtitleNameToken = PantheraTokens.Get("PANTHERA_SUBTITLE");
             //bodyComponent.masterObject = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody");
             bodyComponent.bodyFlags = CharacterBody.BodyFlags.IgnoreFallDamage;
-            bodyComponent.bodyColor = Character.CharacterColor;
+            bodyComponent.bodyColor = Prefab.CharacterColor;
             bodyComponent.rootMotionInMainState = false;
             bodyComponent.mainRootSpeed = 0;
             bodyComponent.baseMaxHealth = 180;
@@ -128,6 +158,7 @@ namespace Panthera.Base
             bodyComponent.sprintingSpeedMultiplier = 1.4f;
             bodyComponent.wasLucky = false;
             bodyComponent.hideCrosshair = true;
+            bodyComponent._defaultCrosshairPrefab = null;
             bodyComponent.aimOriginTransform = gameObject3.transform;
             bodyComponent.hullClassification = HullClassification.Human;
             bodyComponent.portraitIcon = Assets.DefaultPortrait;
@@ -213,7 +244,7 @@ namespace Panthera.Base
             teamComponent.hideAllyCardDisplay = false;
             teamComponent.teamIndex = TeamIndex.None;
             #endregion
-            #region Panthera Heal Component
+            #region Panthera Health Component
             PantheraHealthComponent healthComponent = CharacterPrefab.AddComponent<PantheraHealthComponent>();
             healthComponent.health = 90f;
             healthComponent.shield = 0f;
@@ -291,23 +322,24 @@ namespace Panthera.Base
             #region HurtBoxGroup
             HurtBoxGroup hurtBoxGroup = model.AddComponent<HurtBoxGroup>();
             HurtBox mainHurtbox = childLocator.FindChild("MainHurtbox").gameObject.AddComponent<HurtBox>();
+            mainHurtbox.transform.localPosition = new Vector3(0f, 0.8f, -0.3f);
+            mainHurtbox.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
             mainHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
             mainHurtbox.healthComponent = healthComponent;
             mainHurtbox.isBullseye = true;
             mainHurtbox.damageModifier = HurtBox.DamageModifier.Normal;
             mainHurtbox.hurtBoxGroup = hurtBoxGroup;
             mainHurtbox.indexInGroup = 0;
-            HurtBox shieldHurtbox = childLocator.FindChild("ShieldHurtbox").gameObject.AddComponent<HurtBox>();
-            shieldHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
-            shieldHurtbox.healthComponent = healthComponent;
-            shieldHurtbox.isBullseye = false;
-            shieldHurtbox.damageModifier = HurtBox.DamageModifier.Barrier;
-            shieldHurtbox.hurtBoxGroup = hurtBoxGroup;
-            shieldHurtbox.indexInGroup = 1;
+            //HurtBox shieldHurtbox = childLocator.FindChild("ShieldHurtbox").gameObject.AddComponent<HurtBox>();
+            //shieldHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
+            //shieldHurtbox.healthComponent = healthComponent;
+            //shieldHurtbox.isBullseye = false;
+            //shieldHurtbox.damageModifier = HurtBox.DamageModifier.Barrier;
+            //shieldHurtbox.hurtBoxGroup = hurtBoxGroup;
+            //shieldHurtbox.indexInGroup = 1;
             hurtBoxGroup.hurtBoxes = new HurtBox[]
             {
-                mainHurtbox,
-                shieldHurtbox
+                mainHurtbox
             };
             hurtBoxGroup.mainHurtBox = mainHurtbox;
             hurtBoxGroup.bullseyeCount = 1;
@@ -400,6 +432,10 @@ namespace Panthera.Base
             PantheraItemChange itemChange = CharacterPrefab.AddComponent<PantheraItemChange>();
             itemChange.ptraObj = pantheraObj;
             #endregion
+            #region Combo Component
+            PantheraComboComponent comboComponent = CharacterPrefab.AddComponent<PantheraComboComponent>();
+            comboComponent.ptraObj = pantheraObj;
+            #endregion
             #region Register
             bodyPrefabs.Add(CharacterPrefab);
             CharacterPrefab.RegisterNetworkPrefab();
@@ -456,6 +492,15 @@ namespace Panthera.Base
 
         }
 
+        public static void CreateDoppelganger()
+        {
+
+            GameObject newMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterMasters/CommandoMonsterMaster"), "PantheraMonster", true);
+            newMaster.GetComponent<CharacterMaster>().bodyPrefab = Prefab.CharacterPrefab;
+
+            masterPrefabs.Add(newMaster);
+        }
+
         public static void RegisterSkills(GameObject prefab)
         {
 
@@ -469,16 +514,16 @@ namespace Panthera.Base
 
             // Add skill family 1 //
             skillLocator.primary = prefab.AddComponent<GenericSkill>();
-            skillLocator.primary.skillName = PantheraTokens.Get("RIP_SKILL_NAME");
+            skillLocator.primary.skillName = PantheraTokens.Get("skill_RipName");
             SkillFamily primaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
             (primaryFamily as ScriptableObject).name = prefab.name + "PrimaryFamily";
             primaryFamily.variants = new SkillFamily.Variant[0];
             skillLocator.primary._skillFamily = primaryFamily;
             skillFamilies.Add(primaryFamily);
 
-            //// Add skill family 2 //
+            // Add skill family 2 //
             skillLocator.secondary = prefab.AddComponent<GenericSkill>();
-            skillLocator.secondary.skillName = PantheraTokens.Get("AIR_CLEAVE_SKILL_DESC");
+            skillLocator.secondary.skillName = PantheraTokens.Get("skill_SlashName");
             SkillFamily secondaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
             (secondaryFamily as ScriptableObject).name = prefab.name + "SecondaryFamily";
             secondaryFamily.variants = new SkillFamily.Variant[0];
@@ -486,46 +531,43 @@ namespace Panthera.Base
             skillFamilies.Add(secondaryFamily);
 
             // Add skill family 3 //
-            //skillLocator.utility = prefab.AddComponent<GenericSkill>();
-            //skillLocator.utility.skillName = PantheraTokens.Get("LEAP_SKILL_NAME");
-            //SkillFamily utilityFamily = ScriptableObject.CreateInstance<SkillFamily>();
-            //(utilityFamily as ScriptableObject).name = prefab.name + "UtilityFamily";
-            //utilityFamily.variants = new SkillFamily.Variant[0];
-            //skillLocator.utility._skillFamily = utilityFamily;
-            //skillFamilies.Add(utilityFamily);
+            skillLocator.utility = prefab.AddComponent<GenericSkill>();
+            skillLocator.utility.skillName = PantheraTokens.Get("skill_LeapName");
+            SkillFamily utilityFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            (utilityFamily as ScriptableObject).name = prefab.name + "UtilityFamily";
+            utilityFamily.variants = new SkillFamily.Variant[0];
+            skillLocator.utility._skillFamily = utilityFamily;
+            skillFamilies.Add(utilityFamily);
 
             // Add skill family 4 //
-            //skillLocator.special = prefab.AddComponent<GenericSkill>();
-            //skillLocator.special.skillName = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
-            //SkillFamily specialFamily = ScriptableObject.CreateInstance<SkillFamily>();
-            //(specialFamily as ScriptableObject).name = prefab.name + "SpecialFamily";
-            //specialFamily.variants = new SkillFamily.Variant[0];
-            //skillLocator.special._skillFamily = specialFamily;
-            //skillFamilies.Add(specialFamily);
+            skillLocator.special = prefab.AddComponent<GenericSkill>();
+            skillLocator.special.skillName = PantheraTokens.Get("skill_MightyRoarName");
+            SkillFamily specialFamily = ScriptableObject.CreateInstance<SkillFamily>();
+            (specialFamily as ScriptableObject).name = prefab.name + "SpecialFamily";
+            specialFamily.variants = new SkillFamily.Variant[0];
+            skillLocator.special._skillFamily = specialFamily;
+            skillFamilies.Add(specialFamily);
 
             // Create all skills //
             RegisterFakePassive(prefab);
             //Skills.PantheraSpawn.register();
             RegisterFakeSkill1(primaryFamily);
             RegisterFakeSkill2(secondaryFamily);
-            //RegisterFakeSkill3(utilityFamily);
-            //RegisterFakeSkill4(specialFamily);
+            RegisterFakeSkill3(utilityFamily);
+            RegisterFakeSkill4(specialFamily);
 
         }
 
         public static void RegisterFakePassive(GameObject prefab)
         {
 
-
             SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
 
             skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = "PANTHERA_PASSIVE_NAME";
-            skillLocator.passiveSkill.skillDescriptionToken = "PANTHERA_PASSIVE_DESCRIPTION";
-            skillLocator.passiveSkill.icon = Assets.PassiveSkill;
+            skillLocator.passiveSkill.skillNameToken = PantheraTokens.Get("skill_passiveName");
+            skillLocator.passiveSkill.skillDescriptionToken = PantheraTokens.Get("skill_passiveDesc");
+            skillLocator.passiveSkill.icon = Assets.FelineSkillsAbilityMenu;
 
-            // Register the Skill inside the Content Pack //
-            //Prefab.entityStates.Add(typeof(BigCatPassive));
 
         }
 
@@ -534,25 +576,18 @@ namespace Panthera.Base
 
             // Build the Skill //
             SkillDef skill1Def = ScriptableObject.CreateInstance<SkillDef>();
-            skill1Def.skillNameToken = PantheraTokens.Get("RIP_SKILL_NAME");
-            skill1Def.skillDescriptionToken = PantheraTokens.Get("RIP_SKILL_DESC");
-            skill1Def.skillName = PantheraTokens.Get("RIP_SKILL_NAME");
+            skill1Def.skillNameToken = PantheraTokens.Get("skill_RipName");
+            skill1Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_RipDesc"), PantheraConfig.Rip_atkDamageMultiplier * 100);
+            skill1Def.skillName = PantheraTokens.Get("skill_RipName");
             skill1Def.keywordTokens = new string[] { };
-            skill1Def.icon = Assets.RipMenu;
+            skill1Def.icon = Assets.RipSkillMenu;
             skill1Def.baseMaxStock = 1;
-            skill1Def.baseRechargeInterval = 1.5f;
+            skill1Def.baseRechargeInterval = PantheraConfig.Rip_cooldown;
             skill1Def.beginSkillCooldownOnSkillEnd = false;
             skill1Def.fullRestockOnAssign = false;
             skill1Def.rechargeStock = 1;
             skill1Def.requiredStock = 1;
             skill1Def.stockToConsume = 1;
-            skill1Def.activationState = new SerializableEntityStateType(typeof(Rip));
-            skill1Def.interruptPriority = InterruptPriority.Any;
-            skill1Def.isCombatSkill = true;
-            skill1Def.mustKeyPress = false;
-            skill1Def.cancelSprintingOnActivation = false;
-            skill1Def.canceledFromSprinting = false;
-            skill1Def.activationStateMachineName = "Weapon";
 
             // Save the skill //
             Array.Resize(ref family.variants, 1);
@@ -562,9 +597,6 @@ namespace Panthera.Base
                 viewableNode = new ViewablesCatalog.Node(skill1Def.skillNameToken, false, null)
             };
 
-            // Register the Skill inside the Content Pack //
-            //Prefab.skillDefs.Add(skill1Def);
-            //Prefab.entityStates.Add(typeof(Rip));
         }
 
         public static void RegisterFakeSkill2(SkillFamily family)
@@ -572,25 +604,18 @@ namespace Panthera.Base
 
             // Build the Skill //
             SkillDef skill2Def = ScriptableObject.CreateInstance<SkillDef>();
-            skill2Def.skillNameToken = PantheraTokens.Get("AIR_CLEAVE_SKILL_NAME");
-            skill2Def.skillDescriptionToken = PantheraTokens.Get("AIR_CLEAVE_SKILL_DESC");
-            skill2Def.skillName = PantheraTokens.Get("AIR_CLEAVE_SKILL_NAME");
+            skill2Def.skillNameToken = PantheraTokens.Get("skill_SlashName");
+            skill2Def.skillDescriptionToken = string.Format(PantheraTokens.Get("skill_SlashDesc"), PantheraConfig.Slash_damageMultiplier * 100);
+            skill2Def.skillName = PantheraTokens.Get("skill_SlashName");
             skill2Def.keywordTokens = new string[] { };
-            skill2Def.icon = Assets.AirCleaveMenu;
+            skill2Def.icon = Assets.SlashSkillMenu;
             skill2Def.baseMaxStock = 1;
-            skill2Def.baseRechargeInterval = 1.5f;
+            skill2Def.baseRechargeInterval = PantheraConfig.Slash_cooldown;
             skill2Def.beginSkillCooldownOnSkillEnd = false;
             skill2Def.fullRestockOnAssign = false;
-            skill2Def.rechargeStock = 0;
-            skill2Def.requiredStock = 0;
-            skill2Def.stockToConsume = 0;
-            //skill2Def.activationState = new SerializableEntityStateType(typeof(Rip));
-            //skill2Def.interruptPriority = InterruptPriority.Any;
-            //skill2Def.isCombatSkill = true;
-            //skill2Def.mustKeyPress = false;
-            //skill2Def.cancelSprintingOnActivation = false;
-            //skill2Def.canceledFromSprinting = false;
-            //skill2Def.activationStateMachineName = "Weapon";
+            skill2Def.rechargeStock = 1;
+            skill2Def.requiredStock = 1;
+            skill2Def.stockToConsume = 1;
 
             // Save the skill //
             Array.Resize(ref family.variants, 1);
@@ -608,80 +633,56 @@ namespace Panthera.Base
         public static void RegisterFakeSkill3(SkillFamily family)
         {
 
-            //// Build the Skill //
-            //SkillDef skill3Def = ScriptableObject.CreateInstance<SkillDef>();
-            //skill3Def.skillNameToken = PantheraTokens.Get("LEAP_SKILL_NAME");
-            //skill3Def.skillDescriptionToken = PantheraTokens.Get("LEAP_SKILL_DESC");
-            //skill3Def.skillName = PantheraTokens.Get("LEAP_SKILL_NAME");
-            //skill3Def.keywordTokens = new string[] {};
-            //skill3Def.icon = Assets.LeapMenu;
-            //skill3Def.baseMaxStock = 2;
-            //skill3Def.baseRechargeInterval = 5f;
-            //skill3Def.beginSkillCooldownOnSkillEnd = false;
-            //skill3Def.fullRestockOnAssign = false;
-            //skill3Def.rechargeStock = 1;
-            //skill3Def.requiredStock = 1;
-            //skill3Def.stockToConsume = 1;
-            ////skill3Def.activationState = new SerializableEntityStateType(typeof(Leap));
-            ////skill3Def.activationStateMachineName = "Weapon";
-            ////skill3Def.canceledFromSprinting = false;
-            ////skill3Def.interruptPriority = InterruptPriority.Skill;
-            ////skill3Def.isCombatSkill = true;
-            ////skill3Def.mustKeyPress = false;
-            ////skill3Def.cancelSprintingOnActivation = false;
+            // Build the Skill //
+            SkillDef skill3Def = ScriptableObject.CreateInstance<SkillDef>();
+            skill3Def.skillNameToken = PantheraTokens.Get("skill_LeapName");
+            skill3Def.skillDescriptionToken = PantheraTokens.Get("skill_LeapDesc");
+            skill3Def.skillName = PantheraTokens.Get("skill_LeapName");
+            skill3Def.keywordTokens = new string[] { };
+            skill3Def.icon = Assets.LeapSkillMenu;
+            skill3Def.baseMaxStock = 1;
+            skill3Def.baseRechargeInterval = PantheraConfig.Leap_cooldown;
+            skill3Def.beginSkillCooldownOnSkillEnd = false;
+            skill3Def.fullRestockOnAssign = false;
+            skill3Def.rechargeStock = 1;
+            skill3Def.requiredStock = 1;
+            skill3Def.stockToConsume = 1;
 
-
-
-            //// Save the skill //
-            //Array.Resize(ref family.variants, 1);
-            //family.variants[0] = new SkillFamily.Variant
-            //{
-            //    skillDef = skill3Def,
-            //    viewableNode = new ViewablesCatalog.Node(skill3Def.skillNameToken, false, null)
-            //};
-
-            //// Register the Skill inside the Content Pack //
-            ////Prefab.skillDefs.Add(skill3Def);
-            ////Prefab.entityStates.Add(typeof(Leap));
+            // Save the skill //
+            Array.Resize(ref family.variants, 1);
+            family.variants[0] = new SkillFamily.Variant
+            {
+                skillDef = skill3Def,
+                viewableNode = new ViewablesCatalog.Node(skill3Def.skillNameToken, false, null)
+            };
 
         }
 
         public static void RegisterFakeSkill4(SkillFamily family)
         {
 
-            //// Build the Skill //
-            //SkillDef skill4Def = ScriptableObject.CreateInstance<SkillDef>();
-            //skill4Def.skillNameToken = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
-            //skill4Def.skillDescriptionToken = PantheraTokens.Get("MIGHTY_ROAR_SKILL_DESC");
-            //skill4Def.skillName = PantheraTokens.Get("MIGHTY_ROAR_SKILL_NAME");
-            //skill4Def.keywordTokens = new string[] { };
-            //skill4Def.icon = Assets.MightyRoarMenu;
-            //skill4Def.baseMaxStock = 0;
-            //skill4Def.baseRechargeInterval = 1.5f;
-            //skill4Def.beginSkillCooldownOnSkillEnd = false;
-            //skill4Def.fullRestockOnAssign = false;
-            //skill4Def.rechargeStock = 0;
-            //skill4Def.requiredStock = 0;
-            //skill4Def.stockToConsume = 0;
-            ////skill4Def.activationState = new SerializableEntityStateType(typeof(Rip));
-            ////skill4Def.interruptPriority = InterruptPriority.Any;
-            ////skill4Def.isCombatSkill = true;
-            ////skill4Def.mustKeyPress = false;
-            ////skill4Def.cancelSprintingOnActivation = false;
-            ////skill4Def.canceledFromSprinting = false;
-            ////skill4Def.activationStateMachineName = "Weapon";
+            // Build the Skill //
+            SkillDef skill4Def = ScriptableObject.CreateInstance<SkillDef>();
+            skill4Def.skillNameToken = PantheraTokens.Get("skill_MightyRoarName");
+            skill4Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration);
+            skill4Def.skillName = PantheraTokens.Get("skill_MightyRoarName");
+            skill4Def.keywordTokens = new string[] { };
+            skill4Def.icon = Assets.MightyRoarSkillMenu;
+            skill4Def.baseMaxStock = 1;
+            skill4Def.baseRechargeInterval = PantheraConfig.MightyRoar_cooldown;
+            skill4Def.beginSkillCooldownOnSkillEnd = false;
+            skill4Def.fullRestockOnAssign = false;
+            skill4Def.rechargeStock = 1;
+            skill4Def.requiredStock = 1;
+            skill4Def.stockToConsume = 1;
 
-            //// Save the skill //
-            //Array.Resize(ref family.variants, 1);
-            //family.variants[0] = new SkillFamily.Variant
-            //{
-            //    skillDef = skill4Def,
-            //    viewableNode = new ViewablesCatalog.Node(skill4Def.skillNameToken, false, null)
-            //};
-
-            //// Register the Skill inside the Content Pack //
-            ////Prefab.skillDefs.Add(skill4Def);
-            ////Prefab.entityStates.Add(typeof(MightyRoar));
+            // Save the skill //
+            Array.Resize(ref family.variants, 1);
+            family.variants[0] = new SkillFamily.Variant
+            {
+                skillDef = skill4Def,
+                viewableNode = new ViewablesCatalog.Node(skill4Def.skillNameToken, false, null)
+            };
         }
 
     }

@@ -1,11 +1,10 @@
 ﻿using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
+using Panthera.Combos;
 using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
-using Panthera.Skills;
-using Panthera.SkillsHybrid;
 using Rewired;
 using RoR2;
 using System;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using static Panthera.GUI.KeysBinder;
 
 namespace Panthera.BodyComponents
 {
@@ -20,15 +20,27 @@ namespace Panthera.BodyComponents
     {
 
         public PantheraObj ptraObj;
-        public Player rewirePlayer;
+        public PantheraComboComponent comboComponent;
+        public Player rewirePlayer
+        {
+            get
+            {
+                return Panthera.InputPlayer;
+            }
+        }
         public PantheraSkillsMachine skillsMachine1;
         public PantheraSkillsMachine skillsMachine2;
-        public Dictionary<int, PantheraSkill> pressedSlot = new Dictionary<int, PantheraSkill>(); // List of pressed actions (key: SlotID, Value: ActionID)
-        public bool switchBarPressed;
+        //public Dictionary<int, PantheraSkill> pressedSlot = new Dictionary<int, PantheraSkill>(); // List of pressed actions (key: SlotID, Value: ActionID)
+        //public bool switchBarPressed;
+
+        public List<KeysEnum> keysPressedList = new List<KeysEnum>();
+        public List<KeysEnum> keysDownList = new List<KeysEnum>();
+        public KeysEnum directionKeyPressed = 0;
 
         public void DoInit()
         {
             this.ptraObj = base.GetComponent<PantheraObj>();
+            this.comboComponent = this.ptraObj.comboComponent;
             this.skillsMachine1 = base.GetComponent<PantheraSkillsMachine>();
             this.skillsMachine2 = base.GetComponents<PantheraSkillsMachine>()[1];
         }
@@ -36,11 +48,13 @@ namespace Panthera.BodyComponents
         public void FixedUpdate()
         {
 
-            bool cancelJump = false;
-            bool cancelSprint = false;
-
             // Return if server //
             if (ptraObj.hasAuthority() == false) return;
+
+            // Clear the Keys Lists //
+            this.keysPressedList.Clear();
+            this.keysDownList.Clear();
+            this.directionKeyPressed = 0;
 
             // Return if dead //
             if (ptraObj.healthComponent.alive == false) return;
@@ -48,163 +62,135 @@ namespace Panthera.BodyComponents
             // Return if sleeping //
             if (ptraObj.getPassiveScript() == null || ptraObj.getPassiveScript().isSleeping == true) return;
 
-            // Check the Switch Bar Key //
-            if (IsKeyPressed(PantheraConfig.SwitchBarKey))
-            {
-                switchBarPressed = true;
-            }
-            else
-            {
-                switchBarPressed = false;
-            }
+            // Return if no Button was pressed //
+            if (this.isAnyButtonChanged() == false) return;
 
-            // Check if a Skill Button is pressed //
-            pressedSlot.Clear();
-            if (IsKeyPressed(PantheraConfig.Skill1Key)) pressedSlot[1] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill1Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill2Key)) pressedSlot[2] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill2Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill3Key)) pressedSlot[3] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill3Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill4Key)) pressedSlot[4] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill4Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill5Key)) pressedSlot[5] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill5Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill6Key)) pressedSlot[6] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill6Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill7Key)) pressedSlot[7] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill7Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill8Key)) pressedSlot[8] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill8Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill9Key)) pressedSlot[9] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill9Key, switchBarPressed);
-            if (IsKeyPressed(PantheraConfig.Skill10Key)) pressedSlot[10] = ptraObj.activePreset.getPressedSkill(PantheraConfig.Skill10Key, switchBarPressed);
-            // Get the maximum priority Skill //
-            PantheraSkill pressedSkill = null;
-            int priority = -1;
-            foreach (KeyValuePair<int, PantheraSkill> entry in pressedSlot)
-            {
-                if (entry.Value != null && entry.Value.interruptPower != null && (int)entry.Value.interruptPower > priority)
-                {
-                    pressedSkill = entry.Value;
-                    priority = (int)entry.Value.interruptPower;
-                }
-            }
+            // Check all Buttons //
+            if (IsUpPressed()) this.directionKeyPressed = KeysEnum.Forward;
+            if (IsDownPressed()) this.directionKeyPressed = KeysEnum.Backward;
+            if (IsLeftPressed()) this.directionKeyPressed = KeysEnum.Left;
+            if (IsRightPressed()) this.directionKeyPressed = KeysEnum.Right;
 
-            // Check if a Skill can be used //
-            if (pressedSkill != null)
-            {
-                MachineScript script = (MachineScript)Activator.CreateInstance(pressedSkill.associatedSkill, true);
-                if (script.CanBeUsed(ptraObj))
-                {
-                    if (pressedSkill.skillMachine == 1)
-                        skillsMachine1.TryScript(script);
-                    else if (pressedSkill.skillMachine == 2)
-                        skillsMachine2.TryScript(script);
-                }
-            }
+            if (IsKeyPressed(PantheraConfig.InteractKey)) this.keysPressedList.Add(KeysEnum.Interact);
+            if (IsKeyPressed(PantheraConfig.EquipmentKey)) this.keysPressedList.Add(KeysEnum.Equipment);
+            if (IsKeyPressed(PantheraConfig.SprintKey)) this.keysPressedList.Add(KeysEnum.Sprint);
+            if (IsKeyPressed(PantheraConfig.InfoKey)) this.keysPressedList.Add(KeysEnum.Info);
+            if (IsKeyPressed(PantheraConfig.PingKey)) this.keysPressedList.Add(KeysEnum.Ping);
+            if (IsKeyPressed(PantheraConfig.JumpKey)) this.keysPressedList.Add(KeysEnum.Jump);
+            if (IsKeyPressed(PantheraConfig.Skill1Key)) this.keysPressedList.Add(KeysEnum.Skill1);
+            if (IsKeyPressed(PantheraConfig.Skill2Key)) this.keysPressedList.Add(KeysEnum.Skill2);
+            if (IsKeyPressed(PantheraConfig.Skill3Key)) this.keysPressedList.Add(KeysEnum.Skill3);
+            if (IsKeyPressed(PantheraConfig.Skill4Key)) this.keysPressedList.Add(KeysEnum.Skill4);
+            if (IsKeyPressed(PantheraConfig.Keys_Ability1ActionCode)) this.keysPressedList.Add(KeysEnum.Ability1);
+            if (IsKeyPressed(PantheraConfig.Keys_Ability2ActionCode)) this.keysPressedList.Add(KeysEnum.Ability2);
+            if (IsKeyPressed(PantheraConfig.Keys_Ability3ActionCode)) this.keysPressedList.Add(KeysEnum.Ability3);
+            if (IsKeyPressed(PantheraConfig.Keys_Ability4ActionCode)) this.keysPressedList.Add(KeysEnum.Ability4);
+            if (IsKeyPressed(PantheraConfig.Keys_SpellsModeActionCode)) this.keysPressedList.Add(KeysEnum.SpellsMode);
 
-            // Check the jump key //
-            if (IsKeyDoublePressed(PantheraConfig.JumpKey) && ptraObj.activePreset.getAbilityLevel(PantheraConfig.LeapAbilityID) > 0)
-            {
-                if (IsKeyPressed(PantheraConfig.InteractKey) && ptraObj.activePreset.getAbilityLevel(PantheraConfig.SaveMyFriendAbilityID) > 0)
-                {
-                    MachineScript script = (MachineScript)Activator.CreateInstance(typeof(SaveMyFriend), true);
-                    if (script.CanBeUsed(ptraObj))
-                        skillsMachine2.TryScript(script);
-                }
-                else
-                {
-                    MachineScript script = (MachineScript)Activator.CreateInstance(typeof(Leap), true);
-                    if (script.CanBeUsed(ptraObj))
-                        skillsMachine2.TryScript(script);
-                }
-            }
-            else if (IsKeyDown(PantheraConfig.JumpKey) && cancelJump == false)
-            {
-                ptraObj.pantheraMotor.doJump = true;
-            }
-
-            // Check the sprint key //
-            if (IsKeyDown(PantheraConfig.SprintKey) && cancelSprint == false)
-            {
-                if (characterBody.isSprinting && ptraObj.activePreset.getAbilityLevel(PantheraConfig.DashAbilityID) > 0)
-                {
-                    if (ptraObj.dashing == true)
-                    {
-                        Passives.Dash.StopDash(ptraObj);
-                    }
-                    else
-                    {
-                        MachineScript script = (MachineScript)Activator.CreateInstance(typeof(Dash), true);
-                        if (script.CanBeUsed(ptraObj))
-                            skillsMachine2.TryScript(script);
-                    }
-                }
-                else
-                {
-                    ptraObj.pantheraMotor.startSprint = true;
-                }
-            }
+            if (IsKeyDown(PantheraConfig.InteractKey)) this.keysDownList.Add(KeysEnum.Interact);
+            if (IsKeyDown(PantheraConfig.EquipmentKey)) this.keysDownList.Add(KeysEnum.Equipment);
+            if (IsKeyDown(PantheraConfig.SprintKey)) this.keysDownList.Add(KeysEnum.Sprint);
+            if (IsKeyDown(PantheraConfig.InfoKey)) this.keysDownList.Add(KeysEnum.Info);
+            if (IsKeyDown(PantheraConfig.PingKey)) this.keysDownList.Add(KeysEnum.Ping);
+            if (IsKeyDown(PantheraConfig.JumpKey)) this.keysDownList.Add(KeysEnum.Jump);
+            if (IsKeyDown(PantheraConfig.Skill1Key)) this.keysDownList.Add(KeysEnum.Skill1);
+            if (IsKeyDown(PantheraConfig.Skill2Key)) this.keysDownList.Add(KeysEnum.Skill2);
+            if (IsKeyDown(PantheraConfig.Skill3Key)) this.keysDownList.Add(KeysEnum.Skill3);
+            if (IsKeyDown(PantheraConfig.Skill4Key)) this.keysDownList.Add(KeysEnum.Skill4);
+            if (IsKeyDown(PantheraConfig.Keys_Ability1ActionCode)) this.keysDownList.Add(KeysEnum.Ability1);
+            if (IsKeyDown(PantheraConfig.Keys_Ability2ActionCode)) this.keysDownList.Add(KeysEnum.Ability2);
+            if (IsKeyDown(PantheraConfig.Keys_Ability3ActionCode)) this.keysDownList.Add(KeysEnum.Ability3);
+            if (IsKeyDown(PantheraConfig.Keys_Ability4ActionCode)) this.keysDownList.Add(KeysEnum.Ability4);
+            if (IsKeyDown(PantheraConfig.Keys_SpellsModeActionCode)) this.keysDownList.Add(KeysEnum.SpellsMode);
 
             // Check the Interact Key //
-            if (IsKeyPressed(PantheraConfig.InteractKey))
+            if (IsKeyDown(PantheraConfig.InteractKey))
                 ptraObj.interactPressed = true;
             else
                 ptraObj.interactPressed = false;
 
+            // Check the Jump key //
+            if (IsKeyDown(PantheraConfig.JumpKey))
+            {
+                ptraObj.jumpPressed = true;
+                ptraObj.pantheraMotor.doJump = true;
+            }
+            else
+            {
+                ptraObj.jumpPressed = false;
+            }
+
+            // Check the Sprint Key //
+            if (IsKeyDown(PantheraConfig.SprintKey))
+            {
+                ptraObj.sprintPressed = true;
+                ptraObj.pantheraMotor.isSprinting = true;
+            }
+            else
+            {
+                ptraObj.sprintPressed = false;
+            }
+
+            // Check if Keys are Pressed //
+            if (this.keysPressedList.Count <= 0)
+                return;
+
+            // Try to launch a Skill //
+            this.ptraObj.comboComponent.tryLaunchSkill(this.keysPressedList, this.directionKeyPressed);
+
         }
 
-        public bool isSkillPressed(int skillID)
+        private bool isAnyButtonChanged()
         {
-            foreach (KeyValuePair<int, PantheraSkill> entry in pressedSlot)
-            {
-                if (entry.Value != null && entry.Value.skillID == skillID)
-                    return true;
-            }
+            if (rewirePlayer.GetAnyButton() == true || rewirePlayer.GetAnyButtonDown() == true) return true;
             return false;
         }
 
-        public bool IsKeyDown(int key)
+        private bool IsKeyDown(int key)
         {
-            if (ptraObj.hasAuthority() == false) return false;
             return rewirePlayer.GetButtonDown(key);
         }
 
-        public bool IsKeyPressed(int key)
+        private bool IsKeyPressed(int key)
         {
-            if (ptraObj.hasAuthority() == false) return false;
             return rewirePlayer.GetButton(key);
         }
 
-        public bool IsKeyReleased(int key)
+        private bool IsKeyReleased(int key)
         {
-            if (ptraObj.hasAuthority() == false) return false;
             return rewirePlayer.GetButtonUp(key);
         }
 
-        public bool IsKeyDoublePressed(int key)
+        private bool IsKeyDoublePressed(int key)
         {
-            if (ptraObj.hasAuthority() == false) return false;
             return rewirePlayer.GetButtonDoublePressUp(key);
         }
 
-        public bool IsRightPressed()
+        private bool IsRightPressed()
         {
-            if (rewirePlayer.GetAxis(0) > 0) return true;
+            if (rewirePlayer.GetAxis(0) > 0.9f) return true;
             return false;
         }
 
-        public bool IsLeftPressed()
+        private bool IsLeftPressed()
         {
-            if (rewirePlayer.GetAxis(0) < 0) return true;
+            if (rewirePlayer.GetAxis(0) < -0.9f) return true;
             return false;
         }
 
-        public bool IsUpPressed()
+        private bool IsUpPressed()
         {
-            if (rewirePlayer.GetAxis(1) > 0) return true;
+            if (rewirePlayer.GetAxis(1) > 0.9f) return true;
             return false;
         }
 
-        public bool IsDownPressed()
+        private bool IsDownPressed()
         {
-            if (rewirePlayer.GetAxis(0) < 0) return true;
+            if (rewirePlayer.GetAxis(1) < -0.9f) return true;
             return false;
         }
 
-        public bool IsDirectionKeyPressed()
+        private bool IsDirectionKeyPressed()
         {
             if (IsRightPressed() || IsLeftPressed() || IsUpPressed() || IsDownPressed()) return true;
             return false;

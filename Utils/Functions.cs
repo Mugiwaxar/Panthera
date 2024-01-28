@@ -1,4 +1,6 @@
 ﻿using EntityStates;
+using Panthera.Base;
+using Panthera.GUI;
 using Panthera.NetworkMessages;
 using R2API;
 using R2API.Networking;
@@ -104,7 +106,23 @@ namespace Panthera.Utils
 
         }
 
-        public static float getCollideDistance(Rigidbody r1, Rigidbody r2)
+        public static DamageInfo CreateDotDamageInfo(PantheraBuff buff, GameObject inflictor, GameObject victime, float damage = 0)
+        {
+            DamageInfo damageInfo = new DamageInfo();
+            damageInfo.damage = damage == 0 ? buff.damage : damage;
+            damageInfo.crit = false;
+            damageInfo.inflictor = inflictor;
+            damageInfo.attacker = inflictor;
+            damageInfo.position = victime.transform.position;
+            damageInfo.damageType = DamageType.DoT;
+            damageInfo.damageColorIndex = DamageColorIndex.Bleed;
+            damageInfo.force = Vector3.zero;
+            damageInfo.procChainMask = default(ProcChainMask);
+            damageInfo.procCoefficient = 1;
+            return damageInfo;
+        }
+
+        public static float GetCollideDistance(Rigidbody r1, Rigidbody r2)
         {
 
             if (r1 == null || r2 == null) 
@@ -122,7 +140,7 @@ namespace Panthera.Utils
 
         }
 
-        public static float getCollideDistance(CharacterBody b1, CharacterBody b2)
+        public static float GetCollideDistance(CharacterBody b1, CharacterBody b2)
         {
 
             if (b1 == null || b2 == null)
@@ -138,6 +156,30 @@ namespace Panthera.Utils
 
             return Vector3.Distance(vcp1, vcp2);
 
+        }
+
+        public static Sprite KeyEnumToSprite(KeysBinder.KeysEnum keyEnum)
+        {
+            if (keyEnum == KeysBinder.KeysEnum.Interact) return Assets.XButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Equipment) return Assets.YButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Sprint) return Assets.LButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Info) return Assets.InfoButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ping) return Assets.RButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Forward) return Assets.LUpButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Backward) return Assets.LDownButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Left) return Assets.LLeftButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Right) return Assets.LRightButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Jump) return Assets.AButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill1) return Assets.RTButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill2) return Assets.LTButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill3) return Assets.LBButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill4) return Assets.RBButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability1) return Assets.UpArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability2) return Assets.RightArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability3) return Assets.DownArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability4) return Assets.LeftArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.SpellsMode) return Assets.BButtonIcon;
+            return null;
         }
 
         public static bool IsSinglePlayer()
@@ -201,11 +243,28 @@ namespace Panthera.Utils
             material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             material.SetFloat("_Mode", 2);
-            material.SetInt("_ZWrite", 0);
+            //material.SetInt("_ZWrite", 0);
             material.EnableKeyword("_EMISSION");
             material.EnableKeyword("_ALPHABLEND_ON");
             material.EnableKeyword("_ALPHABLEND_ON_EMISSION");
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+
+        public static float StringToFloat(string text)
+        {
+            if (text == null) return 0;
+            float value = 0f;
+            try
+            {
+                value = float.Parse(text);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[Panthera -> Function.StringToFloat] Unable to parse the String.");
+                Debug.LogError(e.ToString());
+                value = 0f;
+            }
+            return value;
         }
 
     }

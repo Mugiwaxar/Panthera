@@ -27,8 +27,14 @@ namespace Panthera.BodyComponents
         public int dashFXID;
         public ParticleSystem dashParticles;
         public EmissionModule dashEmission;
+        public int furyAuraFXID;
+        public GameObject furyAuraObj;
+        public int GuardianAuraFXID;
+        public GameObject GuardianAuraObj;
+        public int AmbitionAuraFXID;
+        public GameObject AmbitionAuraObj;
 
-        public void Init()
+        public void DoInit()
         {
 
             // Get the Panthera Object //
@@ -37,7 +43,7 @@ namespace Panthera.BodyComponents
             // Don't need FX for the server //
             if (NetworkClient.active == false)
             {
-                enabled = false;
+                base.enabled = false;
                 return;
             }
 
@@ -47,18 +53,45 @@ namespace Panthera.BodyComponents
             //this.shieldRenderer.enabled = false;
 
             // Create the Leap Trail //
-            leapTrailFXID = Utils.FXManager.SpawnEffect(gameObject, Assets.LeapTrailFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true);
-            GameObject leapTrailEffect = Utils.FXManager.GetFX(leapTrailFXID);
-            leapTrailParticles = leapTrailEffect.GetComponentInChildren<ParticleSystem>();
-            leapTrailEmission = leapTrailParticles.emission;
-            leapTrailEmission.enabled = false;
+            this.leapTrailFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.LeapTrailFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            GameObject leapTrailEffect = Utils.FXManager.GetEffect(leapTrailFXID);
+            this.leapTrailParticles = leapTrailEffect.GetComponentInChildren<ParticleSystem>();
+            this.leapTrailEmission = leapTrailParticles.emission;
+            this.leapTrailEmission.enabled = false;
 
             // Create the Dash Trail //
-            dashFXID = Utils.FXManager.SpawnEffect(gameObject, Assets.DashFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true);
-            GameObject dashEffect = Utils.FXManager.GetFX(dashFXID);
-            dashParticles = dashEffect.GetComponentInChildren<ParticleSystem>();
-            dashEmission = dashParticles.emission;
-            dashEmission.enabled = false;
+            //this.dashFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.DashFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            //GameObject dashEffect = Utils.FXManager.GetEffect(dashFXID);
+            //this.dashParticles = dashEffect.GetComponentInChildren<ParticleSystem>();
+            //this.dashEmission = dashParticles.emission;
+            //this.dashEmission.enabled = false;
+
+            // Create the Fury Aura //
+            this.furyAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.FuryAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.furyAuraObj = Utils.FXManager.GetEffect(this.furyAuraFXID);
+            foreach (ParticleSystem ps in this.furyAuraObj.GetComponentsInChildren<ParticleSystem>())
+            {
+                EmissionModule em = ps.emission;
+                em.enabled = false;
+            }
+
+            // Create the Guardian Aura //
+            this.GuardianAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.GuardianAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.GuardianAuraObj = Utils.FXManager.GetEffect(this.GuardianAuraFXID);
+            foreach (ParticleSystem ps in this.GuardianAuraObj.GetComponentsInChildren<ParticleSystem>())
+            {
+                EmissionModule em = ps.emission;
+                em.enabled = false;
+            }
+
+            // Create the Ambition Aura //
+            this.AmbitionAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.AmbitionAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.AmbitionAuraObj = Utils.FXManager.GetEffect(this.AmbitionAuraFXID);
+            foreach (ParticleSystem ps in this.AmbitionAuraObj.GetComponentsInChildren<ParticleSystem>())
+            {
+                EmissionModule em = ps.emission;
+                em.enabled = false;
+            }
 
         }
 
@@ -75,58 +108,79 @@ namespace Panthera.BodyComponents
                 this.ptraObj.modelTransform.Find("Body").gameObject.SetActive(true);
                 this.ptraObj.modelTransform.Find("Arm").gameObject.SetActive(true);
             }
+            this.updateFadeLevel();
         }
 
-        //public void SetShieldFX(bool state)
-        //{
-        //    if (NetworkClient.active == false || this.shieldRenderer.enabled == state) return;
-        //    this.shieldRenderer.enabled = state;
-        //    new ClientSetShieldFX(this.gameObject, state).Send(NetworkDestination.Clients);
-        //}
-
-        //public void ServerSetShieldFX(bool state)
-        //{
-        //    if (this.ptraObj.HasAuthority() == true) return;
-        //    this.shieldRenderer.enabled = state;
-        //}
-
-        public void SetLeapTrailFX(bool state)
-        {
-            if (NetworkClient.active == false || leapTrailEmission.enabled == state) return;
-            leapTrailEmission.enabled = state;
-            new ClientSetLeapTrailFX(gameObject, state).Send(NetworkDestination.Clients);
-        }
-
-        public void SetDashFX(bool state)
-        {
-            if (NetworkClient.active == false || dashEmission.enabled == state) return;
-            dashEmission.enabled = state;
-            if (RoR2Application.isInMultiPlayer == true) new ClientSetDashFX(gameObject, state).Send(NetworkDestination.Clients);
-        }
-
-        public void SetStealthFX(bool state)
+        public void setLeapTrailFX(bool state)
         {
             if (NetworkClient.active == false) return;
-            new ClientSetStealthFX(gameObject, state).Send(NetworkDestination.Clients);
+            new ServerSetLeapTrailFX(base.gameObject, state).Send(NetworkDestination.Server);
         }
 
-        public void SetFadeLevel(float level)
+        public void setDashFX(bool state)
         {
-            if (ptraObj.stealthed == true)
-                level = Math.Min(1f / 255f * 73f, level);
-            SkinnedMeshRenderer redenrer = ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>();
-            if (level >= 1)
+            if (NetworkClient.active == false) return;
+            new ClientSetDashFX(base.gameObject, state).Send(NetworkDestination.Clients);
+        }
+
+        public void setStealthFX(bool state)
+        {
+            if (NetworkClient.active == false) return;
+            new ServerSetStealthFX(base.gameObject, state).Send(NetworkDestination.Server);
+        }
+
+        public void setFuryAuraFX(bool state)
+        {
+            if (NetworkClient.active == false) return;
+            new ServerSetFuryModeFX(base.gameObject, state).Send(NetworkDestination.Server);
+        }
+
+        public void setGuardianAuraFX(bool state)
+        {
+            if (NetworkClient.active == false) return;
+            new ServerSetGuardianModeFX(base.gameObject, state).Send(NetworkDestination.Server);
+        }
+
+        public void setAmbitionAuraFX(bool state)
+        {
+            if (NetworkClient.active == false) return;
+            new ServerSetAmbitionModeFX(base.gameObject, state).Send(NetworkDestination.Server);
+        }
+
+        public void updateFadeLevel()
+        {
+            float fadeLevel = this.ptraObj.modelLocator.modelTransform.GetComponent<CharacterModel>().fade;
+            if (this.ptraObj.stealthed == true)
+                fadeLevel = Math.Min(1f / 255f * 73f, fadeLevel);
+            SkinnedMeshRenderer redenrer = this.ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>();
+            if (fadeLevel >= 1)
             {
                 Utils.Functions.ToOpaqueMode(redenrer.material);
-                if (this.ptraObj.PantheraSkinIndex == 3) Utils.Functions.ToOpaqueMode(redenrer.materials[1]);
+                if (this.ptraObj.PantheraSkinIndex >= 3)
+                {
+                    foreach (Material material in redenrer.materials)
+                    {
+                        if (material.name.Contains("fur_face") || material.name.Contains("tail_tip_d"))
+                            continue;
+                        Utils.Functions.ToOpaqueMode(material);
+                    }
+                }
             }
             else
             {
                 Utils.Functions.ToFadeMode(redenrer.material);
-                if (this.ptraObj.PantheraSkinIndex == 3) Utils.Functions.ToFadeMode(redenrer.materials[1]);
-                Color color = new Color(1, 1, 1, level);
+                Color color = new Color(1, 1, 1, fadeLevel);
                 redenrer.material.SetColor("_Color", color);
-                if (this.ptraObj.PantheraSkinIndex == 3) redenrer.materials[1].SetColor("_Color", color);
+                if (this.ptraObj.PantheraSkinIndex >= 3)
+                {
+                    foreach (Material material in redenrer.materials)
+                    {
+                        if (material.name.Contains("fur_face") || material.name.Contains("tail_tip_d"))
+                            continue;
+                        Utils.Functions.ToFadeMode(material);
+                        material.SetColor("_Color", color);
+                    }
+                }
             }
         }
 

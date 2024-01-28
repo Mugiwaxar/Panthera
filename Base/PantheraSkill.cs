@@ -4,7 +4,9 @@ using Panthera.Base;
 using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
-using Panthera.SkillsHybrid;
+using Panthera.Passives;
+using Panthera.OldSkills;
+using Panthera.Skills;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -44,29 +46,29 @@ namespace Panthera.Base
 
         public static void RegisterSkills()
         {
-            SkillDefsList.Clear();
-            Skills.Rip.Create();
-            Skills.AirCleave.Create();
-            SkillsHybrid.Leap.Create();
-            Skills.MightyRoar.Create();
-            Skills.ClawsStorm.Create();
-            Skills.FrontShield.Create();
-            Skills.Prowl.Create();
-            Skills.FuriousBite.Create();
-            SkillsHybrid.Dash.Create();
-            SkillsHybrid.ShieldBash.Create();
-            Skills.ZoneHeal.Create();
-            SkillsPassive.WindWalker.Create();
-            SkillsPassive.TheRipper.Create();
-            SkillsHybrid.SaveMyFriend.Create();
-            SkillsPassive.ShieldOfPower.Create();
-            SkillsPassive.BurningSpirit.Create();
-            Skills.Slash.Create();
-            Skills.FireBird.Create();
-            SkillsPassive.PassivePower.Create();
-            Skills.Revive.Create();
-            Skills.Detection.Create();
-            SkillsPassive.Regeneration.Create();
+            //SkillDefsList.Clear();
+            //OldSkills.Rip.Create();
+            //OldSkills.AirCleave.Create();
+            //OldSkills.Leap.Create();
+            //OldSkills.MightyRoar.Create();
+            //OldSkills.ClawsStorm.Create();
+            //OldSkills.FrontShield.Create();
+            //OldSkills.Prowl.Create();
+            //OldSkills.FuriousBite.Create();
+            //OldSkills.Dash.Create();
+            //OldSkills.ShieldBash.Create();
+            //OldSkills.ZoneHeal.Create();
+            //OldPassives.WindWalker.Create();
+            //OldPassives.TheRipper.Create();
+            //OldSkills.SaveMyFriend.Create();
+            //OldPassives.ShieldOfPower.Create();
+            //OldPassives.BurningSpirit.Create();
+            //OldSkills.Slash.Create();
+            //OldSkills.FireBird.Create();
+            //OldPassives.PassivePower.Create();
+            //OldSkills.Revive.Create();
+            //OldSkills.Detection.Create();
+            //OldPassives.Regeneration.Create();
         }
 
         public static PantheraSkill GetSkillDef(int skillID)

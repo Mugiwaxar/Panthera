@@ -1,9 +1,12 @@
 ﻿
 using MonoMod.RuntimeDetour.HookGen;
 using Panthera;
+using Panthera.Abilities;
 using Panthera.Base;
+using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.GUI;
+using Panthera.MachineScripts;
 using Panthera.Utils;
 using R2API;
 using RoR2;
@@ -25,167 +28,344 @@ using static RoR2.Navigation.NodeGraph;
 
 namespace Panthera.Base
 {
-    class Character
+
+    public class Character
     {
 
-        public static List<SurvivorDef> SurvivorDefinitions = new List<SurvivorDef>();
-        public static readonly Color CharacterColor = new Color(1, 1, 1);
-
-        public static DamageAPI.ModdedDamageType BarrierDamageType;
-
         // (int Level, int MaxExperience) Represent a list of all level max Experience //
-        public static Dictionary<int, int> MaxExperienceList = new Dictionary<int, int>();
+        public Dictionary<int, int> maxExperienceList = new Dictionary<int, int>();
 
-        public static bool AllowXP = false;
-        public static int CharacterLevel
+        public CharacterSkills characterSkills;
+        public CharacterAbilities characterAbilities;
+        public CharacterCombos characterCombos;
+        public PantheraObj pantheraObj;
+
+        public int characterLevel
         {
             get
             {
                 int lastValue = 1;
-                foreach (KeyValuePair<int, int> entry in MaxExperienceList)
+                foreach (KeyValuePair<int, int> entry in this.maxExperienceList)
                 {
-                    if (TotalExperience >= entry.Value)
+                    if (this.totalExperience >= entry.Value)
                         lastValue = entry.Key + 1;
                     else
                         break;
                 }
-                return Math.Min(lastValue, MaxLevel);
+                return Math.Min(lastValue, this.maxLevel);
             }
         }
-        public static int MaxLevel
+        public int maxLevel
         {
             get
             {
                 int i = 0;
-                foreach (PantheraAbility ability in PantheraAbility.AbilitytiesDefsList.Values)
+                foreach (PantheraAbility ability in characterAbilities.AbilityList.Values)
                 {
                     i += ability.maxLevel;
                 }
                 return i;
             }
         }
-        public static int LevelExperience
+        public int levelExperience
         {
             get
             {
-                if (MaxExperienceList.ContainsKey(CharacterLevel - 1) == false) return TotalExperience;
-                return TotalExperience - MaxExperienceList[CharacterLevel - 1];
+                if (this.maxExperienceList.ContainsKey(this.characterLevel - 1) == false) return this.totalExperience;
+                return this.totalExperience - this.maxExperienceList[characterLevel - 1];
             }
         }
-        public static int LevelMaxExperience
+        public int levelMaxExperience
         {
             get
             {
-                if (MaxExperienceList.ContainsKey(CharacterLevel) == false) return 0;
-                if (MaxExperienceList.ContainsKey(CharacterLevel-1) == false) return MaxExperienceList[CharacterLevel];
-                return MaxExperienceList[CharacterLevel] - MaxExperienceList[CharacterLevel-1];
+                if (this.maxExperienceList.ContainsKey(this.characterLevel) == false) return 0;
+                if (this.maxExperienceList.ContainsKey(this.characterLevel - 1) == false) return this.maxExperienceList[characterLevel];
+                return this.maxExperienceList[this.characterLevel] - this.maxExperienceList[this.characterLevel - 1];
             }
         }
-        public static int TotalExperience;
-        public static int AvailablePoint
+        public int totalExperience
         {
             get
             {
-                return CharacterLevel - SpentPoint;
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_CharacterXP);
+                int value = (int)Utils.Functions.StringToFloat(stringValue);
+                return value;
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_CharacterXP, value.ToString());
+                PantheraSaveSystem.Save();
             }
         }
-        public static int SpentPoint
+        public int totalAttributePoints
+        {
+            get
+            { 
+               return this.characterLevel;
+            }
+        }
+        public int usedAttributePoints
+        {
+            get
+            {
+                return (int)(this.endurance + this.force + this.agility + this.swiftness + this.dexterity) - 5;
+            }
+        }
+        public int attributePointsLeft
+        {
+            get
+            {
+                return this.totalAttributePoints - this.usedAttributePoints;
+            }
+        }
+        public int skillPointsLeft
+        {
+            get
+            {
+                return this.characterLevel - this.usedSkillPoints;
+            }
+        }
+        public int usedSkillPoints
         {
             get
             {
                 int i = 0;
-                foreach (int level in Preset.SelectedPreset.unlockedAbilitiesList.Values)
+                foreach (int level in this.characterAbilities.unlockedAbilitiesList.Values)
                 {
                     i += level;
                 }
                 return i;
             }
         }
-        
 
-        public static void RegisterCharacter()
+        public float _serverMaxShield;
+        public float maxShield
+        {
+            get
+            {
+                //if (ptraObj != null && ptraObj.characterBody != null && ptraObj.characterBody.maxHealth > 0)
+                //    return ptraObj.characterBody.maxHealth * frontShield_maxShieldHealthPercent;
+                float maxShield = PantheraConfig.Default_MaxShield;
+                return maxShield;
+            }
+        }
+
+        public float jumpCount
+        {
+            get
+            {
+                float jumpCount = PantheraConfig.Default_jumpCount;
+                return jumpCount;
+            }
+        }
+        public float barrierDecayRateMultiplier
+        {
+            get
+            {
+                float rateMultiplier = 1;
+                return rateMultiplier;
+            }
+        }
+
+        #region Attributes
+        public float endurance
+        {
+            get
+            {
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Endurance);
+                float value = Utils.Functions.StringToFloat(stringValue);
+                return Math.Max(value, 1);
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_Endurance, value.ToString());
+                PantheraSaveSystem.Save();
+            }
+        }
+        public float force
+        {
+            get
+            {
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Force);
+                float value = Utils.Functions.StringToFloat(stringValue);
+                return Math.Max(value, 1);
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_Force, value.ToString());
+                PantheraSaveSystem.Save();
+            }
+        }
+        public float agility
+        {
+            get
+            {
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Agility);
+                float value = Utils.Functions.StringToFloat(stringValue);
+                return Math.Max(value, 1);
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_Agility, value.ToString());
+                PantheraSaveSystem.Save();
+            }
+        }
+        public float swiftness
+        {
+            get
+            {
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Swiftness);
+                float value = Utils.Functions.StringToFloat(stringValue);
+                return Math.Max(value, 1);
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_Swiftness, value.ToString());
+                PantheraSaveSystem.Save();
+            }
+        }
+        public float dexterity
+        {
+            get
+            {
+                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Dexterity);
+                float value = Utils.Functions.StringToFloat(stringValue);
+                return Math.Max(value, 1);
+            }
+            set
+            {
+                PantheraSaveSystem.SetValue(PantheraConfig.SP_Dexterity, value.ToString());
+                PantheraSaveSystem.Save();
+            }
+        }
+        #endregion
+
+        #region Stat Multipliers
+        public float maxHealthMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.endurance * 0.05f;
+                return mult;
+            }
+        }
+        public float healthRegenMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.endurance * 0.03f;
+                return mult;
+            }
+        }
+        public float moveSpeedMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.agility * 0.02f;
+                mult += this.swiftness * 0.04f;
+                return mult;
+            }
+        }
+        public float damageMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.force * 0.05f;
+                mult += this.dexterity * 0.02f;
+                return mult;
+            }
+        }
+        public float attackSpeedMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.agility * 0.01f;
+                mult += this.swiftness * 0.03f;
+                return mult;
+            }
+        }
+        public float critMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.agility * 0.02f;
+                mult += this.dexterity * 0.04f;
+                return mult;
+            }
+        }
+        public float DefenseMult
+        {
+            get
+            {
+                float mult = 1;
+                mult += this.endurance * 0.02f;
+                mult += this.force * 0.04f;
+                return mult;
+            }
+        }
+        #endregion
+
+        public int lunarCoin
+        {
+            get
+            {
+                return (int)Panthera.LoadedUserProfile.coins;
+            }
+            set
+            {
+                Panthera.LoadedUserProfile.coins = (uint)value;
+            }
+        }
+
+        public Character()
         {
 
-            // Create the Prefabs //
-            Prefab.CharacterPrefab = Prefab.CreateCharacterPrefab(Assets.MainPrefab, PantheraConfig.Model_PrefabName);
-            Prefab.CharacterDisplayPrefab = Prefab.CreateDisplayPrefab(Assets.DisplayPrefab, PantheraConfig.Model_PrefabName, Prefab.CharacterPrefab);
-            Prefab.RegisterSkills(Prefab.CharacterPrefab);
-
-            // Create the survivor def //
-            SurvivorDef survivorDef = ScriptableObject.CreateInstance<SurvivorDef>();
-
-            survivorDef.bodyPrefab = Prefab.CharacterPrefab;
-            survivorDef.displayPrefab = Prefab.CharacterDisplayPrefab;
-            survivorDef.primaryColor = CharacterColor;
-            survivorDef.displayNameToken = PantheraTokens.Get("PANTHERA_NAME");
-            survivorDef.descriptionToken = PantheraTokens.Get("PANTHERA_DESC");
-            survivorDef.desiredSortPosition = 999;
-            //survivorDef.unlockableDef = unlockableDef;
-
-            // Register the survivor //
-            SurvivorDefinitions.Add(survivorDef);
-
-            // Register Damage Type //
-            BarrierDamageType = DamageAPI.ReserveDamageType();
-
         }
-        
-        public static void CalculMaxExperiencePerLevel()
+
+        public void init()
+        {
+            // Create the Character Skills //
+            this.characterSkills = new CharacterSkills();
+            // Create the Character Abilities //
+            this.characterAbilities = new CharacterAbilities();
+            // Create the Character Combos //
+            this.characterCombos = new CharacterCombos();
+            // Create the level experience list //
+            CalculMaxExperiencePerLevel();
+        }
+
+        public void CalculMaxExperiencePerLevel()
         {
             int levelMaxXP = 0;
-            for (int i = 1; i <= MaxLevel; i++)
+            for (int i = 1; i <= maxLevel; i++)
             {
                 if (i > 1000) break;
-                levelMaxXP += (int)Math.Round((i - 1) * 100 * 0.3 + 100);
-                MaxExperienceList.Add(i, levelMaxXP);
+                levelMaxXP += (int)Math.Round((i - 1) * 100 * 0.5 + 30);
+                this.maxExperienceList.Add(i, levelMaxXP);
             }
         }
 
-        public static void GameEndRepportHook(Action<RoR2.UI.GameEndReportPanelController, RunReport.PlayerInfo> orig, RoR2.UI.GameEndReportPanelController self, RunReport.PlayerInfo playerInfo)
+        public void resetCharacter()
         {
-            orig(self, playerInfo);
-
-            // Check the Character //
-            if (playerInfo.bodyName != "PantheraBody" || AllowXP == false)
-            {
-                return;
-            }
-
-            // Don't allow more XP //
-            AllowXP = false;
-
-            // Calcule the total Points win //
-            ulong num = 0UL;
-            StatSheet statSheet = playerInfo.statSheet;
-            self.AllocateStatStrips(self.statsToDisplay.Length);
-            for (int i = 0; i < self.statsToDisplay.Length; i++)
-            {
-                string text = self.statsToDisplay[i];
-                StatDef statDef = StatDef.Find(text);
-                if (statDef == null)
-                {
-                    Debug.LogWarningFormat("GameEndReportPanelController.SetStatSheet: Could not find stat def \"{0}\".", new object[]
-                    {
-                            text
-                    });
-                }
-                else
-                {
-                    self.AssignStatToStrip(statSheet, statDef, self.statStrips[i]);
-                    num += statSheet.GetStatPointValue(statDef);
-                }
-            }
-
-            // Add the win points to Experience //
-            int experience = (int)(num / (ulong)PantheraConfig.ExperienceDivider);
-            TotalExperience += experience;
-
+            // Set all Attributes to zero //
+            this.endurance = 0;
+            this.force = 0;
+            this.agility = 0;
+            this.swiftness = 0;
+            this.dexterity = 0;
+            // Clear the Skills List //
+            this.characterAbilities.unlockedAbilitiesList.Clear();
+            this.characterAbilities.unlockedAbilitiesList.Add(PantheraConfig.FelineSkills_AbilityID, 0);
             // Save //
-            PantheraSaveSystem.SetValue("CharacterExperience", TotalExperience.ToString());
             PantheraSaveSystem.Save();
-
         }
-
 
     }
 }

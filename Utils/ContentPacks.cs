@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Panthera.Utils
 {
-    internal class ContentPacks : IContentPackProvider
+    public class ContentPacks : IContentPackProvider
     {
-        internal ContentPack contentPack = new ContentPack();
+        public ContentPack contentPack = new ContentPack();
         public string identifier => "com.Dexy.Panthera";
 
         public void Initialize()
@@ -24,15 +24,15 @@ namespace Panthera.Utils
         {
             this.contentPack.identifier = this.identifier;
             contentPack.bodyPrefabs.Add(Prefab.bodyPrefabs.ToArray());
-            contentPack.survivorDefs.Add(Character.SurvivorDefinitions.ToArray());
+            contentPack.survivorDefs.Add(Prefab.SurvivorDefinitions.ToArray());
             contentPack.projectilePrefabs.Add(Assets.projectilePrefabs.ToArray());
             contentPack.skillFamilies.Add(Prefab.skillFamilies.ToArray());
             contentPack.skillDefs.Add(Prefab.skillDefs.ToArray());
             contentPack.entityStateTypes.Add(Prefab.entityStates.ToArray());
             contentPack.buffDefs.Add(Base.Buff.buffDefs.ToArray());
             contentPack.effectDefs.Add(Assets.effectDefs.ToArray());
-            contentPack.masterPrefabs.Add(Panthera.masterPrefabs.ToArray());
-            contentPack.networkedObjectPrefabs.Add(Prefab.networkedObjectPrefabs.ToArray());
+            contentPack.masterPrefabs.Add(Prefab.masterPrefabs.ToArray());
+            //contentPack.networkedObjectPrefabs.Add(Prefab.networkedObjectPrefabs.ToArray());
             //contentPack.networkSoundEventDefs.Add(Assets.networkSoundEventDefs.ToArray());
             //contentPack.unlockableDefs.Add(Unlockables.unlockableDefs.ToArray());
 

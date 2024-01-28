@@ -4,7 +4,6 @@ using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
-using Panthera.Passives;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -24,66 +23,69 @@ namespace Panthera.BodyComponents
         public PantheraKinematicMotor kinematicPantheraMotor;
         public BodyAnimatorSmoothingParameters.SmoothingParameters smoothingParameters;
 
-        public bool sprinting = false;
         public float lastSpringTime = 0;
         public bool doJump;
-        public bool startSprint;
+        public bool isSprinting;
         public bool wasDashing;
 
         public void DoInit()
         {
-            pantheraObj = GetComponent<PantheraObj>();
-            characterBody = GetComponent<CharacterBody>();
-            kinematicPantheraMotor = GetComponent<PantheraKinematicMotor>();
-            Motor = GetComponent<PantheraKinematicMotor>();
-            smoothingParameters = BodyAnimatorSmoothingParameters.defaultParameters;
+            this.pantheraObj = GetComponent<PantheraObj>();
+            this.characterBody = GetComponent<CharacterBody>();
+            this.kinematicPantheraMotor = GetComponent<PantheraKinematicMotor>();
+            base.Motor = GetComponent<PantheraKinematicMotor>();
+            this.smoothingParameters = BodyAnimatorSmoothingParameters.defaultParameters;
         }
 
         public new void Awake()
         {
-            if (Motor == null) Motor = GetComponent<PantheraKinematicMotor>();
-            networkIdentity = GetComponent<NetworkIdentity>();
-            body = GetComponent<PantheraBody>();
-            capsuleCollider = GetComponent<CapsuleCollider>();
-            previousPosition = transform.position;
-            Motor.Rigidbody.mass = mass;
-            Motor.MaxStableSlopeAngle = 70f;
-            Motor.MaxStableDenivelationAngle = 55f;
-            Motor.RebuildCollidableLayers();
+            if (base.Motor == null) base.Motor = GetComponent<PantheraKinematicMotor>();
+            base.networkIdentity = GetComponent<NetworkIdentity>();
+            base.body = GetComponent<PantheraBody>();
+            base.capsuleCollider = GetComponent<CapsuleCollider>();
+            base.previousPosition = transform.position;
+            base.Motor.Rigidbody.mass = mass;
+            base.Motor.MaxStableSlopeAngle = 70f;
+            base.Motor.MaxStableDenivelationAngle = 55f;
+            base.Motor.RebuildCollidableLayers();
             if (generateParametersOnAwake)
             {
-                GenerateParameters();
+                base.GenerateParameters();
             }
-            useGravity = gravityParameters.CheckShouldUseGravity();
-            isFlying = flightParameters.CheckShouldUseFlight();
+            base.useGravity = base.gravityParameters.CheckShouldUseGravity();
+            base.isFlying = base.flightParameters.CheckShouldUseFlight();
         }
 
         public new void FixedUpdate()
         {
 
+            // Return if Panthera is Sleeping //
+            if (this.pantheraObj?.getPassiveScript()?.isSleeping == true)
+                return;
+
             // Do the jump //
             ProcessJump();
 
             // Get the move vector //
-            Vector3 moveVector = pantheraObj.pantheraInputBank.moveVector;
+            Vector3 moveVector = this.pantheraObj.pantheraInputBank.moveVector;
 
             // Get the Aim direction //
-            Vector3 aimDirection = pantheraObj.pantheraInputBank.aimDirection;
+            Vector3 aimDirection = this.pantheraObj.pantheraInputBank.aimDirection;
 
             // Set the move direction //
-            moveDirection = moveVector;
+            base.moveDirection = moveVector;
 
             // Set the move vector //
-            characterDirection.moveVector = characterBody.shouldAim ? aimDirection : moveVector;
+            base.characterDirection.moveVector = this.characterBody.shouldAim ? aimDirection : moveVector;
 
             // Stop the sprint if the character is too slow //
             if (moveVector.magnitude <= 0.5f)
             {
-                startSprint = false;
+                this.isSprinting = false;
             }
 
             // Set the sprint //
-            characterBody.isSprinting = startSprint;
+            this.characterBody.isSprinting = this.isSprinting;
 
             float fixedDeltaTime = Time.fixedDeltaTime;
             if (fixedDeltaTime == 0f)
@@ -91,40 +93,40 @@ namespace Panthera.BodyComponents
                 return;
             }
 
-            Vector3 position = transform.position;
-            if ((previousPosition - position).sqrMagnitude < 0.00062500004f * fixedDeltaTime)
+            Vector3 position = base.transform.position;
+            if ((base.previousPosition - position).sqrMagnitude < 0.00062500004f * fixedDeltaTime)
             {
-                restStopwatch += fixedDeltaTime;
+                base.restStopwatch += fixedDeltaTime;
             }
             else
             {
-                restStopwatch = 0f;
+                base.restStopwatch = 0f;
             }
 
-            previousPosition = position;
-            if (netIsGrounded)
+            base.previousPosition = position;
+            if (base.netIsGrounded)
             {
-                lastGroundedTime = Run.FixedTimeStamp.now;
+                base.lastGroundedTime = Run.FixedTimeStamp.now;
             }
 
             // Check if the Character is Stealthed //
-            if (pantheraObj != null && pantheraObj.stealthed == true)
+            if (this.pantheraObj != null && this.pantheraObj.stealthed == true)
             {
-                // Check the Silent Predator Ability and stop the Sprint //
-                if (pantheraObj.activePreset.getAbilityLevel(PantheraConfig.SilentPredatorAbilityID) < 3)
-                    characterBody.isSprinting = false;
+                //// Check the Silent Predator Ability and stop the Sprint //
+                //if (pantheraObj.activePreset.getAbilityLevel(PantheraConfig.SilentPredatorAbilityID) < 3)
+                //    characterBody.isSprinting = false;
             }
 
             // Update the Dash speed //
-            if (pantheraObj.dashing == true && wasDashing == false)
+            if (this.pantheraObj.dashing == true && this.wasDashing == false)
             {
                 characterBody.RecalculateStats();
                 wasDashing = true;
             }
-            else if (pantheraObj.dashing == false && wasDashing == true)
+            else if (this.pantheraObj.dashing == false && this.wasDashing == true)
             {
-                characterBody.RecalculateStats();
-                wasDashing = false;
+                this.characterBody.RecalculateStats();
+                this.wasDashing = false;
             }
 
         }
@@ -136,23 +138,23 @@ namespace Panthera.BodyComponents
             bool JumpBoost = false;
 
             // Check if the character can jump //
-            if (doJump && jumpCount < characterBody.maxJumpCount)
+            if (this.doJump && base.jumpCount < this.characterBody.maxJumpCount)
             {
 
                 // Check if Wax Quail Item must trigger //
-                int itemCount = characterBody.inventory.GetItemCount(RoR2Content.Items.JumpBoost);
+                int itemCount = this.characterBody.inventory.GetItemCount(RoR2Content.Items.JumpBoost);
                 float horizontalBonus = 1f;
                 float verticalBonus = 1f;
-                if (jumpCount >= 1)
+                if (base.jumpCount >= 1)
                 {
                     featherJump = true;
                     horizontalBonus = 1.5f;
                     verticalBonus = 1.5f;
                 }
-                else if (itemCount > 0f && characterBody.isSprinting)
+                else if (itemCount > 0f && this.characterBody.isSprinting)
                 {
                     float num = characterBody.acceleration * airControl;
-                    if (characterBody.moveSpeed > 0f && num > 0f)
+                    if (this.characterBody.moveSpeed > 0f && num > 0f)
                     {
                         JumpBoost = true;
                         float num2 = Mathf.Sqrt(10f * itemCount / num);
@@ -162,19 +164,19 @@ namespace Panthera.BodyComponents
                 }
 
                 // Apply the jump velocity to the character //
-                GenericCharacterMain.ApplyJumpVelocity(this, characterBody, horizontalBonus, verticalBonus, false);
+                GenericCharacterMain.ApplyJumpVelocity(this, this.characterBody, horizontalBonus, verticalBonus, false);
 
                 // Create the jump animation //
-                int layerIndex = pantheraObj.modelAnimator.GetLayerIndex("Body");
+                int layerIndex = this.pantheraObj.modelAnimator.GetLayerIndex("Body");
                 if (layerIndex >= 0)
                 {
-                    if (jumpCount == 0 || characterBody.baseJumpCount == 1)
+                    if (base.jumpCount == 0 || this.characterBody.baseJumpCount == 1)
                     {
-                        pantheraObj.modelAnimator.CrossFadeInFixedTime("Jump", smoothingParameters.intoJumpTransitionTime, layerIndex);
+                        this.pantheraObj.modelAnimator.CrossFadeInFixedTime("Jump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
                     }
                     else
                     {
-                        pantheraObj.modelAnimator.CrossFadeInFixedTime("BonusJump", smoothingParameters.intoJumpTransitionTime, layerIndex);
+                        this.pantheraObj.modelAnimator.CrossFadeInFixedTime("BonusJump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
                     }
                 }
 
@@ -206,12 +208,12 @@ namespace Panthera.BodyComponents
                 }
 
                 // Increase the jump count //
-                jumpCount++;
+                base.jumpCount++;
 
             }
 
             // Turn doJump to false //
-            doJump = false;
+            this.doJump = false;
 
         }
 

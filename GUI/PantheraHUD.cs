@@ -1,6 +1,10 @@
 ﻿using Panthera.Base;
 using Panthera.BodyComponents;
+using Panthera.Combos;
 using Panthera.Components;
+using Panthera.GUI.Tooltips;
+using Panthera.Utils;
+using RewiredConsts;
 using RoR2;
 using RoR2.UI;
 using System;
@@ -10,483 +14,714 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static Panthera.GUI.KeysBinder;
+using static RoR2.Skills.ComboSkillDef;
 
 namespace Panthera.GUI
 {
     public class PantheraHUD : MonoBehaviour
     {
 
-        public static PantheraHUD Instance;
-
         public HUD origHUD;
-        public GameObject newHUD;
         public GameObject origMainContainer;
+
         public PantheraObj ptraObj;
-        public PantheraBody pantheraBody;
-        public PantheraHealthComponent healthComponent;
-        public PantheraInputBank inputBank;
-        public PantheraSkillLocator skillLocator;
 
-        public RectTransform buffsDisplay;
-        public RectTransform equipmentDisplay;
-
-        public Material healthBarMat;
-        public Material barrierbarMat;
-        public Material xpBarMat;
-        public Material energyBarMat;
-        public Material powerBarMat;
+        public LevelText pantheraLevelTextComp;
+        public RectTransform pantheraLevelBarRect;
         public GameObject furyBarObj;
         public Material furyBarMat;
-        public GameObject comboBarObj;
-        public Image filledComboBarImg;
-        public GameObject shieldBarObj;
-        public Image filledShieldBarImg;
-        public Image ShieldIconRed;
-        public Image redShieldBarImg;
-        public GameObject staminaBar;
-        public Image FilledStaminaBar;
-        public TextMeshProUGUI healthText;
-        public TextMeshProUGUI xpText;
-        public TextMeshProUGUI levelText;
-        public TextMeshProUGUI energyText;
-        public TextMeshProUGUI powerText;
-        public TextMeshProUGUI furyText;
-        public TextMeshProUGUI shieldText;
-        public Image portrait;
 
-        public GameObject actionBar;
-        public GameObject cooldownBar;
+        public GameObject abilitiesIcons;
+        public GameObject spellsIcons;
+        public GameObject combosFrame;
+        public GameObject comboFailedFrame;
+        public GameObject cooldownFrame;
+        public GameObject shieldBar;
 
-        public Dictionary<int, GameObject> cooldownsObjList = new Dictionary<int, GameObject>(); // SkillID, Cooldown Frame GameObject
+        public GameObject levelUpObj;
+        public int lastSawLevel = 0;
 
-        // (SlotID 1 - 10, Slot Object //
-        public Dictionary<int, GameObject> HUDSkillSlotsList = new Dictionary<int, GameObject>();
+        public GameObject ability1Obj;
+        public GameObject ability2Obj;
+        public GameObject ability3Obj;
+        public GameObject ability4Obj;
+        public GameObject spellsModeObj;
+        public GameObject spell1Obj;
+        public GameObject spell2Obj;
+        public GameObject spell3Obj;
+        public GameObject spell4Obj;
+        public GameObject spell5Obj;
+        public GameObject spell6Obj;
+        public GameObject spell7Obj;
+        public GameObject spell8Obj;
 
         public static void HUDAwakeHook(Action<RoR2.UI.HUD> orig, RoR2.UI.HUD self)
         {
+
             // Call the base function //
             orig(self);
+
             // Check if Client //
             if (NetworkClient.active == false)
                 return;
+
             // Create the Panthera HUD //
-            if (Instance == null) 
-                Instance = self.mainContainer.AddComponent<PantheraHUD>();
-            else 
-                Instance = self.mainContainer.GetComponent<PantheraHUD>();
-            Instance.enabled = false;
-            Instance.origHUD = self;
-            Instance.origMainContainer = self.mainContainer;
+            if (Panthera.PantheraHUD != null)
+                GameObject.DestroyImmediate(Panthera.PantheraHUD);
+            Panthera.PantheraHUD = self.mainContainer.AddComponent<PantheraHUD>();
+            Panthera.PantheraHUD.origHUD = self;
+            Panthera.PantheraHUD.origMainContainer = self.mainContainer;
+
+            // Add the Debug Info Component //
+            Utils.DebugInfo.DebugInfoComp = self.mainContainer.gameObject.AddComponent<Utils.DebugInfo>();
+
+            // Disable the HUD //
+            Panthera.PantheraHUD.enabled = false;
+
         }
 
-        public void CreateHUD(PantheraObj ptraObj)
+        public void StartHUD(PantheraObj ptraObj)
         {
 
-            // Stop if Server //
-            if (NetworkClient.active == false)
-                return;
-            else
-                this.enabled = true;
-
-            // Get the Panthera Object //
+            // Save the Panthera Object //
             this.ptraObj = ptraObj;
 
-            // Remove the unwanted origin HUD things //
-            this.origHUD.healthBar?.gameObject?.SetActive(false);
-            this.origHUD.expBar?.gameObject?.SetActive(false);
-            this.origHUD.levelText?.gameObject?.SetActive(false);
-            Transform scaler = this.origMainContainer.transform?.Find("MainUIArea")?.Find("SpringCanvas")?.Find("BottomRightCluster")?.Find("Scaler")?.transform;
-            this.equipmentDisplay = (RectTransform)scaler.GetChild(2);
-            if (scaler != null)
+            // Enable the HUD //
+            Panthera.PantheraHUD.enabled = true;
+
+            // Disable the Cursor //
+            if (Panthera.InputPlayer != null && MPEventSystemManager.FindEventSystem(Panthera.InputPlayer) != null)
             {
-                scaler.Find("Skill1Root")?.gameObject?.SetActive(false);
-                scaler.Find("Skill2Root")?.gameObject?.SetActive(false);
-                scaler.Find("Skill3Root")?.gameObject?.SetActive(false);
-                scaler.Find("Skill4Root")?.gameObject?.SetActive(false);
-                scaler.Find("SprintCluster")?.gameObject?.SetActive(false);
-                scaler.Find("InventoryCluster")?.gameObject?.SetActive(false);
-            }
-            foreach (SkillIcon icon in this.origHUD.skillIcons)
-            {
-                icon?.gameObject?.SetActive(false);
+                MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount = 0;
             }
 
-            // Up the Notification Area //
-            RectTransform notifArea = (RectTransform)this.origMainContainer.transform.FindChild("NotificationArea");
-            if (notifArea != null)
-                notifArea.localPosition = new Vector3(notifArea.localPosition.x, notifArea.localPosition.y + 200, notifArea.localPosition.z);
+            // Init the Crosshair //
+            GameObject crosshairObj = GameObject.Instantiate<GameObject>(Assets.CrosshairPrefab, this.origMainContainer.transform.Find("MainUIArea").Find("CrosshairCanvas"));
+            this.ptraObj.crosshairComp = crosshairObj.AddComponent<CrosshairComp>();
+            this.ptraObj.crosshairComp.ptraObj = this.ptraObj;
+            this.ptraObj.crosshairComp.crosshairObj = crosshairObj;
 
-            // Instantiate the new HUD //
-            if (this.newHUD == null)
-                this.newHUD = UnityEngine.Object.Instantiate<GameObject>(Assets.PantheraHUDPrefab, this.origMainContainer.transform, false);
+            // Get the Cluster //
+            GameObject levelDisplayCluster = this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster")?.gameObject;
 
-            // Find all Bars //
-            Transform leftFrame = this.newHUD.transform.Find("LeftUnitFrame");
-            Transform rightFrame = this.newHUD.transform.Find("RightUnitFrame");
-            this.healthBarMat = leftFrame.Find("Bars").Find("HealthBar").GetComponent<Image>().materialForRendering;
-            this.barrierbarMat = leftFrame.Find("Bars").Find("BarrierBar").GetComponent<Image>().materialForRendering;
-            this.xpBarMat = leftFrame.Find("Bars").Find("XpBar").GetComponent<Image>().materialForRendering;
-            this.energyBarMat = rightFrame.Find("Bars").Find("EnergyBar").GetComponent<Image>().materialForRendering;
-            this.powerBarMat = rightFrame.Find("Bars").Find("PowerBar").GetComponent<Image>().materialForRendering;
-            this.furyBarObj = rightFrame.Find("FuryBar").gameObject;
+            // Create the Panthera XP Bar //
+            GameObject XPBar = GameObject.Instantiate<GameObject>(levelDisplayCluster, levelDisplayCluster.transform.parent);
+            XPBar.name = "PantheraLevel";
+            GameObject.DestroyImmediate(XPBar.transform.Find("BuffDisplayRoot").gameObject);
+            GameObject.DestroyImmediate(XPBar.transform.Find("ExpBarRoot").GetComponent<ExpBar>());
+            XPBar.transform.Find("LevelDisplayRoot").Find("PrefixText").GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            XPBar.transform.Find("LevelDisplayRoot").Find("ValueText").GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            XPBar.transform.Find("ExpBarRoot").Find("ShrunkenRoot").Find("FillPanel").GetComponent<Image>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            XPBar.transform.Find("LevelDisplayRoot").GetComponent<LevelText>().SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
+            this.pantheraLevelTextComp = XPBar.transform.Find("LevelDisplayRoot").GetComponent<LevelText>();
+            this.pantheraLevelBarRect = XPBar.transform.Find("ExpBarRoot").Find("ShrunkenRoot").Find("FillPanel").GetComponent<RectTransform>();
+            this.levelUpObj = GameObject.Instantiate<GameObject>(new GameObject(), XPBar.transform.Find("LevelDisplayRoot").Find("PrefixText"));
+            this.levelUpObj.name = "LevelUpImage";
+            levelUpObj.transform.localScale = new Vector3(0.13f, 0.20f, 0.20f);
+            Image imageComp = levelUpObj.AddComponent<Image>();
+            imageComp.sprite = Assets.LevelUpIcon;
+            this.levelUpObj.active = false;
+
+            // Change the Health Bar Order //
+            GameObject healthbarRoot = origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("HealthbarRoot").gameObject;
+            healthbarRoot.transform.SetParent(levelDisplayCluster.transform.parent.parent);
+            healthbarRoot.transform.SetParent(levelDisplayCluster.transform.parent);
+
+            // Create the Fury Bar //
+            this.furyBarObj = GameObject.Instantiate<GameObject>(Assets.FuryBar, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+            this.furyBarObj.transform.localPosition = new Vector3(-5, 38, 0);
             this.furyBarMat = this.furyBarObj?.transform?.Find("Health_ORB").GetComponent<Image>().materialForRendering;
-            this.comboBarObj = this.newHUD.transform.Find("ComboBar").gameObject;
-            this.filledComboBarImg = this.comboBarObj?.transform.Find("FilledComboBar").GetComponent<Image>();
-            this.shieldBarObj = this.newHUD.transform.Find("ShieldBar").gameObject;
-            this.filledShieldBarImg = this.shieldBarObj.transform.Find("ShieldBarFilled").GetComponent<Image>();
-            this.redShieldBarImg = this.shieldBarObj.transform.Find("ShieldBarRed").GetComponent<Image>();
-            this.staminaBar = this.newHUD.transform.Find("StaminaBar").gameObject;
-            this.FilledStaminaBar = this.staminaBar.transform.Find("FilledStaminaBar").GetComponent<Image>();
 
-            // Find all texts //
-            this.healthText = leftFrame.Find("Bars").Find("BarrierBar").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.xpText = leftFrame.Find("Bars").Find("XpBar").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.levelText = leftFrame.Find("Level").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.energyText = rightFrame.Find("Bars").Find("EnergyBar").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.powerText = rightFrame.Find("Bars").Find("PowerBar").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.furyText = rightFrame.Find("FuryBar").Find("Text").GetComponent<TextMeshProUGUI>();
-            this.shieldText = this.shieldBarObj?.transform?.Find("ShieldBarText").GetComponent<TextMeshProUGUI>();
+            // Set the Current Level //
+            this.lastSawLevel = Panthera.PantheraCharacter.characterLevel;
 
-            // Find the Portrait //
-            this.portrait = leftFrame.Find("Image Wrap").Find("UserPic").GetComponent<Image>();
+            // Instantiate the Abilities Icons //
+            this.abilitiesIcons = GameObject.Instantiate<GameObject>(Assets.AbilitiesIcons, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+            this.abilitiesIcons.transform.localPosition = new Vector3(-15, 230, 0);
+            this.abilitiesIcons.SetActive(true);
 
-            // Change the Portrait //
-            if (this.ptraObj.PantheraSkinIndex == 1) this.portrait.sprite = Assets.Portrait1;
-            if (this.ptraObj.PantheraSkinIndex == 2) this.portrait.sprite = Assets.Portrait2;
-            if (this.ptraObj.PantheraSkinIndex == 3) this.portrait.sprite = Assets.Portrait3;
+            // Instantiate the Spells Icons //
+            this.spellsIcons = GameObject.Instantiate<GameObject>(Assets.SpellsIcons, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster"));
+            this.spellsIcons.transform.localPosition = new Vector3(30, 140, 0);
+            this.spellsIcons.SetActive(true);
 
-            // Find all HUD Skill Slots //
-            this.actionBar = this.newHUD.transform.Find("ActionBar").gameObject;
-            for (int i = 1; i <= 10; i++)
-            {
-                // Find the Skill Slot //
-                GameObject skillSlot = this.actionBar.transform.Find("BarSkill" + (i).ToString()).gameObject;
-                if (HUDSkillSlotsList.ContainsKey(i) == false)
-                    HUDSkillSlotsList.Add(i, skillSlot);
-            }
+            // Get all Ability Objects //
+            this.ability1Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability1Image").gameObject;
+            this.ability2Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability2Image").gameObject;
+            this.ability3Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability3Image").gameObject;
+            this.ability4Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability4Image").gameObject;
 
-            // Find the Cooldown Bar //
-            this.cooldownBar = this.newHUD.transform.Find("CooldownBar").gameObject;
+            // Change the Skills Colors //
+            this.ability1Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.ability2Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.ability3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.ability4Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
 
-            // Hide unused GUI Components //
-            this.furyBarObj.SetActive(false);
-            this.comboBarObj.SetActive(false);
-            this.shieldBarObj.SetActive(false);
-            this.staminaBar.SetActive(false);
+            // Get all Spell Objects //
+            this.spellsModeObj = this.spellsIcons.transform.Find("Content").Find("SpellsModeLayer").gameObject;
+            this.spell1Obj = this.spellsIcons.transform.Find("Content").Find("Spell1Layer").Find("Spell1Image").gameObject;
+            this.spell2Obj = this.spellsIcons.transform.Find("Content").Find("Spell2Layer").Find("Spell2Image").gameObject;
+            this.spell3Obj = this.spellsIcons.transform.Find("Content").Find("Spell3Layer").Find("Spell3Image").gameObject;
+            this.spell4Obj = this.spellsIcons.transform.Find("Content").Find("Spell4Layer").Find("Spell4Image").gameObject;
+            this.spell5Obj = this.spellsIcons.transform.Find("Content").Find("Spell5Layer").Find("Spell5Image").gameObject;
+            this.spell6Obj = this.spellsIcons.transform.Find("Content").Find("Spell6Layer").Find("Spell6Image").gameObject;
+            this.spell7Obj = this.spellsIcons.transform.Find("Content").Find("Spell7Layer").Find("Spell7Image").gameObject;
+            this.spell8Obj = this.spellsIcons.transform.Find("Content").Find("Spell8Layer").Find("Spell8Image").gameObject;
 
-            // Find the Panthera Body //
-            this.pantheraBody = this.ptraObj.characterBody;
+            // Change the Spells Colors //
+            this.spell1Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell2Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell4Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell5Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell6Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell7Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell8Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
 
-            // Find the Heal Component //
-            this.healthComponent = this.ptraObj.healthComponent;
+            // Instantiate the Combos Template //
+            this.combosFrame = GameObject.Instantiate<GameObject>(Assets.HUDComboBaseTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+            this.combosFrame.transform.localPosition = new Vector3(0, -480, 0);
 
-            // Find the Input Bank //
-            this.inputBank = this.ptraObj.pantheraInputBank;
+            // Instantiate the Cooldown Frame //
+            this.cooldownFrame = GameObject.Instantiate<GameObject>(Assets.HUDCooldownFrame, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster"));
+            this.cooldownFrame.transform.localPosition = new Vector3(-257, 80, 0);
 
-            // Find the Skill Locator //
-            this.skillLocator = this.ptraObj.skillLocator;
-
-            // Set the Buffs position //
-            this.buffsDisplay = (RectTransform)this.origHUD.buffDisplay.transform;
-            this.buffsDisplay.SetParent(leftFrame);
-            this.buffsDisplay.anchoredPosition = new Vector2(200, -80);
-
-            // Set the Equipment position //
-            this.equipmentDisplay.SetParent(rightFrame);
-            this.equipmentDisplay.anchoredPosition = new Vector2(-715, 300);
+            // Instantiate the Shield Bar //
+            this.shieldBar = GameObject.Instantiate<GameObject>(Assets.HUDShieldBar, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+            this.shieldBar.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            this.shieldBar.transform.localPosition = new Vector3(0, -350, 0);
 
         }
 
         public void Update()
         {
 
-            if (this.buffsDisplay == null || this.pantheraBody == null 
-                || this.pantheraBody.teamComponent == null || TeamManager.instance == null)
+            // Update the Panthera Level Bar //
+            float xpFloat = (float)Panthera.PantheraCharacter.levelExperience / (float)Panthera.PantheraCharacter.levelMaxExperience;
+            this.pantheraLevelBarRect.anchorMax = new Vector2(Math.Min(xpFloat, 1), 1);
+
+            // Update te Panthera Level Text //
+            this.pantheraLevelTextComp.SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
+
+            // Update the Fury Bar //
+            float furyValue = this.ptraObj.characterBody.fury;
+            float furyShownValue = 1 - (furyValue / this.ptraObj.characterBody.maxFury * 2);
+            this.furyBarMat.SetFloat("PositionUV_X_1", furyShownValue);
+
+            // Show the LevelUP Image //
+            if (this.lastSawLevel != Panthera.PantheraCharacter.characterLevel)
             {
-                return;
+                levelUpObj.GetComponent<RectTransform>().offsetMin = new Vector2(-100, -45);
+                levelUpObj.GetComponent<RectTransform>().localPosition = new Vector3(433, -6, 0);
+                this.lastSawLevel = Panthera.PantheraCharacter.characterLevel;
+                this.levelUpObj.active = true;
             }
 
-            // Update the Buffs position //
-            if(this.buffsDisplay != null && this.buffsDisplay)
-                this.buffsDisplay.eulerAngles = new Vector3(0, 0, 0);
+            // Update Shield Bar //
+            float value = this.ptraObj.characterBody.frontShield;
+            float max = this.ptraObj.characterBody.maxFrontShield;
 
-            // Get the Team Index //
-            RoR2.TeamIndex index = this.pantheraBody.teamComponent.teamIndex;
-
-            // Set the Health Bar and Text //
-            this.setHealth(this.healthComponent.health, this.healthComponent.barrier, this.healthComponent.fullHealth);
-
-            // Set the Barrier Bar //
-            this.setBarrier(this.healthComponent.barrier, this.healthComponent.fullBarrier);
-
-            // Set the XP Bar and Text //
-            ulong maxXP = TeamManager.instance.GetTeamNextLevelExperience(index) - TeamManager.instance.GetTeamCurrentLevelExperience(index);
-            ulong currentXP = TeamManager.instance.GetTeamExperience(index) - TeamManager.instance.GetTeamCurrentLevelExperience(index);
-            this.setXP((float)currentXP, (float)maxXP);
-
-            // Set the Level //
-            this.setLevel((int)TeamManager.instance.GetTeamLevel(index));
-
-            // Set the Energy //
-            this.setEnergy(this.pantheraBody.energy, this.ptraObj.activePreset.maxEnergy);
-
-            // Set the Stamina //
-            this.setStamina(this.pantheraBody.stamina, this.ptraObj.activePreset.maxStamina);
-
-            // Set the Power //
-            this.setPower(this.pantheraBody.power, this.ptraObj.activePreset.maxPower);
-
-            // Set the Fury //
-            this.setFury(this.pantheraBody.fury, this.ptraObj.activePreset.maxFury);
-
-            // Set the Combo Points //
-            this.setComboPoint(this.pantheraBody.comboPoint, this.ptraObj.activePreset.maxComboPoint);
-
-            // Set the Shield //
-            this.setShield(this.pantheraBody.shield, this.ptraObj.activePreset.maxShield);
-
-            // Update Action Bars //
-            this.updateActionBar();
-
-            // Update Cooldown Bar //
-            this.updateCooldownBar();
-
-        }
-
-        public void setHealth(float value, float barrierValue, float max)
-        {
-            float newValue = 1.2f - (value / max * 2.4f);
-            this.healthBarMat.SetFloat("PositionUV_X_1", newValue);
-            this.healthText.SetText("{0}/{1}", (int)value + (int)barrierValue, (int)max);
-        }
-
-        public void setBarrier(float value, float max)
-        {
-            float newValue = 1.2f - (value / max * 2.4f);
-            this.barrierbarMat.SetFloat("PositionUV_X_1", newValue);
-        }
-
-        public void setXP(float value, float max)
-        {
-            float newValue = 1.2f - (value / max * 2.4f);
-            this.xpBarMat.SetFloat("PositionUV_X_1", newValue);
-            this.xpText.SetText("{0}/{1}", (int)value, (int)max);
-        }
-
-        public void setLevel(int level)
-        {
-            this.levelText.SetText(level.ToString());
-        }
-
-        public void setEnergy(float value, float max)
-        {
-            float newValue = 1.2f - (value / max * 2.4f);
-            this.energyBarMat.SetFloat("PositionUV_X_1", newValue);
-            this.energyText.SetText("{0}/{1}", (int)value, (int)max);
-        }
-
-        public void setStamina(float value, float max)
-        {
-            float newValue = value / max;
-            this.FilledStaminaBar.fillAmount = newValue;
-            if (value == max)
-                this.staminaBar.SetActive(false);
-            else
-                this.staminaBar.SetActive(true);
-        }
-
-        public void setPower(float value, float max)
-        {
-            float newValue = 1.2f - (value / max * 2.4f);
-            this.powerBarMat.SetFloat("PositionUV_X_1", newValue);
-            this.powerText.SetText("{0}/{1}", (int)value, (int)max);
-        }
-
-        public void setFury(float value, float max)
-        {
-            if (this.ptraObj.activePreset.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
+            if (this.ptraObj.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
             {
-                this.furyBarObj.SetActive(true);
-            }
-            else
-            {
-                this.furyBarObj.SetActive(false);
-                return;
-            }
-            float newValue = 1.8f - (value / max * 3.6f);
-            this.furyBarMat.SetFloat("PositionUV_Y_1", newValue);
-            this.furyText.SetText("{0}/{1}", (int)value, (int)max);
-        }
-
-        public void setComboPoint(float value, float max)
-        {
-            if (this.ptraObj.activePreset.getAbilityLevel(PantheraConfig.RuseAbilityID) > 0)
-            {
-                this.comboBarObj.SetActive(true);
-            }
-            else
-            {
-                this.comboBarObj.SetActive(false);
-                return;
-            }
-            float newValue = value / max;
-            this.filledComboBarImg.fillAmount = newValue;
-        }
-
-        public void setShield(float value, float max)
-        {
-
-            if (this.ptraObj.activePreset.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
-            {
-                if (this.ptraObj.frontShield.active == true || value < max)
-                    this.shieldBarObj.SetActive(true);
+                if (this.ptraObj.frontShieldObj.active == true || value < max)
+                    this.shieldBar.SetActive(true);
                 else
-                    this.shieldBarObj.SetActive(false);
+                    this.shieldBar.SetActive(false);
             }
             else
             {
-                this.shieldBarObj.SetActive(false);
-                return;
+                this.shieldBar.SetActive(false);
             }
 
             if (value == 0)
             {
-                this.shieldBarObj.transform.Find("ShieldBarFilled").gameObject.SetActive(false);
-                this.shieldBarObj.transform.Find("ShieldBarRed").gameObject.SetActive(true);
+                this.shieldBar.transform.Find("ShieldBarFilled").gameObject.SetActive(false);
+                this.shieldBar.transform.Find("ShieldBarRed").gameObject.SetActive(true);
             }
             else
             {
-                this.shieldBarObj.transform.Find("ShieldBarFilled").gameObject.SetActive(true);
-                this.shieldBarObj.transform.Find("ShieldBarRed").gameObject.SetActive(false);
+                this.shieldBar.transform.Find("ShieldBarFilled").gameObject.SetActive(true);
+                this.shieldBar.transform.Find("ShieldBarRed").gameObject.SetActive(false);
             }
 
-            float newValue = value / max;
-            this.filledShieldBarImg.fillAmount = newValue;
-            this.shieldText.SetText("{0}", (int)value);
+            float frontShieldShownValue = value / max;
+            this.shieldBar.transform.Find("ShieldBarFilled").GetComponent<Image>().fillAmount = frontShieldShownValue;
+            this.shieldBar.transform.Find("ShieldBarText").GetComponent<TextMeshProUGUI>().SetText(Math.Floor(value).ToString());
+
+            // Update all Icons Cooldown //
+            this.updateCooldowns();
+
+            // Update all Skills Icon //
+            this.updateIcons();
+
+            // Update the Combos Display //
+            this.updateCombos();
+
         }
 
-        public void updateActionBar()
+        public void updateCooldowns()
         {
 
-            // Check the Switch Bar button //
-            int j = 0;
-            if (this.inputBank.switchBarPressed) j = 10;
 
-            // Set up each Slot //
-            for (int i = 1; i <= 10; i++)
+            // Update the Skill1 Cooldown and Stock Icon //
+            RechargeSkill rechargeSkill1 = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Rip_SkillID];
+            if (rechargeSkill1.cooldown > 0)
+                this.ptraObj.skillLocator.primary.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Rip_SkillID) - rechargeSkill1.cooldown;
+            else
+                this.ptraObj.skillLocator.primary.rechargeStopwatch = 0;
+            this.ptraObj.skillLocator.primary.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.Rip_SkillID);
+
+            // Update the Skill2 Cooldown and Stock Icon //
+            if (this.ptraObj.guardianMode == true)
+            {
+                RechargeSkill rechargeSkill2A = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.FrontShield_SkillID];
+                if (rechargeSkill2A.cooldown > 0)
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.FrontShield_SkillID) - rechargeSkill2A.cooldown;
+                else
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = 0;
+                this.ptraObj.skillLocator.secondary.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.FrontShield_SkillID);
+            }
+            else if (this.ptraObj.furyMode == true)
+            {
+                RechargeSkill rechargeSkill2B = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.ClawsStorm_SkillID];
+                if (rechargeSkill2B.cooldown > 0)
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.ClawsStorm_SkillID) - rechargeSkill2B.cooldown;
+                else
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = 0;
+                this.ptraObj.skillLocator.secondary.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.ClawsStorm_SkillID);
+            }
+            else
+            {
+                RechargeSkill rechargeSkill2C = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Slash_SkillID];
+                if (rechargeSkill2C.cooldown > 0)
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Slash_SkillID) - rechargeSkill2C.cooldown;
+                else
+                    this.ptraObj.skillLocator.secondary.rechargeStopwatch = 0;
+                this.ptraObj.skillLocator.secondary.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.Slash_SkillID);
+            }
+
+
+            // Update the Skill3 Cooldown and Stock Icon //
+            RechargeSkill rechargeSkill3 = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Leap_SkillID];
+            if (rechargeSkill3.cooldown > 0)
+                this.ptraObj.skillLocator.utility.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Leap_SkillID) - rechargeSkill3.cooldown;
+            else
+                this.ptraObj.skillLocator.utility.rechargeStopwatch = 0;
+            this.ptraObj.skillLocator.utility.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.Leap_SkillID);
+
+            // Update the Skill4 Cooldown and Stock Icon //
+            RechargeSkill rechargeSkill4 = this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.MightyRoar_SkillID];
+            if (rechargeSkill4.cooldown > 0)
+                this.ptraObj.skillLocator.special.rechargeStopwatch = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.MightyRoar_SkillID) - rechargeSkill4.cooldown;
+            else
+                this.ptraObj.skillLocator.special.rechargeStopwatch = 0;
+            this.ptraObj.skillLocator.special.stock = this.ptraObj.skillLocator.getStock(PantheraConfig.MightyRoar_SkillID);
+
+            // Prowl Cooldown //
+            float prowlCooldown = this.ptraObj.skillLocator.getCooldown(PantheraConfig.Prowl_SkillID);
+            float prowlMaxCooldown = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Prowl_SkillID);
+            if (prowlCooldown > 0)
+            {
+                this.ability1Obj.transform.Find("Ability1CooldownFill").gameObject.active = true;
+                this.ability1Obj.transform.Find("Ability1CooldownText").gameObject.active = true;
+                this.ability1Obj.transform.Find("Ability1CooldownFill").GetComponent<Image>().fillAmount = prowlCooldown / prowlMaxCooldown;
+                this.ability1Obj.transform.Find("Ability1CooldownText").GetComponent<TextMeshProUGUI>().text = (Math.Floor(prowlCooldown) + 1).ToString();
+            }
+            else
+            {
+                this.ability1Obj.transform.Find("Ability1CooldownFill").gameObject.active = false;
+                this.ability1Obj.transform.Find("Ability1CooldownText").gameObject.active = false;
+            }
+
+            // Fury Cooldown //
+            float furyCooldown = this.ptraObj.skillLocator.getCooldown(PantheraConfig.Fury_SkillID);
+            float furyMaxCooldown = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Fury_SkillID);
+            if (furyCooldown > 0)
+            {
+                this.ability2Obj.transform.Find("Ability2CooldownFill").gameObject.active = true;
+                this.ability2Obj.transform.Find("Ability2CooldownText").gameObject.active = true;
+                this.ability2Obj.transform.Find("Ability2CooldownFill").GetComponent<Image>().fillAmount = furyCooldown / furyMaxCooldown;
+                this.ability2Obj.transform.Find("Ability2CooldownText").GetComponent<TextMeshProUGUI>().text = (Math.Floor(furyCooldown) + 1).ToString();
+            }
+            else
+            {
+                this.ability2Obj.transform.Find("Ability2CooldownFill").gameObject.active = false;
+                this.ability2Obj.transform.Find("Ability2CooldownText").gameObject.active = false;
+            }
+
+            // Detection Cooldown //
+            float DetectionCooldown = this.ptraObj.skillLocator.getCooldown(PantheraConfig.Detection_SkillID);
+            float DetectionMaxCooldown = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Detection_SkillID);
+            if (DetectionCooldown > 0)
+            {
+                this.ability3Obj.transform.Find("Ability3CooldownFill").gameObject.active = true;
+                this.ability3Obj.transform.Find("Ability3CooldownText").gameObject.active = true;
+                this.ability3Obj.transform.Find("Ability3CooldownFill").GetComponent<Image>().fillAmount = DetectionCooldown / DetectionMaxCooldown;
+                this.ability3Obj.transform.Find("Ability3CooldownText").GetComponent<TextMeshProUGUI>().text = (Math.Floor(DetectionCooldown) + 1).ToString();
+            }
+            else
+            {
+                this.ability3Obj.transform.Find("Ability3CooldownFill").gameObject.active = false;
+                this.ability3Obj.transform.Find("Ability3CooldownText").gameObject.active = false;
+            }
+
+            // Guardian Cooldown //
+            float guardianCooldown = this.ptraObj.skillLocator.getCooldown(PantheraConfig.Guardian_SkillID);
+            float guardianMaxCooldown = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Guardian_SkillID);
+            if (guardianCooldown > 0)
+            {
+                this.ability4Obj.transform.Find("Ability4CooldownFill").gameObject.active = true;
+                this.ability4Obj.transform.Find("Ability4CooldownText").gameObject.active = true;
+                this.ability4Obj.transform.Find("Ability4CooldownFill").GetComponent<Image>().fillAmount = guardianCooldown / guardianMaxCooldown;
+                this.ability4Obj.transform.Find("Ability4CooldownText").GetComponent<TextMeshProUGUI>().text = (Math.Floor(guardianCooldown) + 1).ToString();
+            }
+            else
+            {
+                this.ability4Obj.transform.Find("Ability4CooldownFill").gameObject.active = false;
+                this.ability4Obj.transform.Find("Ability4CooldownText").gameObject.active = false;
+            }
+
+            // Ambition Cooldown //
+            float ambitionCooldown = this.ptraObj.skillLocator.getCooldown(PantheraConfig.Ambition_SkillID);
+            float ambitionMaxCooldown = this.ptraObj.skillLocator.getMaxCooldown(PantheraConfig.Ambition_SkillID);
+            if (ambitionCooldown > 0)
+            {
+                this.spell3Obj.transform.Find("Spell3CooldownFill").gameObject.active = true;
+                this.spell3Obj.transform.Find("Spell3CooldownText").gameObject.active = true;
+                this.spell3Obj.transform.Find("Spell3CooldownFill").GetComponent<Image>().fillAmount = ambitionCooldown / ambitionMaxCooldown;
+                this.spell3Obj.transform.Find("Spell3CooldownText").GetComponent<TextMeshProUGUI>().text = (Math.Floor(ambitionCooldown) + 1).ToString();
+            }
+            else
+            {
+                this.spell3Obj.transform.Find("Spell3CooldownFill").gameObject.active = false;
+                this.spell3Obj.transform.Find("Spell3CooldownText").gameObject.active = false;
+            }
+
+            // Clear the Cooldown Frame //
+            foreach (Transform child in this.cooldownFrame.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+            // Update others Skills Cooldown //
+            foreach (KeyValuePair<int, RechargeSkill> pair in this.ptraObj.skillLocator.rechargeSkillList)
             {
 
-                // Find the ActionBar Slot //
-                GameObject actionBarSLot = this.HUDSkillSlotsList[i];
+                // Check if the Cooldown must be displayed //
+                if (pair.Value.skill.showCooldown == false || pair.Value.stock >= pair.Value.maxStock)
+                    continue;
 
-                // Find the Skill //
-                PantheraSkill skill = this.ptraObj.activePreset.getSkillBySlotID(i + j);
+                // Instantiate the Skill Template //
+                GameObject skillTemplate = GameObject.Instantiate<GameObject>(Assets.HUDCooldownSkillTemplate, this.cooldownFrame.transform);
 
-                // Find all Components //
-                Image image = actionBarSLot.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
-                TextMeshProUGUI CDText = actionBarSLot.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
-                Image CDImage = actionBarSLot.transform.Find("CooldownFill").GetComponent<Image>();
+                // Change the Icon //
+                skillTemplate.transform.Find("Image").GetComponent<Image>().sprite = pair.Value.skill.icon;
 
-                // Check if there is a skill //
-                if (skill != null)
-                {
+                // Set the Cooldown Text //
+                skillTemplate.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>().text = ((int)Math.Ceiling(pair.Value.cooldown)).ToString();
 
-                    // Set the Image //
-                    image.sprite = skill.icon;
-                    image.color = new Color(image.color.r, image.color.g, image.color.b, 255);
-
-                    // Get the Cooldown //
-                    float cooldownRemaining = this.skillLocator.getCooldownInSecond(skill.skillID);
-
-                    // Set the Cooldown //
-                    float fillAmount = cooldownRemaining / skill.cooldown;
-                    CDImage.gameObject.SetActive(true);
-                    CDImage.fillAmount = fillAmount;
-                    if (cooldownRemaining > 0f)
-                    {
-                        CDText.text = ((int)Math.Ceiling(cooldownRemaining)).ToString() + "s";
-                        CDText.gameObject.SetActive(true);
-                        CDImage.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        CDText.gameObject.SetActive(false);
-                        CDImage.gameObject.SetActive(false);
-                    }
-
-                }
-                else
-                {
-
-                    // Remove the Image //
-                    image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
-
-                    // Remove the Cooldown //
-                    CDText.gameObject.SetActive(false);
-                    CDImage.gameObject.SetActive(false);
-
-                }
+                // Set the Cooldown Fill Image //
+                skillTemplate.transform.Find("CooldownFill").GetComponent<Image>().fillAmount = pair.Value.cooldown / pair.Value.baseCooldown;
 
             }
+
         }
 
-        public void updateCooldownBar()
+        public void updateIcons()
         {
 
-            // Itinerate the Cooldowns List //
-            foreach (KeyValuePair<int, float> entry in this.ptraObj.skillLocator.cooldownList)
+            // Get the Panthera Input Bank //
+            PantheraInputBank input = this.ptraObj.pantheraInputBank;
+
+            // Update the Ability 1 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.Ability1))
+                this.ability1Obj.transform.Find("Ability1ActiveImage").gameObject.active = true;
+            else
+                this.ability1Obj.transform.Find("Ability1ActiveImage").gameObject.active = false;
+
+            // Update the Ability 2 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.Ability2))
+                this.ability2Obj.transform.Find("Ability2ActiveImage").gameObject.active = true;
+            else
+                this.ability2Obj.transform.Find("Ability2ActiveImage").gameObject.active = false;
+
+            // Update the Ability 3 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.Ability3))
+                this.ability3Obj.transform.Find("Ability3ActiveImage").gameObject.active = true;
+            else
+                this.ability3Obj.transform.Find("Ability3ActiveImage").gameObject.active = false;
+
+            // Update the Ability 4 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.Ability4))
+                this.ability4Obj.transform.Find("Ability4ActiveImage").gameObject.active = true;
+            else
+                this.ability4Obj.transform.Find("Ability4ActiveImage").gameObject.active = false;
+
+            // Update the Spells Mode Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode))
+                this.spellsModeObj.transform.Find("SpellsModeActiveImage").gameObject.active = true;
+            else
+                this.spellsModeObj.transform.Find("SpellsModeActiveImage").gameObject.active = false;
+
+            // Update the Spell 1 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill1))
+                this.spell1Obj.transform.Find("Spell1ActiveImage").gameObject.active = true;
+            else
+                this.spell1Obj.transform.Find("Spell1ActiveImage").gameObject.active = false;
+
+            // Update the Spell 2 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill2))
+                this.spell2Obj.transform.Find("Spell2ActiveImage").gameObject.active = true;
+            else
+                this.spell2Obj.transform.Find("Spell2ActiveImage").gameObject.active = false;
+
+            // Update the Spell 3 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill3))
+                this.spell3Obj.transform.Find("Spell3ActiveImage").gameObject.active = true;
+            else
+                this.spell3Obj.transform.Find("Spell3ActiveImage").gameObject.active = false;
+
+            // Update the Spell 4 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill4))
+                this.spell4Obj.transform.Find("Spell4ActiveImage").gameObject.active = true;
+            else
+                this.spell4Obj.transform.Find("Spell4ActiveImage").gameObject.active = false;
+
+            // Update the Spell 5 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability1))
+                this.spell5Obj.transform.Find("Spell5ActiveImage").gameObject.active = true;
+            else
+                this.spell5Obj.transform.Find("Spell5ActiveImage").gameObject.active = false;
+
+            // Update the Spell 6 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability2))
+                this.spell6Obj.transform.Find("Spell6ActiveImage").gameObject.active = true;
+            else
+                this.spell6Obj.transform.Find("Spell6ActiveImage").gameObject.active = false;
+
+            // Update the Spell 7 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability3))
+                this.spell7Obj.transform.Find("Spell7ActiveImage").gameObject.active = true;
+            else
+                this.spell7Obj.transform.Find("Spell7ActiveImage").gameObject.active = false;
+
+            // Update the Spell 8 Frame //
+            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability4))
+                this.spell8Obj.transform.Find("Spell8ActiveImage").gameObject.active = true;
+            else
+                this.spell8Obj.transform.Find("Spell8ActiveImage").gameObject.active = false;
+
+            // Update the Ability 1 Icon //
+            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Prowl_SkillID).locked == true)
+                this.ability1Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.ability1Obj.GetComponent<Image>().color = PantheraConfig.SkillsNormalSkillColor;
+            if (this.ptraObj.stealthed == true)
+                this.ability1Obj.GetComponent<Image>().sprite = Assets.ProwlSkill;
+            else
+                this.ability1Obj.GetComponent<Image>().sprite = Assets.ProwlSkillDisabled;
+
+            // Update the Ability 2 Icon //
+            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Fury_SkillID).locked == true)
+                this.ability2Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.ability2Obj.GetComponent<Image>().color = PantheraConfig.SkillsNormalSkillColor;
+            if (this.ptraObj.furyMode == true)
+                this.ability2Obj.GetComponent<Image>().sprite = Assets.FurySkill;
+            else
+                this.ability2Obj.GetComponent<Image>().sprite = Assets.FurySkillDisabled;
+
+            // Update the Ability 3 Icon //
+            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Detection_SkillID).locked == true)
+                this.ability3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.ability3Obj.GetComponent<Image>().color = PantheraConfig.SkillsNormalSkillColor;
+            if (this.ptraObj.detectionMode == true)
+                this.ability3Obj.GetComponent<Image>().sprite = Assets.DetectionSkill;
+            else
+                this.ability3Obj.GetComponent<Image>().sprite = Assets.DetectionSkillDisabled;
+
+            // Update the Ability 4 Icon //
+            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Guardian_SkillID).locked == true)
+                this.ability4Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.ability4Obj.GetComponent<Image>().color = PantheraConfig.SkillsNormalSkillColor;
+            if (this.ptraObj.guardianMode == true)
+                this.ability4Obj.GetComponent<Image>().sprite = Assets.GuardianSkill;
+            else
+                this.ability4Obj.GetComponent<Image>().sprite = Assets.GuardianSkillDisabled;
+
+            // Update the Spell 3 Icon //
+            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Ambition_SkillID).locked == true)
+                this.spell3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.spell3Obj.GetComponent<Image>().color = PantheraConfig.SkillsNormalSkillColor;
+
+            // Change the Skill 1 Icon if Prowl or Ambition is activated //
+            GenericSkill targetSkill1 = this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler").Find("Skill1Root").GetComponent<SkillIcon>().targetSkill;
+            if (targetSkill1 != null && targetSkill1.skillDef != null)
             {
+                if (this.ptraObj.stealthed == true && this.ptraObj.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
+                    targetSkill1.skillDef.icon = Assets.GhostRipSkillMenu;
+                else if (this.ptraObj.ambitionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID) > 0)
+                    targetSkill1.skillDef.icon = Assets.GoldenRipSkillMenu;
+                else
+                    targetSkill1.skillDef.icon = Assets.RipSkillMenu;
+            }
 
-                // Get the Skill //
-                PantheraSkill skill = this.ptraObj.activePreset.getSkillByID(entry.Key);
+            // Change the Skill 2 Icon if Guardian, Fury Mode or Arcane Anchor is activated //
+            GenericSkill targetSkill2 = this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler").Find("Skill2Root").GetComponent<SkillIcon>().targetSkill;
+            if (targetSkill2 != null && targetSkill2.skillDef != null)
+            {
+                if (this.ptraObj.frontShieldDeployed == true)
+                    targetSkill2.skillDef.icon = Assets.ArcaneAnchorSkillMenu;
+                else if (this.ptraObj.guardianMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
+                    targetSkill2.skillDef.icon = Assets.FrontShieldSkillMenu;
+                else if (this.ptraObj.furyMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
+                    targetSkill2.skillDef.icon = Assets.ClawStormSkillMenu;
+                else
+                    targetSkill2.skillDef.icon = Assets.SlashSkillMenu;
+            }
 
-                // Check the Skill //
-                if (skill == null) continue;
+        }
 
-                // Check if Hybrid //
-                if (skill.type == PantheraSkill.SkillType.active) continue;
+        public void updateCombos()
+        {
 
-                // Create the Frame GameObject //
-                GameObject cdFrame = null;
+            // Get the Combos Component //
+            PantheraComboComponent comboComp = this.ptraObj.comboComponent;
 
-                // Check if the Prefab Exist //
-                if (this.cooldownsObjList.ContainsKey(skill.skillID))
+            // Get the Skills Layout //
+            Transform skillsLayout = combosFrame.transform.Find("Layout");
+
+            // Clear the HUD Combos List //
+            foreach (Transform elem in skillsLayout)
+            {
+                GameObject.Destroy(elem.gameObject);
+            }
+
+            // Create the Last Line Variable //
+            GameObject lastLine = null;
+
+            // Itinerate the Skills List //
+            foreach (ComboSkill comboSkill in comboComp.actualCombosList)
+            {
+                // Instantiate the Skill Element //
+                GameObject skillElem = GameObject.Instantiate<GameObject>(Assets.HUDComboSkillTemplate, skillsLayout);
+                // Change the Icon //
+                Image skillIcon = skillElem.transform.Find("Image").GetComponent<Image>();
+                skillIcon.sprite = comboSkill.skill.icon;
+                // Change the Icon color //
+                if (comboSkill.locked == true)
+                    skillIcon.color = PantheraConfig.SkillsLockedSkillColor;
+                else
+                    skillIcon.color = PantheraConfig.SkillsNormalSkillColor;
+                // Add the Tooltip //
+                // skillIcon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = combo.skill;
+                // Change the Elem Size //
+                if (comboSkill.biggerIcon == true)
+                    skillElem.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+                else
+                    skillElem.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
+                // Add the Buttons //
+                Transform buttonsLayout = skillElem.transform.Find("Buttons");
+                if (comboSkill.keyA > 0)
                 {
-                    cdFrame = this.cooldownsObjList[skill.skillID];
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.keyA);
+                }
+                if (comboSkill.keyB > 0)
+                {
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.keyB);
+                }
+                if (comboSkill.direction > 0)
+                {
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.direction);
+                }
+                // Add the Cooldown //
+                float coolDown = this.ptraObj.skillLocator.getCooldown(comboSkill.skill.skillID);
+                float maxCooldown = this.ptraObj.skillLocator.getMaxCooldown(comboSkill.skill.skillID);
+                skillElem.transform.Find("CooldownFill").GetComponent<Image>().fillAmount = coolDown / maxCooldown;
+                skillElem.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>().text = ((int)Math.Ceiling(coolDown)).ToString();
+                if (coolDown <= 0)
+                {
+                    //skillElem.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownNormalIconColor;
+                    skillElem.transform.Find("CooldownText").gameObject.active = false;
                 }
                 else
                 {
-                    cdFrame = GameObject.Instantiate(Assets.CooldownFramePrefab, this.cooldownBar.transform);
-                    Image image = cdFrame.transform.Find("AbilityContainer").Find("AbilityIcon").GetComponent<Image>();
-                    image.sprite = skill.icon;
-                    this.cooldownsObjList.Add(skill.skillID, cdFrame);
+                    //skillElem.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownLoadingIconColor;
+                    skillElem.transform.Find("CooldownText").gameObject.active = true;
                 }
+                // Add the Line //
+                lastLine = GameObject.Instantiate<GameObject>(Assets.HUDComboLineTemplate, skillsLayout);
 
-                // Find all Components //
-                TextMeshProUGUI CDText = cdFrame.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>();
-                Image CDImage = cdFrame.transform.Find("CooldownFill").GetComponent<Image>();
-                CDText.gameObject.SetActive(true);
-                CDImage.gameObject.SetActive(true);
+            }
 
-                // Get the Cooldown //
-                float cooldownRemaining = this.skillLocator.getCooldownInSecond(skill.skillID);
+            // Remove the Last useless Line //
+            GameObject.DestroyImmediate(lastLine);
 
-                // Set the Cooldown //
-                float fillAmount = cooldownRemaining / skill.cooldown;
-                CDImage.gameObject.SetActive(true);
-                CDImage.fillAmount = fillAmount;
-                CDText.text = ((int)Math.Ceiling(cooldownRemaining)).ToString() + "s";
-
-                // Check if the Frame should be shown //
-                if (cooldownRemaining > 0)
-                    cdFrame.active = true;
+            // Create the last failed Skill Icon //
+            ComboSkill lastFailedCombo = comboComp.lastFailedSkill;
+            if (lastFailedCombo != null)
+            {
+                // Instantiate the Combo Failed Frame //
+                if (this.comboFailedFrame!= null)
+                    GameObject.DestroyImmediate(this.comboFailedFrame);
+                this.comboFailedFrame = GameObject.Instantiate<GameObject>(Assets.HUDComboSkillTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+                this.comboFailedFrame.transform.localPosition = new Vector3(0, -400, 0);
+                this.comboFailedFrame.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                this.comboFailedFrame.active = false;
+                // Enable the Frame //
+                this.comboFailedFrame.active = true;
+                // Change the Icon //
+                Image skillIcon = this.comboFailedFrame.transform.Find("Image").GetComponent<Image>();
+                skillIcon.sprite = lastFailedCombo.skill.icon;
+                // Add the Buttons //
+                Transform buttonsLayout = this.comboFailedFrame.transform.Find("Buttons");
+                if (lastFailedCombo.keyA > 0)
+                {
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.keyA);
+                }
+                if (lastFailedCombo.keyB > 0)
+                {
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.keyB);
+                }
+                if (lastFailedCombo.direction > 0)
+                {
+                    GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.HUDComboButtonTemplate, buttonsLayout);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.direction);
+                }
+                // Add the Cooldown //
+                float coolDown = this.ptraObj.skillLocator.getCooldown(lastFailedCombo.skill.skillID);
+                float maxCooldown = this.ptraObj.skillLocator.getMaxCooldown(lastFailedCombo.skill.skillID);
+                this.comboFailedFrame.transform.Find("CooldownFill").GetComponent<Image>().fillAmount = coolDown / maxCooldown;
+                this.comboFailedFrame.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>().text = ((int)Math.Ceiling(coolDown)).ToString();
+                if (coolDown <= 0)
+                {
+                    this.comboFailedFrame.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownNormalIconColor;
+                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.active = false;
+                }
                 else
-                    cdFrame.active = false;
-
-
+                {
+                    this.comboFailedFrame.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownLoadingIconColor;
+                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.active = true;
+                }
+            }
+            else
+            {
+                // Destroy the Combo failed Frame //
+                if (this.comboFailedFrame != null)
+                    GameObject.DestroyImmediate(this.comboFailedFrame);
             }
 
         }
 
     }
+
 }

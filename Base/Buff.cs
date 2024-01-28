@@ -1,6 +1,5 @@
 ﻿using Panthera;
 using Panthera.Base;
-using Panthera.Skills;
 using R2API;
 using RoR2;
 using System;
@@ -12,93 +11,89 @@ namespace Panthera.Base
 {
     class Buff
     {
-        internal static List<BuffDef> buffDefs = new List<BuffDef>();
+        public static List<BuffDef> buffDefs = new List<BuffDef>();
+        public static List<PantheraBuff> pantheraBuffList = new List<PantheraBuff>();
 
-        //public static BuffDef mangleBuff;
-        //public static BuffDef raySlashBuff;
-        //public static BuffDef shieldBuff;
-        //public static BuffDef nineLives;
-        //public static BuffDef leapCercle;
-        public static BuffDef StealthBuff;
-        public static BuffDef TheRipperBuff;
-        public static BuffDef DetectionBuff;
+        public static PantheraBuff CupidityBuff;
+        public static PantheraBuff TenacityBuff;
+        public static PantheraBuff RazorsBuff;
+        public static PantheraBuff BleedOutDebuff;
 
         public static void RegisterBuffs()
         {
 
-            //// Nine Lives //
-            //nineLives = ScriptableObject.CreateInstance<BuffDef>();
-            //nineLives.name = "A-NineLives";
-            //nineLives.iconSprite = Assets.NineLivesBuff;
-            //nineLives.buffColor = Color.white;
-            //nineLives.isDebuff = false;
-            //nineLives.canStack = false;
-            //Buff.buffDefs.Add(nineLives);
+            // Cupidity buff //
+            CupidityBuff = ScriptableObject.CreateInstance<PantheraBuff>();
+            CupidityBuff.name = "B-Cupidity";
+            CupidityBuff.displayName = Utils.PantheraTokens.Get("buff_CupidityName");
+            CupidityBuff.desc = String.Format(Utils.PantheraTokens.Get("buff_CupidityDesc"), PantheraConfig.Cupidity_goldMultiplier * 100);
+            CupidityBuff.maxStacks = PantheraConfig.Cupidity_maxStacks;
+            CupidityBuff.iconSprite = Assets.CupidityBuff;
+            CupidityBuff.buffColor = Color.white;
+            CupidityBuff.isDebuff = false;
+            CupidityBuff.canStack = true;
+            buffDefs.Add(CupidityBuff);
+            pantheraBuffList.Add(CupidityBuff);
 
-            //// Mangle buff //
-            //mangleBuff = ScriptableObject.CreateInstance<BuffDef>();
-            //mangleBuff.name = "B-MangleBuff";
-            //mangleBuff.iconSprite = Assets.MangleBuff;
-            //mangleBuff.buffColor = Color.white;
-            //mangleBuff.isDebuff = false;
-            //mangleBuff.canStack = true;
-            //Buff.buffDefs.Add(mangleBuff);
+            // Tenacity buff //
+            TenacityBuff = ScriptableObject.CreateInstance<PantheraBuff>();
+            TenacityBuff.name = "C-Tenacity";
+            TenacityBuff.displayName = Utils.PantheraTokens.Get("buff_TenacityName");
+            TenacityBuff.desc = String.Format(Utils.PantheraTokens.Get("buff_TenacityDesc"), PantheraConfig.Tenacity_blockAdded * 100);
+            TenacityBuff.iconSprite = Assets.TenacityBuff;
+            TenacityBuff.duration = PantheraConfig.Tenacity_duration;
+            TenacityBuff.maxStacks = PantheraConfig.Tenacity_maxStacks;
+            TenacityBuff.buffColor = Color.white;
+            TenacityBuff.isDebuff = false;
+            TenacityBuff.canStack = true;
+            buffDefs.Add(TenacityBuff);
+            pantheraBuffList.Add(TenacityBuff);
 
-            //// Ray Slash buff //
-            //raySlashBuff = ScriptableObject.CreateInstance<BuffDef>();
-            //raySlashBuff.name = "C-RaySlashBuff";
-            //raySlashBuff.iconSprite = Assets.RaySlashBuff;
-            //raySlashBuff.buffColor = Color.white;
-            //raySlashBuff.isDebuff = false;
-            //raySlashBuff.canStack = true;
-            //Buff.buffDefs.Add(raySlashBuff);
+            // Razors buff //
+            RazorsBuff = ScriptableObject.CreateInstance<PantheraBuff>();
+            RazorsBuff.name = "D-Razors";
+            RazorsBuff.displayName = Utils.PantheraTokens.Get("buff_RazorsName");
+            RazorsBuff.desc = Utils.PantheraTokens.Get("buff_RazorsDesc");
+            RazorsBuff.maxStacks = PantheraConfig.Razors_maxStacks;
+            RazorsBuff.iconSprite = Assets.RazorsBuff;
+            RazorsBuff.buffColor = Color.white;
+            RazorsBuff.isDebuff = false;
+            RazorsBuff.canStack = true;
+            buffDefs.Add(RazorsBuff);
+            pantheraBuffList.Add(RazorsBuff);
 
-            //// Leap Cercle //
-            //leapCercle = ScriptableObject.CreateInstance<BuffDef>();
-            //leapCercle.name = "D-LeapCercle";
-            //leapCercle.iconSprite = Assets.LeapCercleBuff;
-            //leapCercle.buffColor = Color.white;
-            //leapCercle.isDebuff = false;
-            //leapCercle.canStack = true;
-            //Buff.buffDefs.Add(leapCercle);
+            // Bleed Out debuff //
+            BleedOutDebuff = ScriptableObject.CreateInstance<PantheraBuff>();
+            BleedOutDebuff.name = "A-BleedOut";
+            BleedOutDebuff.displayName = Utils.PantheraTokens.Get("buff_BleedOutName");
+            BleedOutDebuff.desc = String.Format(Utils.PantheraTokens.Get("buff_BleedOutDesc"), PantheraConfig.BleedOut_damage, PantheraConfig.BleedOut_damageTime);
+            BleedOutDebuff.damage = PantheraConfig.BleedOut_damage;
+            BleedOutDebuff.iconSprite = Assets.BleedOutBuff;
+            BleedOutDebuff.duration = PantheraConfig.BleedOut_duration;
+            BleedOutDebuff.buffColor = Color.white;
+            BleedOutDebuff.isDebuff = true;
+            BleedOutDebuff.canStack = true;
+            buffDefs.Add(BleedOutDebuff);
+            pantheraBuffList.Add(BleedOutDebuff);
 
-            //// Shield buff //
-            //shieldBuff = ScriptableObject.CreateInstance<BuffDef>();
-            //shieldBuff.name = "E-Shield";
-            //shieldBuff.iconSprite = Assets.ShieldBuff;
-            //shieldBuff.buffColor = Color.white;
-            //shieldBuff.isDebuff = false;
-            //shieldBuff.canStack = true;
-            //Buff.buffDefs.Add(shieldBuff);
-
-            // Stealth buff //
-            StealthBuff = ScriptableObject.CreateInstance<BuffDef>();
-            StealthBuff.name = "A-Steal";
-            StealthBuff.iconSprite = Assets.StealthBuff;
-            StealthBuff.buffColor = Color.white;
-            StealthBuff.isDebuff = false;
-            StealthBuff.canStack = false;
-            buffDefs.Add(StealthBuff);
-
-            // The Rip-per buff //
-            TheRipperBuff = ScriptableObject.CreateInstance<BuffDef>();
-            TheRipperBuff.name = "C-TheRipper";
-            TheRipperBuff.iconSprite = Assets.TheRipperAbility;
-            TheRipperBuff.buffColor = Color.white;
-            TheRipperBuff.isDebuff = false;
-            TheRipperBuff.canStack = true;
-            buffDefs.Add(TheRipperBuff);
-
-            // Detection buff //
-            DetectionBuff = ScriptableObject.CreateInstance<BuffDef>();
-            DetectionBuff.name = "B-Detection";
-            DetectionBuff.iconSprite = Assets.Detection;
-            DetectionBuff.buffColor = Color.white;
-            DetectionBuff.isDebuff = false;
-            DetectionBuff.canStack = false;
-            buffDefs.Add(DetectionBuff);
-
-        }
+        } 
 
     }
+
+    public class PantheraBuff : BuffDef
+    {
+        public string displayName;
+        public string desc;
+        public float duration = 0;
+        public int maxStacks = 0;
+        public float damage = 0;
+        public int index
+        {
+            get 
+            { 
+                return (int)this.buffIndex; 
+            }
+        }
+    }
+
 }

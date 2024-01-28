@@ -1,7 +1,6 @@
 ﻿using Panthera.Base;
 using Panthera.Components;
 using Panthera.NetworkMessages;
-using Panthera.Skills;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using System;

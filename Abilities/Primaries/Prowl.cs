@@ -14,7 +14,7 @@ namespace Panthera.Abilities.Primaries
             base.name = Utils.PantheraTokens.Get("ability_ProwlName");
             base.abilityID = PantheraConfig.Prowl_AbilityID;
             base.type = AbilityType.primary;
-            base.icon = Assets.ProwlSkill;
+            base.icon = PantheraAssets.ProwlSkill;
             base.maxLevel = PantheraConfig.Prowl_maxLevel;
             base.cooldown = PantheraConfig.Prowl_coolDown;
             base.requiredAbility = PantheraConfig.WindWalker_AbilityID;

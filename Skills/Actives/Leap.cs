@@ -48,7 +48,7 @@ namespace Panthera.Skills.Actives
 
         public Leap()
         {
-            base.icon = Assets.LeapSkill;
+            base.icon = PantheraAssets.LeapSkill;
             base.name = PantheraTokens.Get("skill_LeapName");
             base.baseCooldown = PantheraConfig.Leap_cooldown;
             base.desc1 = PantheraTokens.Get("skill_LeapDesc");
@@ -81,6 +81,10 @@ namespace Panthera.Skills.Actives
 
             // Set the Jump count to zero //
             base.characterMotor.jumpCount = 0;
+
+            // Remove the Frozen Paws Buff //
+            if (base.characterBody.HasBuff(Base.Buff.FrozenPawsBuff) == true)
+                new ServerClearTimedBuffs(base.gameObject, Base.Buff.FrozenPawsBuff.index).Send(NetworkDestination.Server);
 
             // Save the collider //
             this.playerCollider = GetComponent<Collider>();
@@ -180,7 +184,7 @@ namespace Panthera.Skills.Actives
             //}
             //Vector3 leapCerclePosition = base.characterBody.footPosition;
             //leapCerclePosition += Vector3.up;
-            //GameObject effect = Utils.Functions.SpawnEffect(base.gameObject, Assets.LeapCercleFX, leapCerclePosition, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(player.transform.localRotation.eulerAngles), false);
+            //GameObject effect = Utils.Functions.SpawnEffect(base.gameObject, PantheraAssets.LeapCercleFX, leapCerclePosition, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(player.transform.localRotation.eulerAngles), false);
             //this.pantheraObj.actualLeapCerle = effect.GetComponent<LeapCercleComponent>();
             //this.pantheraObj.actualLeapCerle.ptraObj = this.pantheraObj;
             //if(NetworkServer.active == false) new ClientCreateLeapCercleFX(base.gameObject, leapCerclePosition).Send(NetworkDestination.Clients);
@@ -264,9 +268,25 @@ namespace Panthera.Skills.Actives
         public void OnTargetHit()
         {
 
-            base.machine.EndScript();
+            // Apply the Cryo-Leap Buff //
+            int cryoLeapLevel = base.getAbilityLevel(PantheraConfig.CryoLeap_AbilityID);
+            if (cryoLeapLevel > 0)
+            {
+                float frozenPawsDuration = 0;
+                if (cryoLeapLevel == 1)
+                    frozenPawsDuration = PantheraConfig.CryoLeap_duration1;
+                else if (cryoLeapLevel == 2)
+                    frozenPawsDuration = PantheraConfig.CryoLeap_duration2;
+                else if (cryoLeapLevel == 3)
+                    frozenPawsDuration = PantheraConfig.CryoLeap_duration3;
+                new ServerAddBuff(base.gameObject, base.gameObject, Buff.FrozenPawsBuff, 1, frozenPawsDuration).Send(NetworkDestination.Server);
+            }
+
+            // Set Target as hit //
             this.targetHit = true;
-            return;
+
+            // End the Script //
+            base.machine.EndScript();
 
             // Return if the Target has no Body //
             //if (this.targetBody == null || this.targetRigidBody == null)

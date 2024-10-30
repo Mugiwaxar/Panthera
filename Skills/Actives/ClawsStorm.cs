@@ -43,7 +43,7 @@ namespace Panthera.Skills.Actives
 
         public ClawsStorm()
         {
-            base.icon = Assets.ClawStormSkill;
+            base.icon = PantheraAssets.ClawStormSkill;
             base.name = PantheraTokens.Get("ability_ClawsStormName");
             base.baseCooldown = PantheraConfig.ClawsStorm_cooldown;
             base.desc1 = String.Format(Utils.PantheraTokens.Get("ability_ClawsStormDesc"), PantheraConfig.clawsStorm_damageMultiplier * 100, PantheraConfig.ClawsStorm_firedDelay, PantheraConfig.ClawsStorm_continuousConsumedFury);
@@ -71,15 +71,15 @@ namespace Panthera.Skills.Actives
             CamHelper.ApplyAimType(CamHelper.AimType.ClawsStorm, pantheraObj);
 
             // Get the Effect //
-            GameObject effectColor = Assets.ClawsStormWhiteFX;
+            GameObject effectColor = PantheraAssets.ClawsStormWhiteFX;
             if (base.pantheraObj.PantheraSkinIndex == 1)
-                effectColor = Assets.ClawsStormWhiteFX;
+                effectColor = PantheraAssets.ClawsStormWhiteFX;
             else if (base.pantheraObj.PantheraSkinIndex == 2)
-                effectColor = Assets.ClawsStormOrangeFX;
+                effectColor = PantheraAssets.ClawsStormOrangeFX;
             else if (base.pantheraObj.PantheraSkinIndex == 3)
-                effectColor = Assets.ClawsStormOrangeFX;
+                effectColor = PantheraAssets.ClawsStormOrangeFX;
             else if (base.pantheraObj.PantheraSkinIndex == 4)
-                effectColor = Assets.ClawsStormRedFX;
+                effectColor = PantheraAssets.ClawsStormRedFX;
 
             // Start the effect //
             this.effectID = FXManager.SpawnEffect(base.gameObject, effectColor, base.modelTransform.position, 1, base.characterBody.gameObject, new Quaternion(), true);

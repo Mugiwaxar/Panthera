@@ -19,7 +19,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_GoldenStartName");
             abilityID = PantheraConfig.GoldenStart_AbilityID;
             type = AbilityType.passive;
-            icon = Assets.GoldenStartAbility;
+            icon = PantheraAssets.GoldenStartAbility;
             maxLevel = PantheraConfig.GoldenStart_maxLevel;
             cooldown = 0;
             requiredAbility = PantheraConfig.Detection_AbilityID;

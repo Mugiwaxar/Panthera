@@ -1,4 +1,5 @@
 ﻿using Panthera.Base;
+using Panthera.Components;
 using Panthera.GUI.Tooltips;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace Panthera.GUI.Tabs
 
         public PantheraPanel pantheraPanel;
         public GameObject tabObj;
-        public GameObject resetCharacterWindow;
+        public GameObject resetAttributesWindow;
+        public GameObject resetSkillsTreeWindow;
 
         public TextMeshProUGUI lunarCoinText;
         public Image pantheraImage;
@@ -24,13 +26,15 @@ namespace Panthera.GUI.Tabs
         public TextMeshProUGUI XPBarText;
         public Slider slider;
         public TextMeshProUGUI sliderLevelText;
-        public GameObject resetButton;
+        public GameObject resetAttributesButton;
+        public GameObject resetSkillsTreeButton;
 
         public TextMeshProUGUI enduranceText;
         public TextMeshProUGUI forceText;
         public TextMeshProUGUI agilityText;
         public TextMeshProUGUI swiftnessText;
         public TextMeshProUGUI dexterityText;
+        public TextMeshProUGUI spiritText;
 
         public TextMeshProUGUI healthText;
         public TextMeshProUGUI healthRegenText;
@@ -38,18 +42,24 @@ namespace Panthera.GUI.Tabs
         public TextMeshProUGUI damageText;
         public TextMeshProUGUI attackSpeedText;
         public TextMeshProUGUI criticText;
+        public TextMeshProUGUI dodgeText;
         public TextMeshProUGUI defenseText;
+        public TextMeshProUGUI masteryText;
+        public TextMeshProUGUI furyText;
+        public TextMeshProUGUI shieldText;
 
         public GameObject enduranceButton;
         public GameObject forceButton;
         public GameObject agilityButton;
         public GameObject swiftnessButton;
         public GameObject dexterityButton;
+        public GameObject spiritButton;
         public GameObject enduranceButtonImage;
         public GameObject forceButtonImage;
         public GameObject agilityButtonImage;
         public GameObject swiftnessButtonImage;
         public GameObject dexterityButtonImage;
+        public GameObject spiritButtonImage;
         public int attributeButtonsStat = 0;
 
         public OverviewTab(PantheraPanel pantheraPanel)
@@ -70,16 +80,19 @@ namespace Panthera.GUI.Tabs
             this.XPBarText = this.tabObj.transform.Find("XPBar").Find("Text").GetComponent<TextMeshProUGUI>();
             this.slider = this.tabObj.transform.Find("SliderLayout").Find("Slider").GetComponent<Slider>();
             this.sliderLevelText = this.tabObj.transform.Find("SliderLayout").Find("TextLayout").Find("LevelText").GetComponent<TextMeshProUGUI>();
-            this.resetButton = this.tabObj.transform.Find("OverviewResetButton").gameObject;
+            this.resetAttributesButton = this.tabObj.transform.Find("OverviewResetAttributesButton").gameObject;
+            this.resetSkillsTreeButton = this.tabObj.transform.Find("OverviewResetSkillsTreeButton").gameObject;
 
             // Find all Stat Texts //
+            Transform attributesPanel = this.tabObj.transform.Find("Attributes");
             Transform statsPanel = this.tabObj.transform.Find("Stats");
 
-            this.enduranceText = statsPanel.Find("EnduranceLayout").Find("EnduranceValue").GetComponent<TextMeshProUGUI>();
-            this.forceText = statsPanel.Find("ForceLayout").Find("ForceValue").GetComponent<TextMeshProUGUI>();
-            this.agilityText = statsPanel.Find("AgilityLayout").Find("AgilityValue").GetComponent<TextMeshProUGUI>();
-            this.swiftnessText = statsPanel.Find("SwiftnessLayout").Find("SwiftnessValue").GetComponent<TextMeshProUGUI>();
-            this.dexterityText = statsPanel.Find("DexterityLayout").Find("DexterityValue").GetComponent<TextMeshProUGUI>();
+            this.enduranceText = attributesPanel.Find("EnduranceLayout").Find("EnduranceValue").GetComponent<TextMeshProUGUI>();
+            this.forceText = attributesPanel.Find("ForceLayout").Find("ForceValue").GetComponent<TextMeshProUGUI>();
+            this.agilityText = attributesPanel.Find("AgilityLayout").Find("AgilityValue").GetComponent<TextMeshProUGUI>();
+            this.swiftnessText = attributesPanel.Find("SwiftnessLayout").Find("SwiftnessValue").GetComponent<TextMeshProUGUI>();
+            this.dexterityText = attributesPanel.Find("DexterityLayout").Find("DexterityValue").GetComponent<TextMeshProUGUI>();
+            this.spiritText = attributesPanel.Find("SpiritLayout").Find("SpiritValue").GetComponent<TextMeshProUGUI>();
 
             this.healthText = statsPanel.Find("HealthLayout").Find("HealthValue").GetComponent<TextMeshProUGUI>();
             this.healthRegenText = statsPanel.Find("HealthRegenLayout").Find("HealthRegenValue").GetComponent<TextMeshProUGUI>();
@@ -87,62 +100,52 @@ namespace Panthera.GUI.Tabs
             this.damageText = statsPanel.Find("DamageLayout").Find("DamageValue").GetComponent<TextMeshProUGUI>();
             this.attackSpeedText = statsPanel.Find("AttackSpeedLayout").Find("AttackSpeedValue").GetComponent<TextMeshProUGUI>();
             this.criticText = statsPanel.Find("CriticLayout").Find("CriticValue").GetComponent<TextMeshProUGUI>();
+            this.dodgeText = statsPanel.Find("DodgeLayout").Find("DodgeValue").GetComponent<TextMeshProUGUI>();
             this.defenseText = statsPanel.Find("DefenseLayout").Find("DefenseValue").GetComponent<TextMeshProUGUI>();
+            this.masteryText = statsPanel.Find("MasteryLayout").Find("MasteryValue").GetComponent<TextMeshProUGUI>();
+            this.furyText = statsPanel.Find("FuryLayout").Find("FuryValue").GetComponent<TextMeshProUGUI>();
+            this.shieldText = statsPanel.Find("ShieldLayout").Find("ShieldValue").GetComponent<TextMeshProUGUI>();
 
             // Add the Tooltop Component to all Stat Text //
-            statsPanel.Find("EnduranceLayout").Find("EnduranceText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("ForceLayout").Find("ForceText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("AgilityLayout").Find("AgilityText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("SwiftnessLayout").Find("SwiftnessText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("DexterityLayout").Find("DexterityText").gameObject.AddComponent<SimpleTooltipComponent>();
-
-            statsPanel.Find("HealthLayout").Find("HealthText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("HealthRegenLayout").Find("HealthRegenText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("MoveSpeedLayout").Find("MoveSpeedText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("DamageLayout").Find("DamageText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("AttackSpeedLayout").Find("AttackSpeedText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("CriticLayout").Find("CriticText").gameObject.AddComponent<SimpleTooltipComponent>();
-            statsPanel.Find("DefenseLayout").Find("DefenseText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("EnduranceLayout").Find("EnduranceText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("ForceLayout").Find("ForceText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("AgilityLayout").Find("AgilityText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("SwiftnessLayout").Find("SwiftnessText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("DexterityLayout").Find("DexterityText").gameObject.AddComponent<SimpleTooltipComponent>();
+            attributesPanel.Find("SpiritLayout").Find("SpiritText").gameObject.AddComponent<SimpleTooltipComponent>();
 
             // Find all Stat Buttons //
-            this.enduranceButton = statsPanel.Find("EnduranceLayout").Find("EnduranceButton").gameObject;
+            this.enduranceButton = attributesPanel.Find("EnduranceLayout").Find("EnduranceButton").gameObject;
             this.enduranceButtonImage = this.enduranceButton.transform.Find("EnduranceButtonImage").gameObject;
-            this.forceButton = statsPanel.Find("ForceLayout").Find("ForceButton").gameObject;
+            this.forceButton = attributesPanel.Find("ForceLayout").Find("ForceButton").gameObject;
             this.forceButtonImage = this.forceButton.transform.Find("ForceButtonImage").gameObject;
-            this.agilityButton = statsPanel.Find("AgilityLayout").Find("AgilityButton").gameObject;
+            this.agilityButton = attributesPanel.Find("AgilityLayout").Find("AgilityButton").gameObject;
             this.agilityButtonImage = this.agilityButton.transform.Find("AgilityButtonImage").gameObject;
-            this.swiftnessButton = statsPanel.Find("SwiftnessLayout").Find("SwiftnessButton").gameObject;
+            this.swiftnessButton = attributesPanel.Find("SwiftnessLayout").Find("SwiftnessButton").gameObject;
             this.swiftnessButtonImage = this.swiftnessButton.transform.Find("SwiftnessButtonImage").gameObject;
-            this.dexterityButton = statsPanel.Find("DexterityLayout").Find("DexterityButton").gameObject;
+            this.dexterityButton = attributesPanel.Find("DexterityLayout").Find("DexterityButton").gameObject;
             this.dexterityButtonImage = this.dexterityButton.transform.Find("DexterityButtonImage").gameObject;
-
-            // Add the Tooltip Component to all Stat Buttons //
-            this.enduranceButtonImage.AddComponent<SimpleTooltipComponent>();
-            this.forceButtonImage.AddComponent<SimpleTooltipComponent>();
-            this.agilityButtonImage.AddComponent<SimpleTooltipComponent>();
-            this.swiftnessButtonImage.AddComponent<SimpleTooltipComponent>();
-            this.dexterityButtonImage.AddComponent<SimpleTooltipComponent>();
-
-            // Add the Tooltip Component to the Lunar Coin //
-            this.tabObj.transform.Find("LunarCoinImage").gameObject.AddComponent<SimpleTooltipComponent>();
-            this.lunarCoinText.gameObject.AddComponent<SimpleTooltipComponent>();
+            this.spiritButton = attributesPanel.Find("SpiritLayout").Find("SpiritButton").gameObject;
+            this.spiritButtonImage = this.spiritButton.transform.Find("SpiritButtonImage").gameObject;
 
             // Set the Level Slider to 1 //
             this.slider.value = 1;
 
-            // Add the Tooltip Component to the Slider //
-            this.tabObj.transform.Find("SliderLayout").gameObject.AddComponent<SimpleTooltipComponent>();
-
-            // Add the Tooltip Component to the Reset Button //
-            this.resetButton.AddComponent<SimpleTooltipComponent>();
-
-            // Create the Reset Preset Window //
-            this.resetCharacterWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.ResetCharacterWindowPrefab, pantheraPanel.pantheraCanvas.transform);
-            this.resetCharacterWindow.SetActive(false);
-            ButtonWatcher buttonWatcher5 = this.resetCharacterWindow.transform.Find("Content").Find("ResetCharButton").gameObject.AddComponent<ButtonWatcher>();
-            ButtonWatcher buttonWatcher6 = this.resetCharacterWindow.transform.Find("Content").Find("CancelResetCharButton").gameObject.AddComponent<ButtonWatcher>();
+            // Create the Reset Attributes Window //
+            this.resetAttributesWindow = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.ResetAttributesWindowPrefab, pantheraPanel.pantheraCanvas.transform);
+            this.resetAttributesWindow.SetActive(false);
+            ButtonWatcher buttonWatcher5 = this.resetAttributesWindow.transform.Find("Content").Find("ResetAttributesButton").gameObject.AddComponent<ButtonWatcher>();
+            ButtonWatcher buttonWatcher6 = this.resetAttributesWindow.transform.Find("Content").Find("CancelResetAttributesButton").gameObject.AddComponent<ButtonWatcher>();
             buttonWatcher5.pantheraPanel = pantheraPanel;
             buttonWatcher6.pantheraPanel = pantheraPanel;
+
+            // Create the Reset Skills Tree Window //
+            this.resetSkillsTreeWindow = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.ResetSkillsTreeWindowPrefab, pantheraPanel.pantheraCanvas.transform);
+            this.resetSkillsTreeWindow.SetActive(false);
+            ButtonWatcher buttonWatcher7 = this.resetSkillsTreeWindow.transform.Find("Content").Find("ResetSkillsTreeButton").gameObject.AddComponent<ButtonWatcher>();
+            ButtonWatcher buttonWatcher8 = this.resetSkillsTreeWindow.transform.Find("Content").Find("CancelResetSkillsTreeButton").gameObject.AddComponent<ButtonWatcher>();
+            buttonWatcher7.pantheraPanel = pantheraPanel;
+            buttonWatcher8.pantheraPanel = pantheraPanel;
 
         }
 
@@ -157,13 +160,13 @@ namespace Panthera.GUI.Tabs
             if (Panthera.FirstLocalUser != null && Panthera.FirstLocalUser.currentNetworkUser != null)
                 skinIndex = Base.Skin.GetActualSkinIndex(Panthera.FirstLocalUser.currentNetworkUser);
             if (skinIndex == 1)
-                this.pantheraImage.sprite = Base.Assets.OverviewPortrait1;
+                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait1;
             else if (skinIndex == 2)
-                this.pantheraImage.sprite = Base.Assets.OverviewPortrait2;
+                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait2;
             else if (skinIndex == 3)
-                this.pantheraImage.sprite = Base.Assets.OverviewPortrait3;
+                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait3;
             else if (skinIndex == 4)
-                this.pantheraImage.sprite = Base.Assets.OverviewPortrait4;
+                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait4;
 
             // Set the Level //
             this.levelText.SetText(Panthera.PantheraCharacter.characterLevel.ToString());
@@ -178,27 +181,43 @@ namespace Panthera.GUI.Tabs
             // Set the Slider Text //
             this.sliderLevelText.SetText(slider.value.ToString());
 
-            // Update all Stats //
-            int addedLevel = (int) (slider.value - 1);
-            float maxHealth = (PantheraConfig.Default_MaxHealth + (PantheraConfig.Default_MaxHealthLevel * addedLevel)) * Panthera.PantheraCharacter.maxHealthMult;
-            float healthRegen = (PantheraConfig.Default_HealthRegen + (PantheraConfig.Default_HealthRegenLevel * addedLevel)) * Panthera.PantheraCharacter.healthRegenMult;
-            float moveSpeed = (PantheraConfig.Default_MoveSpeed + (PantheraConfig.Default_MoveSpeedLevel * addedLevel)) * Panthera.PantheraCharacter.moveSpeedMult;
-            float damage = (PantheraConfig.Default_Damage + (PantheraConfig.Default_DamageLevel * addedLevel)) * Panthera.PantheraCharacter.damageMult;
-            float attackSpeed = (PantheraConfig.Default_AttackSpeed + (PantheraConfig.Default_AttackSpeedLevel * addedLevel)) * Panthera.PantheraCharacter.attackSpeedMult;
-            float critic = (PantheraConfig.Default_Critic + (PantheraConfig.Default_CriticLevel * addedLevel)) * Panthera.PantheraCharacter.critMult;
-            float defense = (PantheraConfig.Default_Defense + (PantheraConfig.Default_DefenseLevel * addedLevel)) * Panthera.PantheraCharacter.DefenseMult;
-            this.enduranceText.SetText((Panthera.PantheraCharacter.endurance).ToString());
-            this.forceText.SetText((Panthera.PantheraCharacter.force).ToString());
-            this.agilityText.SetText((Panthera.PantheraCharacter.agility).ToString());
-            this.swiftnessText.SetText((Panthera.PantheraCharacter.swiftness).ToString());
-            this.dexterityText.SetText((Panthera.PantheraCharacter.dexterity).ToString());
-            this.healthText.SetText(maxHealth.ToString());
-            this.healthRegenText.SetText(healthRegen.ToString());
-            this.moveSpeedText.SetText(moveSpeed.ToString());
-            this.damageText.SetText(damage.ToString());
-            this.attackSpeedText.SetText(attackSpeed.ToString());
-            this.criticText.SetText(critic.ToString());
-            this.defenseText.SetText(defense.ToString());
+            // Get the Slider Level //
+            int addedLevel = (int) (this.slider.value - 1);
+
+            // Get the Profile Component //
+            ProfileComponent profile = Panthera.ProfileComponent;
+            if (Panthera.PantheraCharacter.pantheraObj != null && Panthera.PantheraCharacter.pantheraObj.profileComponent != null)
+            {
+                profile = Panthera.PantheraCharacter.pantheraObj.profileComponent;
+                // Block the Slider //
+                this.slider.enabled = false;
+                this.slider.value = Panthera.PantheraCharacter.pantheraObj.characterBody.level;
+                addedLevel = (int)(this.slider.value);
+            }
+            else
+            {
+                // Unlock the Slider //
+                this.slider.enabled = true;
+            }
+
+            // Update all Stats
+            this.enduranceText.SetText((profile.endurance + 1).ToString());
+            this.forceText.SetText((profile.force + 1).ToString());
+            this.agilityText.SetText((profile.agility + 1).ToString());
+            this.swiftnessText.SetText((profile.swiftness + 1).ToString());
+            this.dexterityText.SetText((profile.dexterity + 1).ToString());
+            this.spiritText.SetText((profile.spirit + 1).ToString());
+            this.healthText.SetText(profile.getMaxHealth(addedLevel).ToString());
+            this.healthRegenText.SetText(profile.getHealthRegen(addedLevel).ToString());
+            this.moveSpeedText.SetText(profile.getMoveSpeed(addedLevel).ToString());
+            this.damageText.SetText(profile.getDamage(addedLevel).ToString());
+            this.attackSpeedText.SetText(profile.getAttackSpeed(addedLevel).ToString());
+            this.criticText.SetText(profile.getCritic(addedLevel).ToString());
+            this.dodgeText.SetText(profile.getDodge(addedLevel).ToString());
+            this.defenseText.SetText(profile.getDefence(addedLevel).ToString());
+            this.masteryText.SetText(profile.getMastery(addedLevel).ToString());
+            this.furyText.SetText(profile.getMaxFury(addedLevel).ToString());
+            this.shieldText.SetText(profile.getMaxFrontShield(addedLevel).ToString());
 
             // Update Attribute Buttons //
             if (Panthera.PantheraCharacter.attributePointsLeft > 0)
@@ -211,18 +230,21 @@ namespace Panthera.GUI.Tabs
                     this.agilityButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.swiftnessButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.dexterityButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
+                    this.spiritButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
 
                     this.enduranceButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.forceButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.agilityButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.swiftnessButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.dexterityButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
+                    this.spiritButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsEnabledColor;
 
                     this.enduranceButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.forceButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.agilityButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.swiftnessButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                     this.dexterityButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
+                    this.spiritButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsEnabledColor;
                 }
             }
             else
@@ -235,18 +257,21 @@ namespace Panthera.GUI.Tabs
                     this.agilityButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.swiftnessButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.dexterityButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
+                    this.spiritButton.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
 
                     this.enduranceButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.forceButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.agilityButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.swiftnessButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.dexterityButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
+                    this.spiritButtonImage.GetComponent<Image>().color = PantheraConfig.OverviewAttributeButtonsDisabledColor;
 
                     this.enduranceButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.forceButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.agilityButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.swiftnessButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                     this.dexterityButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
+                    this.spiritButton.GetComponent<ButtonWatcher>().defaultColor = PantheraConfig.OverviewAttributeButtonsDisabledColor;
                 }
             }
 

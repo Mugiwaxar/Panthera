@@ -13,13 +13,6 @@ namespace Panthera.Combos
         public KeysEnum keyA;
         public KeysEnum keyB;
         public KeysEnum direction;
-        public bool locked
-        {
-            get
-            {
-                return this.skill.locked;
-            }
-        }
         public bool biggerIcon = false;
 
         public ComboSkill (MachineScript skill, KeysEnum keyA, KeysEnum keyB = 0, KeysEnum direction = 0)

@@ -12,99 +12,69 @@ namespace Panthera.GUI.Tooltips
         public void OnPointerEnter(PointerEventData eventData)
         {
 
-            if (this.name == "EnduranceButtonImage" || this.name == "ForceButtonImage" || this.name == "AgilityButtonImage" || this.name == "SwiftnessButtonImage" || this.name == "DexterityButtonImage")
-            {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_UP_BUTTON"));
-                return;
-            }
-
             if (name == "EnduranceText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_ENDURENCE"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Endurance"));
                 return;
             }
 
             if (name == "ForceText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_FORCE"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Force"));
                 return;
             }
 
             if (name == "AgilityText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_AGILITY"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Agility"));
                 return;
             }
 
             if (name == "SwiftnessText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_SWIFTNESS"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Swiftness"));
                 return;
             }
 
             if (name == "DexterityText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_DEXTERITY"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Dexterity"));
                 return;
             }
 
-            if (name == "HealthText")
+            if (name == "SpiritText")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_MAXHEALTH"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("attribute_Spirit"));
                 return;
             }
 
-            if (name == "HealthRegenText")
+            if (name == "MasteryHelp")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_HEALTHREGEN"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("help_Mastery"));
                 return;
             }
 
-            if (name == "MoveSpeedText")
+            if (name == "RuseHelp")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_MOVESPEED"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("help_Ruse"));
                 return;
             }
 
-            if (name == "DamageText")
+            if (name == "FuryHelp")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_DAMAGE"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("help_Fury"));
                 return;
             }
 
-            if (name == "AttackSpeedText")
+            if (name == "ClassicHelp")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_ATTACKSPEED"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("help_Classic"));
                 return;
             }
 
-            if (name == "CriticText")
+            if (name == "GuardianHelp")
             {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_CRITIC"));
-                return;
-            }
-
-            if (name == "DefenseText")
-            {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_ATTRIBUTE_DEFENSE"));
-                return;
-            }
-
-            if (name == "SliderLayout")
-            {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_OVERVIEW_LEVELSLIDER"));
-                return;
-            }
-
-            if (name == "LunarCoinImage" || name == "LunarCoinText")
-            {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_OVERVIEW_LUNARCOIN"));
-                return;
-            }
-
-            if (name == "OverviewResetButton")
-            {
-                SimpleTooltip.ShowTooltip(PantheraTokens.Get("TOOLTIP_OVERVIEW_RESET"));
+                SimpleTooltip.ShowTooltip(PantheraTokens.Get("help_Gardian"));
                 return;
             }
 
@@ -112,7 +82,7 @@ namespace Panthera.GUI.Tooltips
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (SimpleTooltip.showCounter > 0)
+            if (SimpleTooltip.ShowCounter > 0)
                 SimpleTooltip.HideTooltip();
         }
     }

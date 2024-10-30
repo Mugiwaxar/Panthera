@@ -33,6 +33,7 @@ namespace Panthera.Base
             this.addSkillToList(PantheraConfig.ShieldBash_SkillID, new ShieldBash());
             this.addSkillToList(PantheraConfig.ArcaneAnchor_SkillID, new ArcaneAnchor());
             this.addSkillToList(PantheraConfig.ConvergenceHook_SkillID, new ConvergenceHook());
+            this.addSkillToList(PantheraConfig.PortalSurge_SkillID, new PortalSurge());
         }
 
         public void addSkillToList(int ID, MachineScript skill)

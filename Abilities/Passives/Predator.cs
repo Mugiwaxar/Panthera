@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Passives
             base.name = Utils.PantheraTokens.Get("ability_PredatorName");
             base.abilityID = PantheraConfig.Predator_AbilityID;
             base.type = AbilityType.passive;
-            base.icon = Assets.PredatorAbility;
+            base.icon = PantheraAssets.PredatorAbility;
             base.maxLevel = PantheraConfig.Predator_maxLevel;
             base.cooldown = 0;
             base.requiredAbility = PantheraConfig.FelineSkills_AbilityID;

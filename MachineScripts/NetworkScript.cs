@@ -1,4 +1,6 @@
-﻿using Panthera.BodyComponents;
+﻿using Panthera.Base;
+using Panthera.BodyComponents;
+using Panthera.Components;
 using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -14,7 +16,8 @@ namespace Panthera.MachineScripts
     class NetworkScript : MachineScript
     {
 
-        public float tenacityTimer = 0;
+        public float regenerationTimer = 0;
+        public int regenFX = 0;
 
         public override void Start()
         {
@@ -28,14 +31,41 @@ namespace Panthera.MachineScripts
 
         public override void FixedUpdate()
         {
+
+            // Return if not the Server //
+            if (NetworkServer.active == false)
+                return;
+
             // Apply Tenacity Buffs //
-            this.tenacityTimer = Time.time;
             int tenacityBuffCount = base.characterBody.GetBuffCount(Base.Buff.TenacityBuff);
             if (tenacityBuffCount > 0)
             {
                 float barrierToAdd = base.characterBody.maxBarrier * PantheraConfig.Tenacity_blockAdded * tenacityBuffCount / 60;
                 base.healthComponent.AddBarrier(barrierToAdd);
             }
+
+            // Apply Regeneration Buffs //
+            if (Time.time - this.regenerationTimer > PantheraConfig.Regeneration_time)
+            {
+                this.regenerationTimer = Time.time;
+                int regenerationBuffCount = base.characterBody.GetBuffCount(Base.Buff.RegenerationBuff);
+                if (regenerationBuffCount > 0)
+                {
+                    float healthToAdd = base.characterBody.maxHealth * PantheraConfig.Regeneration_percentHeal * regenerationBuffCount;
+                    base.healthComponent.Heal(healthToAdd, default(ProcChainMask));
+                    if (this.regenFX == 0)
+                    {
+                        this.regenFX = Utils.FXManager.SpawnEffect(base.gameObject, Base.PantheraAssets.RegenerationFX, base.modelTransform.position, 1, base.gameObject, base.modelTransform.rotation, true);
+                        Utils.Sound.playSound(Utils.Sound.Regeneration, base.gameObject);
+                    }
+                }
+                else if (this.regenFX != 0)
+                {
+                    Utils.FXManager.DestroyEffect(this.regenFX, 1);
+                    this.regenFX = 0;
+                }
+            }
+
         }
 
         public override void Stop()

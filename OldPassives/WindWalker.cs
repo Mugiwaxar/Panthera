@@ -19,8 +19,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.WindWalker_SkillID;
         //    skill.name = "WIND_WALKER_ABILITY_NAME";
         //    skill.desc = "WIND_WALKER_ABILITY_DESC";
-        //    skill.icon = Assets.WindWalkerAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.WindWalkerAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.associatedSkill = typeof(WindWalker);
 

@@ -15,89 +15,67 @@ using UnityEngine.Networking;
 namespace Panthera.NetworkMessages
 {
 
-    class ClientSyncCharacter : INetMessage
+    class ClientSyncProfile : INetMessage
     {
 
-        public GameObject character;
-        public Dictionary<int, int> unlockedAbilitiesListNetwork = new Dictionary<int, int>();
+        public GameObject player;
+        public Dictionary<String, int> dico = new Dictionary<String, int>();
 
-        public float enduranceNetwork;
-        public float forceNetwork;
-        public float agilityNetwork;
-        public float swiftnessNetwork;
-        public float dexterityNetwork;
-        public bool firstSync;
-
-        public ClientSyncCharacter()
+        public ClientSyncProfile()
         {
 
         }
 
-        public ClientSyncCharacter(GameObject character, Dictionary<int, int> unlockedAbilitiesList, float endurance, float force, float agility, float swiftness, float dexterity, bool firstSync)
+        public ClientSyncProfile(GameObject player, Dictionary<string, int> dico)
         {
-            this.character = character;
-            this.unlockedAbilitiesListNetwork = unlockedAbilitiesList;
-            this.enduranceNetwork = endurance;
-            this.forceNetwork = force;
-            this.agilityNetwork = agility;
-            this.swiftnessNetwork = swiftness;
-            this.dexterityNetwork = dexterity;
-            this.firstSync = firstSync;
+            this.player = player;
+            this.dico = dico;
         }
 
         public void OnReceived()
         {
-            if (this.character == null) return;
-            PantheraObj ptraObj = character.GetComponent<PantheraObj>();
-            if (ptraObj == null) return;
-            ptraObj.unlockedAbilitiesListObjSyncCopy = new Dictionary<int, int>(this.unlockedAbilitiesListNetwork);
-            PantheraBody ptraBody = ptraObj.characterBody;
-            if (ptraBody == null) return;
-            ptraBody.enduranceCopy = enduranceNetwork;
-            ptraBody.forceCopy = forceNetwork;
-            ptraBody.agilityCopy = agilityNetwork;
-            ptraBody.swiftnessCopy = swiftnessNetwork;
-            ptraBody.dexterityCopy = dexterityNetwork;
-            ptraBody.RecalculateStats();
-            if (this.firstSync == true)
-                ptraObj.healthComponent.health = ptraBody.maxHealth;
+            if (this.player == null) return;
+            PantheraObj ptraObj = player.GetComponent<PantheraObj>();
+            if (ptraObj == null)
+                return;
+            if (ptraObj.hasAuthority() == true)
+            {
+                ptraObj.characterBody.RecalculateStats();
+                return;
+            }
+            ProfileComponent profileComp = ptraObj.profileComponent;
+            if (profileComp == null)
+            {
+                profileComp = this.player.AddComponent<ProfileComponent>();
+                ptraObj.profileComponent = profileComp;
+            }
+            profileComp.deserialize(this.dico);
+            ptraObj.characterBody.RecalculateStats();
         }
 
         public void Serialize(NetworkWriter writer)
         {
-            writer.Write(this.character);
-            writer.Write(this.unlockedAbilitiesListNetwork.Count);
-            foreach (KeyValuePair<int, int> entry in this.unlockedAbilitiesListNetwork)
+            writer.Write(this.player);
+            writer.Write(this.dico.Count);
+            foreach (KeyValuePair<String, int> entry in this.dico)
             {
                 writer.Write(entry.Key);
                 writer.Write(entry.Value);
             }
-            writer.Write(this.enduranceNetwork);
-            writer.Write(this.forceNetwork);
-            writer.Write(this.agilityNetwork);
-            writer.Write(this.swiftnessNetwork);
-            writer.Write(this.dexterityNetwork);
-            writer.Write(this.firstSync);
+
         }
 
         public void Deserialize(NetworkReader reader)
         {
-            this.unlockedAbilitiesListNetwork.Clear();
-            this.character = reader.ReadGameObject();
-            this.unlockedAbilitiesListNetwork = new Dictionary<int, int>();
+            this.dico.Clear();
+            this.player = reader.ReadGameObject();
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                int key = reader.ReadInt32();
+                string key = reader.ReadString();
                 int value = reader.ReadInt32();
-                this.unlockedAbilitiesListNetwork[key] = value;
+                this.dico.Add(key, value);
             }
-            this.enduranceNetwork = reader.ReadSingle();
-            this.forceNetwork = reader.ReadSingle();
-            this.agilityNetwork = reader.ReadSingle();
-            this.swiftnessNetwork = reader.ReadSingle();
-            this.dexterityNetwork = reader.ReadSingle();
-            this.firstSync = reader.ReadBoolean();
         }
 
     }
@@ -121,11 +99,11 @@ namespace Panthera.NetworkMessages
 
         public void OnReceived()
         {
-            PantheraObj ptraobj = this.player.GetComponent<PantheraObj>();
-            if (ptraobj == null) return;
-            Transform modelTransform = ptraobj.modelTransform;
-            ptraobj.modelScale = scale;
-            ptraobj.transform.localScale = new Vector3(scale, scale, scale);
+            PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
+            if (ptraObj == null || ptraObj.hasAuthority() == true) return;
+            Transform modelTransform = ptraObj.modelTransform;
+            ptraObj.modelScale = scale;
+            ptraObj.transform.localScale = new Vector3(scale, scale, scale);
             if (modelTransform == null) return;
             modelTransform.localScale = new Vector3(scale, scale, scale);
         }
@@ -540,14 +518,14 @@ namespace Panthera.NetworkMessages
     {
 
         public GameObject player;
-        public int amount;
+        public float amount;
 
         public ClientAddFury()
         {
 
         }
 
-        public ClientAddFury(GameObject player, int amount)
+        public ClientAddFury(GameObject player, float amount)
         {
             this.player = player;
             this.amount = amount;
@@ -570,49 +548,50 @@ namespace Panthera.NetworkMessages
         public void Deserialize(NetworkReader reader)
         {
             this.player = reader.ReadGameObject();
-            this.amount = reader.ReadInt32();
+            this.amount = reader.ReadSingle();
         }
 
     }
 
-    //class ClientAddComboPoint :INetMessage
-    //{
+    class ClientAddShield : INetMessage
+    {
 
-    //    GameObject player;
-    //    int number;
+        public GameObject player;
+        public float amount;
 
-    //    public ClientAddComboPoint()
-    //    {
+        public ClientAddShield()
+        {
 
-    //    }
+        }
 
-    //    public ClientAddComboPoint(GameObject player, int number)
-    //    {
-    //        this.player = player;
-    //        this.number = number;
-    //    }
+        public ClientAddShield(GameObject player, float amount)
+        {
+            this.player = player;
+            this.amount = amount;
+        }
 
-    //    public void OnReceived()
-    //    {
-    //        if (Util.HasEffectiveAuthority(this.player) == false) return;
-    //        PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
-    //        if (ptraObj == null) return;
-    //        ptraObj.characterBody.comboPoint += this.number;
-    //    }
+        public void OnReceived()
+        {
+            if (this.player == null || Util.HasEffectiveAuthority(this.player) == false) return;
+            PantheraBody body = this.player.GetComponent<PantheraBody>();
+            if (body == null) return;
+            body.frontShield += amount;
+        }
 
-    //    public void Serialize(NetworkWriter writer)
-    //    {
-    //        writer.Write(this.player);
-    //        writer.Write(this.number);
-    //    }
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.amount);
+        }
 
-    //    public void Deserialize(NetworkReader reader)
-    //    {
-    //        this.player = reader.ReadGameObject();
-    //        this.number = reader.ReadInt32();
-    //    }
-        
-    //}
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.amount = reader.ReadSingle();
+        }
+
+    }
+
 
     class ClientSetBodyVelocity : INetMessage
     {
@@ -649,6 +628,46 @@ namespace Panthera.NetworkMessages
         {
             this.target = reader.ReadGameObject();
             this.velocity = reader.ReadVector3();
+        }
+
+    }
+
+    public class ClientSetPortalSurge : INetMessage
+    {
+
+        public GameObject target;
+        public GameObject portal;
+        public bool set;
+
+        public ClientSetPortalSurge()
+        {
+
+        }
+
+        public ClientSetPortalSurge(GameObject target, GameObject portal, bool set)
+        {
+            this.target = target;
+            this.portal = portal;
+            this.set = set;
+        }
+
+        public void OnReceived()
+        {
+            Base.PantheraCombatDirector.SetSurged(this.portal, this.set);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.target);
+            writer.Write(this.portal);
+            writer.Write(this.set);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.target = reader.ReadGameObject();
+            this.portal = reader.ReadGameObject();
+            this.set = reader.ReadBoolean();
         }
 
     }

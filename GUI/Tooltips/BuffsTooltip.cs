@@ -22,7 +22,7 @@ namespace Panthera.GUI.Tooltips
             // Create the Buff Tooltip Component //
             TooltipComp = canvas.AddComponent<BuffsTooltip>();
             // Instatiate the Tooltip Prefab //
-            TooltipObj = GameObject.Instantiate(Assets.BuffsTooltipPrefab, canvas.transform, false);
+            TooltipObj = GameObject.Instantiate(PantheraAssets.BuffsTooltipPrefab, canvas.transform, false);
             TooltipObj.SetActive(false);
         }
 
@@ -73,8 +73,12 @@ namespace Panthera.GUI.Tooltips
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;
             RectTransform rec = TooltipObj.GetComponent<RectTransform>();
-            if (mousePosition.y > Screen.height / 2)
+            if (mousePosition.y > Screen.height / 2 && mousePosition.x > Screen.width / 4 * 3)
+                rec.pivot = new Vector2(1, 1);
+            else if (mousePosition.y > Screen.height / 2)
                 rec.pivot = new Vector2(0, 1);
+            else if (mousePosition.x > Screen.width / 4 * 3)
+                rec.pivot = new Vector2(1, 0);
             else
                 rec.pivot = new Vector2(0, 0);
 
@@ -83,6 +87,8 @@ namespace Panthera.GUI.Tooltips
 
             // Change the Position //
             Vector3 screenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100);
+            if (mousePosition.y > Screen.height / 2 && mousePosition.x <= Screen.width / 4 * 3)
+                screenPoint = new Vector3(Input.mousePosition.x + 35, Input.mousePosition.y - 35, 100);
             TooltipObj.transform.position = screenPoint;
 
         }

@@ -35,11 +35,11 @@ namespace Panthera.Skills.Actives
         public float baseDuration = PantheraConfig.AirCleave_attackDuration;
         public float attackTime = PantheraConfig.AirCleave_attackTime;
         public bool hasFired = false;
-        //public bool isFireAirCleave = false;
+        public bool isFireAirCleave = false;
 
         public AirCleave()
         {
-            base.icon = Assets.AirCleaveSkill;
+            base.icon = PantheraAssets.AirCleaveSkill;
             base.name = PantheraTokens.Get("skill_AirCleaveName");
             base.baseCooldown = PantheraConfig.AirCleave_cooldown;
             base.desc1 = string.Format(PantheraTokens.Get("skill_AirCleaveDesc"), PantheraConfig.AirCleave_attackDamageMultiplier * 100) + string.Format(PantheraTokens.Get("skill_AirCleaveFuryDesc"), PantheraConfig.AirCleave_furyAdded);
@@ -59,10 +59,8 @@ namespace Panthera.Skills.Actives
         {
 
             // Check if Fire Air Cleave //
-            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.BurningSpiritAbilityID) > 0 && ripperBuffCount >= PantheraConfig.BurningSpirit_ripperStackNeeded)
-            //{
-            //    isFireAirCleave = true;
-            //}
+            if (base.pantheraObj.furyMode == true && base.pantheraObj.getAbilityLevel(PantheraConfig.HeatWave_AbilityID) > 0)
+                this.isFireAirCleave = true;
 
             // Get the Combo Number //
             this.comboNumber = base.pantheraObj.attackNumber;
@@ -77,16 +75,16 @@ namespace Panthera.Skills.Actives
                 sharpenedFangsMult += PantheraConfig.SharpenedFangs_damagePercent3;
 
             // Create the projectile info //
-            GameObject projectile = Assets.AirCleaveLeftProjectile;
+            GameObject projectile = PantheraAssets.AirCleaveLeftProjectile;
             if (this.comboNumber == 1)
             {
-                projectile = Assets.AirCleaveLeftProjectile;
-                //if (isFireAirCleave) projectile = Assets.FireAirCleaveLeftProjectile;
+                projectile = PantheraAssets.AirCleaveLeftProjectile;
+                if (this.isFireAirCleave) projectile = PantheraAssets.FireAirCleaveLeftProjectile;
             }
             else if (this.comboNumber == 2)
             {
-                projectile = Assets.AirCleaveRightProjectile;
-                //if (isFireAirCleave) projectile = Assets.FireAirCleaveRightProjectile;
+                projectile = PantheraAssets.AirCleaveRightProjectile;
+                if (this.isFireAirCleave) projectile = PantheraAssets.FireAirCleaveRightProjectile;
             }
             float damage = base.characterBody.damage * this.damageMultiplier * sharpenedFangsMult;
             float projScale = base.pantheraObj.modelScale * PantheraConfig.AirCleave_projScale;
@@ -125,14 +123,14 @@ namespace Panthera.Skills.Actives
             if (this.comboNumber == 1)
             {
                 Sound.playSound(Sound.AirCleave1, base.gameObject);
-                //if (isFireAirCleave == true) Sound.playSound(Sound.FireRip1, gameObject);
+                if (this.isFireAirCleave == true) Sound.playSound(Sound.FireRip1, gameObject);
                 PlayAnimation("LeftRip", 0.2f);
             }
             // Combo 2 //
             else
             {
                 Sound.playSound(Sound.AirCleave2, base.gameObject);
-                //if (isFireAirCleave == true) Sound.playSound(Sound.FireRip1, gameObject);
+                if (this.isFireAirCleave == true) Sound.playSound(Sound.FireRip1, gameObject);
                 PlayAnimation("RightRip", 0.2f);
             }
 

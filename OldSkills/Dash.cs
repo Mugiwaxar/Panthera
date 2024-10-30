@@ -28,8 +28,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.Dash_SkillID;
         //    skill.name = "DASH_SKILL_NAME";
         //    skill.desc = "DASH_SKILL_DESC";
-        //    skill.icon = Assets.Dash;
-        //    skill.iconPrefab = Assets.HybridSkillPrefab;
+        //    skill.icon = PantheraAssets.Dash;
+        //    skill.iconPrefab = PantheraAssets.HybridSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.hybrid;
         //    skill.associatedSkill = typeof(Dash);
         //    skill.priority = PantheraConfig.Dash_priority;

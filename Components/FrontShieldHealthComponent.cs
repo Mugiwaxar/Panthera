@@ -16,7 +16,7 @@ namespace Panthera.Components
 
         public PantheraObj ptraObj;
 
-        public void onDamage(HealthComponent hc, DamageInfo damageInfo)
+        public void onDamage(DamageInfo damageInfo)
         {
 
             // Create the Effect //
@@ -25,9 +25,8 @@ namespace Panthera.Components
                 origin = damageInfo.position,
                 rotation = Util.QuaternionSafeLookRotation(damageInfo.force != Vector3.zero ? damageInfo.force : UnityEngine.Random.onUnitSphere)
             };
-            EffectManager.SpawnEffect(Assets.BlockEffectPrefab, effectData, true);
-            EffectManager.SpawnEffect(Assets.FrontShieldHitFX, effectData, true);
-            Utils.Sound.playSound(Utils.Sound.ShieldAbsorb, hc.gameObject);
+            EffectManager.SpawnEffect(PantheraAssets.AbsorbEffectPrefab, effectData, true);
+            EffectManager.SpawnEffect(PantheraAssets.FrontShieldHitFX, effectData, true);
 
             // Decrease the Shield //
             if (this.ptraObj.healthComponent.godMode == false)

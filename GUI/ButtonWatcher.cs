@@ -89,11 +89,9 @@ namespace Panthera.GUI
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
                     Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
-                    Panthera.PantheraCharacter.endurance += 1;
-                    if (this.pantheraPanel.ptraObj != null)
-                        new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
-                    if (this.pantheraPanel.ptraObj != null && this.pantheraPanel.ptraObj.characterBody != null)
-                        this.pantheraPanel.ptraObj.characterBody.RecalculateStats();
+                    Panthera.ProfileComponent.endurance += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
                 }
                 return;
             }
@@ -104,11 +102,9 @@ namespace Panthera.GUI
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
                     Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
-                    Panthera.PantheraCharacter.force += 1;
-                    if (this.pantheraPanel.ptraObj != null)
-                        new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
-                    if (this.pantheraPanel.ptraObj != null && this.pantheraPanel.ptraObj.characterBody != null)
-                        this.pantheraPanel.ptraObj.characterBody.RecalculateStats();
+                    Panthera.ProfileComponent.force += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
                 }
                 return;
             }
@@ -119,11 +115,9 @@ namespace Panthera.GUI
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
                     Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
-                    Panthera.PantheraCharacter.agility += 1;
-                    if (this.pantheraPanel.ptraObj != null)
-                        new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
-                    if (this.pantheraPanel.ptraObj != null && this.pantheraPanel.ptraObj.characterBody != null)
-                        this.pantheraPanel.ptraObj.characterBody.RecalculateStats();
+                    Panthera.ProfileComponent.agility += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
                 }
                 return;
             }
@@ -134,11 +128,9 @@ namespace Panthera.GUI
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
                     Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
-                    Panthera.PantheraCharacter.swiftness += 1;
-                    if (this.pantheraPanel.ptraObj != null)
-                        new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
-                    if (this.pantheraPanel.ptraObj != null && this.pantheraPanel.ptraObj.characterBody != null)
-                        this.pantheraPanel.ptraObj.characterBody.RecalculateStats();
+                    Panthera.ProfileComponent.swiftness += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
                 }
                 return;
             }
@@ -149,44 +141,84 @@ namespace Panthera.GUI
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
                     Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
-                    Panthera.PantheraCharacter.dexterity += 1;
-                    if (this.pantheraPanel.ptraObj != null)
-                        new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
-                    if (this.pantheraPanel.ptraObj != null && this.pantheraPanel.ptraObj.characterBody != null)
-                        this.pantheraPanel.ptraObj.characterBody.RecalculateStats();
+                    Panthera.ProfileComponent.dexterity += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
                 }
                 return;
             }
 
-            // Overview Reset Character Button //
-            if (this.name == "OverviewResetButton")
+            // Overview Spirit Button //
+            if (this.name == "SpiritButton")
             {
-                this.pantheraPanel.overviewTab.resetCharacterWindow.transform.Find("Content").Find("CancelResetCharButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
-                this.pantheraPanel.overviewTab.resetCharacterWindow.transform.Find("Content").Find("ResetCharButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
-                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetCharacterCost)
-                    this.pantheraPanel.overviewTab.resetCharacterWindow.transform.Find("Content").Find("ResetCharButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonDisabledColor;
-                this.pantheraPanel.overviewTab.resetCharacterWindow.SetActive(true);
+                if (Panthera.PantheraCharacter.attributePointsLeft > 0)
+                {
+                    Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
+                    Panthera.ProfileComponent.spirit += 1;
+                    Panthera.ProfileComponent.syncProfile();
+                    Panthera.ProfileComponent.saveAttributes();
+                }
+                return;
+            }
+
+            // Overview Reset Attribute Button //
+            if (this.name == "OverviewResetAttributesButton")
+            {
+                this.pantheraPanel.overviewTab.resetAttributesWindow.transform.Find("Content").Find("CancelResetAttributesButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
+                this.pantheraPanel.overviewTab.resetAttributesWindow.transform.Find("Content").Find("ResetAttributesButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
+                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetAttributesCost)
+                    this.pantheraPanel.overviewTab.resetAttributesWindow.transform.Find("Content").Find("ResetAttributesButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonDisabledColor;
+                this.pantheraPanel.overviewTab.resetAttributesWindow.SetActive(true);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }
 
             // Overview Reset Character Cancel Button pressed //
-            if (this.name == "CancelResetCharButton")
+            if (this.name == "CancelResetAttributesButton")
             {
-                this.pantheraPanel.overviewTab.resetCharacterWindow.SetActive(false);
+                this.pantheraPanel.overviewTab.resetAttributesWindow.SetActive(false);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }
 
             // Overview Reset Character Reset Button //
-            if (this.gameObject.name == "ResetCharButton")
+            if (this.gameObject.name == "ResetAttributesButton")
             {
-                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetCharacterCost) return;
-                Panthera.PantheraCharacter.lunarCoin -= PantheraConfig.ResetCharacterCost;
-                Panthera.PantheraCharacter.resetCharacter();
-                this.pantheraPanel.overviewTab.resetCharacterWindow.SetActive(false);
-                if (this.pantheraPanel.ptraObj != null)
-                    new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
+                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetAttributesCost) return;
+                Panthera.PantheraCharacter.lunarCoin -= PantheraConfig.ResetAttributesCost;
+                Panthera.ProfileComponent.resetAttributes();
+                this.pantheraPanel.overviewTab.resetAttributesWindow.SetActive(false);
+                Utils.Sound.playSound(Utils.Sound.ResetChar, this.gameObject, false);
+                return;
+            }
+
+            // Overview Reset Skills Tree Button //
+            if (this.name == "OverviewResetSkillsTreeButton")
+            {
+                this.pantheraPanel.overviewTab.resetSkillsTreeWindow.transform.Find("Content").Find("CancelResetSkillsTreeButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
+                this.pantheraPanel.overviewTab.resetSkillsTreeWindow.transform.Find("Content").Find("ResetSkillsTreeButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonNormalColor;
+                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetSkillsTreeCost)
+                    this.pantheraPanel.overviewTab.resetSkillsTreeWindow.transform.Find("Content").Find("ResetSkillsTreeButton").GetComponent<Image>().color = PantheraConfig.PresetResetButtonDisabledColor;
+                this.pantheraPanel.overviewTab.resetSkillsTreeWindow.SetActive(true);
+                Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
+                return;
+            }
+
+            // Overview Reset Character Cancel Button pressed //
+            if (this.name == "CancelResetSkillsTreeButton")
+            {
+                this.pantheraPanel.overviewTab.resetSkillsTreeWindow.SetActive(false);
+                Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
+                return;
+            }
+
+            // Overview Reset Character Reset Button //
+            if (this.gameObject.name == "ResetSkillsTreeButton")
+            {
+                if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetSkillsTreeCost) return;
+                Panthera.PantheraCharacter.lunarCoin -= PantheraConfig.ResetSkillsTreeCost;
+                Panthera.ProfileComponent.resetSkillsTree();
+                this.pantheraPanel.overviewTab.resetSkillsTreeWindow.SetActive(false);
                 Utils.Sound.playSound(Utils.Sound.ResetChar, this.gameObject, false);
                 return;
             }
@@ -270,12 +302,29 @@ namespace Panthera.GUI
                 return;
             }
 
-            // Skills Tree Ability Button //
-            if (this.name.Contains("Ability") == true)
+            // Skills Tree Ability Button Left Click //
+            if (this.name.Contains("Ability") == true && eventData.button == PointerEventData.InputButton.Left)
             {
-                this.associatedAbility.upgrade();
-                if (this.pantheraPanel.ptraObj != null)
-                    new ServerSyncCharacter(this.pantheraPanel.ptraObj.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity).Send(NetworkDestination.Server);
+                if (Panthera.PantheraCharacter.skillPointsLeft < 1)
+                    return;
+                Panthera.ProfileComponent.upgradeAbility(this.associatedAbility.abilityID);
+                Panthera.ProfileComponent.syncProfile();
+                Panthera.ProfileComponent.saveSkillsTree();
+                Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
+                return;
+            }
+
+            // Skills Tree Ability Button Right Click //
+            if (this.name.Contains("Ability") == true && eventData.button == PointerEventData.InputButton.Right)
+            {
+                if (this.associatedAbility.hasMastery == true && Panthera.ProfileComponent.isMastery(this.associatedAbility.abilityID) == true && Panthera.PantheraCharacter.pantheraObj == null)
+                    Panthera.ProfileComponent.setMastery(this.associatedAbility.abilityID, false);
+                else if (this.associatedAbility.hasMastery == true && Panthera.ProfileComponent.isMastery(this.associatedAbility.abilityID) == false && Panthera.ProfileComponent.getMasteryPointsLeft() > 0)
+                    Panthera.ProfileComponent.setMastery(this.associatedAbility.abilityID, true);
+                else
+                    return;
+                Panthera.ProfileComponent.syncProfile();
+                Panthera.ProfileComponent.saveSkillsTree();
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }
@@ -313,7 +362,7 @@ namespace Panthera.GUI
             }
 
             // Overview Stats Buttons //
-            if (this.name == "EnduranceButton" || this.name == "ForceButton" || this.name == "AgilityButton" || this.name == "SwiftnessButton" || this.name == "DexterityButton")
+            if (this.name == "EnduranceButton" || this.name == "ForceButton" || this.name == "AgilityButton" || this.name == "SwiftnessButton" || this.name == "DexterityButton" || this.name == "SpiritButton")
             {
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
@@ -323,10 +372,19 @@ namespace Panthera.GUI
                 return;
             }
 
-            // Overview Reset Button //
-            if (this.name == "OverviewResetButton" || this.name == "CancelResetCharButton" || this.name == "ResetCharButton")
+            // Overview Reset Attributes Button //
+            if (this.name == "OverviewResetAttributesButton" || this.name == "CancelResetAttributesButton" || this.name == "ResetAttributesButton")
             {
-                if (this.name == "ResetCharButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetCharacterCost) return;
+                if (this.name == "ResetAttributesButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetAttributesCost) return;
+                Image image = this.GetComponent<Image>();
+                image.color = PantheraConfig.OverviewButtonsHoveredColor;
+                return;
+            }
+
+            // Overview Reset Skills Tree Button //
+            if (this.name == "OverviewResetSkillsTreeButton" || this.name == "CancelResetSkillsTreeButton" || this.name == "ResetSkillsTreeButton")
+            {
+                if (this.name == "ResetSkillsTreeButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetSkillsTreeCost) return;
                 Image image = this.GetComponent<Image>();
                 image.color = PantheraConfig.OverviewButtonsHoveredColor;
                 return;
@@ -398,7 +456,7 @@ namespace Panthera.GUI
             }
 
             // Overview Stats Buttons //
-            if (this.name == "EnduranceButton" || this.name == "ForceButton" || this.name == "AgilityButton" || this.name == "SwiftnessButton" || this.name == "DexterityButton")
+            if (this.name == "EnduranceButton" || this.name == "ForceButton" || this.name == "AgilityButton" || this.name == "SwiftnessButton" || this.name == "DexterityButton" || this.name == "SpiritButton")
             {
                 if (Panthera.PantheraCharacter.attributePointsLeft > 0)
                 {
@@ -411,10 +469,19 @@ namespace Panthera.GUI
                 return;
             }
 
-            // Overview Reset Button //
-            if (this.name == "OverviewResetButton" || this.name == "CancelResetCharButton" || this.name == "ResetCharButton")
+            // Overview Reset Attributes Button //
+            if (this.name == "OverviewResetAttributesButton" || this.name == "CancelResetAttributesButton" || this.name == "ResetAttributesButton")
             {
-                if (this.name == "ResetCharButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetCharacterCost) return;
+                if (this.name == "ResetAttributesButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetAttributesCost) return;
+                Image image = this.GetComponent<Image>();
+                image.color = this.defaultColor;
+                return;
+            }
+
+            // Overview Reset Skills Tree Button //
+            if (this.name == "OverviewResetSkillsTreeButton" || this.name == "CancelResetSkillsTreeButton" || this.name == "ResetSkillsTreeButton")
+            {
+                if (this.name == "ResetSkillsTreeButton" && Panthera.PantheraCharacter.lunarCoin < PantheraConfig.ResetSkillsTreeCost) return;
                 Image image = this.GetComponent<Image>();
                 image.color = this.defaultColor;
                 return;

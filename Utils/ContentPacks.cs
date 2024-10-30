@@ -25,15 +25,15 @@ namespace Panthera.Utils
             this.contentPack.identifier = this.identifier;
             contentPack.bodyPrefabs.Add(Prefab.bodyPrefabs.ToArray());
             contentPack.survivorDefs.Add(Prefab.SurvivorDefinitions.ToArray());
-            contentPack.projectilePrefabs.Add(Assets.projectilePrefabs.ToArray());
+            contentPack.projectilePrefabs.Add(PantheraAssets.projectilePrefabs.ToArray());
             contentPack.skillFamilies.Add(Prefab.skillFamilies.ToArray());
             contentPack.skillDefs.Add(Prefab.skillDefs.ToArray());
             contentPack.entityStateTypes.Add(Prefab.entityStates.ToArray());
             contentPack.buffDefs.Add(Base.Buff.buffDefs.ToArray());
-            contentPack.effectDefs.Add(Assets.effectDefs.ToArray());
+            contentPack.effectDefs.Add(PantheraAssets.effectDefs.ToArray());
             contentPack.masterPrefabs.Add(Prefab.masterPrefabs.ToArray());
             //contentPack.networkedObjectPrefabs.Add(Prefab.networkedObjectPrefabs.ToArray());
-            //contentPack.networkSoundEventDefs.Add(Assets.networkSoundEventDefs.ToArray());
+            //contentPack.networkSoundEventDefs.Add(PantheraAssets.networkSoundEventDefs.ToArray());
             //contentPack.unlockableDefs.Add(Unlockables.unlockableDefs.ToArray());
 
             args.ReportProgress(1f);

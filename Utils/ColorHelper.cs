@@ -14,9 +14,12 @@ namespace Panthera.Utils
         public static string FuryColor = "FF4A00";
         public static string ShieldColor = "B0E0E6";
         public static string BarrierColor = "FFE800";
+        public static string BlockColor = "805500";
         public static string ComboPointColor = "AFAF00";
         public static string StaminaColor = "87CEEB";
         public static string BuffColor = "00FFF0";
+        public static string DeBuffColor = "38005F";
+        public static string MasteryColor = "9F00DB";
         public static string Green = "50C878";
         public static string Red = "FF0000";
         public static string Cyan = "30F9FF";
@@ -48,6 +51,11 @@ namespace Panthera.Utils
             return String.Format("<color=#{0}>{1}</color>", BarrierColor, text);
         }
 
+        public static string SetBlock(String text)
+        {
+            return String.Format("<color=#{0}>{1}</color>", BlockColor, text);
+        }
+
         public static string SetComboPoint(String text)
         {
             return String.Format("<color=#{0}>{1}</color>", ComboPointColor, text);
@@ -61,6 +69,16 @@ namespace Panthera.Utils
         public static string SetBuff(string text)
         {
             return String.Format("<color=#{0}>{1}</color>", BuffColor, text);
+        }
+
+        public static string SetDeBuff(string text)
+        {
+            return String.Format("<color=#{0}>{1}</color>", DeBuffColor, text);
+        }
+
+        public static string SetMastery(string text)
+        {
+            return String.Format("<color=#{0}>{1}</color>", MasteryColor, text);
         }
 
         public static string SetGreen(String text)

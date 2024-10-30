@@ -107,15 +107,6 @@ namespace Panthera.MachineScripts
         public string desc2;
         public int skillID = -1;
         public int requiredAbilityID = -1;
-        public bool locked
-        {
-            get
-            {
-                if (this.requiredAbilityID < 1 || Panthera.PantheraCharacter.characterAbilities.getAbilityLevel(this.requiredAbilityID) > 0)
-                    return false;
-                return true;
-            }
-        }
         public int machineToUse = 1;
         public bool showCooldown = false;
         public bool removeStealth = true;

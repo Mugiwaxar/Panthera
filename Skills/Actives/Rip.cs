@@ -44,11 +44,11 @@ namespace Panthera.Skills.Actives
         public float attackTime = PantheraConfig.Rip_attackTime;
         public int furyAdded = PantheraConfig.Rip_furyAdded;
         public bool hasFired = false;
-        public bool isFireRip = false;
+        public int infernalSwipeLvl = 0;
 
         public Rip()
         {
-            base.icon = Assets.RipSkill;
+            base.icon = PantheraAssets.RipSkill;
             base.name = PantheraTokens.Get("skill_RipName");
             base.baseCooldown = PantheraConfig.Rip_cooldown;
             base.desc1 = string.Format(PantheraTokens.Get("skill_RipDesc"), PantheraConfig.Rip_atkDamageMultiplier * 100) + string.Format(PantheraTokens.Get("skill_RipFuryDesc"), PantheraConfig.Rip_furyAdded);
@@ -81,7 +81,7 @@ namespace Panthera.Skills.Actives
             if (base.pantheraObj.stealthed == true && base.pantheraObj.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
             {
                 this.isGhostRip = true;
-                this.damageMultiplier = PantheraConfig.GhostRip_DamageMultiplier;
+                this.damageMultiplier = PantheraConfig.GhostRip_damageMultiplier;
                 this.furyAdded = PantheraConfig.GhostRip_furyAdded;
                 this.soundName = Utils.Sound.GhostRip;
             }
@@ -94,11 +94,9 @@ namespace Panthera.Skills.Actives
                 this.furyAdded = PantheraConfig.GoldenRip_furyAdded;
             }
 
-            // Check if Fire Rip //
-            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.BurningSpiritAbilityID) > 0 && ripperBuffCount >= PantheraConfig.BurningSpirit_ripperStackNeeded)
-            //{
-            //    this.isFireRip = true;
-            //}
+            // Check if Infernal Swipe //
+            if (base.pantheraObj.furyMode == true)
+                this.infernalSwipeLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.InfernalSwipe_AbilityID);
 
             // Scan if no Enemies //
             bool enemyFound = false;
@@ -190,9 +188,10 @@ namespace Panthera.Skills.Actives
                     sharpenedFangsMult += PantheraConfig.SharpenedFangs_damagePercent3;
 
                 // Create the Attack //
-                bool isCrit = Util.CheckRoll(base.critStat, base.characterBody.master);
+                float critChance = this.isGhostRip == true ? base.critStat * 2 : base.critStat;
+                bool isCrit = Util.CheckRoll(critChance, base.characterBody.master);
                 float damage = base.characterBody.damage * this.damageMultiplier * sharpenedFangsMult;
-                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_hitboxName, default, Assets.RipHitFX);
+                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_hitboxName, default, PantheraAssets.RipHitFX);
 
                 // Fire the attack //
                 List<HurtBox> enemiesHit = new List<HurtBox>();
@@ -202,20 +201,33 @@ namespace Panthera.Skills.Actives
                 Sound.playSound(this.soundName, base.gameObject);
 
                 // Get the Effect //
-                GameObject effect = Assets.LeftRipFX;
+                GameObject effect = PantheraAssets.LeftRipFX;
                 if (this.isGhostRip == true && comboNumber == 1)
-                    effect = Assets.GhostLeftRipFX;
+                    effect = PantheraAssets.GhostLeftRipFX;
                 else if (this.isGhostRip == true && comboNumber == 2)
-                    effect = Assets.GhostRightRipFX;
+                    effect = PantheraAssets.GhostRightRipFX;
                 else if (this.isGoldenRip == true && comboNumber == 1)
-                    effect = Assets.GoldenLeftRipFX;
+                    effect = PantheraAssets.GoldenLeftRipFX;
                 else if (this.isGoldenRip == true && comboNumber == 2)
-                    effect = Assets.GoldenRightRipFX;
+                    effect = PantheraAssets.GoldenRightRipFX;
                 else if (this.comboNumber == 2)
-                    effect = Assets.RightRipFX;
+                    effect = PantheraAssets.RightRipFX;
 
                 // Spawn the Effect //
                 FXManager.SpawnEffect(base.gameObject, effect, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+
+                // Apply the Infernal Swipe //
+                if (this.infernalSwipeLvl > 0)
+                {
+                    // Get the Effect //
+                    GameObject fireEffect = PantheraAssets.FireRipLeftFX;
+                    if (comboNumber == 2)
+                        fireEffect = PantheraAssets.FireRipRightFX;
+                    // Spawn the Effect //
+                    FXManager.SpawnEffect(base.gameObject, fireEffect, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
+                    // Play the sound //
+                    Sound.playSound(Utils.Sound.FireRip1, base.gameObject);
+                }
 
                 // Get Razors Buff count //
                 int razorsCount = base.characterBody.GetBuffCount(Buff.RazorsBuff);
@@ -232,14 +244,33 @@ namespace Panthera.Skills.Actives
                         if (hc == null) continue;
                         if (enemiesHurt.Contains(hc.gameObject)) continue;
                         enemiesHurt.Add(hc.gameObject);
+
                         // Play the sound //
                         Sound.playSound(Sound.RipHit1, hc.gameObject);
+
                         // Add Fury //
                         if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                             base.characterBody.fury += this.furyAdded;
+
                         // Apply Ghost Rip //
                         if (this.isGhostRip)
+                        {
                             new ServerStunTarget(enemy.healthComponent.gameObject, PantheraConfig.GhostRip_stunDuration).Send(NetworkDestination.Server);
+                            if (base.pantheraObj.getAbilityLevel(PantheraConfig.StealthStrike_AbilityID) > 0 && isCrit == true)
+                            {
+                                if (hc.alive == false)
+                                {
+                                    new ServerAddBuff(base.gameObject, base.gameObject, Buff.EclipseBuff).Send(NetworkDestination.Server);
+                                    base.skillLocator.setCooldown(PantheraConfig.Prowl_SkillID, 0);
+                                }
+                                else
+                                {
+                                    new ServerAddBuff(base.gameObject, hc.gameObject, Buff.MortalMirageDebuff).Send(NetworkDestination.Server);
+                                    hc.gameObject.GetComponent<PredatorComponent>().lastStealthStrikeTime = Time.time;
+                                }
+                            }
+                        }
+
                         // Apply Golder Rip //
                         if (this.isGoldenRip)
                         {
@@ -252,14 +283,35 @@ namespace Panthera.Skills.Actives
                                 moneyAdded = PantheraConfig.GoldenRip_addedCoin2;
                             else if (glodenRipLevel == 3)
                                 moneyAdded = PantheraConfig.GoldenRip_addedCoin3;
-                            new ServerSpawnGoldOrb(base.gameObject, hc.gameObject, moneyAdded).Send(NetworkDestination.Server);
+                            new ServerSpawnGoldOrb(hc.gameObject, base.gameObject, moneyAdded).Send(NetworkDestination.Server);
                         }
+
                         // Apply the Razors Buff //
                         if (razorsCount > 0)
                         {
                             razorsCount--;
                             new ServerAddBuff(base.gameObject, hc.gameObject, Buff.BleedOutDebuff).Send(NetworkDestination.Server);
                         }
+
+                        // Apply Infernal Swipe //
+                        if (this.infernalSwipeLvl > 0)
+                        {
+                            float fireDamage = damage;
+                            if (infernalSwipeLvl == 1)
+                                fireDamage *= PantheraConfig.InfernalSwipe_damagePercent1;
+                            if (infernalSwipeLvl == 2)
+                                fireDamage *= PantheraConfig.InfernalSwipe_damagePercent2;
+                            new ServerInflictDamage(base.gameObject, hc.gameObject, enemy.transform.position, fireDamage, isCrit, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
+                            float ignitionChance = 0;
+                            if (infernalSwipeLvl == 1)
+                                ignitionChance = PantheraConfig.InfernalSwipe_ingnitionChance1 * 100;
+                            else if (infernalSwipeLvl == 2)
+                                ignitionChance = PantheraConfig.InfernalSwipe_ingnitionChance2 * 100;
+                            float ignitionRand = UnityEngine.Random.Range(0, 100);
+                            if (ignitionRand < ignitionChance)
+                                new ServerAddBuff(base.gameObject, hc.gameObject, Buff.IgnitionDebuff).Send(NetworkDestination.Server);
+                        }
+
                     }
                 }
 
@@ -287,11 +339,11 @@ namespace Panthera.Skills.Actives
             //        Sound.playSound(Sound.Rip1, base.gameObject);
             //        this.PlayAnimation("LeftRip", 0.2f);
             //        ripSound = Sound.RipHit1;
-            //        FXManager.SpawnEffect(base.gameObject, Assets.LeftRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeftRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
             //        if (this.isFireRip)
             //        {
             //            Sound.playSound(Sound.FireRip1, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, Assets.LeftFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
+            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeftFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
             //        }
             //    }
             //    // Combo 2 //
@@ -300,11 +352,11 @@ namespace Panthera.Skills.Actives
             //        Sound.playSound(Sound.Rip1, gameObject);
             //        this.PlayAnimation("RightRip", 0.2f);
             //        ripSound = Sound.RipHit1;
-            //        FXManager.SpawnEffect(base.gameObject, Assets.RightRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.RightRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
             //        if (isFireRip == true)
             //        {
             //            Sound.playSound(Sound.FireRip1, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, Assets.RightFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
+            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.RightFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
             //        }
             //    }
             //    // Combo 3 //
@@ -313,11 +365,11 @@ namespace Panthera.Skills.Actives
             //        Sound.playSound(Sound.Rip2, base.gameObject);
             //        this.PlayAnimation("FrontRip", 0.2f);
             //        ripSound = Sound.RipHit2;
-            //        FXManager.SpawnEffect(base.gameObject, Assets.FrontRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.FrontRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
             //        if (this.isFireRip == true)
             //        {
             //            Sound.playSound(Sound.FireRip2, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, Assets.FrontFireRipFX, base.characterBody.corePosition, 1, null, base.modelTransform.rotation);
+            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.FrontFireRipFX, base.characterBody.corePosition, 1, null, base.modelTransform.rotation);
             //        }
             //    }
 

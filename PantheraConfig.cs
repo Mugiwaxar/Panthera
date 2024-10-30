@@ -15,11 +15,13 @@ namespace Panthera
         // -- Base -- //
         #region Save Parameter Name
         public static readonly string SP_CharacterXP = "CharacterXP";
+        public static readonly string SP_CharacterMastery = "CharacterMastery";
         public static readonly string SP_Endurance = "CharacterEndurance";
         public static readonly string SP_Force = "CharacterForce";
         public static readonly string SP_Agility = "CharacterAgility";
         public static readonly string SP_Swiftness = "CharacterSwiftness";
         public static readonly string SP_Dexterity = "CharacterDexterity";
+        public static readonly string SP_Spirit = "CharacterSpirit";
         #endregion
         #region Keys
         public static readonly string InteractKeyName = "Interact";
@@ -127,6 +129,9 @@ namespace Panthera
         public static readonly ScriptPriority ConvergenceHook_priority = ScriptPriority.ExtraPriority;
         public static readonly ScriptPriority ConvergenceHook_interruptPower = ScriptPriority.MinimumPriority;
 
+        public static readonly ScriptPriority PortalSurge_priority = ScriptPriority.MinimumPriority;
+        public static readonly ScriptPriority PortalSurge_interruptPower = ScriptPriority.MinimumPriority;
+
 
 
         public static readonly ScriptPriority FuriousBite_priority = ScriptPriority.AveragePriority;
@@ -157,30 +162,33 @@ namespace Panthera
         //public static readonly ScriptPriority RaySlash_interruptPower = ScriptPriority.ExtraHightPriority;
         #endregion
         #region Stats
-        public static readonly int ResetCharacterCost = 5;
+        public static readonly int ResetAttributesCost = 2;
+        public static readonly int ResetSkillsTreeCost = 3;
+        public static readonly int MaxPantheraLevel = 1000;
         public static readonly float Default_MaxHealth = 180;
         public static readonly float Default_MaxHealthLevel = 25;
         public static readonly float Default_HealthRegen = 2f;
         public static readonly float Default_HealthRegenLevel = 0.15f;
-        public static readonly float Default_Energy = 100;
-        public static readonly float Default_EnergyRegen = 10;
-        public static readonly float Default_Stamina = 150;
-        public static readonly float Default_StaminaRegen = 25;
-        public static readonly float Default_MaxFury = 1000;
-        public static readonly float Default_MaxPower = 100;
-        public static readonly float Default_MaxComboPoint = 5;
-        public static readonly float Default_MaxShield = 100;
+        public static readonly float Default_MaxFury = 100;
+        public static readonly float Default_MaxFuryLevel = 15;
+        public static readonly float Default_MaxFrontShield = 100;
         public static readonly float Default_MoveSpeed = 8;
-        public static readonly float Default_MoveSpeedLevel = 0.05f;
+        public static readonly float Default_MoveSpeedLevel = 0.03f;
         public static readonly float Default_Damage = 15;
         public static readonly float Default_DamageLevel = 2;
         public static readonly float Default_AttackSpeed = 1f;
-        public static readonly float Default_AttackSpeedLevel = 0.03f;
+        public static readonly float Default_AttackSpeedLevel = 0.015f;
         public static readonly float Default_Critic = 10;
         public static readonly float Default_CriticLevel = 0.5f;
-        public static readonly float Default_Defense = 18;
+        public static readonly float Default_Dodge = 3;
+        public static readonly float Default_DodgeLevel = 0.2f;
+        public static readonly float Default_Defense = 12;
         public static readonly float Default_DefenseLevel = 0.4f;
+        public static readonly float Default_Mastery = 3;
+        public static readonly float Default_MasteryLevel = 0.1f;
         public static readonly float Default_jumpCount = 1;
+        public static readonly float Default_maxBlock = 10;
+        public static readonly float Default_blockImmunDuration = 0.3f;
         #endregion
         #region Color
         public static readonly Color32 ConfigButtonColor = new Color32(255, 255, 225, 255);
@@ -212,6 +220,8 @@ namespace Panthera
         public static readonly Color32 PantheraHUDLevelBarColor = new Color32(255, 125, 0, 255);
         public static readonly Color32 SkillsNormalSkillColor = new Color32(255, 255, 255, 255);
         public static readonly Color32 SkillsLockedSkillColor = new Color32(120, 50, 50, 150);
+        public static readonly Color32 SkillsNormalFrameColor = new Color32(255, 255, 255, 255);
+        public static readonly Color32 SkillsMasteryFrameColor = new Color32(159, 0, 219, 255);
         public static readonly Color32 SkillsTreeUnlockedAbilityColor = new Color32(255, 255, 255, 255);
         public static readonly Color32 SkillsTreeLockedAbilityColor = new Color32(100, 100, 100, 150);
         public static readonly Color32 SkillsTreeAbilityHoveredColor = new Color32(0, 255, 0, 255);
@@ -221,16 +231,20 @@ namespace Panthera
         public static readonly Color32 ComboLockedColor = new Color32(97, 0, 0, 255);
         public static readonly Color32 ComboCooldownNormalIconColor = new Color32(0, 170, 0, 255);
         public static readonly Color32 ComboCooldownLoadingIconColor = new Color32(200, 0, 0, 255);
+        public static readonly Color32 DetectionCDFillNormalColor = new Color32(0, 224, 218, 200);
+        public static readonly Color32 DetectionCDFillRechargeColor = new Color32(255, 27, 0, 200);
+        public static readonly Color32 FrontShieldNormalColor = new Color32(0, 93, 248, 200);
+        public static readonly Color32 FrontShieldCriticColor = new Color32(237, 0, 0, 200);
+        public static readonly Color32 BlockBarColor = new Color32(255, 255, 255, 230);
         #endregion
         #region Model
-        public static readonly float Model_defaultModelScale = 1.5f;
+        public static readonly float Model_defaultModelScale = 1.0f;
         public static readonly string Model_PrefabName = "Panthera";
         public static readonly float Model_fadeStartDistance = 5;
         public static readonly float Model_fadeEndDistance = 10;
         #endregion
         #region Camera Parameters
-        public static readonly Vector3 defaultCamPosition = new Vector3(0, 1, -15);
-        public static readonly Vector3 defaultGuardianCamPosition = new Vector3(0, 2, -20);
+        public static readonly Vector3 defaultCamPosition = new Vector3(0, 1, -13);
         public static readonly Vector3 Death_cameraPos = new Vector3(0f, 5, -50);
         public static readonly Vector3 ClawsStorm_cameraPos = new Vector3(0, 3, -40);
         #endregion
@@ -283,6 +297,12 @@ namespace Panthera
         public static readonly float Death_effectStartTime = 3;
         public static readonly float Death_minimumTimeBeforeDestroying = 6;
         #endregion
+        #region Orbs
+
+        public static readonly string ShieldOrb_Name = "ShieldOrb";
+        public static readonly float ShieldOrb_Duration = 1.5f;
+
+        #endregion
 
         // -- Skills -- //
         #region Skills ID
@@ -302,8 +322,27 @@ namespace Panthera
         public static readonly int ShieldBash_SkillID = 14;
         public static readonly int ArcaneAnchor_SkillID = 15;
         public static readonly int ConvergenceHook_SkillID = 16;
+        public static readonly int PortalSurge_SkillID = 17;
         #endregion
 
+        #region Portal Surge
+        public static readonly int PortalSurge_lunarCost = 15;
+        public static readonly int PortalSurge_requiredIngameLevel = 30;
+        public static readonly float PortalSurge_cooldown = 900;
+        public static readonly float PortalSurge_failCoolDown = 5;
+        public static readonly float PortalSurge_duration = 9.6f;
+        public static readonly float PortalSurge_endEffectTime = 7.9f;
+        public static readonly float PortalSurge_FailTime = 1.5f;
+        public static readonly float PortalSurge_detectionRadius = 1;
+        public static readonly float PortalSurge_damage = 1000;
+        public static readonly float PortalSurge_teleporterChargeTime = 600;
+        public static readonly float PortalSurge_teleporterRadius = 500;
+        public static readonly float PortalSurge_addCreditsTime = 0.3f;
+        public static readonly float PortalSurge_initialCredit = 800;
+        public static readonly string PortalSurge_megaBossAddedName = " PtraMegaBoss";
+        public static readonly float PortalSurge_bossSizeMultiplier = 2;
+        public static readonly float PortalSurge_bossStatsMultiplier = 3;
+        #endregion
         #region Rip
         public static readonly string Rip_hitboxName = "Rip";
         public static readonly float Rip_cooldown = 0.3f;
@@ -323,6 +362,8 @@ namespace Panthera
         #region Air Cleaves
         public static readonly string AirCleave_leftProjectileName = "AirCleaveLeftProjectile";
         public static readonly string AirCleave_rightProjectileName = "AirCleaveRightProjectile";
+        public static readonly string AirCleave_leftFireProjectileName = "FireAirCleaveLeftProjectile";
+        public static readonly string AirCleave_rightFireProjectileName = "FireAirCleaveRightProjectile";
         public static readonly float AirCleave_cooldown = 0.3f;
         public static readonly float AirCleave_attackDuration = 0.8f;
         public static readonly float AirCleave_attackTime = 0.25f;
@@ -330,7 +371,7 @@ namespace Panthera
         public static readonly float AirCleave_projectileSpeed = 130;
         public static readonly float AirCleave_projectileForce = 15;
         public static readonly float AirCleave_minimumAimTime = 1f;
-        public static readonly int AirCleave_furyAdded = 5;
+        public static readonly float AirCleave_furyAdded = 5;
         public static readonly float AirCleave_projScale = 0.5f;
         #endregion
         #region Leap
@@ -363,10 +404,13 @@ namespace Panthera
         public static readonly float Fury_increasedMoveSpeed = 0.50f;
         #endregion
         #region Guardian
-        public static readonly float Guardian_cooldown = 5;
+        public static readonly float Guardian_cooldown = 8;
         public static readonly float Guardian_duration = 0.25f;
         public static readonly float Guardian_increasedArmor = 0.75f;
         public static readonly float Guardian_increasedHealthRegen = 1.0f;
+        public static readonly float Guardian_barrierDecayRatePercent = 0.25f;
+        public static readonly float Guardian_increasedSize = 1.5f;
+        public static readonly float Guardian_masteryHealPercent = 0.15f;
         #endregion
         #region Slash
         public static readonly int Slash_cooldown = 5;
@@ -383,6 +427,7 @@ namespace Panthera
         #endregion
         #region Detection
         public static readonly float Detection_cooldown = 2f;
+        public static readonly float Detection_maxTime = 8f;
         public static readonly float Detection_scanRate = 0.5f;
         public static readonly float Detection_skillMinDuration = 0.3f;
         public static readonly float Detection_skillMaxDuration = 2.5f;
@@ -399,7 +444,7 @@ namespace Panthera
         public static readonly float AirSlash_cooldown = 7;
         public static readonly float AirSlash_comboMaxTime = 5;
         public static readonly float AirSlash_atkDamageMultiplier = 2f;
-        public static readonly int AirSlash_furyAdded = 2;
+        public static readonly float AirSlash_furyAdded = 2;
         public static readonly float AirSlash_attackDuration = 0.5f;
         public static readonly float AirSlash_attackTime = 0.25f;
         public static readonly float AirSlash_projScale = 0.50f;
@@ -409,8 +454,10 @@ namespace Panthera
         public static readonly float AirSlash_hideCrosshairTime = 1.5f;
         #endregion
         #region Front Shield
+        public static readonly string FrontShield_worldHitboxName = "FrontShieldWorldHitBox";
         public static readonly float FrontShield_cooldown = 0.1f;
         public static readonly float FrontShield_skillDuration = 0.50f;
+        public static readonly float FrontShield_defaultScale = 0.7f;
         public static readonly float FrontShield_maxShieldHealthPercent = 0.33f;
         public static readonly float FrontShield_rechargeDelayAfterDamage = 3;
         public static readonly float FrontShield_rechargeDelayAfterDestroyed = 5;
@@ -419,6 +466,7 @@ namespace Panthera
         public static readonly float FrontShield_moveSpeedMultiplier = 0.5f;
         public static readonly float FrontShield_addedforwardMultiplier = 1.1f;
         public static readonly float FrontShield_addedUpPosition = 0.5f;
+        public static readonly float FrontShield_criticColorPercent = 0.30f;
         #endregion
         #region Claws Storm
         public static readonly string ClawsStorm_hitboxName = "ClawStorm";
@@ -457,7 +505,9 @@ namespace Panthera
         #region Arcane Anchor
         public static readonly float ArcaneAnchor_cooldown = 3;
         public static readonly float ArcaneAnchor_frontShieldCooldown = 2;
-        public static readonly float ArcaneAnchor_skillDuration = 0.8f;
+        public static readonly float ArcaneAnchor_deployedScale = 4;
+        public static readonly float ArcaneAnchor_deployedScaleSpeed = 0.05f;
+        public static readonly float ArcaneAnchor_skillDuration = 0.3f;
         public static readonly float ArcaneAnchor_MaxDistance = 75f;
         #endregion
         #region Convergence Hook
@@ -471,6 +521,9 @@ namespace Panthera
 
         // -- Abilities -- //
         #region Abilities ID
+        public static readonly int UntamedSpirit_AbilityID = -1;
+        public static readonly int GodPower_AbilityID = -2;
+        public static readonly int PortalSurge_AbilityID = -3;
         public static readonly int FelineSkills_AbilityID = 1;
         public static readonly int SharpenedFangs_AbilityID = 2;
         public static readonly int Fury_AbilityID = 3;
@@ -498,8 +551,32 @@ namespace Panthera
         public static readonly int RoarOfResilience_AbilityID = 25;
         public static readonly int ClawsSharpening_AbilityID = 26;
         public static readonly int GoldenStart_AbilityID = 27;
+        public static readonly int StealthStrike_AbilityID = 28;
+        public static readonly int CryoLeap_AbilityID = 29;
+        public static readonly int ShadowStalker_AbilityID = 30;
+        public static readonly int WardensVitality_AbilityID = 31;
+        public static readonly int SavageRevitalization_AbilityID = 32;
+        public static readonly int InnateProtection_AbilityID = 33;
+        public static readonly int Furrify_AbilityID = 34;
+        public static readonly int Concentration_AbilityID = 35;
+        public static readonly int SuperiorFlair_AbilityID = 36;
+        public static readonly int EternalFury_AbilityID = 37;
+        public static readonly int InnerRage_AbilityID = 38;
+        public static readonly int InfernalSwipe_AbilityID = 39;
+        public static readonly int HeatWave_AbilityID = 40;
+        public static readonly int KineticResorption_AbilityID = 41;
+        public static readonly int ExtendedProtection_AbilityID = 42;
         #endregion
 
+        #region Untamed Spirit
+        public static readonly int UntamedSpitit_unlockLevel = 1;
+        #endregion
+        #region God Power
+        public static readonly int GodPower_unlockLevel = 15;
+        #endregion
+        #region Portal Surge
+        public static readonly int PortalSurge_unlockLevel = 30;
+        #endregion
         #region Sharpened Fangs
         public static readonly int SharpenedFangs_maxLevel = 3;
         public static readonly float SharpenedFangs_damagePercent1 = 0.2f;
@@ -553,7 +630,8 @@ namespace Panthera
         #region Ghost Rip
         public static readonly int GhostRip_maxLevel = 1;
         public static readonly float GhostRip_cooldown = 0.3f;
-        public static readonly float GhostRip_DamageMultiplier = 3;
+        public static readonly float GhostRip_damageMultiplier = 1.5f;
+        public static readonly float GhostRip_critMultiplier = 2f;
         public static readonly float GhostRip_stunDuration = 3.5f;
         public static readonly int GhostRip_furyAdded = 4;
         #endregion
@@ -575,7 +653,7 @@ namespace Panthera
         public static readonly int GoldenRip_addedCoin2 = 2;
         public static readonly int GoldenRip_addedCoin3 = 3;
         public static readonly float GoldenRip_cooldown = 0.3f;
-        public static readonly float GoldenRip_DamageMultiplier = 2;
+        public static readonly float GoldenRip_DamageMultiplier = 1.5f;
         public static readonly int GoldenRip_furyAdded = 2;
         #endregion
         #region Tornado
@@ -613,6 +691,97 @@ namespace Panthera
         public static readonly int GoldenStart_maxLevel = 1;
         public static readonly int GoldenStart_addedGold = 25;
         #endregion
+        #region Stealth Strike
+        public static readonly int StealthStrike_maxLevel = 1;
+        #endregion
+        #region Cryo-Leap
+        public static readonly int CryoLeap_maxLevel = 3;
+        public static readonly float CryoLeap_duration1 = 1;
+        public static readonly float CryoLeap_duration2 = 2;
+        public static readonly float CryoLeap_duration3 = 3;
+        #endregion
+        #region Shadow Stalker
+        public static readonly int ShadowStalker_maxLevel = 2;
+        public static readonly float ShadowStalker_duration1 = 1;
+        public static readonly float ShadowStalker_duration2 = 2;
+        #endregion
+        #region Warden's Vitality
+        public static readonly int WardensVitality_maxLevel = 3;
+        public static readonly float WardensVitality_maxHealthPercent1 = 1.1f;
+        public static readonly float WardensVitality_maxHealthPercent2 = 1.2f;
+        public static readonly float WardensVitality_maxHealthPercent3 = 1.3f;
+        public static readonly int WardensVitality_BlockAdded1 = 1;
+        public static readonly int WardensVitality_BlockAdded2 = 2;
+        public static readonly int WardensVitality_BlockAdded3 = 3;
+        #endregion
+        #region Savage Revitalization
+        public static readonly int SavageRevitalization_maxLevel = 1;
+        public static readonly int SavageRevitalization_addedStack = 5;
+        public static readonly float SavageRevitalization_buffTime = 5;
+        public static readonly float SavageRevitalization_MasteryBuffTime = 10;
+        #endregion
+        #region Innate Protection
+        public static readonly int InnateProtection_maxLevel = 2;
+        public static readonly float InnateProtection_percent1 = 0.5f;
+        public static readonly float InnateProtection_percent2 = 0.25f;
+        #endregion
+        #region Furrify
+        public static readonly int Furrify_maxLevel = 1;
+        public static readonly float Furrify_percent = 0.1f;
+        #endregion
+        #region Concentration
+        public static readonly int Concentration_maxLevel = 1;
+        #endregion
+        #region Superior Flair
+        public static readonly int SuperiorFlair_maxLevel = 5;
+        public static readonly float SuperiorFlair_percent1 = 12;
+        public static readonly float SuperiorFlair_percent2 = 16;
+        public static readonly float SuperiorFlair_percent3 = 20;
+        public static readonly float SuperiorFlair_percent4 = 24;
+        public static readonly float SuperiorFlair_percent5 = 28;
+        #endregion
+        #region Eternal Fury
+        public static readonly int EternalFury_maxLevel = 3;
+        public static readonly float EternalFury_reductionPercent1 = 0.33f;
+        public static readonly float EternalFury_reductionPercent2 = 0.66f;
+        public static readonly float EternalFury_reductionPercent3 = 1.00f;
+        public static readonly float EternalFury_startPercent1 = 0.20f;
+        public static readonly float EternalFury_startPercent2 = 0.40f;
+        public static readonly float EternalFury_startPercent3 = 0.60f;
+        #endregion
+        #region Inner Rage
+        public static readonly int InnerRage_maxLevel = 4;
+        public static readonly float InnerRage_addedFuryPercent1 = 0.03f;
+        public static readonly float InnerRage_addedFuryPercent2 = 0.6f;
+        public static readonly float InnerRage_addedFuryPercent3 = 0.9f;
+        public static readonly float InnerRage_addedFuryPercent4 = 0.12f;
+        public static readonly float InnerRage_enrageTime = 3;
+        public static readonly float InnerRage_enrageTimeFuryMode = 5;
+        #endregion
+        #region Infernal Swipe
+        public static readonly int InfernalSwipe_maxLevel = 2;
+        public static readonly float InfernalSwipe_damagePercent1 = 0.25f;
+        public static readonly float InfernalSwipe_damagePercent2 = 0.50f;
+        public static readonly float InfernalSwipe_ingnitionChance1 = 0.15f;
+        public static readonly float InfernalSwipe_ingnitionChance2 = 0.30f;
+        #endregion
+        #region Heat Wave
+        public static readonly int HeatWave_maxLevel = 1;
+        #endregion
+        #region Kinetic Resorption
+        public static readonly int KineticResorption_maxLevel = 3;
+        public static readonly float KineticResorption_regenPercent1 = 0.10f;
+        public static readonly float KineticResorption_regenPercent2 = 0.20f;
+        public static readonly float KineticResorption_regenPercent3 = 0.30f;
+        public static readonly float KineticResorption_orbsCreationDelay = 1;
+        #endregion
+        #region Extended Protection
+        public static readonly int ExtendedProtection_maxLevel = 4;
+        public static readonly float ExtendedProtection_percent1 = 0.1f;
+        public static readonly float ExtendedProtection_percent2 = 0.2f;
+        public static readonly float ExtendedProtection_percent3 = 0.3f;
+        public static readonly float ExtendedProtection_percent4 = 0.4f;
+        #endregion
 
         // -- Combos -- //
         #region Combos ID
@@ -632,6 +801,7 @@ namespace Panthera
         public static readonly int ConvergenceHook_CombosID = 14;
         public static readonly int MassiveHook_CombosID = 15;
         public static readonly int Ambition_CombosID = 16;
+        public static readonly int PortalSurge_CombosID = 17;
         #endregion
         #region Combos Config
         public static float Combos_maxTime = 3;
@@ -639,6 +809,9 @@ namespace Panthera
         #endregion
 
         // Buffs //
+        #region Eclipse
+        public static readonly float Eclipse_duration = 10;
+        #endregion
         #region Cupidity
         public static readonly int Cupidity_maxStacks = 50;
         public static readonly float Cupidity_goldMultiplier = 0.05f;
@@ -652,10 +825,38 @@ namespace Panthera
         #region Razors
         public static readonly int Razors_maxStacks = 10;
         #endregion
+        #region Mortal Mirage
+        public static readonly float MortalMirage_duration = 4;
+        #endregion
         #region Bleed Out
-        public static readonly int BleedOut_duration = 5;
+        public static readonly float BleedOut_duration = 5;
         public static readonly float BleedOut_damage = 0.3f;
         public static readonly float BleedOut_damageTime = 0.3f;
+        #endregion
+        #region Frozen Paws
+        public static readonly float FrozenPaws_duration = 1;
+        public static readonly float FrozenPaws_minGroundDistance = 5;
+        #endregion
+        #region Regeneration
+        public static readonly float Regeneration_duration = 10;
+        public static readonly int Regeneration_maxStack = 15;
+        public static readonly float Regeneration_percentHeal = 0.01f;
+        public static readonly float Regeneration_time = 1;
+        #endregion
+        #region Resilience
+        public static readonly float Resilience_duration = 10;
+        public static readonly int Resilience_maxStack = 15;
+        public static readonly float Resilience_percentArmor = 0.05f;
+        #endregion
+        #region Enrage
+        public static readonly float Enrage_duration = 5;
+        public static readonly int Enrage_maxStack = 20;
+        public static readonly float Enrage_furyPercent = 0.01f;
+        #endregion
+        #region Ignition
+        public static readonly float Ignition_duration = 10;
+        public static readonly float Ignition_damage = 0.5f;
+        public static readonly float Ignition_damageTime = 1;
         #endregion
 
     }

@@ -25,7 +25,7 @@ namespace Panthera.Skills.Actives
 
         public ArcaneAnchor()
         {
-            base.icon = Assets.ArcaneAnchorSkill;
+            base.icon = PantheraAssets.ArcaneAnchorSkill;
             base.name = PantheraTokens.Get("ability_ArcaneAnchorName");
             base.baseCooldown = PantheraConfig.ArcaneAnchor_cooldown;
             base.removeStealth = false;

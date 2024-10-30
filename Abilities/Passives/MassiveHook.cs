@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Passives
             base.name = Utils.PantheraTokens.Get("ability_MassiveHookName");
             base.abilityID = PantheraConfig.MassiveHook_AbilityID;
             base.type = AbilityType.passive;
-            base.icon = Assets.MassiveHookAbility;
+            base.icon = PantheraAssets.MassiveHookAbility;
             base.maxLevel = PantheraConfig.MassiveHook_maxLevel;
             base.cooldown = 0;
             base.requiredAbility = PantheraConfig.ConvergenceHook_AbilityID;

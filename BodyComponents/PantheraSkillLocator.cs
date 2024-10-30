@@ -23,7 +23,7 @@ namespace Panthera.BodyComponents
 
         public void createRechargeSkillsList()
         {
-            this.rechargeSkillList.Clear();
+            this.rechargeSkillList = new Dictionary<int, RechargeSkill>();
             foreach (KeyValuePair<int, MachineScript> pairs in this.ptraObj.characterSkills.SkillsList)
             {
                 MachineScript skill = pairs.Value;
@@ -78,6 +78,14 @@ namespace Panthera.BodyComponents
                 rechargeSkill.stock++;
         }
 
+        public void removeOneStock(int skillID)
+        {
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+            RechargeSkill rechargeSkill = this.rechargeSkillList[skillID];
+            if (rechargeSkill.stock > 0)
+                rechargeSkill.stock--;
+        }
+
         public float getMaxCooldown(int skillID)
         {
             if (this.rechargeSkillList.ContainsKey(skillID) == false) return 0;
@@ -110,10 +118,17 @@ namespace Panthera.BodyComponents
                 rechargeTime = getMaxCooldown(skillID);
 
             // Set the RechargeSkill //
-            rechargeSkill.stock--;
+            if (rechargeSkill.stock > 0)
+                rechargeSkill.stock--;
             if (rechargeSkill.cooldown == 0)
                 rechargeSkill.cooldown = rechargeTime;
 
+        }
+
+        public void setCooldown(int skillID, float cooldown)
+        {
+            if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
+            this.rechargeSkillList[skillID].cooldown = cooldown;
         }
 
         public static void applyAmmoPackHook(Action<SkillLocator> orig, SkillLocator self)

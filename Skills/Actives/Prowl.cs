@@ -25,7 +25,7 @@ namespace Panthera.Skills.Actives
 
         public Prowl()
         {
-            base.icon = Assets.ProwlSkill;
+            base.icon = PantheraAssets.ProwlSkill;
             base.name = PantheraTokens.Get("ability_ProwlName");
             base.baseCooldown = PantheraConfig.Prowl_coolDown;
             base.desc1 = Utils.PantheraTokens.Get("ability_ProwlDesc");
@@ -40,7 +40,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.getPassiveScript().isOutOfCombat == false) return false;
+            if (ptraObj.characterBody.GetBuffCount(Buff.EclipseBuff) <= 0 && ptraObj.getPassiveScript().isOutOfCombat == false) return false;
             if (ptraObj.skillLocator.getStock(PantheraConfig.Prowl_SkillID) <= 0) return false;
             return true;
         }
@@ -59,7 +59,6 @@ namespace Panthera.Skills.Actives
             else
             {
                 Passives.Stealth.DoStealth(this.pantheraObj);
-                this.pantheraObj.prowlActivationTime = Time.time;
             }
 
         }

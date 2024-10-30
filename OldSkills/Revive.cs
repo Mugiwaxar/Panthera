@@ -35,8 +35,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.Revive_SkillID;
         //    skill.name = "REVIVE_SKILL_NAME";
         //    skill.desc = "REVIVE_SKILL_DESC";
-        //    skill.icon = Assets.Revive;
-        //    skill.iconPrefab = Assets.ActiveSkillPrefab;
+        //    skill.icon = PantheraAssets.Revive;
+        //    skill.iconPrefab = PantheraAssets.ActiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.active;
         //    skill.associatedSkill = typeof(Revive);
         //    skill.priority = PantheraConfig.Revive_priority;
@@ -71,7 +71,7 @@ namespace Panthera.OldSkills
         //    //Skills.Passives.Stealth.DidDamageUnstealth(pantheraObj);
 
         //    // Create the Effect //
-        //    effectID = Utils.FXManager.SpawnEffect(gameObject, Assets.ReviveFX, modelTransform.position, pantheraObj.modelScale, null, modelTransform.rotation);
+        //    effectID = Utils.FXManager.SpawnEffect(gameObject, PantheraAssets.ReviveFX, modelTransform.position, pantheraObj.modelScale, null, modelTransform.rotation);
 
         //    // Start the Sound //
         //    Utils.Sound.playSound(Utils.Sound.ReviveLoopPlay, gameObject);

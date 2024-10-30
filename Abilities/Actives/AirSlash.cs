@@ -18,10 +18,10 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_AirSlashName");
             abilityID = PantheraConfig.AirSlash_AbilityID;
             type = AbilityType.active;
-            icon = Assets.AirSlashSkill;
+            icon = PantheraAssets.AirSlashSkill;
             maxLevel = PantheraConfig.AirSlash_maxLevel;
             cooldown = PantheraConfig.AirSlash_cooldown;
-            requiredAbility = PantheraConfig.ClawsSharpening_AbilityID;
+            requiredAbility = PantheraConfig.Tornado_AbilityID;
             desc1 = String.Format(Utils.PantheraTokens.Get("ability_AirSlashDesc"), PantheraConfig.AirSlash_atkDamageMultiplier * 100) + String.Format(Utils.PantheraTokens.Get("Ability_AirSlashFuryDesc"), PantheraConfig.AirSlash_furyAdded);
             desc2 = null;
         }

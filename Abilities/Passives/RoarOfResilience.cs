@@ -19,7 +19,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_RoarOfResilienceName");
             abilityID = PantheraConfig.RoarOfResilience_AbilityID;
             type = AbilityType.passive;
-            icon = Assets.RoarOfResilienceAbility;
+            icon = PantheraAssets.RoarOfResilienceAbility;
             maxLevel = PantheraConfig.RoarOfResilience_maxLevel;
             cooldown = 0;
             requiredAbility = PantheraConfig.Guardian_AbilityID;

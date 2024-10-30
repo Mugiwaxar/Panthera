@@ -62,7 +62,7 @@ namespace Panthera.BodyComponents
             bool newCombo = false;
 
             // Try to find a Skill //
-            ComboSkill comboSkill = this.getSkill(this.actualCombosList, keys, direction); ;
+            ComboSkill comboSkill = this.getSkill(this.actualCombosList, keys, direction);
 
             // If no skill found, try with a new Combo //
             if (comboSkill == null)
@@ -72,7 +72,7 @@ namespace Panthera.BodyComponents
             }
 
             // Check the Skill //
-            if (comboSkill == null || comboSkill.locked == true)
+            if (comboSkill == null || this.ptraObj.isSkillUnlocked(comboSkill.skill.skillID) == false)
                 return;
 
             // Get the Skill //
@@ -97,7 +97,7 @@ namespace Panthera.BodyComponents
                     this.ptraObj.skillsMachine2.TryScript((MachineScript)skill.Clone());
                 // Stop the Stealth //
                 if (skill.removeStealth == true)
-                    Skills.Passives.Stealth.UnStealth(this.ptraObj);
+                    Skills.Passives.Stealth.DidDamageUnstealth(this.ptraObj);
                 // Check if new Combo //
                 if (newCombo == true)
                     this.actualCombosList.Clear();
@@ -151,7 +151,7 @@ namespace Panthera.BodyComponents
             {
 
                 // Check if the Combo is locked //
-                if (pair.Value.locked == true)
+                if (this.ptraObj.isComboUnlocked(pair.Value.comboID) == false)
                     continue;
 
                 // Check if the Combo is activated //

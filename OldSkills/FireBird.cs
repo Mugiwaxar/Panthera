@@ -36,8 +36,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.FireBird_SkillID;
         //    skill.name = "FIRE_BIRD_SKILL_NAME";
         //    skill.desc = "FIRE_BIRD_SKILL_DESC";
-        //    skill.icon = Assets.FireBird;
-        //    skill.iconPrefab = Assets.ActiveSkillPrefab;
+        //    skill.icon = PantheraAssets.FireBird;
+        //    skill.iconPrefab = PantheraAssets.ActiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.active;
         //    skill.associatedSkill = typeof(FireBird);
         //    skill.priority = PantheraConfig.FireBird_priority;
@@ -87,7 +87,7 @@ namespace Panthera.OldSkills
         //    characterDirection.forward = GetAimRay().direction;
 
         //    // Create the projectile info //
-        //    projectileInfo.projectilePrefab = Assets.FireBirdProjectile;
+        //    projectileInfo.projectilePrefab = PantheraAssets.FireBirdProjectile;
         //    projectileInfo.damageTypeOverride = DamageType.Generic;
         //    projectileInfo.damageColorIndex = DamageColorIndex.Default;
         //    projectileInfo.crit = RollCrit();

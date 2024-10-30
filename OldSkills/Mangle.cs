@@ -84,7 +84,7 @@ namespace Panthera.OldSkills
     //                ).Send(NetworkDestination.Server);
 
     //            // Spawn the effect //
-    //            //Utils.Functions.SpawnEffect(gameObject, Assets.MangleFX, target.corePosition, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(characterDirection.forward));
+    //            //Utils.Functions.SpawnEffect(gameObject, PantheraAssets.MangleFX, target.corePosition, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(characterDirection.forward));
 
     //            // Clear the buffs //
     //            new ServerSetBuffCount(gameObject, (int)Buff.mangleBuff.buffIndex, 0);

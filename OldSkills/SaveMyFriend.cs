@@ -36,8 +36,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.SaveMyFriend_SkillID;
         //    skill.name = "SAVE_MY_FRIEND_ABILITY_NAME";
         //    skill.desc = "SAVE_MY_FRIEND_ABILITY_DESC";
-        //    skill.icon = Assets.SaveMyFriendAbility;
-        //    skill.iconPrefab = Assets.HybridSkillPrefab;
+        //    skill.icon = PantheraAssets.SaveMyFriendAbility;
+        //    skill.iconPrefab = PantheraAssets.HybridSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.hybrid;
         //    skill.associatedSkill = typeof(SaveMyFriend);
         //    skill.priority = PantheraConfig.SaveMyFriend_priority;

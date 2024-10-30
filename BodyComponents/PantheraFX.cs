@@ -48,26 +48,26 @@ namespace Panthera.BodyComponents
             }
 
             // Create the shield //
-            //this.shieldFX = Utils.Functions.SpawnEffect(base.gameObject, Assets.ShieldFX, this.ptraObj.modelTransform.position, 1, this.ptraObj.characterBody.gameObject, new Quaternion(), true);
+            //this.shieldFX = Utils.Functions.SpawnEffect(base.gameObject, PantheraAssets.ShieldFX, this.ptraObj.modelTransform.position, 1, this.ptraObj.characterBody.gameObject, new Quaternion(), true);
             //this.shieldRenderer = this.shieldFX.GetComponentInChildren<Renderer>();
             //this.shieldRenderer.enabled = false;
 
             // Create the Leap Trail //
-            this.leapTrailFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.LeapTrailFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.leapTrailFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeapTrailFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             GameObject leapTrailEffect = Utils.FXManager.GetEffect(leapTrailFXID);
             this.leapTrailParticles = leapTrailEffect.GetComponentInChildren<ParticleSystem>();
             this.leapTrailEmission = leapTrailParticles.emission;
             this.leapTrailEmission.enabled = false;
 
             // Create the Dash Trail //
-            //this.dashFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.DashFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            //this.dashFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.DashFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             //GameObject dashEffect = Utils.FXManager.GetEffect(dashFXID);
             //this.dashParticles = dashEffect.GetComponentInChildren<ParticleSystem>();
             //this.dashEmission = dashParticles.emission;
             //this.dashEmission.enabled = false;
 
             // Create the Fury Aura //
-            this.furyAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.FuryAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.furyAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.FuryAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             this.furyAuraObj = Utils.FXManager.GetEffect(this.furyAuraFXID);
             foreach (ParticleSystem ps in this.furyAuraObj.GetComponentsInChildren<ParticleSystem>())
             {
@@ -76,7 +76,7 @@ namespace Panthera.BodyComponents
             }
 
             // Create the Guardian Aura //
-            this.GuardianAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.GuardianAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.GuardianAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.GuardianAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             this.GuardianAuraObj = Utils.FXManager.GetEffect(this.GuardianAuraFXID);
             foreach (ParticleSystem ps in this.GuardianAuraObj.GetComponentsInChildren<ParticleSystem>())
             {
@@ -85,7 +85,7 @@ namespace Panthera.BodyComponents
             }
 
             // Create the Ambition Aura //
-            this.AmbitionAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, Assets.AmbitionAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.AmbitionAuraFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.AmbitionAuraFX, ptraObj.modelTransform.position, 1, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             this.AmbitionAuraObj = Utils.FXManager.GetEffect(this.AmbitionAuraFXID);
             foreach (ParticleSystem ps in this.AmbitionAuraObj.GetComponentsInChildren<ParticleSystem>())
             {

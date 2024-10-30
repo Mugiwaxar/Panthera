@@ -12,11 +12,14 @@ namespace Panthera.Components
     public class PredatorComponent : MonoBehaviour
     {
 
-        public PantheraObj ptraObj;
         public CharacterBody body;
         public HealthComponent hc;
-        public float bleedOutTime = 0;
-
+        public bool damaged = false; // Local
+        public PantheraObj lastHit; // Server
+        public float bleedOutTime = 0; // Server
+        public float IgnitionTime = 0; // Server
+        public float lastStealthStrikeTime = 0; // Local
+        
         public void Start()
         {
             if (NetworkServer.active == false) base.enabled = false;
@@ -26,8 +29,9 @@ namespace Panthera.Components
 
         public void FixedUpdate()
         {
-            // Check the Bleed Out Buff //
-            if (Time.time - this.bleedOutTime > PantheraConfig.BleedOut_damageTime)
+
+            // Check the Bleed Out DeBuff //
+            if (Time.time - this.bleedOutTime > PantheraConfig.BleedOut_damageTime && this.lastHit != null)
             {
                 // Save Time //
                 this.bleedOutTime = Time.time;
@@ -35,7 +39,20 @@ namespace Panthera.Components
                 int bleedOutCount = body.GetBuffCount(Buff.BleedOutDebuff.buffIndex);
                 if (bleedOutCount > 0)
                 {
-                    this.hc.TakeDamage(Utils.Functions.CreateDotDamageInfo(Buff.BleedOutDebuff, this.ptraObj.gameObject, base.gameObject, this.ptraObj.characterBody.damage * Buff.BleedOutDebuff.damage * bleedOutCount));
+                    this.hc.TakeDamage(Utils.Functions.CreateDotDamageInfo(Buff.BleedOutDebuff, this.lastHit.gameObject, base.gameObject, this.lastHit.characterBody.damage * Buff.BleedOutDebuff.damage * bleedOutCount, DamageColorIndex.Bleed));
+                }
+            }
+
+            // Check the Ignition DeBuff //
+            if (Time.time - this.IgnitionTime > PantheraConfig.Ignition_damageTime && this.lastHit != null)
+            {
+                // Save Time //
+                this.IgnitionTime = Time.time;
+                // Check if Debuff //
+                int IgnitionCount = body.GetBuffCount(Buff.IgnitionDebuff.buffIndex);
+                if (IgnitionCount > 0)
+                {
+                    this.hc.TakeDamage(Utils.Functions.CreateDotDamageInfo(Buff.IgnitionDebuff, this.lastHit.gameObject, base.gameObject, this.lastHit.characterBody.damage * Buff.IgnitionDebuff.damage * IgnitionCount, DamageColorIndex.WeakPoint));
                 }
             }
 

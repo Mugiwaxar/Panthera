@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Passives
             base.name = Utils.PantheraTokens.Get("ability_SixthSenseName");
             base.abilityID = PantheraConfig.SixthSense_AbilityID;
             base.type = AbilityType.passive;
-            base.icon = Assets.SixthSenseAbility;
+            base.icon = PantheraAssets.SixthSenseAbility;
             base.maxLevel = PantheraConfig.SixthSense_maxLevel;
             base.cooldown = 0;
             base.requiredAbility = PantheraConfig.Detection_AbilityID;

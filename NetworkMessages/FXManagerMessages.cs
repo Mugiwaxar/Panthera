@@ -105,7 +105,7 @@ namespace Panthera.NetworkMessages
         public void OnReceived()
         {
             if (this.creator == null) return;
-            if (Util.HasEffectiveAuthority(this.creator) == true) return;
+            if (Utils.FXManager.GetEffect(this.ID) != null) return;
             GameObject effect = Utils.FXManager.CreateEffectInternal(this.creator, Utils.Prefabs.GetPrefab(this.assetPrefabID), this.origin, this.scale, this.parent, this.rotation, this.isModelTransform);
             Utils.FXManager.AddEffectToList(this.ID, effect);
         }

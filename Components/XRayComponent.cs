@@ -165,7 +165,7 @@ namespace Panthera.Components
                 for (int i = 0; i < this.changedRenInfo.Length; i++)
                 {
                     Texture cachedTexture = this.changedRenInfo[i].defaultMaterial.mainTexture;
-                    this.changedRenInfo[i].defaultMaterial = new Material(Base.Assets.XRayMat);
+                    this.changedRenInfo[i].defaultMaterial = new Material(Base.PantheraAssets.XRayMat);
                     if (cachedTexture != null)
                         this.changedRenInfo[i].defaultMaterial.mainTexture = cachedTexture;
                     this.changedRenInfo[i].defaultMaterial.SetColor("_FresnelColor", this.defaultColor);
@@ -180,7 +180,7 @@ namespace Panthera.Components
                 for (int i = 0; i < this.origMats.Length; i++)
                 {
                     Texture cachedTexture = this.changedMats[i].mainTexture;
-                    this.changedMats[i] = new Material(Base.Assets.XRayMat);
+                    this.changedMats[i] = new Material(Base.PantheraAssets.XRayMat);
                     if (cachedTexture != null)
                         this.changedMats[i].mainTexture = cachedTexture;
                     this.changedMats[i].SetColor("_FresnelColor", this.defaultColor);
@@ -235,25 +235,29 @@ namespace Panthera.Components
             if (this.ptraObj.detectionMode == false)
                 return;
 
-            // Uptade the Color of the Body //
-            if (this.type == XRayObjectType.Body)
-                this.updateBodyColor();
-
-            // Update Colors //
-            if (this.ptraObj.detectionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
+            // Check the Concentration Ability //
+            if (this.ptraObj.getAbilityLevel(PantheraConfig.Concentration_AbilityID) > 0)
             {
-                // Update the Color of the Chest //
-                if (this.type == XRayObjectType.Purchase && this.name != "Duplicator(Clone)")
-                    this.updateChestColor();
-                // Update the Color of the Barrel //
-                if (this.type == XRayObjectType.Barrel)
-                    this.updateBarrelColor();
-                // Update the Color of the Tripe Shop Base //
-                if (this.type == XRayObjectType.TripleShopBase)
-                    this.updateTripleShopBaseColor();
-                // Update the Color of the Tripe Shop Terminal //
-                if (this.type == XRayObjectType.TripleShopTerminal)
-                    this.updateTripleShopTerminalColor();
+                // Uptade the Color of the Body //
+                if (this.type == XRayObjectType.Body)
+                    this.updateBodyColor();
+
+                // Update Colors //
+                if (this.ptraObj.detectionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
+                {
+                    // Update the Color of the Chest //
+                    if (this.type == XRayObjectType.Purchase && this.name != "Duplicator(Clone)")
+                        this.updateChestColor();
+                    // Update the Color of the Barrel //
+                    if (this.type == XRayObjectType.Barrel)
+                        this.updateBarrelColor();
+                    // Update the Color of the Tripe Shop Base //
+                    if (this.type == XRayObjectType.TripleShopBase)
+                        this.updateTripleShopBaseColor();
+                    // Update the Color of the Tripe Shop Terminal //
+                    if (this.type == XRayObjectType.TripleShopTerminal)
+                        this.updateTripleShopTerminalColor();
+                }
             }
 
         }

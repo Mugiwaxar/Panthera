@@ -17,12 +17,8 @@ namespace Panthera.Base
         // (int AbilityID, MachineScript skill) Represent the Abilities List //
         public Dictionary<int, PantheraAbility> AbilityList = new Dictionary<int, PantheraAbility>();
 
-        // (Ability ID 1 - ??, int unlockLevel) Represent a list of all unlocked Ability with level)
-        public Dictionary<int, int> unlockedAbilitiesList = new Dictionary<int, int>();
-
         public CharacterAbilities()
         {
-            this.unlockedAbilitiesList.Add(PantheraConfig.FelineSkills_AbilityID, 0);
             this.addAbilityToList(PantheraConfig.FelineSkills_AbilityID, new FelineSkills());
             this.addAbilityToList(PantheraConfig.SharpenedFangs_AbilityID, new SharpenedFangs());
             this.addAbilityToList(PantheraConfig.Fury_AbilityID, new Fury());
@@ -50,6 +46,24 @@ namespace Panthera.Base
             this.addAbilityToList(PantheraConfig.RoarOfResilience_AbilityID, new RoarOfResilience());
             this.addAbilityToList(PantheraConfig.ClawsSharpening_AbilityID, new ClawsSharpening());
             this.addAbilityToList(PantheraConfig.GoldenStart_AbilityID, new GoldenStart());
+            this.addAbilityToList(PantheraConfig.StealthStrike_AbilityID, new StealthStrike());
+            this.addAbilityToList(PantheraConfig.CryoLeap_AbilityID, new CryoLeap());
+            this.addAbilityToList(PantheraConfig.ShadowStalker_AbilityID, new ShadowStalker());
+            this.addAbilityToList(PantheraConfig.WardensVitality_AbilityID, new WardensVitality());
+            this.addAbilityToList(PantheraConfig.SavageRevitalization_AbilityID, new SavageRevitalization());
+            this.addAbilityToList(PantheraConfig.InnateProtection_AbilityID, new InnateProtection());
+            this.addAbilityToList(PantheraConfig.Furrify_AbilityID, new Furrify());
+            this.addAbilityToList(PantheraConfig.Concentration_AbilityID, new Concentration());
+            this.addAbilityToList(PantheraConfig.SuperiorFlair_AbilityID, new SuperiorFlair());
+            this.addAbilityToList(PantheraConfig.UntamedSpirit_AbilityID, new UntamedSpirit());
+            this.addAbilityToList(PantheraConfig.GodPower_AbilityID, new GodPower());
+            this.addAbilityToList(PantheraConfig.PortalSurge_AbilityID, new PortalSurge());
+            this.addAbilityToList(PantheraConfig.EternalFury_AbilityID, new EternalFury());
+            this.addAbilityToList(PantheraConfig.InnerRage_AbilityID, new InnerRage());
+            this.addAbilityToList(PantheraConfig.InfernalSwipe_AbilityID, new InfernalSwipe());
+            this.addAbilityToList(PantheraConfig.HeatWave_AbilityID, new HeatWave());
+            this.addAbilityToList(PantheraConfig.KineticResorption_AbilityID, new KineticResorption());
+            this.addAbilityToList(PantheraConfig.ExtendedProtection_AbilityID, new ExtendedProtection());
         }
 
         public void addAbilityToList(int ID, PantheraAbility ability)
@@ -67,13 +81,6 @@ namespace Panthera.Base
             if (this.AbilityList.ContainsKey(ID))
                 return this.AbilityList[ID];
             return null;
-        }
-
-        public int getAbilityLevel(int abilityID)
-        {
-            if (this.unlockedAbilitiesList.ContainsKey(abilityID))
-                return this.unlockedAbilitiesList[abilityID];
-            return 0;
         }
 
     }

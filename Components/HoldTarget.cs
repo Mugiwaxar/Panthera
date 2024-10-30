@@ -111,7 +111,7 @@ namespace Panthera.Components
         //    // Start the Heal FX //
         //    if (this.isAlly == true && Utils.Functions.IsServer() == false && this.ptraObj.hasAuthority() == true)
         //    {
-        //        this.healFX = Utils.FXManager.SpawnEffect(base.gameObject, Base.Assets.LoopHealFX, this.body.corePosition, 1, base.gameObject, new Quaternion(), false, false);
+        //        this.healFX = Utils.FXManager.SpawnEffect(base.gameObject, Base.PantheraAssets.LoopHealFX, this.body.corePosition, 1, base.gameObject, new Quaternion(), false, false);
         //    }
 
         //}

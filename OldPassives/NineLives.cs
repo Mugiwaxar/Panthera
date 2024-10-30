@@ -21,7 +21,7 @@ namespace Panthera.Passives
         //    comp.Networkhealth = comp.fullHealth * PantheraConfig.healthPercentAfterNineLivesActivated;
         //    comp.ptraObj.GetPassiveScript().lastNineLivesTime = Time.time;
         //    //Utils.Functions.SpawnEffect(
-        //    //    comp.gameObject, Assets.NineLivesFX,
+        //    //    comp.gameObject, PantheraAssets.NineLivesFX,
         //    //    comp.body.corePosition, PantheraConfig.Model_generalScale,
         //    //    null,
         //    //    Util.QuaternionSafeLookRotation(comp.characterDirection.forward)

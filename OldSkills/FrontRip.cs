@@ -93,7 +93,7 @@ namespace Panthera.OldSkills
     //            attack.Fire(enemiesHit);
     //            Sound.playSound(Sound.Rip2, gameObject);
     //            PlayAnimation("Gesture", "FrontRipAtk");
-    //            Utils.FXManager.SpawnEffect(gameObject, Assets.FrontRipFX, characterBody.corePosition, 1, modelTransform.gameObject, Util.QuaternionSafeLookRotation(characterDirection.forward));
+    //            Utils.FXManager.SpawnEffect(gameObject, PantheraAssets.FrontRipFX, characterBody.corePosition, 1, modelTransform.gameObject, Util.QuaternionSafeLookRotation(characterDirection.forward));
 
     //            // Apply Weak //
     //            if (enemiesHit != null && enemiesHit.Count > 0)

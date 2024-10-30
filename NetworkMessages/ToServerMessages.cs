@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.TextCore;
 using static Panthera.Base.PantheraSkill;
 using static Rewired.UI.ControlMapper.ControlMapper;
 using static RoR2.DotController;
@@ -18,144 +19,68 @@ using static RoR2.DotController;
 namespace Panthera.NetworkMessages
 {
 
-    //class ServerSyncPreset : INetMessage
-    //{
-
-    //    public GameObject character;
-    //    public Dictionary<int, int> abilitiesList;
-
-    //    public ServerSyncPreset()
-    //    {
-
-    //    }
-
-    //    public ServerSyncPreset(GameObject character, Dictionary<int, int> abilitiesList)
-    //    {
-    //        this.character = character;
-    //        this.abilitiesList = abilitiesList;
-    //    }
-
-    //    public void OnReceived()
-    //    {
-    //        if (this.character == null) return;
-    //        PantheraObj ptraObj = character.GetComponent<PantheraObj>();
-    //        if (ptraObj == null) return;
-    //        ptraObj.activePreset = new Preset();
-    //        ptraObj.activePreset.ptraObj = ptraObj;
-    //        ptraObj.activePreset.unlockedAbilitiesList = abilitiesList;
-    //        ptraObj.applyStats();
-    //    }
-
-    //    public void Serialize(NetworkWriter writer)
-    //    {
-    //        writer.Write(this.character);
-    //        writer.Write(abilitiesList.Count);
-    //        foreach (KeyValuePair<int, int> entry in abilitiesList)
-    //        {
-    //            writer.Write(entry.Key);
-    //            writer.Write(entry.Value);
-    //        }
-    //    }
-
-    //    public void Deserialize(NetworkReader reader)
-    //    {
-    //        this.character = reader.ReadGameObject();
-    //        abilitiesList = new Dictionary<int, int>();
-    //        int count = reader.ReadInt32();
-    //        for (int i = 0; i < count; i++)
-    //        {
-    //            int key = reader.ReadInt32();
-    //            int value = reader.ReadInt32();
-    //            abilitiesList[key] = value;
-    //        }
-    //    }
-
-    //}
-
-    class ServerSyncCharacter : INetMessage
+    class ServerSyncProfile : INetMessage
     {
 
-        public GameObject character;
-        public Dictionary<int, int> unlockedAbilitiesListNetwork = new Dictionary<int, int>();
+        public GameObject player;
+        public Dictionary<String, int> dico = new Dictionary<String, int>();
 
-        public float enduranceNetwork;
-        public float forceNetwork;
-        public float agilityNetwork;
-        public float swiftnessNetwork;
-        public float dexterityNetwork;
-        public bool firstSync;
-
-        public ServerSyncCharacter()
+        public ServerSyncProfile()
         {
 
         }
 
-        public ServerSyncCharacter(GameObject character, Dictionary<int, int> unlockedAbilitiesList, float endurance, float force, float agility, float swiftness, float dexterity, bool firstSync = false)
+        public ServerSyncProfile(GameObject player, Dictionary<string, int> dico)
         {
-            this.character = character;
-            this.unlockedAbilitiesListNetwork = unlockedAbilitiesList;
-            this.enduranceNetwork = endurance;
-            this.forceNetwork = force;
-            this.agilityNetwork = agility;
-            this.swiftnessNetwork = swiftness;
-            this.dexterityNetwork = dexterity;
-            this.firstSync = firstSync;
+            this.player = player;
+            this.dico = dico;
         }
 
         public void OnReceived()
         {
-            if (this.character == null) return;
-            PantheraObj ptraObj = character.GetComponent<PantheraObj>();
-            if (ptraObj == null) return;
-            ptraObj.unlockedAbilitiesListObjSyncCopy = new Dictionary<int, int>(this.unlockedAbilitiesListNetwork);
-            PantheraBody ptraBody = ptraObj.characterBody;
-            if (ptraBody == null) return;
-            ptraBody.enduranceCopy = enduranceNetwork;
-            ptraBody.forceCopy = forceNetwork;
-            ptraBody.agilityCopy = agilityNetwork;
-            ptraBody.swiftnessCopy = swiftnessNetwork;
-            ptraBody.dexterityCopy = dexterityNetwork;
-            ptraBody.RecalculateStats();
-            if (this.firstSync == true)
-                ptraObj.healthComponent.health = ptraBody.maxHealth;
-            new ClientSyncCharacter(this.character, this.unlockedAbilitiesListNetwork, this.enduranceNetwork, this.forceNetwork, this.agilityNetwork, this.swiftnessNetwork, this.dexterityNetwork, this.firstSync).Send(NetworkDestination.Clients);
+            if (this.player == null) return;
+            PantheraObj ptraObj = player.GetComponent<PantheraObj>();
+            if (ptraObj == null)
+                return;
+            if (ptraObj.hasAuthority() == true)
+            {
+                ptraObj.characterBody.RecalculateStats();
+                return;
+            }
+            ProfileComponent profileComp = ptraObj.profileComponent;
+            if (profileComp == null)
+            {
+                profileComp = this.player.AddComponent<ProfileComponent>();
+                ptraObj.profileComponent = profileComp;
+            }
+            profileComp.deserialize(this.dico);
+            ptraObj.characterBody.RecalculateStats();
+            new ClientSyncProfile(this.player, this.dico).Send(NetworkDestination.Clients);
         }
 
         public void Serialize(NetworkWriter writer)
         {
-            writer.Write(this.character);
-            writer.Write(this.unlockedAbilitiesListNetwork.Count);
-            foreach (KeyValuePair<int, int> entry in this.unlockedAbilitiesListNetwork)
+            writer.Write(this.player);
+            writer.Write(this.dico.Count);
+            foreach (KeyValuePair<String, int> entry in this.dico)
             {
                 writer.Write(entry.Key);
                 writer.Write(entry.Value);
             }
-            writer.Write(this.enduranceNetwork);
-            writer.Write(this.forceNetwork);
-            writer.Write(this.agilityNetwork);
-            writer.Write(this.swiftnessNetwork);
-            writer.Write(this.dexterityNetwork);
-            writer.Write(this.firstSync);
+
         }
 
         public void Deserialize(NetworkReader reader)
         {
-            this.unlockedAbilitiesListNetwork.Clear();
-            this.character = reader.ReadGameObject();
-            this.unlockedAbilitiesListNetwork = new Dictionary<int, int>();
+            this.dico.Clear();
+            this.player = reader.ReadGameObject();
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                int key = reader.ReadInt32();
+                string key = reader.ReadString();
                 int value = reader.ReadInt32();
-                this.unlockedAbilitiesListNetwork[key] = value;
+                this.dico.Add(key, value);
             }
-            this.enduranceNetwork = reader.ReadSingle();
-            this.forceNetwork = reader.ReadSingle();
-            this.agilityNetwork = reader.ReadSingle();
-            this.swiftnessNetwork = reader.ReadSingle();
-            this.dexterityNetwork = reader.ReadSingle();
-            this.firstSync = reader.ReadBoolean();
         }
 
     }
@@ -179,11 +104,11 @@ namespace Panthera.NetworkMessages
 
         public void OnReceived()
         {
-            PantheraObj ptraobj = this.player.GetComponent<PantheraObj>();
-            if (ptraobj == null) return;
-            Transform modelTransform = ptraobj.modelTransform;
-            ptraobj.modelScale = scale;
-            ptraobj.transform.localScale = new Vector3(scale, scale, scale);
+            PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
+            if (ptraObj == null) return;
+            Transform modelTransform = ptraObj.modelTransform;
+            ptraObj.modelScale = scale;
+            ptraObj.transform.localScale = new Vector3(scale, scale, scale);
             if (modelTransform == null) return;
             modelTransform.localScale = new Vector3(scale, scale, scale);
             new ClientChangePantheraScale(this.player, scale).Send(NetworkDestination.Clients);
@@ -209,8 +134,9 @@ namespace Panthera.NetworkMessages
         public GameObject creator;
         public GameObject target;
         public int buffId;
+        public int count;
         public float duration;
-        public float maxStacks = 0;
+        public int maxStacks = 0;
         public bool isDebuff = false;
 
         public ServerAddBuff()
@@ -218,12 +144,13 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ServerAddBuff(GameObject creator, GameObject target, PantheraBuff ptraBuff)
+        public ServerAddBuff(GameObject creator, GameObject target, PantheraBuff ptraBuff, int count = 1, float duration = -1)
         {
             this.creator = creator;
             this.target = target;
             this.buffId = ptraBuff.index;
-            this.duration = ptraBuff.duration;
+            this.count = count;
+            this.duration = duration > 0 ? duration : ptraBuff.duration;
             this.maxStacks = ptraBuff.maxStacks;
             this.isDebuff = ptraBuff.isDebuff;
         }
@@ -233,17 +160,24 @@ namespace Panthera.NetworkMessages
             if (this.target == null) return;
             CharacterBody body = target.GetComponent<CharacterBody>();
             if (body == null) return;
-            if (maxStacks > 0 && body.GetBuffCount((BuffIndex)buffId) >= maxStacks) return;
-            if (duration == 0) body.AddBuff((BuffIndex)this.buffId);
-            else body.AddTimedBuff((BuffIndex)this.buffId, this.duration);
+            int buffToAdd = this.count;
+            if (isDebuff == false)
+            {
+                int actualBuffCount = body.GetBuffCount((BuffIndex)buffId);
+                buffToAdd = Math.Min(this.maxStacks - actualBuffCount, this.count);
+            }
+
+            if (buffToAdd <= 0) return;
+            for(int i = 0; i < buffToAdd; i++)
+            {
+                if (this.duration == 0) body.AddBuff((BuffIndex)this.buffId);
+                else body.AddTimedBuff((BuffIndex)this.buffId, this.duration);
+            }
             if (this.creator == null) return;
             PantheraObj ptraObj = creator.GetComponent<PantheraObj>();
             if (this.isDebuff == true && ptraObj != null)
             {
-                if (this.target.GetComponent<PredatorComponent>() == null)
-                    this.target.AddComponent<PredatorComponent>().ptraObj = ptraObj;
-                else
-                    this.target.GetComponent<PredatorComponent>().ptraObj = ptraObj;
+                this.target.GetComponent<PredatorComponent>().lastHit = ptraObj;
             }
         }
 
@@ -252,6 +186,7 @@ namespace Panthera.NetworkMessages
             writer.Write(this.creator);
             writer.Write(this.target);
             writer.Write(this.buffId);
+            writer.Write(this.count);
             writer.Write(this.duration);
             writer.Write(this.maxStacks);
             writer.Write(this.isDebuff);
@@ -262,8 +197,9 @@ namespace Panthera.NetworkMessages
             this.creator = reader.ReadGameObject();
             this.target = reader.ReadGameObject();
             this.buffId = reader.ReadInt32();
+            this.count = reader.ReadInt32();
             this.duration = reader.ReadSingle();
-            this.maxStacks = reader.ReadSingle();
+            this.maxStacks = reader.ReadInt32();
             this.isDebuff = reader.ReadBoolean();
         }
 
@@ -312,57 +248,18 @@ namespace Panthera.NetworkMessages
 
     }
 
-    class ServerRemoveBuff : INetMessage
+    class ServerClearTimedBuffs : INetMessage
     {
 
         public GameObject player;
         public int buffId;
 
-        public ServerRemoveBuff()
-        {
-
-        }
-
-        public ServerRemoveBuff(GameObject player, int buffId)
-        {
-            this.player = player;
-            this.buffId = buffId;
-        }
-
-        public void OnReceived()
-        {
-            if (this.player == null) return;
-            CharacterBody body = player.GetComponent<CharacterBody>();
-            if (body == null) return;
-            body.RemoveBuff((BuffIndex)this.buffId);
-        }
-
-        public void Serialize(NetworkWriter writer)
-        {
-            writer.Write(this.player);
-            writer.Write(this.buffId);
-        }
-
-        public void Deserialize(NetworkReader reader)
-        {
-            this.player = reader.ReadGameObject();
-            this.buffId = reader.ReadInt32();
-        }
-
-    }
-
-    class ServerClearBuffs : INetMessage
-    {
-
-        public GameObject player;
-        public int buffId;
-
-        public ServerClearBuffs()
+        public ServerClearTimedBuffs()
         {
             
         }
 
-        public ServerClearBuffs(GameObject player, int buffId)
+        public ServerClearTimedBuffs(GameObject player, int buffId)
         {
             this.player = player;
             this.buffId = buffId;
@@ -386,6 +283,58 @@ namespace Panthera.NetworkMessages
         {
             this.player = reader.ReadGameObject();
             this.buffId = reader.ReadInt32();
+        }
+
+    }
+
+    class ServerRemoveBuff : INetMessage
+    {
+
+        public GameObject player;
+        public int buffId;
+        public int count;
+        public bool timed;
+
+        public ServerRemoveBuff()
+        {
+
+        }
+
+        public ServerRemoveBuff(GameObject player, int buffId, int count, bool timed = false)
+        {
+            this.player = player;
+            this.buffId = buffId;
+            this.count = count;
+            this.timed = timed;
+        }
+
+        public void OnReceived()
+        {
+            CharacterBody body = this.player.GetComponent<CharacterBody>();
+            if (body == null) return;
+            for (int i = 0; i < this.count; i++)
+            {
+                if (this.timed == false)
+                    body.RemoveBuff((BuffIndex)this.buffId);
+                else
+                    body.RemoveOldestTimedBuff((BuffIndex)this.buffId);
+            }
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.buffId);
+            writer.Write(this.count);
+            writer.Write(this.timed);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.buffId = reader.ReadInt32();
+            this.count = reader.ReadInt32();
+            this.timed = reader.ReadBoolean();
         }
 
     }
@@ -790,49 +739,6 @@ namespace Panthera.NetworkMessages
         }
     }
 
-    class ServerSpawnGoldOrb : INetMessage
-    {
-        GameObject player;
-        GameObject target;
-        int amount;
-
-        public ServerSpawnGoldOrb()
-        {
-
-        }
-
-        public ServerSpawnGoldOrb(GameObject player, GameObject target, int amount)
-        {
-            this.player = player;
-            this.target = target;
-            this.amount = amount;
-        }
-
-        public void OnReceived()
-        {
-            if (this.player == null || this.target == null) return;
-            GoldOrb goldOrb = new GoldOrb();
-            goldOrb.origin = this.target.transform.position;
-            goldOrb.target = this.player.GetComponent<CharacterBody>().mainHurtBox;
-            goldOrb.goldAmount = (uint)this.amount;
-            OrbManager.instance.AddOrb(goldOrb);
-        }
-
-        public void Serialize(NetworkWriter writer)
-        {
-            writer.Write(this.player);
-            writer.Write(this.target);
-            writer.Write(this.amount);
-        }
-
-        public void Deserialize(NetworkReader reader)
-        {
-            this.player = reader.ReadGameObject();
-            this.target = reader.ReadGameObject();
-            this.amount = reader.ReadInt32();
-        }
-    }
-
     class ServerSetBodyVelocity : INetMessage
     {
 
@@ -869,6 +775,49 @@ namespace Panthera.NetworkMessages
         {
             this.target = reader.ReadGameObject();
             this.velocity = reader.ReadVector3();
+        }
+
+    }
+
+    public class ServerSetPortalSurge : INetMessage
+    {
+
+        public GameObject player;
+        public GameObject portal;
+        public bool set;
+
+        public ServerSetPortalSurge()
+        {
+
+        }
+
+        public ServerSetPortalSurge(GameObject target, GameObject portal, bool set)
+        {
+            this.player = target;
+            this.portal = portal;
+            this.set = set;
+        }
+
+        public void OnReceived()
+        {
+            if (this.set == true)
+                this.portal.GetComponent<TeleporterInteraction>().OnInteractionBegin(player.GetComponent<Interactor>());
+            Base.PantheraCombatDirector.SetSurged(this.portal, this.set);
+            new ClientSetPortalSurge(this.player, this.portal, this.set).Send(NetworkDestination.Clients);
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(this.player);
+            writer.Write(this.portal);
+            writer.Write(this.set);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            this.player = reader.ReadGameObject();
+            this.portal = reader.ReadGameObject();
+            this.set = reader.ReadBoolean();
         }
 
     }

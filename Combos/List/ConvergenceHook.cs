@@ -18,7 +18,8 @@ namespace Panthera.Combos.List
             ComboSkill comboSkill2 = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.ConvergenceHook_SkillID), KeysBinder.KeysEnum.Skill2, 0, KeysBinder.KeysEnum.Backward);
             comboSkillsList.Add(comboSkill1);
             comboSkillsList.Add(comboSkill2);
-            name = PantheraTokens.Get("combo_ConvergenceHook");
+            comboID = PantheraConfig.ConvergenceHook_CombosID;
+            name = PantheraTokens.Get("combo_ConvergenceHookName");
         }
 
     }

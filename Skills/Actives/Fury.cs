@@ -16,7 +16,7 @@ namespace Panthera.Skills.Actives
 
         public Fury()
         {
-            base.icon = Assets.FurySkill;
+            base.icon = PantheraAssets.FurySkill;
             base.name = PantheraTokens.Get("ability_FuryName");
             base.baseCooldown = PantheraConfig.Fury_cooldown;
             base.removeStealth = false;

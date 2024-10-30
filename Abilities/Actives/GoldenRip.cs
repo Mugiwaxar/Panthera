@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_GoldenRipName");
             abilityID = PantheraConfig.GoldenRip_AbilityID;
             type = AbilityType.active;
-            icon = Assets.GoldenRipSkill;
+            icon = PantheraAssets.GoldenRipSkill;
             maxLevel = PantheraConfig.GoldenRip_maxLevel;
             cooldown = PantheraConfig.GoldenRip_cooldown;
             requiredAbility = PantheraConfig.Ambition_AbilityID;
@@ -28,11 +28,12 @@ namespace Panthera.Abilities.Actives
 
         public override void updateDesc()
         {
-            if (base.currentLevel <= 1)
+            int level = Panthera.ProfileComponent.getAbilityLevel(base.abilityID);
+            if (level <= 1)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_GoldenRipDesc"), PantheraConfig.GoldenRip_DamageMultiplier * 100, PantheraConfig.GoldenRip_addedCoin1) + String.Format(Utils.PantheraTokens.Get("skill_GoldenRipFuryDesc"), PantheraConfig.GoldenRip_furyAdded);
-            else if (base.currentLevel == 2)
+            else if (level == 2)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_GoldenRipDesc"), PantheraConfig.GoldenRip_DamageMultiplier * 100, PantheraConfig.GoldenRip_addedCoin2) + String.Format(Utils.PantheraTokens.Get("skill_GoldenRipFuryDesc"), PantheraConfig.GoldenRip_furyAdded);
-            else if (base.currentLevel == 3)
+            else if (level == 3)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_GoldenRipDesc"), PantheraConfig.GoldenRip_DamageMultiplier * 100, PantheraConfig.GoldenRip_addedCoin3) + String.Format(Utils.PantheraTokens.Get("skill_GoldenRipFuryDesc"), PantheraConfig.GoldenRip_furyAdded);
         }
 

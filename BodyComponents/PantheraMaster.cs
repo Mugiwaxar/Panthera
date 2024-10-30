@@ -16,7 +16,7 @@ namespace Panthera.BodyComponents
 
         public float savedFury = 0;
         public bool firstStarted = false;
-        public Dictionary<int, RechargeSkill> savedCooldownList = new Dictionary<int, RechargeSkill>();
+        public Dictionary<int, RechargeSkill> savedCooldownList;
 
         public PantheraObj ptraObj
         {

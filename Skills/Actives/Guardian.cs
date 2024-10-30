@@ -16,11 +16,11 @@ namespace Panthera.Skills.Actives
 
         public Guardian()
         {
-            base.icon = Assets.GuardianSkill;
+            base.icon = PantheraAssets.GuardianSkill;
             base.name = PantheraTokens.Get("ability_GuardianName");
             base.baseCooldown = PantheraConfig.Guardian_cooldown;
             base.removeStealth = false;
-            base.desc1 = string.Format(PantheraTokens.Get("ability_GuardianDesc"), PantheraConfig.Guardian_increasedArmor * 100, PantheraConfig.Guardian_increasedHealthRegen * 100);
+            base.desc1 = string.Format(PantheraTokens.Get("ability_GuardianDesc"), PantheraConfig.Guardian_increasedArmor * 100, PantheraConfig.Guardian_increasedHealthRegen * 100, (1 - PantheraConfig.Guardian_barrierDecayRatePercent) * 100);
             base.desc2 = null;
             base.skillID = PantheraConfig.Guardian_SkillID;
             base.requiredAbilityID = PantheraConfig.Guardian_AbilityID;

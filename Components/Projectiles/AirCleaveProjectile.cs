@@ -1,4 +1,5 @@
-﻿using Panthera.NetworkMessages;
+﻿using Panthera.Base;
+using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -36,9 +37,26 @@ namespace Panthera.Components.Projectiles
             // Damage the Target //
             if (NetworkServer.active)
             {
+
+                // Do the Damages //
                 damageInfo.ModifyDamageInfo(hurtBox.damageModifier);
                 healthComponent.TakeDamage(damageInfo);
                 GlobalEventManager.instance.OnHitEnemy(damageInfo, hurtBox.healthComponent.gameObject);
+
+                // Set the last Hit  //
+                healthComponent.GetComponent<PredatorComponent>().lastHit = base.ptraObj;
+
+                // Check if Fire Air Cleave //
+                if (base.gameObject.name.Contains("Fire"))
+                {
+                    float fireDamage = damageInfo.damage * PantheraConfig.InfernalSwipe_damagePercent2;
+                    new ServerInflictDamage(base.gameObject, healthComponent.gameObject, healthComponent.transform.position, fireDamage, damageInfo.crit, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
+                    float ignitionChance = PantheraConfig.InfernalSwipe_ingnitionChance2 * 100;
+                    float ignitionRand = UnityEngine.Random.Range(0, 100);
+                    if (ignitionRand < ignitionChance)
+                        new ServerAddBuff(base.gameObject, healthComponent.gameObject, Buff.IgnitionDebuff).Send(NetworkDestination.Server);
+                }
+
             }
 
             // Get the Team Component //
@@ -49,18 +67,18 @@ namespace Panthera.Components.Projectiles
             {
 
                 // Add Fury //
-                if (ptraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
-                    new ClientAddFury(ptraObj.gameObject, PantheraConfig.AirCleave_furyAdded).Send(NetworkDestination.Clients);
+                if (base.ptraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                    new ClientAddFury(base.ptraObj.gameObject, PantheraConfig.AirCleave_furyAdded).Send(NetworkDestination.Clients);
 
                 // Add the Convergence Hook Component //
-                if (ptraObj.getAbilityLevel(PantheraConfig.ConvergenceHook_AbilityID) > 0 && tc.body.isBoss == false)
+                if (base.ptraObj.getAbilityLevel(PantheraConfig.ConvergenceHook_AbilityID) > 0 && tc.body.isBoss == false)
                 {
                     if (NetworkClient.active == false)
                     {
                         ConvergenceHookComp comp = tc.body.gameObject.AddComponent<ConvergenceHookComp>();
-                        comp.ptraObj = ptraObj;
+                        comp.ptraObj = base.ptraObj;
                     }
-                    new ClientAddConvergenceHookComp(ptraObj.gameObject, tc.body.gameObject).Send(NetworkDestination.Clients);
+                    new ClientAddConvergenceHookComp(base.ptraObj.gameObject, tc.body.gameObject).Send(NetworkDestination.Clients);
                 }
 
             }

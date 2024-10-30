@@ -25,6 +25,7 @@ using UnityEngine.Rendering;
 using static RoR2.DotController;
 using static UnityEngine.ParticleSystem;
 using TMPro;
+using System.Linq;
 
 namespace Panthera.MachineScripts
 {
@@ -48,6 +49,7 @@ namespace Panthera.MachineScripts
         public bool isOutOfCombat = true;
         public bool wasOutOfCombat = true;
         public float cupidityTimer = 0;
+        public bool wasGod = false;
 
         public override void Start()
         {
@@ -75,6 +77,7 @@ namespace Panthera.MachineScripts
                 this.isSleeping = true;
                 Utils.Animation.SetBoolean(base.pantheraObj, "IsSleeping", true);
                 Utils.Animation.PlayAnimation(base.pantheraObj, "SleepLoop");
+                this.wasGod = base.healthComponent.godMode;
                 new ServerSetGodMode(base.gameObject, true).Send(NetworkDestination.Server);
                 base.characterBody.RecalculateStats();
             }
@@ -102,7 +105,7 @@ namespace Panthera.MachineScripts
 
             // Remove Fury //
             float lastFuryDecrease = Time.time - this.lastFuryDecreasedTime;
-            if (base.pantheraObj.furyMode == true && lastFuryDecrease >= PantheraConfig.Fury_furyPointsDecreaseTime)
+            if (base.pantheraObj.furyMode == true && lastFuryDecrease >= base.pantheraObj.furyDecreaseTime)
             {
                 this.lastFuryDecreasedTime = Time.time;
                 base.characterBody.fury--;
@@ -147,6 +150,21 @@ namespace Panthera.MachineScripts
                     float recharge = base.characterBody.maxFrontShield * (PantheraConfig.FrontShield_rechargeRatePercent * PantheraConfig.FrontShield_rechargeRatetime);
                     base.characterBody.frontShield += recharge;
                     this.lastShieldGeneratedTime = Time.time;
+                }
+            }
+
+            // Apply the Front Shield Color //
+            if (base.pantheraObj.frontShieldObj.active == true)
+            {
+                if (base.characterBody.frontShield / base.characterBody.maxFrontShield > PantheraConfig.FrontShield_criticColorPercent)
+                {
+                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("MagicShieldFX").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldNormalColor;
+                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("CenterShield").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldNormalColor;
+                }
+                else
+                {
+                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("MagicShieldFX").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldCriticColor;
+                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("CenterShield").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldCriticColor;
                 }
             }
 
@@ -200,19 +218,6 @@ namespace Panthera.MachineScripts
             //        base.characterBody.stamina -= PantheraConfig.Dash_staminaConsumed1 / 60.0f;
             //}
 
-            // Check the Detection //
-            if (base.pantheraObj.detectionMode == true)
-            {
-
-                // Check if Rescan //
-                if (Time.time - this.lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionMode == true)
-                {
-                    this.lastDetectionScanTime = Time.time;
-                    Skills.Passives.Detection.ReScanBody(base.pantheraObj);
-                }
-
-            }
-
         }
 
         public override void FixedUpdate()
@@ -236,7 +241,7 @@ namespace Panthera.MachineScripts
                 {
                     this.unsleepAsked = false;
                     this.isSleeping = false;
-                    new ServerSetGodMode(base.gameObject, false).Send(NetworkDestination.Server);
+                    new ServerSetGodMode(base.gameObject, this.wasGod).Send(NetworkDestination.Server);
                     base.characterBody.RecalculateStats();
                     // Check the Golden Start Ability //
                     if (base.pantheraObj.getAbilityLevel(PantheraConfig.GoldenStart_AbilityID) > 0)
@@ -266,7 +271,7 @@ namespace Panthera.MachineScripts
                 // Set wasOutOfCombat to true //
                 this.wasOutOfCombat = true;
                 // Create the Out of Combat Text //
-                Utils.FXManager.SpawnEffect(base.gameObject, Assets.OutOfCombatEffectPrefab, base.characterBody.corePosition + Vector3.up, 1, null, default, false, false);
+                Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.OutOfCombatEffectPrefab, base.characterBody.corePosition + Vector3.up, 1, null, default, false, false);
             }
             else if (this.isOutOfCombat == false && this.wasOutOfCombat == true)
             {
@@ -286,6 +291,37 @@ namespace Panthera.MachineScripts
             // Check if Ambition must Stop //
             if (this.pantheraObj.ambitionMode == true && Time.time - this.pantheraObj.ambitionTimer > PantheraConfig.Ambition_buffDuration)
                 Skills.Passives.AmbitionMode.AmbitionOff(this.pantheraObj);
+
+            // Check the Detection //
+            if (base.pantheraObj.detectionMode == true)
+            {
+
+                // Increase the Cooldown //
+                float detectionCooldown = base.skillLocator.getCooldown(PantheraConfig.Detection_SkillID);
+                detectionCooldown += Time.deltaTime * 2;
+                base.skillLocator.setCooldown(PantheraConfig.Detection_SkillID, detectionCooldown);
+
+                // Check if Detecion must stop //
+                float maxTime = Skills.Passives.Detection.GetDetectionMaxTime(base.pantheraObj);
+                if (detectionCooldown > maxTime)
+                    Skills.Passives.Detection.DisableDetection(base.pantheraObj);
+
+                // Check if Rescan //
+                if (Time.time - this.lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionMode == true)
+                {
+                    this.lastDetectionScanTime = Time.time;
+                    Skills.Passives.Detection.ReScanBody(base.pantheraObj);
+                }
+
+            }
+
+            // Apply the Enrage Buff //
+            int enrageCount = base.characterBody.GetBuffCount(Base.Buff.EnrageBuff);
+            if (enrageCount > 0)
+            {
+                float generatedFury = base.characterBody.maxFury * PantheraConfig.Enrage_furyPercent * enrageCount / 60;
+                base.characterBody.trueFury += generatedFury;
+            }
 
             // Apply nine lives buff if needed //
             //float nineLivesTime = Time.time - this.lastNineLivesTime;
@@ -338,45 +374,13 @@ namespace Panthera.MachineScripts
             bool crit = damageDealtMessage.crit;
             DamageType damageType = damageDealtMessage.damageType;
 
-            // Add the Predator Component //
-            if (damageDealtMessage.victim.GetComponent<PredatorComponent>() == null)
-            {
-                PredatorComponent comp = damageDealtMessage.victim.AddComponent<PredatorComponent>();
-                comp.ptraObj = base.pantheraObj;
-            }
+            // Set the Predator Component has damaged by this Player //
+            PredatorComponent predComp = damageDealtMessage.victim.GetComponent<PredatorComponent>();
+            if (predComp != null)
+                predComp.damaged = true;
 
             // Set the last damage time //
             this.lastDamageTime = Time.time;
-
-            // Life Steal //
-            //LifeSteal.Heal(base.characterBody, damageDealtMessage.position, damageDealtMessage.damageType, damageDealtMessage.damage);
-
-            // Mangle buff //
-            //if (crit == true)
-            //{
-            //    int mangleBuffCount = base.characterBody.GetBuffCount(Buff.mangleBuff);
-            //    if (mangleBuffCount < PantheraConfig.Passive_maxMangleStack)
-            //    {
-            //        new ServerSetBuffCount(this.gameObject, (int)Buff.mangleBuff.buffIndex, mangleBuffCount + 1).Send(NetworkDestination.Server);
-            //    }
-            //}
-
-            // Add the Shield buff //
-            //Shield.AddShieldStack(base.characterBody, base.pantheraFX);
-
-
-
-            // Bleed damage //
-            //if (damageInfo.damageType == DamageType.Generic)
-            //{
-            //    InflictDotInfo dotInfo;
-            //    dotInfo.victimObject = targetHC.gameObject;
-            //    dotInfo.attackerObject = damageInfo.attacker.gameObject;
-            //    dotInfo.dotIndex = this.bleedDotIndex;
-            //    dotInfo.duration = BigCatPassive.bleedDuration;
-            //    dotInfo.damageMultiplier = BigCatPassive.bleedDamage;
-            //    DotController.InflictDot(ref dotInfo);
-            //}
 
         }
 
@@ -387,11 +391,32 @@ namespace Panthera.MachineScripts
             this.lastDamageTime = Time.time;
 
             // Stop the Stealth //
-            Skills.Passives.Stealth.UnStealth(base.pantheraObj);
+            Skills.Passives.Stealth.TookDamageUnstealth(base.pantheraObj);
 
-            // Generate Fury //
-            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.DestructionAbilityID) > 0)
-            //        base.characterBody.fury += 1;
+            // Apply the Inner Rage Ability //
+            int innerRageLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.InnerRage_AbilityID);
+            if (innerRageLvl == 1)
+                base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent1;
+            else if (innerRageLvl == 2)
+                base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent2;
+            else if (innerRageLvl == 3)
+                base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent3;
+            else if (innerRageLvl == 4)
+                base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent4;
+
+            // Apply the Inner Rage Mastery //
+            if (base.pantheraObj.isMastery(PantheraConfig.InnerRage_AbilityID))
+            {
+                float enrageChance = base.characterBody.mastery;
+                float enrageTime = base.pantheraObj.furyMode == true ? PantheraConfig.InnerRage_enrageTimeFuryMode : PantheraConfig.InnerRage_enrageTime;
+                float enrageRand = UnityEngine.Random.Range(0, 100);
+                if (enrageRand <= enrageChance)
+                {
+                    new ServerAddBuff(base.gameObject, base.gameObject, Base.Buff.EnrageBuff, 1, enrageTime).Send(NetworkDestination.Server);
+                    Utils.Sound.playSound(Utils.Sound.Enrage, base.gameObject);
+                }
+
+            }
 
         }
 
@@ -405,13 +430,18 @@ namespace Panthera.MachineScripts
         public void OnEnemyDie(GameObject attacker, GameObject victim)
         {
 
-            // Add XP to P4N7H3RA //
-            PredatorComponent comp = victim.GetComponent<PredatorComponent>();
-            if (comp != null && comp.ptraObj == base.pantheraObj)
-            {
+            // Get the Victime Body //
+            CharacterBody victimBody = victim.GetComponent<CharacterBody>();
 
-                // Get the Victime Body //
-                CharacterBody victimBody = victim.GetComponent<CharacterBody>();
+            // Get the Predator Component //
+            PredatorComponent predComp = victim.GetComponent<PredatorComponent>();
+
+            // Check the Predator Component //
+            if (predComp == null) return;
+
+            // Add XP to P4N7H3RA //
+            if (predComp.damaged == true)
+            {
 
                 // Calculate the amount //
                 int amount = (int)victimBody.level;
@@ -426,14 +456,21 @@ namespace Panthera.MachineScripts
                 {
                     this.pantheraLastLevel = Panthera.PantheraCharacter.characterLevel;
                     Utils.Sound.playSound(Utils.Sound.LevelUP, base.gameObject);
-                    Utils.FXManager.SpawnEffect(base.gameObject, Assets.LevelUPFX, modelTransform.position, pantheraObj.modelScale, base.characterBody.gameObject, base.modelTransform.rotation, true);
+                    Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LevelUPFX, modelTransform.position, pantheraObj.modelScale, base.characterBody.gameObject, base.modelTransform.rotation, true);
                 }
             }
 
             // Add the Cupidity Buff //
-            if (attacker == base.gameObject)
+            if (predComp.damaged == true)
             {
                 Skills.Passives.AmbitionMode.OnEnemyDie(base.pantheraObj);
+            }
+
+            // Apply the Mortal Mirage Debuff //
+            if (Time.time - predComp.lastStealthStrikeTime < PantheraConfig.MortalMirage_duration)
+            {
+                new ServerAddBuff(base.gameObject, base.gameObject, Buff.EclipseBuff).Send(NetworkDestination.Server);
+                base.skillLocator.setCooldown(PantheraConfig.Prowl_SkillID, 0);
             }
 
         }

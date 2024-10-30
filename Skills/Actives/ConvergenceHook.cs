@@ -32,7 +32,7 @@ namespace Panthera.Skills.Actives
 
         public ConvergenceHook()
         {
-            base.icon = Assets.ConvergenceHookSkill;
+            base.icon = PantheraAssets.ConvergenceHookSkill;
             base.name = PantheraTokens.Get("ability_ConvergenceHookName");
             base.baseCooldown = PantheraConfig.ConvergenceHook_cooldown;
             base.showCooldown = true;
@@ -69,7 +69,7 @@ namespace Panthera.Skills.Actives
             this.baseDuration = this.baseDuration / base.attackSpeedStat;
 
             // Spawn the Effect //
-            FXManager.SpawnEffect(base.pantheraObj.gameObject, Assets.ConvergenceHookFX, base.modelTransform.position, base.pantheraObj.modelScale, null, base.modelTransform.rotation, false);
+            FXManager.SpawnEffect(base.pantheraObj.gameObject, PantheraAssets.ConvergenceHookFX, base.modelTransform.position, base.pantheraObj.modelScale, null, base.modelTransform.rotation, false);
 
             // Send the Message to active the Component //
             new ServerActivateConvergenceHookComp(this.gameObject).Send(NetworkDestination.Server);

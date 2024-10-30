@@ -14,7 +14,7 @@ namespace Panthera.Abilities.Primaries
             base.name = Utils.PantheraTokens.Get("ability_FuryName");
             base.abilityID = PantheraConfig.Fury_AbilityID;
             base.type = AbilityType.primary;
-            base.icon = Assets.FurySkill;
+            base.icon = PantheraAssets.FurySkill;
             base.maxLevel = PantheraConfig.Fury_maxLevel;
             base.cooldown = PantheraConfig.Fury_cooldown;
             base.requiredAbility = PantheraConfig.SharpenedFangs_AbilityID;

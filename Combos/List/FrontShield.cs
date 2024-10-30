@@ -16,6 +16,7 @@ namespace Panthera.Combos.List
         {
             ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.FrontShield_SkillID), KeysBinder.KeysEnum.Skill2);
             comboSkillsList.Add(comboSkill);
+            comboID = PantheraConfig.FrontShield_CombosID;
             name = PantheraTokens.Get("combo_FrontShieldName");
             visible = false;
             activated = false;

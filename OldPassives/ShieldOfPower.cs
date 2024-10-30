@@ -20,8 +20,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.ShieldOfPower_SkillID;
         //    skill.name = "SHIELD_OF_POWER_ABILITY_NAME";
         //    skill.desc = "SHIELD_OF_POWER_ABILITY_DESC";
-        //    skill.icon = Assets.ShieldOfPowerAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.ShieldOfPowerAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.associatedSkill = typeof(ShieldOfPower);
 

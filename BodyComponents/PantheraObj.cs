@@ -32,6 +32,8 @@ using static RoR2.CameraTargetParams;
 using Panthera.Skills.Actives;
 using Panthera.Skills.Passives;
 using UnityEngine.TextCore;
+using System.Linq;
+using static UnityEngine.ParticleSystem;
 
 namespace Panthera.BodyComponents
 {
@@ -66,7 +68,7 @@ namespace Panthera.BodyComponents
                 return Panthera.PantheraCharacter.characterCombos;
             }
         }
-        public Dictionary<int, int> unlockedAbilitiesListObjSyncCopy = new Dictionary<int, int>();
+
         public Dictionary<int, bool> activatedComboList = new Dictionary<int, bool>();
         public NetworkIdentity networkID;
         public PantheraBody characterBody;
@@ -95,6 +97,7 @@ namespace Panthera.BodyComponents
             }
         }
         public PantheraComboComponent comboComponent;
+        public ProfileComponent profileComponent;
         public CrosshairComp crosshairComp;
 
         public PantheraMachine mainMachine;
@@ -114,18 +117,12 @@ namespace Panthera.BodyComponents
         }
         public int ActualPantheraSkinIndex;
         public float modelScale = PantheraConfig.Model_defaultModelScale;
+        public float changeModelScale = PantheraConfig.Model_defaultModelScale;
 
         public CameraParamsOverrideHandle lastCamHandle;
         public Camera pantheraCam;
-        public Vector3 defaultCamPos
-        {
-            get
-            {
-                //if (this.activePreset != null && this.activePreset.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
-                //    return PantheraConfig.defaultGuardianCamPosition;
-                return PantheraConfig.defaultCamPosition;
-            }
-        }
+        public Vector3 defaultCamPos = PantheraConfig.defaultCamPosition;
+
         public GameObject origPostProcess;
         public GameObject pantheraPostProcess;
         public int origLayerIndex;
@@ -137,9 +134,13 @@ namespace Panthera.BodyComponents
         public bool ambitionMode = false;
         public float ambitionTimer = 0;
         public bool clawsStormActivated = false;
+        public bool portalSurgeActivated = false;
+        public float furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime;
 
         public GameObject frontShieldObj;
+        public GameObject FrostedAirObj;
         public bool frontShieldDeployed = false;
+        public float frontShieldScale = PantheraConfig.FrontShield_defaultScale;
 
         public List<ConvergenceHookComp> convergenceCompsList = new List<ConvergenceHookComp>();
 
@@ -147,7 +148,6 @@ namespace Panthera.BodyComponents
         public bool jumpPressed;
         public bool sprintPressed;
 
-        public float prowlActivationTime = 0;
         public Coroutine _unstealthCoroutine;
         public Coroutine unstealthCoroutine
         {
@@ -182,6 +182,11 @@ namespace Panthera.BodyComponents
                     return 2;
                 }
             }
+        }
+
+        public void doDamageSelf(float damage)
+        {
+            new ServerInflictDamage(base.gameObject, base.gameObject, base.transform.position, damage).Send(NetworkDestination.Server);
         }
 
         public void Awake()
@@ -234,16 +239,33 @@ namespace Panthera.BodyComponents
             this.pantheraFX.DoInit();
 
             // Create the Front Shield //
-            this.frontShieldObj = GameObject.Instantiate<GameObject>(Assets.FrontShieldObj);
+            this.frontShieldObj = GameObject.Instantiate<GameObject>(PantheraAssets.FrontShieldObj);
             this.frontShieldObj.SetActive(true);
             this.frontShieldObj.GetComponent<FrontShieldComponent>().ptraObj = this;
             this.frontShieldObj.GetComponent<FrontShieldHealthComponent>().ptraObj = this;
             this.frontShieldObj.GetComponent<TeamComponent>().teamIndex = TeamIndex.Player;
             this.frontShieldObj.GetComponent<HurtBox>().teamIndex = TeamIndex.Player;
-            GameObject mainHitBox = this.frontShieldObj;
-            mainHitBox.gameObject.layer = LayerIndex.entityPrecise.intVal;
-            GameObject worldHitBox = this.frontShieldObj.transform.FindChild("WorldHitBox").gameObject;
-            worldHitBox.layer = LayerIndex.world.intVal;
+            this.frontShieldObj.GetComponent<CharacterBody>().doNotReassignToTeamBasedCollisionLayer = true;
+            this.frontShieldObj.layer = LayerIndex.entityPrecise.intVal;
+            this.frontShieldObj.transform.FindChild(PantheraConfig.FrontShield_worldHitboxName).gameObject.layer = LayerIndex.world.intVal;
+
+            // Create the Frozen Air //
+            this.FrostedAirObj = GameObject.Instantiate<GameObject>(PantheraAssets.FrostedAirObj);
+            this.FrostedAirObj.SetActive(true);
+            this.FrostedAirObj.GetComponent<FrostedAirComponent>().ptraObj = this;
+
+            // Start all Events //
+            CharacterBody.onBodyStartGlobal += onEntitySpawned;
+
+            // Get all spawned Entities //
+            foreach (CharacterMaster master in CharacterMaster.readOnlyInstancesList)
+            {
+                if (master.GetBody() != null)
+                    this.onEntitySpawned(master.GetBody());
+            }
+
+            // Set the RNG //
+            Panthera.ptraRNG = new Xoroshiro128Plus(Run.instance.seed);
 
         }
 
@@ -280,10 +302,13 @@ namespace Panthera.BodyComponents
             // Send Preset to the Server //
             //if (NetworkServer.active == false) new ServerSyncPreset(gameObject, this.activePreset.unlockedAbilitiesList).Send(NetworkDestination.Server);
 
-            // Send the Character to the Server //
-            new ServerSyncCharacter(base.gameObject, Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList, Panthera.PantheraCharacter.endurance, Panthera.PantheraCharacter.force, Panthera.PantheraCharacter.agility, Panthera.PantheraCharacter.swiftness, Panthera.PantheraCharacter.dexterity, true).Send(NetworkDestination.Server);
+            // Synchronize the Profile //
+            this.profileComponent = base.gameObject.AddComponent<ProfileComponent>();
+            this.profileComponent.syncProfile();
 
             // Set Default Camera Parameters //
+            Vector3 camPos = PantheraConfig.defaultCamPosition;
+            this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * modelScale);
             Utils.CamHelper.ApplyAimType(Utils.CamHelper.AimType.Standard, this);
 
             // Set Camera Fade distance //
@@ -292,11 +317,6 @@ namespace Panthera.BodyComponents
             {
                 rigCtrl.fadeStartDistance = PantheraConfig.Model_fadeStartDistance;
                 rigCtrl.fadeEndDistance = PantheraConfig.Model_fadeEndDistance;
-                //if (this.activePreset.getAbilityLevel(PantheraConfig.GuardianAbilityID) > 0)
-                //{
-                //    rigCtrl.fadeStartDistance = PantheraConfig.Model_fadeStartDistance + 1;
-                //    rigCtrl.fadeEndDistance = PantheraConfig.Model_fadeEndDistance + 1;
-                //}
             }
 
             // Start the machines //
@@ -308,14 +328,25 @@ namespace Panthera.BodyComponents
             // Start the input bank //
             this.pantheraInputBank.enabled = true;
 
+            // Get the minimum Fury //
+            float minFury = 0;
+            int eternalFuryLvl = this.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
+            if (eternalFuryLvl == 1)
+                minFury = this.characterBody.maxFury * PantheraConfig.EternalFury_startPercent1;
+            else if (eternalFuryLvl == 2)
+                minFury = this.characterBody.maxFury * PantheraConfig.EternalFury_startPercent2;
+            else if (eternalFuryLvl == 3)
+                minFury = this.characterBody.maxFury * PantheraConfig.EternalFury_startPercent3;
+
             // Set Fury back //
-            this.characterBody.fury = this.pantheraMaster.savedFury;
+            this.characterBody.fury = Math.Max(this.pantheraMaster.savedFury, minFury);
 
             // Set Cooldown Back //
             this.skillLocator.rechargeSkillList = this.pantheraMaster.savedCooldownList;
 
             // Create the Recharge Stock List //
-            this.skillLocator.createRechargeSkillsList();
+            if (this.skillLocator.rechargeSkillList == null)
+                this.skillLocator.createRechargeSkillsList();
 
             // Apply all Stats //
             this.applyStats();
@@ -345,7 +376,7 @@ namespace Panthera.BodyComponents
             GameObject.DestroyImmediate(this.pantheraCam.GetComponent<VisionLimitEffect>());
 
             // Instantiate the Post Process //
-            this.pantheraPostProcess = GameObject.Instantiate(Base.Assets.PantheraPostProcess);
+            this.pantheraPostProcess = GameObject.Instantiate(Base.PantheraAssets.PantheraPostProcess);
             this.pantheraPostProcess.SetActive(false);
             this.pantheraPostProcess.transform.SetParent(Camera.main.transform);
             this.pantheraPostProcess.layer = LayerIndex.postProcess.intVal;
@@ -421,6 +452,37 @@ namespace Panthera.BodyComponents
                 this.pantheraCam.transform.localScale = Camera.main.transform.localScale;
             }
 
+            // Check the Model Scale //
+            if (this.hasAuthority() == true && this.modelScale != this.changeModelScale)
+            {
+                if (this.modelScale > this.changeModelScale)
+                    this.modelScale -= 0.01f;
+                else if (this.modelScale < this.changeModelScale)
+                    this.modelScale += 0.01f;
+                if (Math.Abs(this.modelScale - this.changeModelScale) < 0.02f)
+                {
+                    this.modelScale = this.changeModelScale;
+                    Vector3 camPos = PantheraConfig.defaultCamPosition;
+                    this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * modelScale);
+                    Utils.CamHelper.ApplyAimType(Utils.CamHelper.AimType.Standard, this);
+                }
+                this.transform.localScale = new Vector3(this.modelScale, this.modelScale, this.modelScale);
+                this.modelTransform.localScale = new Vector3(this.modelScale, this.modelScale, this.modelScale);
+                new ServerChangePantheraScale(base.gameObject, this.modelScale).Send(NetworkDestination.Server);
+            }
+
+            // Update the Front Shield Scale //
+            float scale = this.frontShieldScale;
+            if (this.frontShieldDeployed == true && scale < PantheraConfig.ArcaneAnchor_deployedScale)
+                scale += PantheraConfig.ArcaneAnchor_deployedScaleSpeed;
+            else if (this.frontShieldDeployed == false)
+                scale = PantheraConfig.FrontShield_defaultScale * this.modelScale;
+            if (scale != this.frontShieldScale)
+            {
+                this.frontShieldScale = scale;
+                this.frontShieldObj.transform.localScale = new Vector3(scale, scale, scale);
+            }
+
             // Create a Debug Line //
             //LineRenderer lineComp = base.gameObject.GetComponent<LineRenderer>();
             //if (lineComp == null)
@@ -447,9 +509,14 @@ namespace Panthera.BodyComponents
                     // Save the Cooldown //
                     this.pantheraMaster.savedCooldownList = this.skillLocator.rechargeSkillList;
                 }
+                // Set all Skills Icones Back //
+                this.skillLocator.primary.skillDef.icon = PantheraAssets.RipSkillMenu;
+                this.skillLocator.secondary.skillDef.icon = PantheraAssets.SlashSkillMenu;
             }
             // Destroy the Front Shield //
             GameObject.Destroy(this.frontShieldObj);
+            // Stop all Events //
+            CharacterBody.onBodyStartGlobal -= onEntitySpawned;
         }
 
         public void applyStats()
@@ -464,11 +531,33 @@ namespace Panthera.BodyComponents
             return false;
         }
 
+        public void onEntitySpawned(CharacterBody body)
+        {
+            // Check if Monster //
+            if (body.teamComponent != null && body.teamComponent.teamIndex != TeamIndex.Monster) return;
+            // Add the Predator Component //
+            if (body.gameObject.GetComponent<PredatorComponent>() == null)
+                body.gameObject.AddComponent<PredatorComponent>();
+        }
+
         public int getAbilityLevel(int abilityID)
         {
-            if (this.unlockedAbilitiesListObjSyncCopy.ContainsKey(abilityID))
-                return this.unlockedAbilitiesListObjSyncCopy[abilityID];
-            return 0;
+            return this.profileComponent.getAbilityLevel(abilityID);
+        }
+
+        public bool isMastery(int abilityID)
+        {
+            return this.profileComponent.isMastery(abilityID);
+        }
+
+        public bool isSkillUnlocked(int skillId)
+        {
+            return this.profileComponent.isSkillUnlocked(skillId);
+        }
+
+        public bool isComboUnlocked(int comboID)
+        {
+            return this.profileComponent.isComboUnlocked(comboID);
         }
 
         public Transform findModelChild(string childName)

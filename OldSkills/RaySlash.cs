@@ -22,7 +22,7 @@ namespace Panthera.OldSkills
     //class RaySlash : MachineScript
     //{
 
-    //    public static GameObject projectile = Assets.RaySlashProjectile;
+    //    public static GameObject projectile = PantheraAssets.RaySlashProjectile;
 
     //    public FireProjectileInfo projectileInfo;
     //    public float startTime;
@@ -57,7 +57,7 @@ namespace Panthera.OldSkills
     //        // Start the effect //
     //        effect = Utils.Functions.SpawnEffect(
     //                base.gameObject,
-    //                Assets.RaySlashChargeFX,
+    //                PantheraAssets.RaySlashChargeFX,
     //                this.modelTransform.position,
     //                1,
     //                this.modelTransform.gameObject

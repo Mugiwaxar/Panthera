@@ -12,21 +12,8 @@ namespace Panthera.Combos
         public List<ComboSkill> comboSkillsList = new List<ComboSkill>();
 
         public string name = "Undefined";
+        public int comboID = 0;
         public bool visible = true;
-        public bool locked
-        {
-            get
-            {
-                foreach (ComboSkill comboSkill in this.comboSkillsList)
-                {
-                    if (comboSkill.locked == true)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
         public bool activated = true;
 
     }

@@ -76,10 +76,10 @@ namespace Panthera.GUI
         {
 
             // Create the Panthera Canva //
-            this.pantheraCanvas = UnityEngine.Object.Instantiate<GameObject>(Assets.PantheraCanvas, Panthera.Instance.transform, false);
+            this.pantheraCanvas = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.PantheraCanvas, Panthera.Instance.transform, false);
 
             // Create the Panthera Panel GUI //
-            this.pantheraPanelGUI = UnityEngine.Object.Instantiate<GameObject>(Assets.ConfigPanelPrefab, this.pantheraCanvas.transform, false);
+            this.pantheraPanelGUI = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.ConfigPanelPrefab, this.pantheraCanvas.transform, false);
             this.pantheraPanelGUI.SetActive(false);
 
             // Add the Button Watcher to all Buttons //
@@ -93,6 +93,10 @@ namespace Panthera.GUI
             SkillsTooltip.CreateTooltip(this.pantheraCanvas);
             AbilitiesTooltip.CreateTooltip(this.pantheraCanvas);
             BuffsTooltip.CreateTooltip(this.pantheraCanvas);
+
+            // Load the Profile //
+            Panthera.ProfileComponent.loadAttributes();
+            Panthera.ProfileComponent.loadSkillsTree();
 
         }
 
@@ -178,7 +182,11 @@ namespace Panthera.GUI
                 return;
 
             // Load //
-            PantheraSaveSystem.Load();
+            Panthera.ProfileComponent.loadAttributes();
+            Panthera.ProfileComponent.loadSkillsTree();
+
+            // Sync //
+            Panthera.ProfileComponent.syncProfile();
 
             // Scale if Needed //
             this.scale(this.scaled);
@@ -215,9 +223,10 @@ namespace Panthera.GUI
             this.pantheraPanelGUI.SetActive(false);
 
             // Hide all Tooltips //
-            SimpleTooltip.showCounter = 0;
-            SkillsTooltip.showCounter = 0;
+            SimpleTooltip.ShowCounter = 0;
+            SkillsTooltip.ShowCounter = 0;
             AbilitiesTooltip.ShowCounter = 0;
+            BuffsTooltip.ShowCounter = 0;
 
             // Enable the Gamepad //
             KeysBinder.GamepadSetEnable(true);
@@ -239,7 +248,12 @@ namespace Panthera.GUI
             Utils.Sound.playSound(Utils.Sound.CloseGUI, this.gameObject, false);
 
             // Save //
-            PantheraSaveSystem.Save();
+            Panthera.ProfileComponent.saveAttributes();
+            Panthera.ProfileComponent.saveSkillsTree();
+
+            // Sync //
+            Panthera.ProfileComponent.syncProfile();
+
 
         }
 

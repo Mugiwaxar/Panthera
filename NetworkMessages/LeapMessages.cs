@@ -33,7 +33,7 @@ namespace Panthera.NetworkMessages
 	//		if (Util.HasEffectiveAuthority(this.player) == true) return;
 	//		PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
 	//		if (ptraObj == null) return;
-	//		GameObject effect = Utils.Functions.SpawnEffect(player, Assets.LeapCercleFX, position, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(player.transform.localRotation.eulerAngles));
+	//		GameObject effect = Utils.Functions.SpawnEffect(player, PantheraAssets.LeapCercleFX, position, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(player.transform.localRotation.eulerAngles));
 	//		ptraObj.actualLeapCerle = effect.GetComponent<LeapCercleComponent>();
 	//		ptraObj.actualLeapCerle.ptraObj = ptraObj;
 	//		ptraObj.actualLeapCerle.client = true;

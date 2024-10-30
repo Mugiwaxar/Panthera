@@ -15,6 +15,7 @@ using RoR2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using UnityEngine;
 using Random = System.Random;
@@ -28,6 +29,8 @@ namespace Panthera.Skills.Actives
         public int previousPlayerLayer;
         public bool firstUse = true;
         public bool wasGodMode = false;
+        public float damage;
+        public bool isCrit;
         public int effectID;
         public Vector3 originalVelocity;
         public List<GameObject> enemiesHit = new List<GameObject>();
@@ -35,7 +38,7 @@ namespace Panthera.Skills.Actives
 
         public ShieldBash()
         {
-            base.icon = Assets.ShieldBashSkill  ;
+            base.icon = PantheraAssets.ShieldBashSkill  ;
             base.name = PantheraTokens.Get("ability_ShieldBashName");
             base.baseCooldown = PantheraConfig.ShieldBash_cooldown;
             base.desc1 = String.Format(Utils.PantheraTokens.Get("ability_ShieldBashDesc"), PantheraConfig.ShieldBash_damageMultiplier * 100, PantheraConfig.ShieldBash_stunDuration);
@@ -81,10 +84,10 @@ namespace Panthera.Skills.Actives
             this.wasGodMode = base.healthComponent.godMode;
 
             // Set the Character to God Mode //
-            new ServerSetGodMode(base.gameObject, true).Send(NetworkDestination.Server);
+            new ServerSetGodMode(base.gameObject, this.wasGodMode).Send(NetworkDestination.Server);
 
             // Start the effect //
-            this.effectID = FXManager.SpawnEffect(base.gameObject, Assets.ShieldBashFX, base.modelTransform.position, 1, base.characterBody.gameObject, new Quaternion(), true);
+            this.effectID = FXManager.SpawnEffect(base.gameObject, PantheraAssets.ShieldBashFX, base.modelTransform.position, 1, base.characterBody.gameObject, new Quaternion(), true);
 
             // Play the Sound //
             Sound.playSound(Sound.ShieldBash, base.gameObject);
@@ -116,7 +119,8 @@ namespace Panthera.Skills.Actives
             float stunDuration = PantheraConfig.ShieldBash_stunDuration;
 
             // Calcule the damages //
-            float damage = base.damageStat * PantheraConfig.ShieldBash_damageMultiplier;
+            this.damage = base.damageStat * PantheraConfig.ShieldBash_damageMultiplier;
+            this.isCrit = RollCrit();
 
             // Find the Enemies //
             Collider[] colliders = Physics.OverlapSphere(base.characterBody.corePosition + base.characterDirection.forward * PantheraConfig.ShieldBash_grabDistanceMultiplier, PantheraConfig.ShieldBash_grabScanRadius, LayerIndex.entityPrecise.mask.value);
@@ -131,8 +135,8 @@ namespace Panthera.Skills.Actives
                     {
                         this.enemiesHit.Add(obj);
                         new ServerStunTarget(obj, stunDuration).Send(NetworkDestination.Server);
-                        new ServerInflictDamage(base.gameObject, obj, obj.transform.position, damage, RollCrit()).Send(NetworkDestination.Server);
-                        if (tc.body.characterMotor != null)
+                        new ServerInflictDamage(base.gameObject, obj, obj.transform.position, damage, isCrit).Send(NetworkDestination.Server);
+                        if (tc.body.characterMotor != null && tc.body.isBoss == false)
                         {
                             float forceRand = UnityEngine.Random.Range(PantheraConfig.ShieldBash_pushMinMultiplier, PantheraConfig.ShieldBash_pushMaxMultiplier);
                             float upRand = UnityEngine.Random.Range(PantheraConfig.ShieldBash_upMinMultiplier, PantheraConfig.ShieldBash_upMaxMultiplier);
@@ -140,7 +144,6 @@ namespace Panthera.Skills.Actives
                             Vector3 velocity = direction.normalized * base.characterBody.moveSpeed * forceRand;
                             velocity.y = base.characterBody.moveSpeed * upRand;
                             new ClientSetBodyVelocity(tc.body.gameObject, velocity).Send(NetworkDestination.Server);
-                            rechargeShield();
                         }
                     }
                 }
@@ -162,6 +165,33 @@ namespace Panthera.Skills.Actives
             // Set the Jump count to zero //
             if (base.characterMotor.jumpCount > 0)
                 base.characterMotor.jumpCount--;
+
+            // Recharge the Shield //
+            this.rechargeShield();
+
+        }
+
+        public void rechargeShield()
+        {
+
+            // Check Kinetic Resorption Level //
+            int kineticResorptionLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.KineticResorption_AbilityID);
+            if (kineticResorptionLvl <= 0) return;
+
+            // Get the Regen amount //
+            float regen = this.isCrit == true ? this.damage * 2 : this.damage;
+            if (kineticResorptionLvl == 1)
+                regen = damage * PantheraConfig.KineticResorption_regenPercent1;
+            else if (kineticResorptionLvl == 2)
+                regen = damage * PantheraConfig.KineticResorption_regenPercent2;
+            else if (kineticResorptionLvl == 3)
+                regen = damage * PantheraConfig.KineticResorption_regenPercent3;
+
+            // Spawn the Orbs //
+            foreach (GameObject target in this.enemiesHit)
+            {
+                new ServerSpawnShieldOrb(target, base.gameObject, regen).Send(NetworkDestination.Server);
+            }
 
         }
 
@@ -185,7 +215,6 @@ namespace Panthera.Skills.Actives
             yield return null;
         }
 
-
         public void dash()
         {
             Vector3 dashDirection = base.GetAimRay().direction;
@@ -196,19 +225,6 @@ namespace Panthera.Skills.Actives
             }
             base.pantheraObj.pantheraMotor.isSprinting = true;
             base.characterBody.characterMotor.velocity = dashDirection * PantheraConfig.ShieldBash_moveSpeedMultiplier;
-        }
-
-        public void rechargeShield()
-        {
-            //int abilityLevel = CharacterAbilities.getAbilityLevel(PantheraConfig.KineticAbsorbtionAbilityID);
-            //float absorbtionAdded = 0;
-            //if (abilityLevel == 1)
-            //    absorbtionAdded = PantheraConfig.Default_MaxShield * PantheraConfig.KineticAbsorbtion_percent1;
-            //if (abilityLevel == 2)
-            //    absorbtionAdded = PantheraConfig.Default_MaxShield * PantheraConfig.KineticAbsorbtion_percent2;
-            //if (abilityLevel == 3)
-            //    absorbtionAdded = PantheraConfig.Default_MaxShield * PantheraConfig.KineticAbsorbtion_percent3;
-            //characterBody.shield += (float)Math.Ceiling(absorbtionAdded);
         }
 
     }

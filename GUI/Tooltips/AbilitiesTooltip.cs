@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using static Panthera.Abilities.PantheraAbility;
 
@@ -24,18 +25,22 @@ namespace Panthera.GUI.Tooltips
             // Create the Ability Tooltip Component //
             TooltipComp = canvas.AddComponent<AbilitiesTooltip>();
             // Instatiate the Tooltip Prefab //
-            TooltipObj = GameObject.Instantiate(Assets.AbilitiesTooltipPrefab, canvas.transform, false);
+            TooltipObj = GameObject.Instantiate(PantheraAssets.AbilitiesTooltipPrefab, canvas.transform, false);
             TooltipObj.SetActive(false);
         }
 
-        public static void ShowTooltip(PantheraAbility ability)
+        public static void ShowTooltip(PantheraAbility ability, bool update = false)
         {
 
             // Save the Ability //
             Ability = ability;
 
             // Increase the Counter //
-            ShowCounter++;
+            if (update == false)
+                ShowCounter++;
+
+            // Update the Desc //
+            ability.updateDesc();
 
             // Get the Type String //
             string typeString = "";
@@ -95,8 +100,12 @@ namespace Panthera.GUI.Tooltips
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;
             RectTransform rec = TooltipObj.GetComponent<RectTransform>();
-            if (mousePosition.y > Screen.height / 2)
+            if (mousePosition.y > Screen.height / 2 && mousePosition.x > Screen.width / 4 * 3)
+                rec.pivot = new Vector2(1, 1);
+            else if (mousePosition.y > Screen.height / 2)
                 rec.pivot = new Vector2(0, 1);
+            else if (mousePosition.x > Screen.width / 4 * 3)
+                rec.pivot = new Vector2(1, 0);
             else
                 rec.pivot = new Vector2(0, 0);
 
@@ -105,12 +114,9 @@ namespace Panthera.GUI.Tooltips
 
             // Change the Position //
             Vector3 screenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100);
+            if (mousePosition.y > Screen.height / 2 && mousePosition.x <= Screen.width / 4 * 3)
+                screenPoint = new Vector3(Input.mousePosition.x + 35, Input.mousePosition.y - 35, 100);
             TooltipObj.transform.position = screenPoint;
-
-            // Update the Text //
-            Ability.updateDesc();
-            TooltipObj.transform.Find("Description1").GetComponent<TextMeshProUGUI>().text = Ability.desc1;
-            TooltipObj.transform.Find("Description2").GetComponent<TextMeshProUGUI>().text = Ability.desc2;
 
         }
 

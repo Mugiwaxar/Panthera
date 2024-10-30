@@ -16,31 +16,63 @@ namespace Panthera.Skills.Passives
 
         public static void FuryOn(PantheraObj ptraObj)
         {
+
+            // Enable the Fury Mode //
             ptraObj.furyMode = true;
+
+            // Send to the Server //
             new NetworkMessages.ServerFuryMessage(ptraObj.gameObject, true).Send(NetworkDestination.Server);
+
+            // Disable the Gardian Mode //
             if (ptraObj.guardianMode == true)
                 Skills.Passives.GuardianMode.GuardianOff(ptraObj);
+
+            // Play the sound //
             Utils.Sound.playSound(Utils.Sound.FuryOn, ptraObj.gameObject);
-            FXManager.SpawnEffect(ptraObj.gameObject, Assets.FuryOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);
+
+            // Create the FX //
+            FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.FuryOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);
+
+            // Start the Cooldown //
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID, 1);
+
+            // Change the Skills //
             if (ptraObj.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
             {
                 ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = false;
                 ptraObj.activatedComboList[PantheraConfig.ClawsStorm_CombosID] = true;
             }
+
+            // Start the Aura FX //
             ptraObj.GetComponent<PantheraFX>().setFuryAuraFX(true);
+
+            // Recalculate Stats //
             ptraObj.characterBody.RecalculateStats();
+
         }
 
         public static void FuryOff(PantheraObj ptraObj)
         {
+            
+            // Disable the Fury Mode //
             ptraObj.furyMode = false;
+
+            // Send to the Server //
             new NetworkMessages.ServerFuryMessage(ptraObj.gameObject, false).Send(NetworkDestination.Server);
+
+            // Start the Cooldown //
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID);
+
+            // Set back the Skills //
             ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = true;
             ptraObj.activatedComboList[PantheraConfig.ClawsStorm_CombosID] = false;
+
+            // Stop the Aura FX //
             ptraObj.GetComponent<PantheraFX>().setFuryAuraFX(false);
+
+            // Recalculate Stats //
             ptraObj.characterBody.RecalculateStats();
+
         }
 
     }

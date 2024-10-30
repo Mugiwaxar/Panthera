@@ -23,7 +23,7 @@ namespace Panthera.GUI.Tooltips
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (SkillsTooltip.showCounter > 0)
+            if (SkillsTooltip.ShowCounter > 0)
                 SkillsTooltip.HideTooltip();
         }
 

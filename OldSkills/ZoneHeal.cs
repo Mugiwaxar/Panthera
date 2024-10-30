@@ -33,8 +33,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.ZoneHeal_SkillID;
         //    skill.name = "ZONE_HEAL_SKILL_NAME";
         //    skill.desc = "ZONE_HEAL_SKILL_DESC";
-        //    skill.icon = Assets.ZoneHeal;
-        //    skill.iconPrefab = Assets.ActiveSkillPrefab;
+        //    skill.icon = PantheraAssets.ZoneHeal;
+        //    skill.iconPrefab = PantheraAssets.ActiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.active;
         //    skill.associatedSkill = typeof(ZoneHeal);
         //    skill.priority = PantheraConfig.ZoneHeal_priority;
@@ -92,7 +92,7 @@ namespace Panthera.OldSkills
         //    if (fired == false)
         //    {
         //        fired = true;
-        //        int effectID = Utils.FXManager.SpawnEffect(gameObject, Assets.ZoneHealFX, modelTransform.position, PantheraConfig.ZoneHeal_fxScale, null, modelTransform.rotation);
+        //        int effectID = Utils.FXManager.SpawnEffect(gameObject, PantheraAssets.ZoneHealFX, modelTransform.position, PantheraConfig.ZoneHeal_fxScale, null, modelTransform.rotation);
         //        ZoneHealComponent comp = Utils.FXManager.GetEffect(effectID).AddComponent<ZoneHealComponent>();
         //        comp.duration = PantheraConfig.ZoneHeal_healDuration;
         //        comp.healRate = PantheraConfig.ZoneHeal_healRate;

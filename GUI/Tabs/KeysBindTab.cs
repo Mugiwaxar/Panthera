@@ -34,7 +34,7 @@ namespace Panthera.GUI.Tabs
             this.tabObj = pantheraPanel.pantheraPanelGUI.transform.Find("MainPanel/TabContents/TabContentKeysBind").gameObject;
 
             // Create the Key Bind Window //
-            this.keysBindWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.KeyBindWindowPrefab, this.pantheraPanel.pantheraCanvas.transform);
+            this.keysBindWindow = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.KeyBindWindowPrefab, this.pantheraPanel.pantheraCanvas.transform);
             this.keysBindWindow.SetActive(false);
             this.keysBindWindowText = this.keysBindWindow.transform.Find("Content").Find("KeysBind").Find("Text").GetComponent<TextMeshProUGUI>();
             ButtonWatcher buttonWatcher1 = this.keysBindWindow.transform.Find("Content").Find("KeysBindRemoveButton").gameObject.AddComponent<ButtonWatcher>();
@@ -43,7 +43,7 @@ namespace Panthera.GUI.Tabs
             buttonWatcher2.pantheraPanel = this.pantheraPanel;
 
             // Create the Reset Key Bind Window //
-            this.keysBindResetWindow = UnityEngine.Object.Instantiate<GameObject>(Assets.ResetKeyBindWindowPrefab, this.pantheraPanel.pantheraCanvas.transform);
+            this.keysBindResetWindow = UnityEngine.Object.Instantiate<GameObject>(PantheraAssets.ResetKeyBindWindowPrefab, this.pantheraPanel.pantheraCanvas.transform);
             this.keysBindResetWindow.SetActive(false);
             ButtonWatcher buttonWatcher3 = this.keysBindResetWindow.transform.Find("Content").Find("CancelResetKeysBindButton").gameObject.AddComponent<ButtonWatcher>();
             ButtonWatcher buttonWatcher4 = this.keysBindResetWindow.transform.Find("Content").Find("ResetResetKeysBindButton").gameObject.AddComponent<ButtonWatcher>();

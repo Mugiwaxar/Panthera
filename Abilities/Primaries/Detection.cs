@@ -18,11 +18,11 @@ namespace Panthera.Abilities.Primaries
             name = Utils.PantheraTokens.Get("ability_DetectionName");
             abilityID = PantheraConfig.Detection_AbilityID;
             type = AbilityType.primary;
-            icon = Assets.DetectionSkill;
+            icon = PantheraAssets.DetectionSkill;
             maxLevel = PantheraConfig.Detection_maxLevel;
-            cooldown = PantheraConfig.Detection_cooldown;
+            cooldown = PantheraConfig.Detection_maxTime;
             requiredAbility = PantheraConfig.Predator_AbilityID;
-            desc1 = Utils.PantheraTokens.Get("ability_DetectionDesc");
+            desc1 = String.Format(Utils.PantheraTokens.Get("ability_DetectionDesc"), PantheraConfig.Detection_maxTime);
             desc2 = null;
         }
 

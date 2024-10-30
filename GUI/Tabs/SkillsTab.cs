@@ -110,12 +110,12 @@ namespace Panthera.GUI.Tabs
             this.ability4Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Guardian_SkillID);
             this.spell1Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell2Icon.gameObject.AddComponent<SkillsTooltipComponent>();
-            this.spell3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Ambition_SkillID); ;
+            this.spell3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Ambition_SkillID);
             this.spell4Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell5Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell6Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell7Icon.gameObject.AddComponent<SkillsTooltipComponent>();
-            this.spell8Icon.gameObject.AddComponent<SkillsTooltipComponent>();
+            this.spell8Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.PortalSurge_SkillID); ;
 
             // Change all Texts //
             this.skill1Text.text = PantheraTokens.Get("skill_RipName");
@@ -127,6 +127,7 @@ namespace Panthera.GUI.Tabs
             this.ability3Text.text = PantheraTokens.Get("ability_DetectionName");
             this.ability4Text.text = PantheraTokens.Get("ability_GuardianName");
             this.spell3Text.text = PantheraTokens.Get("ability_AmbitionName");
+            this.spell8Text.text = PantheraTokens.Get("ability_PortalSurgeName");
 
         }
 
@@ -143,25 +144,25 @@ namespace Panthera.GUI.Tabs
         {
 
             // Prowl Skill //
-            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Prowl_SkillID).locked == true)
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Prowl_SkillID) == false)
                 this.ability1Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability1Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Fury Skill //
-            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Fury_SkillID).locked == true)
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Fury_SkillID) == false)
                 this.ability2Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability2Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Detection Skill //
-            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Detection_SkillID).locked == true)
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Detection_SkillID) == false)
                 this.ability3Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability3Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Guardian Skill //
-            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Guardian_SkillID).locked == true)
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Guardian_SkillID) == false)
                 this.ability4Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability4Icon.color = PantheraConfig.SkillsNormalSkillColor;
@@ -170,7 +171,7 @@ namespace Panthera.GUI.Tabs
             this.spell2Icon.color = PantheraConfig.SkillsLockedSkillColor;
 
             // Ambition Skill //
-            if (Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Ambition_SkillID).locked == true)
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Ambition_SkillID) == false)
                 this.spell3Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.spell3Icon.color = PantheraConfig.SkillsNormalSkillColor;
@@ -179,7 +180,13 @@ namespace Panthera.GUI.Tabs
             this.spell5Icon.color = PantheraConfig.SkillsLockedSkillColor;
             this.spell6Icon.color = PantheraConfig.SkillsLockedSkillColor;
             this.spell7Icon.color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell8Icon.color = PantheraConfig.SkillsLockedSkillColor;
+
+            // Portal Surge Skill //
+            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.PortalSurge_SkillID) == false)
+                this.spell8Icon.color = PantheraConfig.SkillsLockedSkillColor;
+            else
+                this.spell8Icon.color = PantheraConfig.SkillsNormalSkillColor;
+
         }
 
         public void enable()

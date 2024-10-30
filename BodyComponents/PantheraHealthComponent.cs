@@ -23,6 +23,7 @@ namespace Panthera.BodyComponents
 
         public PantheraObj ptraObj;
         public CharacterDirection characterDirection;
+        public float lastBlockTime = 0;
 
         public void DoInit()
         {
@@ -30,14 +31,14 @@ namespace Panthera.BodyComponents
             characterDirection = GetComponent<CharacterDirection>();
         }
 
-        public static void ModifyDamageInfoHook(Action<DamageInfo, HurtBox.DamageModifier> orig, DamageInfo self, HurtBox.DamageModifier damageModifier)
-        {
-            orig(self, damageModifier);
-            if (damageModifier == HurtBox.DamageModifier.Barrier)
-            {
-                self.AddModdedDamageType(Prefab.BarrierDamageType);
-            }
-        }
+        //public static void ModifyDamageInfoHook(Action<DamageInfo, HurtBox.DamageModifier> orig, DamageInfo self, HurtBox.DamageModifier damageModifier)
+        //{
+        //    orig(self, damageModifier);
+        //    if (damageModifier == HurtBox.DamageModifier.Barrier)
+        //    {
+        //        self.AddModdedDamageType(Prefab.BarrierDamageType);
+        //    }
+        //}
 
         public static void TakeDamageHook(Action<HealthComponent, DamageInfo> orig, HealthComponent self, DamageInfo damageInfo)
         {
@@ -53,7 +54,7 @@ namespace Panthera.BodyComponents
             if (self is FrontShieldHealthComponent)
             {
                 FrontShieldHealthComponent frontShieldHC = (FrontShieldHealthComponent)self;
-                frontShieldHC.onDamage(self, damageInfo);
+                frontShieldHC.onDamage(damageInfo);
                 return;
             }
 
@@ -63,6 +64,81 @@ namespace Panthera.BodyComponents
             {
                 orig(self, damageInfo);
                 return;
+            }
+
+            // Check if Immun //
+            if (Time.time - hc.lastBlockTime < PantheraConfig.Default_blockImmunDuration)
+                return;
+
+            // Check if Dodged //
+            float rand = UnityEngine.Random.Range(0, 10000);
+            rand /= 100;
+            if (rand <= hc.ptraObj.characterBody.dodge)
+            {
+                // Create the Effect //
+                EffectData effectData = new EffectData
+                {
+                    origin = damageInfo.position,
+                    rotation = Util.QuaternionSafeLookRotation(damageInfo.force != Vector3.zero ? damageInfo.force : UnityEngine.Random.onUnitSphere)
+                };
+                EffectManager.SpawnEffect(PantheraAssets.DodgeEffectPrefab, effectData, true);
+                return;
+            }
+
+            // Check if Blocked //
+            if (hc.ptraObj.characterBody.block > 0)
+            {
+                // Create the Effect //
+                EffectData effectData = new EffectData
+                {
+                    origin = damageInfo.position,
+                    rotation = Util.QuaternionSafeLookRotation(damageInfo.force != Vector3.zero ? damageInfo.force : UnityEngine.Random.onUnitSphere)
+                };
+                EffectManager.SpawnEffect(PantheraAssets.BlockEffectPrefab, effectData, true);
+                hc.lastBlockTime = Time.time;
+                new ClientBlockUsed(hc.gameObject).Send(NetworkDestination.Clients);
+                return;
+            }
+
+            // Apply the Extended Protection Ability //
+            int extendedProtectionLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.ExtendedProtection_AbilityID);
+            if (hc.ptraObj.frontShieldObj.active == true && extendedProtectionLevel > 0)
+            {
+                float absorbedDamagePercent = 0;
+                if (extendedProtectionLevel == 1)
+                    absorbedDamagePercent = PantheraConfig.ExtendedProtection_percent1;
+                else if (extendedProtectionLevel == 2)
+                    absorbedDamagePercent = PantheraConfig.ExtendedProtection_percent2;
+                else if (extendedProtectionLevel == 3)
+                    absorbedDamagePercent = PantheraConfig.ExtendedProtection_percent3;
+                else if (extendedProtectionLevel == 4)
+                    absorbedDamagePercent = PantheraConfig.ExtendedProtection_percent4;
+                float absorbedDamage = Mathf.Ceil(damageInfo.damage * absorbedDamagePercent);
+                damageInfo.damage -= absorbedDamage;
+                new ClientDamageShield(hc.ptraObj.gameObject, absorbedDamage).Send(NetworkDestination.Clients);
+            }
+
+
+            // Apply the Savage Revitalization Mastery //
+            if (hc.ptraObj.guardianMode == true && hc.ptraObj.isMastery(PantheraConfig.SavageRevitalization_AbilityID) == true)
+            {
+                float chance = hc.ptraObj.characterBody.mastery / 2;
+                if (UnityEngine.Random.RandomRange(0, 100) < chance)
+                    new ServerAddBuff(hc.gameObject, hc.gameObject, Base.Buff.RegenerationBuff, 1, PantheraConfig.SavageRevitalization_MasteryBuffTime).Send(NetworkDestination.Server);
+            }
+
+            // Apply the Furrify Ability //
+            if (hc.ptraObj.guardianMode == true && hc.ptraObj.getAbilityLevel(PantheraConfig.Furrify_AbilityID) > 0)
+            {
+                if (damageInfo.damage > (hc.ptraObj.characterBody.maxHealth * PantheraConfig.Furrify_percent))
+                {
+                    int resilienceCount = hc.ptraObj.characterBody.GetBuffCount(Base.Buff.ResilienceBuff.buffIndex);
+                    resilienceCount++;
+                    resilienceCount = Math.Min(PantheraConfig.Resilience_maxStack, resilienceCount);
+                    new ServerClearTimedBuffs(hc.gameObject, (Base.Buff.ResilienceBuff.index)).Send(NetworkDestination.Server);
+                    new ServerAddBuff(hc.gameObject, hc.gameObject, Base.Buff.ResilienceBuff, resilienceCount).Send(NetworkDestination.Server);
+                    Utils.Sound.playSound(Utils.Sound.Resilience, hc.gameObject);
+                }
             }
 
             // Check the Enchanted Fur Ability //
@@ -90,101 +166,31 @@ namespace Panthera.BodyComponents
                 damageInfo.damage *= tornadoDamageMultiplier;
             }
 
-            // Check if the Front Shield was damaged //
-            if (damageInfo.HasModdedDamageType(Prefab.BarrierDamageType) && hc.ptraObj.characterBody.frontShield > 0)
+            // Check the Innate Protection Ability //
+            int protectionLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.InnateProtection_AbilityID);
+            if (hc.ptraObj.guardianMode == true && protectionLevel > 0)
             {
-
-                // Create the Effect //
-                //EffectData effectData = new EffectData
-                //{
-                //    origin = damageInfo.position,
-                //    rotation = Util.QuaternionSafeLookRotation(damageInfo.force != Vector3.zero ? damageInfo.force : UnityEngine.Random.onUnitSphere)
-                //};
-                //EffectManager.SpawnEffect(Assets.BlockEffectPrefab, effectData, true);
-                //EffectManager.SpawnEffect(Assets.FrontShieldHitFX, effectData, true);
-                //Utils.Sound.playSound(Utils.Sound.ShieldAbsorb, self.gameObject);
-
-                // Check the Residual Energy Ability //
-                //if (hc.ptraObj != null && hc.ptraObj.activePreset != null)
-                //{
-                //    int resEnergyLevel = hc.ptraObj.activePreset != null ? hc.ptraObj.activePreset.getAbilityLevel(PantheraConfig.ResidualEnergyAbilityID) : 0;
-                //    float addedBarrier = 0;
-                //    if (resEnergyLevel == 1)
-                //        addedBarrier = damageInfo.damage * PantheraConfig.ResidualEnergy_percent1;
-                //    else if (resEnergyLevel == 2)
-                //        addedBarrier = damageInfo.damage * PantheraConfig.ResidualEnergy_percent2;
-                //    else if (resEnergyLevel == 3)
-                //        addedBarrier = damageInfo.damage * PantheraConfig.ResidualEnergy_percent3;
-                //    else if (resEnergyLevel == 4)
-                //        addedBarrier = damageInfo.damage * PantheraConfig.ResidualEnergy_percent4;
-                //    else if (resEnergyLevel == 5)
-                //        addedBarrier = damageInfo.damage * PantheraConfig.ResidualEnergy_percent5;
-                //    addedBarrier = (float)Math.Ceiling(addedBarrier);
-                //    hc.AddBarrier(addedBarrier);
-                //}
-
-                //// Decrease the Shield //
-                //if (hc.godMode == false)
-                //    new ClientDamageShield(hc.gameObject, damageInfo.damage).Send(NetworkDestination.Clients);
-
-                //// Reject the damage //
-                //damageInfo.rejected = true;
-
+                float maxDamagePercent = 1;
+                if (protectionLevel == 1)
+                    maxDamagePercent = PantheraConfig.InnateProtection_percent1;
+                else if (protectionLevel == 2)
+                    maxDamagePercent = PantheraConfig.InnateProtection_percent2;
+                float maxDamage = hc.ptraObj.characterBody.maxHealth * maxDamagePercent;
+                if (damageInfo.damage > maxDamage)
+                {
+                    // Create the Effect //
+                    EffectData effectData = new EffectData
+                    {
+                        origin = damageInfo.position,
+                        rotation = Util.QuaternionSafeLookRotation(damageInfo.force != Vector3.zero ? damageInfo.force : UnityEngine.Random.onUnitSphere)
+                    };
+                    EffectManager.SpawnEffect(PantheraAssets.ReducedEffectPrefab, effectData, true);
+                }
+                damageInfo.damage = Math.Min(maxDamage, damageInfo.damage);
             }
-
-            //// Check the Instinctive Resistance Ability //
-            //if (hc.ptraObj != null && hc.ptraObj.activePreset != null)
-            //{
-            //    int ripperBuffCount = hc.ptraObj.characterBody.GetBuffCount(Buff.TheRipperBuff);
-            //    float resistanceAmount = hc.ptraObj.activePreset.instinctiveResistance_resistanceAmount;
-            //    if (ripperBuffCount > 0 && resistanceAmount > 0)
-            //    {
-            //        float damageReduction = 1;
-            //        damageReduction -= ripperBuffCount * resistanceAmount;
-            //        int instResLevel = hc.ptraObj.activePreset != null ? hc.ptraObj.activePreset.getAbilityLevel(PantheraConfig.InstinctiveResistanceAbilityID) : 0;
-            //        damageInfo.damage *= damageReduction;
-            //        Debug.LogWarning("DamageReduction -> " + damageReduction);
-            //    }
-            //}
-
-            //// Check the Strong Barrier Ability //
-            //if (hc.ptraObj != null && hc.ptraObj.activePreset != null && hc.barrier > 0)
-            //{
-            //    float maxPercentDamage = hc.ptraObj.activePreset.strongBarrier_maxPercent;
-            //    if (maxPercentDamage < 1)
-            //    {
-            //        float maxDamage = hc.body.maxHealth * maxPercentDamage;
-            //        damageInfo.damage = Math.Min(damageInfo.damage, maxDamage);
-            //        damageInfo.crit = false;
-            //    }
-            //}
 
             // Do the base function //
             orig(self, damageInfo);
-
-            // Check if the Ray Slash is activated //
-            //if (this.ptraObj.onRaySlashCharge == true && self.body.GetBuffCount(Buff.raySlashBuff) < PantheraConfig.RaySlash_maxRaySlashBuff)
-            //{
-            //    int buffsToAdd = (int)Math.Max(1, damageInfo.damage * PantheraConfig.RaySlash_damageAbsoptionMultiplier);
-            //    buffsToAdd = Math.Min(buffsToAdd, PantheraConfig.RaySlash_maxRaySlashBuff - self.body.GetBuffCount(Buff.raySlashBuff));
-            //    self.body.SetBuffCount(Buff.raySlashBuff.buffIndex, self.body.GetBuffCount(Buff.raySlashBuff) + buffsToAdd);
-            //}
-
-            // Nullify damage if the Ray Slash is recharging //
-            //if (this.ptraObj.onRaySlashCharge == true)
-            //{
-            //    return;
-            //}
-
-            // Check if the Panthera Shield must be used //
-            //damageInfo.damage = Shield.MustUseShield(base.body, damageInfo.damage);
-
-            // Add the barriere related to damage //
-            //if (damageInfo.damage > 0 && self.health > 0)
-            //{
-            //    Barrier.ApplyBarrier(this, damageInfo.damage);
-            //}
-
 
         }
 

@@ -35,11 +35,11 @@ namespace Panthera.Skills.Actives
 
         public Detection()
         {
-            base.icon = Assets.DetectionSkill;
+            base.icon = PantheraAssets.DetectionSkill;
             base.name = PantheraTokens.Get("ability_DetectionName");
-            base.baseCooldown = 0;
+            base.baseCooldown = PantheraConfig.Detection_maxTime;
             base.removeStealth = false;
-            base.desc1 = Utils.PantheraTokens.Get("ability_DetectionDesc");
+            base.desc1 = String.Format(Utils.PantheraTokens.Get("ability_DetectionDesc"), PantheraConfig.Detection_maxTime);
             base.desc2 = null;
             base.machineToUse = 2;
             base.skillID = PantheraConfig.Detection_SkillID;
@@ -50,7 +50,8 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.Detection_SkillID) <= 0) return false;
+            float maxTime = Skills.Passives.Detection.GetDetectionMaxTime(ptraObj);
+            if (ptraObj.detectionMode == false && ptraObj.skillLocator.getCooldown(PantheraConfig.Detection_SkillID) > maxTime - PantheraConfig.Detection_cooldown) return false;
             return true;
         }
 
@@ -59,6 +60,10 @@ namespace Panthera.Skills.Actives
 
             // Save the time //
             startTime = Time.time;
+
+            // Set the Max Time //
+            float maxTime = Skills.Passives.Detection.GetDetectionMaxTime(base.pantheraObj);
+            base.skillLocator.setMaxCooldown(PantheraConfig.Detection_SkillID, maxTime);
 
             // Check if must Start or Stop Detection //
             if (pantheraObj.detectionMode == false)

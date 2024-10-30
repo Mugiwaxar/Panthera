@@ -138,7 +138,7 @@ namespace Panthera.MachineScripts
                 {
                     Vector3 position = new Vector3(base.characterBody.corePosition.x - 1.2f, base.characterBody.corePosition.y, base.characterBody.corePosition.z + 0.8f);
                     Utils.Sound.playSound(Utils.Sound.Dead1, this.modelObj);
-                    this.deathEffectID = Utils.FXManager.SpawnEffect(base.gameObject, Base.Assets.DeadFX, position, base.pantheraObj.modelScale, base.characterBody.gameObject, new Quaternion(), true);
+                    this.deathEffectID = Utils.FXManager.SpawnEffect(base.gameObject, Base.PantheraAssets.DeadFX, position, base.pantheraObj.modelScale, base.characterBody.gameObject, new Quaternion(), true);
                     CamHelper.ApplyAimType(CamHelper.AimType.Death, base.pantheraObj);
                 }
             }

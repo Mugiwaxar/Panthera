@@ -26,7 +26,7 @@ namespace Panthera.Skills.Actives
 
         public FrontShield()
         {
-            base.icon = Assets.FrontShieldSkill;
+            base.icon = PantheraAssets.FrontShieldSkill;
             base.name = PantheraTokens.Get("ability_FrontShieldName");
             base.baseCooldown = PantheraConfig.FrontShield_cooldown;
             base.removeStealth = false;

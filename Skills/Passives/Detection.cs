@@ -25,32 +25,62 @@ namespace Panthera.Skills.Passives
 
         public static void EnableDetection(PantheraObj ptraObj)
         {
+            
+            // Enable the Detection Mode //
             ptraObj.detectionMode = true;
+
+            // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.DetectionEnable, ptraObj.gameObject);
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Detection_SkillID, 1);
+
+            // Start the Cooldown //
+            ptraObj.skillLocator.startCooldown(PantheraConfig.Detection_SkillID, 0.1f);
+
+            // Set the Camera //
             Camera cam = Camera.main;
             cam.cullingMask = cam.cullingMask & ~(1 << 31);
             if (cam.GetComponent<PostProcessLayer>())
                 cam.GetComponent<PostProcessLayer>().stopNaNPropagation = true;
             ptraObj.pantheraCam.gameObject.SetActive(true);
+
+            // Start the Detection FX //
             ptraObj.StartCoroutine(EnableDetectionFX(ptraObj));
+
+            // Change the Model Layer //
             ptraObj.characterModel.mainSkinnedMeshRenderer.gameObject.layer = PantheraConfig.Detection_layerIndex;
+            
+            // Recalculate Stats //
             ptraObj.characterBody.RecalculateStats();
+
         }
 
         public static void DisableDetection(PantheraObj ptraObj)
         {
+
+            // Disable the Detection Mode //
             ptraObj.detectionMode = false;
+
+            // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.DetectionDisable, ptraObj.gameObject);
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Detection_SkillID);
+
+            // Start the Cooldown //
+            //ptraObj.skillLocator.startCooldown(PantheraConfig.Detection_SkillID);
+
+            // Set the normal Camera //
             Camera cam = Camera.main;
             cam.cullingMask = cam.cullingMask | 1 << 31;
             if (cam.GetComponent<PostProcessLayer>())
                 cam.GetComponent<PostProcessLayer>().stopNaNPropagation = false;
             ptraObj.pantheraCam.gameObject.SetActive(false);
+
+            // Disable the Detection FX //
             ptraObj.StartCoroutine(DisableDetectionFX(ptraObj));
+
+            // Se the Model Layer back //
             ptraObj.characterModel.mainSkinnedMeshRenderer.gameObject.layer = ptraObj.origLayerIndex;
+
+            // Recalculate Stats //
             ptraObj.characterBody.RecalculateStats();
+
         }
 
         public static IEnumerator EnableDetectionFX(PantheraObj ptraObj)
@@ -96,18 +126,30 @@ namespace Panthera.Skills.Passives
 
         }
 
-        public static void ReScanBody(PantheraObj ptra)
+        public static void ReScanBody(PantheraObj ptraObj)
         {
             List<CharacterBody> bodyLists = UnityEngine.Object.FindObjectsOfType<CharacterBody>().ToList();
             if (bodyLists == null || bodyLists.Count == 0) return;
             foreach (CharacterBody body in bodyLists)
             {
-                if (body == ptra.characterBody) continue;
+                if (body == ptraObj.characterBody) continue;
                 XRayComponent component = body.GetComponent<XRayComponent>();
                 if (component == null) component = body.gameObject.AddComponent<XRayComponent>();
-                component.ptraObj = ptra;
+                component.ptraObj = ptraObj;
                 component.type = XRayComponent.XRayObjectType.Body;
             }
+        }
+
+        public static float GetDetectionMaxTime(PantheraObj ptraObj)
+        {
+            int level = ptraObj.getAbilityLevel(PantheraConfig.SuperiorFlair_AbilityID);
+            float maxTime = PantheraConfig.Detection_maxTime;
+            if (level == 1) maxTime = PantheraConfig.SuperiorFlair_percent1;
+            else if (level == 2) maxTime = PantheraConfig.SuperiorFlair_percent2;
+            else if (level == 3) maxTime = PantheraConfig.SuperiorFlair_percent3;
+            else if (level == 4) maxTime = PantheraConfig.SuperiorFlair_percent4;
+            else if (level == 5) maxTime = PantheraConfig.SuperiorFlair_percent5;
+            return maxTime;
         }
 
     }

@@ -13,8 +13,8 @@ namespace Panthera.NetworkMessages
             // To serveur Messages //
             NetworkingAPI.RegisterMessageType<ServerAddBuff>();
             NetworkingAPI.RegisterMessageType<ServerSetBuffCount>();
+            NetworkingAPI.RegisterMessageType<ServerClearTimedBuffs>();
             NetworkingAPI.RegisterMessageType<ServerRemoveBuff>();
-            NetworkingAPI.RegisterMessageType<ServerClearBuffs>();
             NetworkingAPI.RegisterMessageType<ServerHeal>();
             NetworkingAPI.RegisterMessageType<ServerSetGodMode>();
             NetworkingAPI.RegisterMessageType<ServerInflictDamage>();
@@ -25,18 +25,22 @@ namespace Panthera.NetworkMessages
             NetworkingAPI.RegisterMessageType<ServerRespawn>();
             NetworkingAPI.RegisterMessageType<ServerAddGold>();
             NetworkingAPI.RegisterMessageType<ServerSpawnGoldOrb>();
+            NetworkingAPI.RegisterMessageType<ServerSpawnShieldOrb>();
+            NetworkingAPI.RegisterMessageType<ServerSetPortalSurge>();
 
             // To client Messages //
             NetworkingAPI.RegisterMessageType<ClientCharacterDieEvent>();
+            NetworkingAPI.RegisterMessageType<ClientSetPortalSurge>();
 
             // Character Sync //
             NetworkingAPI.RegisterMessageType<ServerChangePantheraScale>();
             NetworkingAPI.RegisterMessageType<ClientChangePantheraScale>();
             NetworkingAPI.RegisterMessageType<ServerSetBodyVelocity>();
             NetworkingAPI.RegisterMessageType<ClientSetBodyVelocity>();
-            NetworkingAPI.RegisterMessageType<ServerSyncCharacter>();
-            NetworkingAPI.RegisterMessageType<ClientSyncCharacter>();
+            NetworkingAPI.RegisterMessageType<ServerSyncProfile>();
+            NetworkingAPI.RegisterMessageType<ClientSyncProfile>();
             NetworkingAPI.RegisterMessageType<ClientAddFury>();
+            NetworkingAPI.RegisterMessageType<ClientAddShield>();
 
             // FX Messages //
             NetworkingAPI.RegisterMessageType<ServerSpawnEffect>();
@@ -75,6 +79,11 @@ namespace Panthera.NetworkMessages
             NetworkingAPI.RegisterMessageType<ClientSetFrontShieldActive>();
             NetworkingAPI.RegisterMessageType<ServerSetFrontShieldDeployed>();
             NetworkingAPI.RegisterMessageType<ClientSetFrontShieldDeployed>();
+
+            // Block //
+            NetworkingAPI.RegisterMessageType<ServerSetBlockAmount>();
+            NetworkingAPI.RegisterMessageType<ClientSetBlockAmount>();
+            NetworkingAPI.RegisterMessageType<ClientBlockUsed>();
 
             // Skills Messages /
             NetworkingAPI.RegisterMessageType<ServerFuryMessage>();

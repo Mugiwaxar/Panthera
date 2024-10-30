@@ -16,6 +16,7 @@ namespace Panthera.Combos.List
         {
             ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Prowl_SkillID), KeysBinder.KeysEnum.Ability1);
             comboSkillsList.Add(comboSkill);
+            comboID = PantheraConfig.Prowl_CombosID;
             name = PantheraTokens.Get("combo_ProwlName");
             visible = false;
         }

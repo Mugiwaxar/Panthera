@@ -37,6 +37,7 @@ namespace Panthera.Base
             this.addComboToList(PantheraConfig.ConvergenceHook_CombosID, new Combos.List.ConvergenceHook());
             this.addComboToList(PantheraConfig.MassiveHook_CombosID, new Combos.List.MassiveHook());
             this.addComboToList(PantheraConfig.Ambition_CombosID, new Combos.List.Ambition());
+            this.addComboToList(PantheraConfig.PortalSurge_CombosID, new Combos.List.PortalSurge());
         }
 
         public void addComboToList(int ID, PantheraCombo combo)

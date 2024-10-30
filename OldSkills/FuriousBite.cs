@@ -42,8 +42,8 @@ namespace Panthera.OldSkills
         //    skill.skillID = PantheraConfig.FuriousBite_SkillID;
         //    skill.name = "FURIOUS_BITE_SKILL_NAME";
         //    skill.desc = "FURIOUS_BITE_SKILL_DESC";
-        //    skill.icon = Assets.FuriousBite;
-        //    skill.iconPrefab = Assets.ActiveSkillPrefab;
+        //    skill.icon = PantheraAssets.FuriousBite;
+        //    skill.iconPrefab = PantheraAssets.ActiveSkillPrefab;
         //    skill.type = SkillType.active;
         //    skill.associatedSkill = typeof(FuriousBite);
         //    skill.priority = PantheraConfig.FuriousBite_priority;
@@ -104,7 +104,7 @@ namespace Panthera.OldSkills
         //    //Skills.Passives.Stealth.DidDamageUnstealth(pantheraObj);
 
         //    // Spawn the effect //
-        //    FXManager.SpawnEffect(gameObject, Assets.BiteFX, characterBody.corePosition, pantheraObj.modelScale, null, Util.QuaternionSafeLookRotation(characterDirection.forward));
+        //    FXManager.SpawnEffect(gameObject, PantheraAssets.BiteFX, characterBody.corePosition, pantheraObj.modelScale, null, Util.QuaternionSafeLookRotation(characterDirection.forward));
 
         //    // Play the Animation //
         //    Utils.Animation.PlayAnimation(pantheraObj, "Bite");

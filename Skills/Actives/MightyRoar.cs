@@ -28,7 +28,7 @@ namespace Panthera.Skills.Actives
 
         public MightyRoar()
         {
-            base.icon = Assets.MightyRoarSkill;
+            base.icon = PantheraAssets.MightyRoarSkill;
             base.name = PantheraTokens.Get("skill_MightyRoarName");
             base.baseCooldown = PantheraConfig.MightyRoar_cooldown;
             base.desc1 = string.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration);
@@ -45,8 +45,8 @@ namespace Panthera.Skills.Actives
         //    skill.skillID = PantheraConfig.MightyRoar_SkillID;
         //    skill.name = "MIGHTY_ROAR_SKILL_NAME";
         //    skill.desc = "MIGHTY_ROAR_SKILL_DESC";
-        //    skill.icon = Assets.MightyRoar;
-        //    skill.iconPrefab = Assets.ActiveSkillPrefab;
+        //    skill.icon = PantheraAssets.MightyRoar;
+        //    skill.iconPrefab = PantheraAssets.ActiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.active;
         //    skill.associatedSkill = typeof(MightyRoar);
         //    skill.priority = PantheraConfig.MightyRoar_priority;
@@ -119,7 +119,7 @@ namespace Panthera.Skills.Actives
                 this.hasFired = true;
 
                 // Create the Effect //
-                FXManager.SpawnEffect(base.gameObject, Assets.MightyRoarFX, base.modelTransform.position, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+                FXManager.SpawnEffect(base.gameObject, PantheraAssets.MightyRoarFX, base.modelTransform.position, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
 
                 // Play the Animation //
                 Utils.Animation.PlayAnimation(base.pantheraObj, "Roar");

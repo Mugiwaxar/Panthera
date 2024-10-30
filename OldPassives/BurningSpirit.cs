@@ -19,8 +19,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.BurningSpirit_SkillID;
         //    skill.name = "BURNING_SPIRIT_ABILITY_NAME";
         //    skill.desc = "BURNING_SPIRIT_ABILITY_DESC";
-        //    skill.icon = Assets.BurningSpiritAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.BurningSpiritAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.associatedSkill = typeof(BurningSpirit);
 

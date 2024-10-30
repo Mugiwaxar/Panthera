@@ -69,7 +69,7 @@ namespace Panthera.Components
         //        float heal = maxHeal * healPercentAmount;
         //        hc.Heal(heal, default(ProcChainMask));
         //        Utils.Sound.playSound(Utils.Sound.ZoneHeal, hc.gameObject);
-        //        Utils.FXManager.SpawnEffect(hc.gameObject, Base.Assets.FlashHealFX, hc.body.footPosition, 1, hc.gameObject);
+        //        Utils.FXManager.SpawnEffect(hc.gameObject, Base.PantheraAssets.FlashHealFX, hc.body.footPosition, 1, hc.gameObject);
         //    }
         //}
 

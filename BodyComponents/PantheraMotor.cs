@@ -4,6 +4,9 @@ using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
+using Panthera.NetworkMessages;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -43,17 +46,6 @@ namespace Panthera.BodyComponents
             base.networkIdentity = GetComponent<NetworkIdentity>();
             base.body = GetComponent<PantheraBody>();
             base.capsuleCollider = GetComponent<CapsuleCollider>();
-            base.previousPosition = transform.position;
-            base.Motor.Rigidbody.mass = mass;
-            base.Motor.MaxStableSlopeAngle = 70f;
-            base.Motor.MaxStableDenivelationAngle = 55f;
-            base.Motor.RebuildCollidableLayers();
-            if (generateParametersOnAwake)
-            {
-                base.GenerateParameters();
-            }
-            base.useGravity = base.gravityParameters.CheckShouldUseGravity();
-            base.isFlying = base.flightParameters.CheckShouldUseFlight();
         }
 
         public new void FixedUpdate()
@@ -140,6 +132,10 @@ namespace Panthera.BodyComponents
             // Check if the character can jump //
             if (this.doJump && base.jumpCount < this.characterBody.maxJumpCount)
             {
+
+                // Remove the Frozen Paws Buff //
+                if (this.characterBody.HasBuff(Base.Buff.FrozenPawsBuff) == true)
+                    new ServerClearTimedBuffs(base.gameObject, Base.Buff.FrozenPawsBuff.index).Send(NetworkDestination.Server);
 
                 // Check if Wax Quail Item must trigger //
                 int itemCount = this.characterBody.inventory.GetItemCount(RoR2Content.Items.JumpBoost);

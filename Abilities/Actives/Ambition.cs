@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_AmbitionName");
             abilityID = PantheraConfig.Ambition_AbilityID;
             type = AbilityType.active;
-            icon = Assets.AmbitionSkill;
+            icon = PantheraAssets.AmbitionSkill;
             maxLevel = PantheraConfig.Ambition_maxLevel;
             cooldown = PantheraConfig.Ambition_cooldown;
             requiredAbility = PantheraConfig.GoldenStart_AbilityID;

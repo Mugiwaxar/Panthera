@@ -108,13 +108,13 @@ namespace Panthera.GUI
                 this.type.SetText("Passive");
 
             // Get the Icon Prefab //
-            GameObject iconPrefab = Assets.PassiveSkillPrefab;
+            GameObject iconPrefab = PantheraAssets.PassiveSkillPrefab;
             if (type == TooltipType.primary)
-                iconPrefab = Assets.PrimarySkillPrefab;
+                iconPrefab = PantheraAssets.PrimarySkillPrefab;
             else if (type == TooltipType.active)
-                iconPrefab = Assets.ActiveSkillPrefab;
+                iconPrefab = PantheraAssets.ActiveSkillPrefab;
             else if (type == TooltipType.passive)
-                iconPrefab = Assets.PassiveSkillPrefab;
+                iconPrefab = PantheraAssets.PassiveSkillPrefab;
             iconPrefab.SetActive(true);
 
             // Destroy the old Icon //

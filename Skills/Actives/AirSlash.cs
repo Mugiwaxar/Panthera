@@ -37,7 +37,7 @@ namespace Panthera.Skills.Actives
 
         public AirSlash()
         {
-            base.icon = Assets.AirSlashSkill;
+            base.icon = PantheraAssets.AirSlashSkill;
             base.name = PantheraTokens.Get("ability_AirSlashName");
             base.baseCooldown = PantheraConfig.AirSlash_cooldown;
             base.showCooldown = true;
@@ -115,11 +115,11 @@ namespace Panthera.Skills.Actives
 
             // Get the Combo //
             string animation = "LeftSlash";
-            GameObject FX = Assets.AirSlashStartLeftFX;
+            GameObject FX = PantheraAssets.AirSlashStartLeftFX;
             if (this.comboNumber == 2)
             {
                 animation = "RightSlash";
-                FX = Assets.AirSlashStartRightFX;
+                FX = PantheraAssets.AirSlashStartRightFX;
             }
 
             // Play the Sound //
@@ -132,7 +132,7 @@ namespace Panthera.Skills.Actives
             base.PlayAnimation(animation);
 
             // Create the projectile info //
-            GameObject projectile = Assets.AirSlashProjectile.InstantiateClone("AirSlashLoop(ProjectileClone)");
+            GameObject projectile = PantheraAssets.AirSlashProjectile.InstantiateClone("AirSlashLoop(ProjectileClone)");
             float damage = base.characterBody.damage * this.damageMultiplier;
             Vector3 scale = projectile.transform.localScale * PantheraConfig.AirSlash_projScale * base.pantheraObj.modelScale;
             projectile.transform.localScale = scale;

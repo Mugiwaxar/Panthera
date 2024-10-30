@@ -45,12 +45,6 @@ namespace Panthera.Utils
                 save[key] = savedData[key];
             }
 
-            // Add all Abilities to the Table //
-            foreach(int ID in Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList.Keys)
-            {
-                save["_ABILITY_" + ID.ToString()] = Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList[ID].ToString();
-            }
-
             // Create the full path //
             string fullFilePath = System.IO.Path.Combine(saveDir, saveFileName + "--Data");
 
@@ -118,24 +112,7 @@ namespace Panthera.Utils
             // Load the Save //
             foreach(KeyValuePair<string, string> kvp in save)
             {
-                if (kvp.Key.Contains("_ABILITY_"))
-                {
-                    try
-                    {
-                        int ID = int.Parse(kvp.Key.Replace("_ABILITY_", ""));
-                        int level = int.Parse(kvp.Value);
-                        Panthera.PantheraCharacter.characterAbilities.unlockedAbilitiesList[ID] = level; 
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError("Unable to Load a value -> " + kvp.Key);
-                        Debug.LogError(e);
-                    }
-                }
-                else
-                {
-                    savedData[kvp.Key] = kvp.Value;
-                }
+                savedData[kvp.Key] = kvp.Value;
             }
 
         }

@@ -27,7 +27,7 @@ namespace Panthera.Skills.Actives
 
         public Slash()
         {
-            base.icon = Assets.SlashSkill;
+            base.icon = PantheraAssets.SlashSkill;
             base.name = PantheraTokens.Get("skill_SlashName");
             base.baseCooldown = PantheraConfig.Slash_cooldown;
             base.desc1 = string.Format(PantheraTokens.Get("skill_SlashDesc"), PantheraConfig.Slash_damageMultiplier * 100) + string.Format(PantheraTokens.Get("skill_SlashFuryDesc"), PantheraConfig.Slash_furyAdded);
@@ -66,7 +66,7 @@ namespace Panthera.Skills.Actives
             bool isCrit = RollCrit();
             float damage = base.characterBody.damage * PantheraConfig.Slash_damageMultiplier;
             float scale = PantheraConfig.Slash_radius * base.pantheraObj.modelScale;
-            BlastAttack attack = Functions.CreateBlastAttack(base.gameObject, damage, FalloffModel.None, isCrit, base.characterBody.corePosition, scale, default, Assets.RipHitFX);
+            BlastAttack attack = Functions.CreateBlastAttack(base.gameObject, damage, FalloffModel.None, isCrit, base.characterBody.corePosition, scale, default, PantheraAssets.RipHitFX);
 
             // Get the Result //
             Result result = attack.Fire();
@@ -78,7 +78,7 @@ namespace Panthera.Skills.Actives
             Sound.playSound(Sound.Slash, base.gameObject);
 
             // Spawn the Effect //
-            FXManager.SpawnEffect(base.gameObject, Assets.SlashFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
+            FXManager.SpawnEffect(base.gameObject, PantheraAssets.SlashFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
 
             // Play the Animation //
             if (this.comboNumber == 1) base.PlayAnimation("LeftSlash");

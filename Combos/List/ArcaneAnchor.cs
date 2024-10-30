@@ -18,7 +18,8 @@ namespace Panthera.Combos.List
             ComboSkill comboSkill2 = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.ArcaneAnchor_SkillID), KeysBinder.KeysEnum.Skill2, KeysBinder.KeysEnum.Skill4);
             comboSkillsList.Add(comboSkill1);
             comboSkillsList.Add(comboSkill2);
-            name = PantheraTokens.Get("combo_ArcaneAnchor");
+            comboID = PantheraConfig.ArcaneAnchor_CombosID;
+            name = PantheraTokens.Get("combo_ArcaneAnchorName");
             activated = true;
         }
 

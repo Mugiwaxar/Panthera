@@ -107,14 +107,21 @@ namespace Panthera.MachineScripts
         {
 
             // Disable the Aim Animator //
-            this.aimAnimator.enabled = false;
+            if (this.aimAnimator != null)
+                this.aimAnimator.enabled = false;
 
             // Stop the velocity //
-            if (base.isAuthority) base.characterMotor.moveDirection = Vector3.zero;
+            if (base.isAuthority && base.characterMotor != null)
+                base.characterMotor.moveDirection = Vector3.zero;
 
             // Stop the character animation //
-            if (this.characterAnimParamAvailability.isMoving) this.modelAnimator.SetBool(AnimationParameters.isMoving, false);
-            if (this.characterAnimParamAvailability.turnAngle) this.modelAnimator.SetFloat(AnimationParameters.turnAngle, 0f);
+            if (this.modelAnimator != null)
+            {
+                if (this.characterAnimParamAvailability.isMoving)
+                    this.modelAnimator.SetBool(AnimationParameters.isMoving, false);
+                if (this.characterAnimParamAvailability.turnAngle)
+                    this.modelAnimator.SetFloat(AnimationParameters.turnAngle, 0f);
+            }
 
         }
 

@@ -18,11 +18,11 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_GhostRipName");
             abilityID = PantheraConfig.GhostRip_AbilityID;
             type = AbilityType.active;
-            icon = Assets.GhostRipSkill;
+            icon = PantheraAssets.GhostRipSkill;
             maxLevel = PantheraConfig.GhostRip_maxLevel;
             cooldown = PantheraConfig.GhostRip_cooldown;
             requiredAbility = PantheraConfig.Prowl_AbilityID;
-            desc1 = String.Format(Utils.PantheraTokens.Get("ability_GhostRipDesc"), PantheraConfig.GhostRip_DamageMultiplier * 100, PantheraConfig.GhostRip_stunDuration) + String.Format(Utils.PantheraTokens.Get("skill_GhostRipFuryDesc"), PantheraConfig.GhostRip_furyAdded);
+            desc1 = String.Format(Utils.PantheraTokens.Get("ability_GhostRipDesc"), PantheraConfig.GhostRip_damageMultiplier * 100, PantheraConfig.GhostRip_stunDuration, PantheraConfig.GhostRip_critMultiplier) + String.Format(Utils.PantheraTokens.Get("skill_GhostRipFuryDesc"), PantheraConfig.GhostRip_furyAdded);
             desc2 = null;
         }
 

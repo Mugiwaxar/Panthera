@@ -4,10 +4,12 @@ using Panthera.Base;
 using Panthera.Components;
 using Panthera.Components.Projectiles;
 using Panthera.OldSkills;
+using Panthera.Orbs;
 using Panthera.Utils;
 using R2API;
 using RoR2;
 using RoR2.Audio;
+using RoR2.Orbs;
 using RoR2.Projectile;
 using RoR2.UI;
 using System;
@@ -18,10 +20,11 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Rewired.UI.ControlMapper.ControlMapper;
 
 namespace Panthera.Base
 {
-    public static class Assets
+    public static class PantheraAssets
     {
 
         #region Project Parameters
@@ -45,8 +48,12 @@ namespace Panthera.Base
 
         #region Objects Prefabs
         public static GameObject FrontShieldObj;
+        public static GameObject FrostedAirObj;
+        public static GameObject DodgeEffectPrefab;
         public static GameObject BlockEffectPrefab;
+        public static GameObject AbsorbEffectPrefab;
         public static GameObject OutOfCombatEffectPrefab;
+        public static GameObject ReducedEffectPrefab;
         #endregion
 
         #region GUI Prefabs
@@ -61,7 +68,8 @@ namespace Panthera.Base
         public static GameObject KeyBindWindowPrefab;
         public static GameObject ResetKeyBindWindowPrefab;
         public static GameObject ActivePresetWindowPrefab;
-        public static GameObject ResetCharacterWindowPrefab;
+        public static GameObject ResetAttributesWindowPrefab;
+        public static GameObject ResetSkillsTreeWindowPrefab;
         public static GameObject SimpleTooltipPrefab;
         public static GameObject SkillsTooltipPrefab;
         public static GameObject AbilitiesTooltipPrefab;
@@ -84,6 +92,7 @@ namespace Panthera.Base
         public static GameObject HUDCooldownFrame;
         public static GameObject HUDCooldownSkillTemplate;
         public static GameObject HUDShieldBar;
+        public static GameObject HUDBlockBar;
         public static GameObject CrosshairPrefab;
         #endregion
 
@@ -168,6 +177,7 @@ namespace Panthera.Base
         public static Sprite ArcaneAnchorSkill;
         public static Sprite ArcaneAnchorSkillMenu;
         public static Sprite ConvergenceHookSkill;
+        public static Sprite PortalSurgeSkill;
         #endregion
 
         #region Abilities Icones
@@ -186,6 +196,23 @@ namespace Panthera.Base
         public static Sprite RoarOfResilienceAbility;
         public static Sprite ClawsSharpeningAbility;
         public static Sprite GoldenStartAbility;
+        public static Sprite StealthStrikeAbility;
+        public static Sprite CryoLeapAbility;
+        public static Sprite ShadowStalkerAbility;
+        public static Sprite WardensVitalityAbility;
+        public static Sprite SavageRevitalizationAbility;
+        public static Sprite InnateProtectionAbility;
+        public static Sprite FurrifyAbility;
+        public static Sprite ConcentrationAbility;
+        public static Sprite SuperiorFlairAbility;
+        public static Sprite UntamedSpiritAbility;
+        public static Sprite GodPowerAbility;
+        public static Sprite EternalFuryAbility;
+        public static Sprite InnerRageAbility;
+        public static Sprite InfernalSwipeAbility;
+        public static Sprite HeatWaveAbility;
+        public static Sprite KineticResorptionAbility;
+        public static Sprite ExtendedProtectionAbility;
         #endregion
 
         #region Controller Button Icones
@@ -219,12 +246,19 @@ namespace Panthera.Base
         public static Sprite TenacityBuff;
         public static Sprite RazorsBuff;
         public static Sprite BleedOutBuff;
-        //public static Sprite StealthBuff;
+        public static Sprite MortalMirageBuff;
+        public static Sprite EclipseBuff;
+        public static Sprite FrozenPawsBuff;
+        public static Sprite RegenerationBuff;
+        public static Sprite ResilienceBuff;
+        public static Sprite EnrageBuff;
+        public static Sprite IgnitionBuff;
         #endregion
 
         #region Character FX
         public static GameObject DeadFX;
         public static GameObject LevelUPFX;
+        public static GameObject RegenerationFX;
         #endregion
 
         #region Skills FX
@@ -253,6 +287,19 @@ namespace Panthera.Base
         public static GameObject ClawsStormWhiteFX;
         public static GameObject ClawsStormOrangeFX;
         public static GameObject ClawsStormRedFX;
+        public static GameObject PortalChargingExplosionFX;
+        public static GameObject PortalCharingEndFX;
+        public static GameObject PortalOverChargeFX;
+        public static GameObject PortalPlayerChargingFX;
+        public static GameObject PortalChargingFX;
+        public static GameObject FireRipLeftFX;
+        public static GameObject FireRipRightFX;
+        public static GameObject FireAirCleaveLeftFX;
+        public static GameObject FireAirCleaveRightFX;
+        #endregion
+
+        #region Orbs FX
+        public static GameObject ShieldOrbFX;
         #endregion
 
         #region HitFX
@@ -265,10 +312,12 @@ namespace Panthera.Base
         public static GameObject AirCleaveLeftProjectile;
         public static GameObject AirCleaveRightProjectile;
         public static GameObject AirSlashProjectile;
+        public static GameObject FireAirCleaveLeftProjectile;
+        public static GameObject FireAirCleaveRightProjectile;
         #endregion
 
 
-        #region Assets Loading
+        #region PantheraAssets Loading
         public static void PopulateAssets()
         {
 
@@ -283,6 +332,7 @@ namespace Panthera.Base
 
             #region Objects
             FrontShieldObj = MainAssetBundle.LoadAsset<GameObject>("FrontShieldObj").InstantiateClone("FrontShieldObj");
+            FrostedAirObj = MainAssetBundle.LoadAsset<GameObject>("FrostedAirObj").InstantiateClone("FrostedAirObj");
             #endregion
 
             #region GUI Items
@@ -297,7 +347,8 @@ namespace Panthera.Base
             KeyBindWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("KeyBindWindow");
             ResetKeyBindWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("ResetKeysBindWindow");
             ActivePresetWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("ActivatePresetWindow");
-            ResetCharacterWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("ResetCharacterWindow");
+            ResetAttributesWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("ResetAttributesWindow");
+            ResetSkillsTreeWindowPrefab = MainAssetBundle.LoadAsset<GameObject>("ResetSkillsTreeWindow");
             SimpleTooltipPrefab = MainAssetBundle.LoadAsset<GameObject>("SimpleTooltip");
             SkillsTooltipPrefab = MainAssetBundle.LoadAsset<GameObject>("SkillsTooltip");
             AbilitiesTooltipPrefab = MainAssetBundle.LoadAsset<GameObject>("AbilitiesTooltip");
@@ -321,6 +372,7 @@ namespace Panthera.Base
             HUDCooldownFrame = MainAssetBundle.LoadAsset<GameObject>("HUDCooldownFrame");
             HUDCooldownSkillTemplate = MainAssetBundle.LoadAsset<GameObject>("HUDCooldownSkillTemplate");
             HUDShieldBar = MainAssetBundle.LoadAsset<GameObject>("HUDShieldBar");
+            HUDBlockBar = MainAssetBundle.LoadAsset<GameObject>("HUDBlockBar");
             CrosshairPrefab = MainAssetBundle.LoadAsset<GameObject>("CrosshairPrefab");
             #endregion
 
@@ -404,6 +456,7 @@ namespace Panthera.Base
             ArcaneAnchorSkill = MainAssetBundle.LoadAsset<Sprite>("ArcaneAnchorIcon");
             ArcaneAnchorSkillMenu = MainAssetBundle.LoadAsset<Sprite>("ArcaneAnchorIconMenu");
             ConvergenceHookSkill = MainAssetBundle.LoadAsset<Sprite>("ConvergenceHookIcon");            
+            PortalSurgeSkill = MainAssetBundle.LoadAsset<Sprite>("PortalSurgeIcon");            
             #endregion
 
             #region Abilities Icones
@@ -422,6 +475,23 @@ namespace Panthera.Base
             RoarOfResilienceAbility = MainAssetBundle.LoadAsset<Sprite>("RoarOfResilienceIcon");
             ClawsSharpeningAbility = MainAssetBundle.LoadAsset<Sprite>("ClawsSharpeningIcon");
             GoldenStartAbility = MainAssetBundle.LoadAsset<Sprite>("GoldenStartIcon");
+            StealthStrikeAbility = MainAssetBundle.LoadAsset<Sprite>("StealthStrikeIcon");
+            CryoLeapAbility = MainAssetBundle.LoadAsset<Sprite>("CryoLeapIcon");
+            ShadowStalkerAbility = MainAssetBundle.LoadAsset<Sprite>("ShadowStalkerIcon");
+            WardensVitalityAbility = MainAssetBundle.LoadAsset<Sprite>("WardensVitalityIcon");
+            SavageRevitalizationAbility = MainAssetBundle.LoadAsset<Sprite>("SavageRevitalizationIcone");
+            InnateProtectionAbility = MainAssetBundle.LoadAsset<Sprite>("InnateProtectionIcon");
+            FurrifyAbility = MainAssetBundle.LoadAsset<Sprite>("FurrifyIcon");
+            ConcentrationAbility = MainAssetBundle.LoadAsset<Sprite>("ConcentrationIcon");
+            SuperiorFlairAbility = MainAssetBundle.LoadAsset<Sprite>("SuperiorFlairIcon");
+            UntamedSpiritAbility = MainAssetBundle.LoadAsset<Sprite>("UntamedSpiritIcon");
+            GodPowerAbility = MainAssetBundle.LoadAsset<Sprite>("GodPowerIcon");
+            EternalFuryAbility = MainAssetBundle.LoadAsset<Sprite>("EternalFuryIcon");
+            InnerRageAbility = MainAssetBundle.LoadAsset<Sprite>("InnerRageIcon");
+            InfernalSwipeAbility = MainAssetBundle.LoadAsset<Sprite>("InfernalSwipeIcon");
+            HeatWaveAbility = MainAssetBundle.LoadAsset<Sprite>("HeatWaveIcon");
+            KineticResorptionAbility = MainAssetBundle.LoadAsset<Sprite>("KineticResorptionIcon");
+            ExtendedProtectionAbility = MainAssetBundle.LoadAsset<Sprite>("ExtendedProtectionIcon");
             #endregion
 
             #region Controller Buttons Icones
@@ -455,7 +525,19 @@ namespace Panthera.Base
             TenacityBuff = MainAssetBundle.LoadAsset<Sprite>("TenacityBuff");
             RazorsBuff = MainAssetBundle.LoadAsset<Sprite>("RazorsBuff");
             BleedOutBuff = MainAssetBundle.LoadAsset<Sprite>("BleedOutBuff");
-            //StealthBuff = MainAssetBundle.LoadAsset<Sprite>("ProwlIcon");
+            MortalMirageBuff = MainAssetBundle.LoadAsset<Sprite>("MortalMirageBuff");
+            EclipseBuff = MainAssetBundle.LoadAsset<Sprite>("EclipseBuff");
+            FrozenPawsBuff = MainAssetBundle.LoadAsset<Sprite>("FrozenPawsBuff");
+            RegenerationBuff = MainAssetBundle.LoadAsset<Sprite>("RegenerationBuff");
+            ResilienceBuff = MainAssetBundle.LoadAsset<Sprite>("ResilienceBuff");
+            EnrageBuff = MainAssetBundle.LoadAsset<Sprite>("EnrageBuff");
+            IgnitionBuff = MainAssetBundle.LoadAsset<Sprite>("IgnitionBuff");
+            #endregion
+
+            #region Character FX
+            DeadFX = MainAssetBundle.LoadAsset<GameObject>("DeadFX");
+            LevelUPFX = MainAssetBundle.LoadAsset<GameObject>("LevelUPFX");
+            RegenerationFX = MainAssetBundle.LoadAsset<GameObject>("RegenerationFX");
             #endregion
 
             #region Skills FX
@@ -481,9 +563,23 @@ namespace Panthera.Base
             GoldenLeftRipFX = MainAssetBundle.LoadAsset<GameObject>("GoldenRipLeftFX");
             GoldenRightRipFX = MainAssetBundle.LoadAsset<GameObject>("GoldenRipRightFX");
             ConvergenceHookFX = MainAssetBundle.LoadAsset<GameObject>("ConvergenceHookFX");
-            ClawsStormWhiteFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormWhite");
-            ClawsStormOrangeFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormOrange");
-            ClawsStormRedFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormRed");
+            ClawsStormWhiteFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormWhiteFX");
+            ClawsStormOrangeFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormOrangeFX");
+            PortalChargingExplosionFX = MainAssetBundle.LoadAsset<GameObject>("PortalChargingExplosionFX");
+            PortalCharingEndFX = MainAssetBundle.LoadAsset<GameObject>("PortalCharingEndFX");
+            PortalOverChargeFX = MainAssetBundle.LoadAsset<GameObject>("PortalOverChargeFX");
+            PortalPlayerChargingFX = MainAssetBundle.LoadAsset<GameObject>("PortalPlayerChargingFX");
+            PortalChargingFX = MainAssetBundle.LoadAsset<GameObject>("ProtalChargingFX");
+            ClawsStormRedFX = MainAssetBundle.LoadAsset<GameObject>("ClawsStormRedFX");
+            FireRipLeftFX = MainAssetBundle.LoadAsset<GameObject>("FireRipLeftFX");
+            FireRipRightFX = MainAssetBundle.LoadAsset<GameObject>("FireRipRightFX");
+            FireAirCleaveLeftFX = MainAssetBundle.LoadAsset<GameObject>("FireAirCleaveLeftFX");
+            FireAirCleaveRightFX = MainAssetBundle.LoadAsset<GameObject>("FireAirCleaveRightFX");
+            #endregion
+
+            #region Orbs FX
+            ShieldOrbFX = MainAssetBundle.LoadAsset<GameObject>("ShieldOrbFX");
+            SetAsOrb(ShieldOrbFX);
             #endregion
 
             #region HitFX
@@ -503,10 +599,34 @@ namespace Panthera.Base
             frontShieldHurtBox.healthComponent = frontShieldHC;
             #endregion
 
+            #region Setup Frosted Air Prafab
+            FrostedAirObj.SetActive(false);
+            FrostedAirObj.AddComponent<FrostedAirComponent>();
+            FrostedAirObj.AddComponent<NetworkIdentity>();
+            #endregion
+
+            #region Set up Dodge Effect Prefab
+            DodgeEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone("PantheraDodgeEffect", false);
+            DodgeEffectPrefab.GetComponent<EffectComponent>().soundName = Sound.Dodge;
+            GameObject.DestroyImmediate(DodgeEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<LanguageTextMeshController>());
+            DodgeEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<TextMeshPro>().text = Utils.PantheraTokens.Get("base_DodgeText");
+            LoadEffect(DodgeEffectPrefab, 5);
+            #endregion
+
             #region Set up Block Effect Prefab
             BlockEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone("PantheraBlockEffect", false);
-            BlockEffectPrefab.GetComponent<EffectComponent>().soundName = Sound.ShieldAbsorb;
+            BlockEffectPrefab.GetComponent<EffectComponent>().soundName = Sound.Block;
+            GameObject.DestroyImmediate(BlockEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<LanguageTextMeshController>());
+            BlockEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<TextMeshPro>().text = Utils.PantheraTokens.Get("base_BlockText");
             LoadEffect(BlockEffectPrefab, 5);
+            #endregion
+
+            #region Set up Absorb Effect Prefab
+            AbsorbEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone("PantheraAbsorbEffect", false);
+            AbsorbEffectPrefab.GetComponent<EffectComponent>().soundName = Sound.ShieldAbsorb;
+            GameObject.DestroyImmediate(AbsorbEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<LanguageTextMeshController>());
+            AbsorbEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<TextMeshPro>().text = Utils.PantheraTokens.Get("base_AbsorbText");
+            LoadEffect(AbsorbEffectPrefab, 5);
             #endregion
 
             #region Set Out Of Combat Effect Prefab
@@ -515,6 +635,14 @@ namespace Panthera.Base
             GameObject.DestroyImmediate(OutOfCombatEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<LanguageTextMeshController>());
             OutOfCombatEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<TextMeshPro>().text = Utils.PantheraTokens.Get("base_OutOfCombatText");
             LoadEffect(OutOfCombatEffectPrefab, 7);
+            #endregion
+
+            #region Reduced Effect Prefab
+            ReducedEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BearProc").InstantiateClone("PantheraOutOfCombatEffect", false);
+            ReducedEffectPrefab.GetComponent<EffectComponent>().soundName = Sound.Reduced;
+            GameObject.DestroyImmediate(ReducedEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<LanguageTextMeshController>());
+            ReducedEffectPrefab.transform.Find("TextCamScaler").Find("TextRiser").Find("TextMeshPro").GetComponent<TextMeshPro>().text = Utils.PantheraTokens.Get("base_ReducedText");
+            LoadEffect(ReducedEffectPrefab, 7);
             #endregion
 
             #region Load Effects
@@ -543,7 +671,17 @@ namespace Panthera.Base
             LoadEffect(ClawsStormWhiteFX);
             LoadEffect(ClawsStormOrangeFX);
             LoadEffect(ClawsStormRedFX);
-            #endregion
+            LoadEffect(PortalChargingExplosionFX, 5);
+            LoadEffect(PortalCharingEndFX, 5);
+            LoadEffect(PortalOverChargeFX);
+            LoadEffect(PortalPlayerChargingFX, 15);
+            LoadEffect(PortalChargingFX, 15);
+            LoadEffect(DeadFX);
+            LoadEffect(LevelUPFX);
+            LoadEffect(RegenerationFX);
+            LoadEffect(FireRipLeftFX, 3);
+            LoadEffect(FireRipRightFX, 3);
+        #endregion
 
             #region Create Projectiles
             // ---- Air Cleave Left ---- //
@@ -560,7 +698,18 @@ namespace Panthera.Base
             AirSlashProjectile = CreateProjectile(AirSlashProjectileLoopFX, PantheraConfig.AirSlash_projectileName, 10, 50);
             AirSlashProjectile airSlashComp = AirSlashProjectile.AddComponent<AirSlashProjectile>();
             airSlashComp.SetupProjectile(airSlashComp, PantheraConfig.AirSlash_projectileName, Utils.Sound.AirCleaveHit, AirCleaveHitFX, false, false);
+
+            // ---- Fire Air Cleave Left ---- //
+            FireAirCleaveLeftProjectile = CreateProjectile(FireAirCleaveLeftFX, PantheraConfig.AirCleave_leftFireProjectileName, 10, 50);
+            AirCleaveProjectile fireAirCleaveLeftComp = FireAirCleaveLeftProjectile.AddComponent<AirCleaveProjectile>();
+            fireAirCleaveLeftComp.SetupProjectile(fireAirCleaveLeftComp, PantheraConfig.AirCleave_leftFireProjectileName, Utils.Sound.AirCleaveHit, AirCleaveHitFX, true, false);
+
+            // ---- Fire Air Cleave Right ---- //
+            FireAirCleaveRightProjectile = CreateProjectile(FireAirCleaveRightFX, PantheraConfig.AirCleave_rightFireProjectileName, 10, 50);
+            AirCleaveProjectile fireAirCleaveRightComp = FireAirCleaveRightProjectile.AddComponent<AirCleaveProjectile>();
+            fireAirCleaveRightComp.SetupProjectile(fireAirCleaveRightComp, PantheraConfig.AirCleave_rightFireProjectileName, Utils.Sound.AirCleaveHit, AirCleaveHitFX, true, false);
             #endregion
+
 
         }
         #endregion
@@ -600,7 +749,7 @@ namespace Panthera.Base
 
             // Save the projectile //
             projectilePrefabs.Add(projectile);
-            Prefabs.AddPrefab(projectile);
+            Utils.Prefabs.AddPrefab(projectile);
             projectile.RegisterNetworkPrefab();
 
             return projectile;
@@ -608,6 +757,41 @@ namespace Panthera.Base
         }
         #endregion
 
+        #region Set as Orb
+        public static void SetAsOrb(GameObject origOrb)
+        {
+
+            // Get the Heal Orb //
+            GameObject ho = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/OrbEffects/HealthOrbEffect");
+
+            // Set the Orb Effect //
+            OrbEffect orbEffect = origOrb.AddComponent<OrbEffect>();
+            orbEffect.startVelocity1 = new Vector3(-5, 16, -5);
+            orbEffect.startVelocity2 = new Vector3(5, 8, 5);
+            orbEffect.movementCurve = ho.GetComponent<OrbEffect>().movementCurve;
+
+            // Add the Rigid Body //
+            origOrb.AddComponent<Rigidbody>();
+
+            // Add the Nework Identity Component //
+            origOrb.AddComponent<NetworkIdentity>();
+
+            // Set the VFXAttributes //
+            VFXAttributes vfxAttributes = origOrb.GetComponent<VFXAttributes>() ? origOrb.GetComponent<VFXAttributes>() : origOrb.AddComponent<VFXAttributes>();
+            vfxAttributes.vfxPriority = VFXAttributes.VFXPriority.Always;
+
+            // Set the EffectComponent //
+            EffectComponent effect = origOrb.GetComponent<EffectComponent>() ? origOrb.GetComponent<EffectComponent>() : origOrb.AddComponent<EffectComponent>();
+            effect.applyScale = true;
+            effect.effectIndex = EffectIndex.Invalid;
+            effect.parentToReferencedTransform = false;
+            effect.positionAtReferencedTransform = false;
+
+            // Register the Effect //
+            AddEffect(origOrb);
+
+        }
+        #endregion
 
         #region Load Effects
         private static GameObject LoadEffect(GameObject prefab, float duration = 0)
@@ -643,7 +827,7 @@ namespace Panthera.Base
 
             effectDefs.Add(newEffectDef);
             effectPrefab.RegisterNetworkPrefab();
-            Prefabs.AddPrefab(effectPrefab);
+            Utils.Prefabs.AddPrefab(effectPrefab);
 
         }
         #endregion

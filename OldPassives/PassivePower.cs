@@ -20,8 +20,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.PassivePower_SkillID;
         //    skill.name = "PASSIVE_POWER_ABILITY_NAME";
         //    skill.desc = "PASSIVE_POWER_ABILITY_DESC";
-        //    skill.icon = Assets.PassivePowerAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.PassivePowerAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.associatedSkill = typeof(PassivePower);
 

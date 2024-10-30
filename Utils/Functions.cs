@@ -106,7 +106,7 @@ namespace Panthera.Utils
 
         }
 
-        public static DamageInfo CreateDotDamageInfo(PantheraBuff buff, GameObject inflictor, GameObject victime, float damage = 0)
+        public static DamageInfo CreateDotDamageInfo(PantheraBuff buff, GameObject inflictor, GameObject victime, float damage = 0, DamageColorIndex damageColorIndex = DamageColorIndex.Default)
         {
             DamageInfo damageInfo = new DamageInfo();
             damageInfo.damage = damage == 0 ? buff.damage : damage;
@@ -119,6 +119,7 @@ namespace Panthera.Utils
             damageInfo.force = Vector3.zero;
             damageInfo.procChainMask = default(ProcChainMask);
             damageInfo.procCoefficient = 1;
+            damageInfo.damageColorIndex = damageColorIndex;
             return damageInfo;
         }
 
@@ -160,25 +161,25 @@ namespace Panthera.Utils
 
         public static Sprite KeyEnumToSprite(KeysBinder.KeysEnum keyEnum)
         {
-            if (keyEnum == KeysBinder.KeysEnum.Interact) return Assets.XButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Equipment) return Assets.YButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Sprint) return Assets.LButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Info) return Assets.InfoButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ping) return Assets.RButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Forward) return Assets.LUpButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Backward) return Assets.LDownButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Left) return Assets.LLeftButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Right) return Assets.LRightButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Jump) return Assets.AButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Skill1) return Assets.RTButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Skill2) return Assets.LTButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Skill3) return Assets.LBButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Skill4) return Assets.RBButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ability1) return Assets.UpArrowButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ability2) return Assets.RightArrowButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ability3) return Assets.DownArrowButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ability4) return Assets.LeftArrowButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.SpellsMode) return Assets.BButtonIcon;
+            if (keyEnum == KeysBinder.KeysEnum.Interact) return PantheraAssets.XButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Equipment) return PantheraAssets.YButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Sprint) return PantheraAssets.LButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Info) return PantheraAssets.InfoButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ping) return PantheraAssets.RButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Forward) return PantheraAssets.LUpButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Backward) return PantheraAssets.LDownButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Left) return PantheraAssets.LLeftButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Right) return PantheraAssets.LRightButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Jump) return PantheraAssets.AButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill1) return PantheraAssets.RTButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill2) return PantheraAssets.LTButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill3) return PantheraAssets.LBButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Skill4) return PantheraAssets.RBButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability1) return PantheraAssets.UpArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability2) return PantheraAssets.RightArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability3) return PantheraAssets.DownArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.Ability4) return PantheraAssets.LeftArrowButtonIcon;
+            else if (keyEnum == KeysBinder.KeysEnum.SpellsMode) return PantheraAssets.BButtonIcon;
             return null;
         }
 
@@ -250,6 +251,22 @@ namespace Panthera.Utils
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
 
+        public static int StringToInt(string text)
+        {
+            if (text == null) return 0;
+            int value = 0;
+            try
+            {
+                value = int.Parse(text);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[Panthera -> Function.StringToInt] Unable to parse the String.");
+                Debug.LogError(e.ToString());
+                value = 0;
+            }
+            return value;
+        }
         public static float StringToFloat(string text)
         {
             if (text == null) return 0;

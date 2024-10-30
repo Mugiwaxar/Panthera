@@ -63,14 +63,14 @@ namespace Panthera.GUI.Tabs
             // Add the Unlocked Combos to the List //
             foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
             {
-                if (combo.Value.locked == false)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == true)
                     combosList.Add(combo.Key, combo.Value);
             }
 
             // Add the Locked Combos to the List //
             foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
             {
-                if (combo.Value.locked == true)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == false)
                     combosList.Add(combo.Key, combo.Value);
             }
 
@@ -82,12 +82,12 @@ namespace Panthera.GUI.Tabs
                 if (combo.Value.visible == false) continue;
 
                 // Instantiate the Base Element //
-                GameObject comboElem = GameObject.Instantiate<GameObject>(Assets.ComboBaseTemplate, this.ComboListTransform);
+                GameObject comboElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboBaseTemplate, this.ComboListTransform);
 
                 // Change the Name and the Color //
                 TextMeshProUGUI name = comboElem.transform.Find("ComboName").GetComponent<TextMeshProUGUI>();
                 name.text = combo.Value.name;
-                if (combo.Value.locked == true)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == false)
                     name.m_fontColor = PantheraConfig.ComboLockedColor;
                 else
                     name.m_fontColor = PantheraConfig.ComboNormalColor;
@@ -100,12 +100,12 @@ namespace Panthera.GUI.Tabs
                 foreach (ComboSkill skill in combo.Value.comboSkillsList)
                 {
                     // Instantiate the Skill Element //
-                    GameObject skillElem = GameObject.Instantiate<GameObject>(Assets.ComboSkillTemplate, skillsLayout);
+                    GameObject skillElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboSkillTemplate, skillsLayout);
                     // Change the Icon //
                     Image skillIcon = skillElem.transform.Find("Image").GetComponent<Image>();
                     skillIcon.sprite = skill.skill.icon;
                     // Change the Icon color //
-                    if (skill.locked == true)
+                    if (Panthera.ProfileComponent.isSkillUnlocked(skill.skill.skillID) == false)
                         skillIcon.color = PantheraConfig.SkillsLockedSkillColor;
                     else
                         skillIcon.color = PantheraConfig.SkillsNormalSkillColor;
@@ -120,21 +120,21 @@ namespace Panthera.GUI.Tabs
                     Transform buttonsLayout = skillElem.transform.Find("Buttons");
                     if (skill.keyA > 0)
                     {
-                        GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.ComboButtonTemplate, buttonsLayout);
+                        GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboButtonTemplate, buttonsLayout);
                         buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.keyA);
                     }
                     if (skill.keyB > 0)
                     {
-                        GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.ComboButtonTemplate, buttonsLayout);
+                        GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboButtonTemplate, buttonsLayout);
                         buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.keyB);
                     }
                     if (skill.direction > 0)
                     {
-                        GameObject buttonElem = GameObject.Instantiate<GameObject>(Assets.ComboButtonTemplate, buttonsLayout);
+                        GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboButtonTemplate, buttonsLayout);
                         buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.direction);
                     }
                     // Add the Line //
-                    lastLine = GameObject.Instantiate<GameObject>(Assets.ComboLineTemplate, skillsLayout);
+                    lastLine = GameObject.Instantiate<GameObject>(PantheraAssets.ComboLineTemplate, skillsLayout);
                 }
 
                 // Remove the Last useless Line //

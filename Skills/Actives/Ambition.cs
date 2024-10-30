@@ -16,7 +16,7 @@ namespace Panthera.Skills.Actives
 
         public Ambition()
         {
-            base.icon = Assets.AmbitionSkill;
+            base.icon = PantheraAssets.AmbitionSkill;
             base.name = PantheraTokens.Get("ability_AmbitionName");
             base.baseCooldown = PantheraConfig.Ambition_cooldown;
             base.removeStealth = false;

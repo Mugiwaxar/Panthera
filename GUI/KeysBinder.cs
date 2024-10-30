@@ -71,6 +71,30 @@ namespace Panthera.GUI
 
         public PantheraPanel pantheraPanel;
 
+        public static void ApplyUserProfileBindingstoRewiredController(Rewired.Controller controller)
+        {
+            if (Panthera.FirstLocalUser == null)
+            {
+                return;
+            }
+            ControllerMap controllerMap = null;
+            switch (controller.type)
+            {
+                case ControllerType.Keyboard:
+                    controllerMap = Panthera.FirstLocalUser.userProfile.keyboardMap;
+                    break;
+                case ControllerType.Mouse:
+                    controllerMap = Panthera.FirstLocalUser.userProfile.mouseMap;
+                    break;
+                case ControllerType.Joystick:
+                    controllerMap = Panthera.FirstLocalUser.userProfile.joystickMap;
+                    break;
+            }
+            if (controllerMap != null)
+            {
+                Panthera.FirstLocalUser.inputPlayer.controllers.maps.AddMap(controller, controllerMap);
+            }
+        }
         public static void RegistersExtraInput(Action<UserData> orig, UserData self)
         {
             // Clear the Action List //
@@ -290,8 +314,8 @@ namespace Panthera.GUI
                     Panthera.InputPlayer.controllers.maps.LoadMap(controller.type, controller.id, 2, 0);
                     Panthera.FirstLocalUser.userProfile.keyboardMap = new KeyboardMap(DefaultControllerMaps.defaultKeyboardMap);
                     Panthera.FirstLocalUser.userProfile.mouseMap = new MouseMap(DefaultControllerMaps.defaultMouseMap);
-                    Panthera.FirstLocalUser.userProfile.joystickMap = new JoystickMap(DefaultControllerMaps.defaultJoystickMap);
-                    Panthera.FirstLocalUser.ApplyUserProfileBindingstoRewiredController(controller);
+                    Panthera.FirstLocalUser.userProfile.joystickMap = new JoystickMap(DefaultControllerMaps.DefaultJoystickMap);
+                    ApplyUserProfileBindingstoRewiredController(controller);
                 }
                 SetAllDefaultKeyBinds();
                 Panthera.InputPlayer.controllers.maps.SetAllMapsEnabled(true);
@@ -388,10 +412,10 @@ namespace Panthera.GUI
             Panthera.LoadedUserProfile.RequestEventualSave();
 
             // Refresh the GUI //
-            for (int j = 0; j < InputBindingDisplayController.instances.Count; j++)
-            {
-                InputBindingDisplayController.instances[j].Refresh(true);
-            }
+            //for (int j = 0; j < InputBindingDisplayController.instances.Count; j++)
+            //{
+            //    InputBindingDisplayController.instances[j].Refresh(true);
+            //}
 
         }
 

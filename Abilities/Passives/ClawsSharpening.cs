@@ -19,7 +19,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_ClawsSharpeningName");
             abilityID = PantheraConfig.ClawsSharpening_AbilityID;
             type = AbilityType.passive;
-            icon = Assets.ClawsSharpeningAbility;
+            icon = PantheraAssets.ClawsSharpeningAbility;
             maxLevel = PantheraConfig.ClawsSharpening_maxLevel;
             cooldown = 0;
             requiredAbility = PantheraConfig.Fury_AbilityID;

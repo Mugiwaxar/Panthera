@@ -42,8 +42,8 @@ namespace Panthera.Base
         {
 
             // Create the Prefabs //
-            Prefab.CharacterPrefab = Prefab.CreateCharacterPrefab(Assets.MainPrefab, PantheraConfig.Model_PrefabName);
-            Prefab.CharacterDisplayPrefab = Prefab.CreateDisplayPrefab(Assets.DisplayPrefab, PantheraConfig.Model_PrefabName, Prefab.CharacterPrefab);
+            Prefab.CharacterPrefab = Prefab.CreateCharacterPrefab(PantheraAssets.MainPrefab, PantheraConfig.Model_PrefabName);
+            Prefab.CharacterDisplayPrefab = Prefab.CreateDisplayPrefab(PantheraAssets.DisplayPrefab, PantheraConfig.Model_PrefabName, Prefab.CharacterPrefab);
             Prefab.RegisterSkills(Prefab.CharacterPrefab);
 
             // Create the survivor def //
@@ -61,7 +61,7 @@ namespace Panthera.Base
             SurvivorDefinitions.Add(survivorDef);
 
             // Register Damage Type //
-            BarrierDamageType = DamageAPI.ReserveDamageType();
+            //BarrierDamageType = DamageAPI.ReserveDamageType();
 
         }
 
@@ -135,33 +135,33 @@ namespace Panthera.Base
             bodyComponent.bodyColor = Prefab.CharacterColor;
             bodyComponent.rootMotionInMainState = false;
             bodyComponent.mainRootSpeed = 0;
-            bodyComponent.baseMaxHealth = 180;
-            bodyComponent.levelMaxHealth = 30;
-            bodyComponent.baseRegen = 1.5f;
-            bodyComponent.levelRegen = 0.15f;
+            bodyComponent.baseMaxHealth = PantheraConfig.Default_MaxHealth;
+            bodyComponent.levelMaxHealth = PantheraConfig.Default_MaxHealthLevel;
+            bodyComponent.baseRegen = PantheraConfig.Default_HealthRegen;
+            bodyComponent.levelRegen = PantheraConfig.Default_HealthRegenLevel;
             bodyComponent.baseMaxShield = 0;
             bodyComponent.levelMaxShield = 0;
-            bodyComponent.baseMoveSpeed = 9;
-            bodyComponent.levelMoveSpeed = 0.03f;
+            bodyComponent.baseMoveSpeed = PantheraConfig.Default_MoveSpeed;
+            bodyComponent.levelMoveSpeed = PantheraConfig.Default_MoveSpeedLevel;
             bodyComponent.baseAcceleration = 80;
             bodyComponent.baseJumpPower = 18;
             bodyComponent.levelJumpPower = 0;
-            bodyComponent.baseDamage = 15;
-            bodyComponent.levelDamage = 2;
-            bodyComponent.baseAttackSpeed = 1f;
-            bodyComponent.levelAttackSpeed = 0.03f;
-            bodyComponent.baseCrit = 15;
-            bodyComponent.levelCrit = 0.5f;
-            bodyComponent.baseArmor = 15;
-            bodyComponent.levelArmor = 0.5f;
-            bodyComponent.baseJumpCount = 1;
+            bodyComponent.baseDamage = PantheraConfig.Default_Damage;
+            bodyComponent.levelDamage = PantheraConfig.Default_DamageLevel;
+            bodyComponent.baseAttackSpeed = PantheraConfig.Default_AttackSpeed;
+            bodyComponent.levelAttackSpeed = PantheraConfig.Default_AttackSpeedLevel;
+            bodyComponent.baseCrit = PantheraConfig.Default_Critic;
+            bodyComponent.levelCrit = PantheraConfig.Default_CriticLevel;
+            bodyComponent.baseArmor = PantheraConfig.Default_Defense;
+            bodyComponent.levelArmor = PantheraConfig.Default_DefenseLevel;
+            bodyComponent.baseJumpCount = (int)PantheraConfig.Default_jumpCount;
             bodyComponent.sprintingSpeedMultiplier = 1.4f;
             bodyComponent.wasLucky = false;
             bodyComponent.hideCrosshair = true;
             bodyComponent._defaultCrosshairPrefab = null;
             bodyComponent.aimOriginTransform = gameObject3.transform;
             bodyComponent.hullClassification = HullClassification.Human;
-            bodyComponent.portraitIcon = Assets.DefaultPortrait;
+            bodyComponent.portraitIcon = PantheraAssets.DefaultPortrait;
             bodyComponent.isChampion = false;
             bodyComponent.currentVehicle = null;
             bodyComponent.skinIndex = 0U;
@@ -204,9 +204,9 @@ namespace Panthera.Base
             modelLocator.preserveModel = false;
             #endregion
             #region CharacterModel
-            //Material mat1 = Assets.mainAssetBundle.LoadAsset<Material>("7020102");
-            //Material mat2 = Assets.mainAssetBundle.LoadAsset<Material>("effect_7020102_L");
-            //Material mat3 = Assets.mainAssetBundle.LoadAsset<Material>("7020102_Alpha");
+            //Material mat1 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("7020102");
+            //Material mat2 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("effect_7020102_L");
+            //Material mat3 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("7020102_Alpha");
 
             CharacterModel CharacterModel = model.AddComponent<CharacterModel>();
             CharacterModel.body = bodyComponent;
@@ -236,7 +236,7 @@ namespace Panthera.Base
             };
             CharacterModel.autoPopulateLightInfos = true;
             CharacterModel.invisibilityCount = 0;
-            CharacterModel.temporaryOverlays = new List<TemporaryOverlay>();
+            CharacterModel.temporaryOverlays = new List<TemporaryOverlayInstance>();
             CharacterModel.mainSkinnedMeshRenderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
             #endregion
             #region TeamComponent
@@ -301,23 +301,24 @@ namespace Panthera.Base
             kinematicCharacterMotor.Capsule = capsuleCollider;
             kinematicCharacterMotor.CapsuleRadius = capsuleCollider.radius;
             kinematicCharacterMotor.CapsuleHeight = capsuleCollider.height;
-            kinematicCharacterMotor.Rigidbody = rigidbody;
-            kinematicCharacterMotor.DetectDiscreteCollisions = false;
+            kinematicCharacterMotor._attachedRigidbody = rigidbody;
+            kinematicCharacterMotor.playerCharacter = true;
+            //kinematicCharacterMotor.DetectDiscreteCollisions = false;
             kinematicCharacterMotor.GroundDetectionExtraDistance = 0f;
             kinematicCharacterMotor.MaxStepHeight = 0.2f;
             kinematicCharacterMotor.MinRequiredStepDepth = 0.1f;
             kinematicCharacterMotor.MaxStableSlopeAngle = 45f;
             kinematicCharacterMotor.MaxStableDistanceFromLedge = 0.5f;
-            kinematicCharacterMotor.PreventSnappingOnLedges = false;
+            //kinematicCharacterMotor.PreventSnappingOnLedges = false;
             kinematicCharacterMotor.MaxStableDenivelationAngle = 55f;
             kinematicCharacterMotor.RigidbodyInteractionType = RigidbodyInteractionType.None;
             kinematicCharacterMotor.PreserveAttachedRigidbodyMomentum = true;
             kinematicCharacterMotor.HasPlanarConstraint = false;
             kinematicCharacterMotor.PlanarConstraintAxis = Vector3.up;
             kinematicCharacterMotor.StepHandling = StepHandlingMethod.None;
-            kinematicCharacterMotor.LedgeHandling = true;
+            //kinematicCharacterMotor.LedgeHandling = true;
             kinematicCharacterMotor.InteractiveRigidbodyHandling = true;
-            kinematicCharacterMotor.SafeMovement = false;
+            //kinematicCharacterMotor.SafeMovement = false;
             #endregion
             #region HurtBoxGroup
             HurtBoxGroup hurtBoxGroup = model.AddComponent<HurtBoxGroup>();
@@ -566,7 +567,7 @@ namespace Panthera.Base
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = PantheraTokens.Get("skill_passiveName");
             skillLocator.passiveSkill.skillDescriptionToken = PantheraTokens.Get("skill_passiveDesc");
-            skillLocator.passiveSkill.icon = Assets.FelineSkillsAbilityMenu;
+            skillLocator.passiveSkill.icon = PantheraAssets.FelineSkillsAbilityMenu;
 
 
         }
@@ -580,7 +581,7 @@ namespace Panthera.Base
             skill1Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_RipDesc"), PantheraConfig.Rip_atkDamageMultiplier * 100);
             skill1Def.skillName = PantheraTokens.Get("skill_RipName");
             skill1Def.keywordTokens = new string[] { };
-            skill1Def.icon = Assets.RipSkillMenu;
+            skill1Def.icon = PantheraAssets.RipSkillMenu;
             skill1Def.baseMaxStock = 1;
             skill1Def.baseRechargeInterval = PantheraConfig.Rip_cooldown;
             skill1Def.beginSkillCooldownOnSkillEnd = false;
@@ -608,7 +609,7 @@ namespace Panthera.Base
             skill2Def.skillDescriptionToken = string.Format(PantheraTokens.Get("skill_SlashDesc"), PantheraConfig.Slash_damageMultiplier * 100);
             skill2Def.skillName = PantheraTokens.Get("skill_SlashName");
             skill2Def.keywordTokens = new string[] { };
-            skill2Def.icon = Assets.SlashSkillMenu;
+            skill2Def.icon = PantheraAssets.SlashSkillMenu;
             skill2Def.baseMaxStock = 1;
             skill2Def.baseRechargeInterval = PantheraConfig.Slash_cooldown;
             skill2Def.beginSkillCooldownOnSkillEnd = false;
@@ -639,7 +640,7 @@ namespace Panthera.Base
             skill3Def.skillDescriptionToken = PantheraTokens.Get("skill_LeapDesc");
             skill3Def.skillName = PantheraTokens.Get("skill_LeapName");
             skill3Def.keywordTokens = new string[] { };
-            skill3Def.icon = Assets.LeapSkillMenu;
+            skill3Def.icon = PantheraAssets.LeapSkillMenu;
             skill3Def.baseMaxStock = 1;
             skill3Def.baseRechargeInterval = PantheraConfig.Leap_cooldown;
             skill3Def.beginSkillCooldownOnSkillEnd = false;
@@ -667,7 +668,7 @@ namespace Panthera.Base
             skill4Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration);
             skill4Def.skillName = PantheraTokens.Get("skill_MightyRoarName");
             skill4Def.keywordTokens = new string[] { };
-            skill4Def.icon = Assets.MightyRoarSkillMenu;
+            skill4Def.icon = PantheraAssets.MightyRoarSkillMenu;
             skill4Def.baseMaxStock = 1;
             skill4Def.baseRechargeInterval = PantheraConfig.MightyRoar_cooldown;
             skill4Def.beginSkillCooldownOnSkillEnd = false;

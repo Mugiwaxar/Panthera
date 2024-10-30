@@ -16,6 +16,7 @@ namespace Panthera.Combos.List
         {
             ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.MightyRoar_SkillID), KeysBinder.KeysEnum.Skill4);
             comboSkillsList.Add(comboSkill);
+            comboID = PantheraConfig.MightyRoar_CombosID;
             name = PantheraTokens.Get("combo_MightyRoarName");
             visible = false;
         }

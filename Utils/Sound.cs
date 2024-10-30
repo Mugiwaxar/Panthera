@@ -16,6 +16,9 @@ namespace Panthera.Utils
     class Sound
     {
 
+        public static string Dodge = "Dodge"; // Dodge
+        public static string Block = "Block"; // Block
+        public static string Reduced = "Reduced"; // Reduced
         public static string Rip1 = "Rip1"; // Rip
         public static string RipHit1 = "RipHit1"; // Rip
         public static string IntroRoar = "IntroRoar"; // Intro
@@ -42,6 +45,13 @@ namespace Panthera.Utils
         public static string GoldenRip = "GoldenRip"; // Golden Rip
         public static string ArcaneAnchor = "ArcaneAnchor"; // Arcane Anchor
         public static string ConvergenceHook = "ConvergenceHook"; // Convergence Hook
+        public static string PortalCharging = "PortalCharging"; // Portal Surge
+        public static string PortalChargingStop = "PortalChargingStop"; // Portal Surge
+        public static string PortalChargeFailed = "PortalChargeFailed"; // Portal Surge
+        public static string Regeneration = "Regeneration"; // Regeneration
+        public static string Resilience = "Resilience"; // Resilience
+        public static string Enrage = "Enrage"; // Resilience
+        public static string FireRip1 = "FireRip1"; // Resilience
         public static string Dead1 = "Dead1"; // Death
         public static string Dead2 = "Dead2"; // Death
         public static string LevelUP = "LevelUP"; // Level UP

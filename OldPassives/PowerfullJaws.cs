@@ -21,8 +21,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.PowerfullJaws_SkillID;
         //    skill.name = "POWERFULL_JAWS_ABILITY_NAME";
         //    skill.desc = "POWERFULL_JAWS_ABILITY_DESC";
-        //    skill.icon = Assets.PowerfullJawsAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.PowerfullJawsAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.cooldown = PantheraConfig.PowerfullJaws_cooldown;
         //    skill.associatedSkill = typeof(PowerfullJaws);

@@ -19,7 +19,7 @@ namespace Panthera.Utils
         {
             // Instantiate the Debug Info Object //
             if (NetworkClient.active == true)
-                this.debugInfoObj = GameObject.Instantiate<GameObject>(Base.Assets.debugInfo, Panthera.PantheraHUD.origMainContainer.transform);
+                this.debugInfoObj = GameObject.Instantiate<GameObject>(Base.PantheraAssets.debugInfo, Panthera.PantheraHUD.origMainContainer.transform);
         }
 
         public static void addText(string key, string text)
@@ -38,7 +38,7 @@ namespace Panthera.Utils
             else
             {
                 // Create a new Text //
-                GameObject newTextObj = GameObject.Instantiate<GameObject>(Base.Assets.debugInfoText, DebugInfoComp.debugInfoObj.transform);
+                GameObject newTextObj = GameObject.Instantiate<GameObject>(Base.PantheraAssets.debugInfoText, DebugInfoComp.debugInfoObj.transform);
                 TextMeshProUGUI newTextComp = newTextObj.GetComponent<TextMeshProUGUI>();
                 newTextComp.text = text;
                 DebugInfoComp.infosList.Add(key, newTextComp);

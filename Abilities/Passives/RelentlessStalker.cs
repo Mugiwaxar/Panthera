@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Passives
             base.name = Utils.PantheraTokens.Get("ability_RelentlessStalkerName");
             base.abilityID = PantheraConfig.RelentlessStalker_AbilityID;
             base.type = AbilityType.passive;
-            base.icon = Assets.RelentlessStalkerAbility;
+            base.icon = PantheraAssets.RelentlessStalkerAbility;
             base.maxLevel = PantheraConfig.RelentlessStalker_maxLevel;
             base.cooldown = 0;
             base.requiredAbility = PantheraConfig.Prowl_AbilityID;

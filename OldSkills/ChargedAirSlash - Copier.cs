@@ -41,7 +41,7 @@ namespace Panthera.OldSkills
 
         //public AirSlashSave()
         //{
-        //    icon = Assets.AirSlashSkill;
+        //    icon = PantheraAssets.AirSlashSkill;
         //    name = PantheraTokens.Get("ability_AirSlashName");
         //    baseCooldown = PantheraConfig.AirSlash_cooldown;
         //    showCooldown = true;
@@ -88,7 +88,7 @@ namespace Panthera.OldSkills
         //    float startingScale = pantheraObj.modelScale * PantheraConfig.AirSlash_minProjScale;
 
         //    // Spawn the Effect //
-        //    effectID = FXManager.SpawnEffect(gameObject, Assets.AirSlashCastLoopFX, characterBody.corePosition, 1, characterBody.gameObject, modelTransform.rotation, true);
+        //    effectID = FXManager.SpawnEffect(gameObject, PantheraAssets.AirSlashCastLoopFX, characterBody.corePosition, 1, characterBody.gameObject, modelTransform.rotation, true);
         //    chargeEffect = FXManager.GetEffect(effectID);
         //    chargeEffect.transform.localScale = new Vector3(startingScale, startingScale, startingScale);
 
@@ -170,11 +170,11 @@ namespace Panthera.OldSkills
 
         //    // Get the Combo //
         //    string animation = "LeftSlash";
-        //    GameObject FX = Assets.AirSlashStartLeftFX;
+        //    GameObject FX = PantheraAssets.AirSlashStartLeftFX;
         //    if (comboNumber == 2)
         //    {
         //        animation = "RightSlash";
-        //        FX = Assets.AirSlashStartRightFX;
+        //        FX = PantheraAssets.AirSlashStartRightFX;
         //    }
 
         //    // Play the Sound //
@@ -193,7 +193,7 @@ namespace Panthera.OldSkills
         //    float projectilSpeed = (PantheraConfig.AirSlash_maxProjectileSpeed - PantheraConfig.AirSlash_minProjectileSpeed) * chargePercent + PantheraConfig.AirSlash_minProjectileSpeed;
 
         //    // Create the projectile info //
-        //    GameObject projectile = Assets.AirSlashProjectile.InstantiateClone("AirSlashLoop(ProjectileClone)");
+        //    GameObject projectile = PantheraAssets.AirSlashProjectile.InstantiateClone("AirSlashLoop(ProjectileClone)");
         //    float damage = characterBody.damage * damageMultiplier;
         //    projectile.transform.localScale = scale;
         //    projectile.GetComponent<ProjectileController>().ghostPrefab.transform.localScale = scale;

@@ -20,7 +20,8 @@ namespace Panthera.Combos.List
             comboSkillsList.Add(comboSkill1);
             comboSkillsList.Add(comboSkill2);
             comboSkillsList.Add(comboSkill3);
-            name = PantheraTokens.Get("combo_MassiveHook");
+            comboID = PantheraConfig.MassiveHook_CombosID;
+            name = PantheraTokens.Get("combo_MassiveHookName");
         }
 
     }

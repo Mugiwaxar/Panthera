@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Passives
             base.name = Utils.PantheraTokens.Get("ability_EnchantedFurName");
             base.abilityID = PantheraConfig.EnchantedFur_AbilityID;
             base.type = AbilityType.passive;
-            base.icon = Assets.EnchantedFurAbility;
+            base.icon = PantheraAssets.EnchantedFurAbility;
             base.maxLevel = PantheraConfig.EnchantedFur_maxLevel;
             base.cooldown = 0;
             base.requiredAbility = PantheraConfig.FelineSkills_AbilityID;
@@ -28,11 +28,12 @@ namespace Panthera.Abilities.Passives
 
         public override void updateDesc()
         {
-            if (base.currentLevel <= 1)
+            int level = Panthera.ProfileComponent.getAbilityLevel(base.abilityID);
+            if (level <= 1)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_EnchantedFurDesc"), PantheraConfig.EnchantedFur_percent1 * 100);
-            else if (base.currentLevel == 2)
+            else if (level == 2)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_EnchantedFurDesc"), PantheraConfig.EnchantedFur_percent2 * 100);
-            else if (base.currentLevel == 3)
+            else if (level == 3)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_EnchantedFurDesc"), PantheraConfig.EnchantedFur_percent3 * 100);
         }
 

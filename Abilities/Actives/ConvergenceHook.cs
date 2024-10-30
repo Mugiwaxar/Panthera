@@ -18,7 +18,7 @@ namespace Panthera.Abilities.Actives
             name = Utils.PantheraTokens.Get("ability_ConvergenceHookName");
             abilityID = PantheraConfig.ConvergenceHook_AbilityID;
             type = AbilityType.active;
-            icon = Assets.ConvergenceHookSkill;
+            icon = PantheraAssets.ConvergenceHookSkill;
             maxLevel = PantheraConfig.ConvergenceHook_maxLevel;
             cooldown = PantheraConfig.ConvergenceHook_cooldown;
             requiredAbility = PantheraConfig.AirSlash_AbilityID;

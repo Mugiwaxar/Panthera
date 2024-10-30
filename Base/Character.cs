@@ -35,6 +35,9 @@ namespace Panthera.Base
         // (int Level, int MaxExperience) Represent a list of all level max Experience //
         public Dictionary<int, int> maxExperienceList = new Dictionary<int, int>();
 
+        // (string name, GameObject prefab) Represent a list of all boss to defeat to obtain Mastery Points //
+        public Dictionary<string, GameObject> bossList = new Dictionary<string, GameObject>();
+
         public CharacterSkills characterSkills;
         public CharacterAbilities characterAbilities;
         public CharacterCombos characterCombos;
@@ -52,19 +55,7 @@ namespace Panthera.Base
                     else
                         break;
                 }
-                return Math.Min(lastValue, this.maxLevel);
-            }
-        }
-        public int maxLevel
-        {
-            get
-            {
-                int i = 0;
-                foreach (PantheraAbility ability in characterAbilities.AbilityList.Values)
-                {
-                    i += ability.maxLevel;
-                }
-                return i;
+                return lastValue;
             }
         }
         public int levelExperience
@@ -109,7 +100,10 @@ namespace Panthera.Base
         {
             get
             {
-                return (int)(this.endurance + this.force + this.agility + this.swiftness + this.dexterity) - 5;
+                if (Panthera.ProfileComponent != null)
+                    return Panthera.ProfileComponent.getTotalAttributesUsed();
+                else
+                    return 0;
             }
         }
         public int attributePointsLeft
@@ -130,187 +124,12 @@ namespace Panthera.Base
         {
             get
             {
-                int i = 0;
-                foreach (int level in this.characterAbilities.unlockedAbilitiesList.Values)
-                {
-                    i += level;
-                }
-                return i;
+                if (Panthera.ProfileComponent != null)
+                    return Panthera.ProfileComponent.getTotalSkillPointsUsed();
+                else
+                    return 0;
             }
         }
-
-        public float _serverMaxShield;
-        public float maxShield
-        {
-            get
-            {
-                //if (ptraObj != null && ptraObj.characterBody != null && ptraObj.characterBody.maxHealth > 0)
-                //    return ptraObj.characterBody.maxHealth * frontShield_maxShieldHealthPercent;
-                float maxShield = PantheraConfig.Default_MaxShield;
-                return maxShield;
-            }
-        }
-
-        public float jumpCount
-        {
-            get
-            {
-                float jumpCount = PantheraConfig.Default_jumpCount;
-                return jumpCount;
-            }
-        }
-        public float barrierDecayRateMultiplier
-        {
-            get
-            {
-                float rateMultiplier = 1;
-                return rateMultiplier;
-            }
-        }
-
-        #region Attributes
-        public float endurance
-        {
-            get
-            {
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Endurance);
-                float value = Utils.Functions.StringToFloat(stringValue);
-                return Math.Max(value, 1);
-            }
-            set
-            {
-                PantheraSaveSystem.SetValue(PantheraConfig.SP_Endurance, value.ToString());
-                PantheraSaveSystem.Save();
-            }
-        }
-        public float force
-        {
-            get
-            {
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Force);
-                float value = Utils.Functions.StringToFloat(stringValue);
-                return Math.Max(value, 1);
-            }
-            set
-            {
-                PantheraSaveSystem.SetValue(PantheraConfig.SP_Force, value.ToString());
-                PantheraSaveSystem.Save();
-            }
-        }
-        public float agility
-        {
-            get
-            {
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Agility);
-                float value = Utils.Functions.StringToFloat(stringValue);
-                return Math.Max(value, 1);
-            }
-            set
-            {
-                PantheraSaveSystem.SetValue(PantheraConfig.SP_Agility, value.ToString());
-                PantheraSaveSystem.Save();
-            }
-        }
-        public float swiftness
-        {
-            get
-            {
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Swiftness);
-                float value = Utils.Functions.StringToFloat(stringValue);
-                return Math.Max(value, 1);
-            }
-            set
-            {
-                PantheraSaveSystem.SetValue(PantheraConfig.SP_Swiftness, value.ToString());
-                PantheraSaveSystem.Save();
-            }
-        }
-        public float dexterity
-        {
-            get
-            {
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_Dexterity);
-                float value = Utils.Functions.StringToFloat(stringValue);
-                return Math.Max(value, 1);
-            }
-            set
-            {
-                PantheraSaveSystem.SetValue(PantheraConfig.SP_Dexterity, value.ToString());
-                PantheraSaveSystem.Save();
-            }
-        }
-        #endregion
-
-        #region Stat Multipliers
-        public float maxHealthMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.endurance * 0.05f;
-                return mult;
-            }
-        }
-        public float healthRegenMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.endurance * 0.03f;
-                return mult;
-            }
-        }
-        public float moveSpeedMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.agility * 0.02f;
-                mult += this.swiftness * 0.04f;
-                return mult;
-            }
-        }
-        public float damageMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.force * 0.05f;
-                mult += this.dexterity * 0.02f;
-                return mult;
-            }
-        }
-        public float attackSpeedMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.agility * 0.01f;
-                mult += this.swiftness * 0.03f;
-                return mult;
-            }
-        }
-        public float critMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.agility * 0.02f;
-                mult += this.dexterity * 0.04f;
-                return mult;
-            }
-        }
-        public float DefenseMult
-        {
-            get
-            {
-                float mult = 1;
-                mult += this.endurance * 0.02f;
-                mult += this.force * 0.04f;
-                return mult;
-            }
-        }
-        #endregion
 
         public int lunarCoin
         {
@@ -344,27 +163,99 @@ namespace Panthera.Base
         public void CalculMaxExperiencePerLevel()
         {
             int levelMaxXP = 0;
-            for (int i = 1; i <= maxLevel; i++)
+            for (int i = 1; i <= PantheraConfig.MaxPantheraLevel; i++)
             {
-                if (i > 1000) break;
                 levelMaxXP += (int)Math.Round((i - 1) * 100 * 0.5 + 30);
                 this.maxExperienceList.Add(i, levelMaxXP);
             }
         }
-
-        public void resetCharacter()
+        
+        public void CreateMasteryBossList()
         {
-            // Set all Attributes to zero //
-            this.endurance = 0;
-            this.force = 0;
-            this.agility = 0;
-            this.swiftness = 0;
-            this.dexterity = 0;
-            // Clear the Skills List //
-            this.characterAbilities.unlockedAbilitiesList.Clear();
-            this.characterAbilities.unlockedAbilitiesList.Add(PantheraConfig.FelineSkills_AbilityID, 0);
-            // Save //
-            PantheraSaveSystem.Save();
+            foreach (GameObject prefab in RoR2.ContentManagement.ContentManager.masterPrefabs)
+            {
+
+                // Beetle Queen //
+                if (prefab.name == "BeetleQueenMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Clay Dunestrider //
+                if (prefab.name == "ClayBossMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Grandparent //
+                if (prefab.name == "GrandparentMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Grovetender //
+                if (prefab.name == "GravekeeperMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Imp Overlord //
+                if (prefab.name == "ImpBossMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Magma Worm //
+                if (prefab.name == "MagmaWormMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Overloading Worm //
+                if (prefab.name == "ElectricWormMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Scavenger //
+                if (prefab.name == "ScavMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Solus Control Unit //
+                if (prefab.name == "RoboBallBossMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Stone Titan //
+                if (prefab.name == "TitanMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Void Devastator //
+                if (prefab.name == "VoidMegaCrabMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Wandering Vagrant //
+                if (prefab.name == "VagrantMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Xi Construct //
+                if (prefab.name == "MegaConstructMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Alloy Worship Unit //
+                if (prefab.name == "SuperRoboBallBossMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Aurelionite //
+                if (prefab.name == "TitanGoldMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Guragura the Lucky //
+                if (prefab.name == "ScavLunar4Master")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Kipkip the Gentle //
+                if (prefab.name == "ScavLunar1Master")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Twiptwip the Devotee //
+                if (prefab.name == "ScavLunar3Master")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Wipwip the Wild //
+                if (prefab.name == "ScavLunar2Master")
+                    this.bossList.Add(prefab.name, prefab);
+
+                // Mithrix //
+                if (prefab.name == "BrotherMaster")
+                    this.bossList.Add(prefab.name, prefab);
+
+            }
         }
 
     }

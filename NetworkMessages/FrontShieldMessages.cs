@@ -87,6 +87,8 @@ namespace Panthera.NetworkMessages
                 ptraObj.frontShieldObj.SetActive(true);
             else if (this.set == false && ptraObj.frontShieldObj != null)
                 ptraObj.frontShieldObj.SetActive(false);
+            ptraObj.frontShieldObj.layer = LayerIndex.entityPrecise.intVal;
+            ptraObj.frontShieldObj.transform.FindChild("WorldHitBox").gameObject.layer = LayerIndex.world.intVal;
             ptraObj.characterBody.RecalculateStats();
         }
 

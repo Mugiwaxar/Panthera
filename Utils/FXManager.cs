@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -27,7 +28,7 @@ namespace Panthera.Utils
 
         public static int GetID()
         {
-            return ((int)(Time.time * 100)) * 1000 + UnityEngine.Random.Range(1, 1000);
+            return Panthera.ptraRNG.nextInt;
         }
 
         public static void CleanList()
@@ -57,6 +58,11 @@ namespace Panthera.Utils
                 }
                 else
                 {
+                    foreach (ParticleSystem particle in GetEffect(ID).GetComponentsInChildren<ParticleSystem>())
+                    {
+                        EmissionModule emission = particle.emission;
+                        emission.enabled = false;
+                    }
                     GlobalEventManager.instance.StartCoroutine(DelayDestroyEffect(EffectsList[ID], ID, delay));
                 }
 
@@ -144,7 +150,7 @@ namespace Panthera.Utils
             EffectData effectData2 = effectData.Clone();
 
             // Instantiate the effect //
-            GameObject effectObject = GameObject.Instantiate<GameObject>(effectDef.prefab, effectData2.origin, effectData2.rotation);
+            GameObject effectObject = GameObject.Instantiate<GameObject>(effectDef.prefab);
 
             EffectComponent component = effectObject.GetComponent<EffectComponent>();
 
@@ -154,13 +160,21 @@ namespace Panthera.Utils
                 component.effectData = effectData2.Clone();
             }
 
-            // Set the parrent //
-            if (parent != null) effectObject.transform.parent = parent.transform;
+            // Set the Parent //
+            if (parent != null)
+                effectObject.transform.parent = parent.transform;
 
             // Set the Position/Rotation/Scale //
             effectObject.transform.position = origin;
             effectObject.transform.rotation = rotation;
             effectObject.transform.localScale = new Vector3(scale, scale, scale);
+
+            // Set the Local Position and Rotation //
+            if (parent != null)
+            {
+                effectObject.transform.localPosition = Vector3.zero;
+                effectObject.transform.localRotation = Quaternion.identity;                
+            }
 
             // Return the effect object //
             return effectObject;
@@ -169,7 +183,6 @@ namespace Panthera.Utils
 
         public static int SpawnEffect(GameObject creator, GameObject prefab, Vector3 origin, float scale = 1, GameObject parent = null, Quaternion rotation = new Quaternion(), bool isModelTransform = false, bool emit = true)
         {
-
             // Get the Effect ID //
             int ID = GetID();
 
@@ -179,14 +192,11 @@ namespace Panthera.Utils
             // Save the effect into the List //
             AddEffectToList(ID, effect);
 
-            // Check if Multiplayer //
-            if (RoR2Application.isInMultiPlayer == true && emit == true)
-            {
-                if (NetworkServer.active == true)
-                    new ClientSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Clients);
-                else
-                    new ServerSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Server);
-            }
+            // Check if Server //
+            if (NetworkServer.active == true)
+                new ClientSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Clients);
+            else
+                new ServerSpawnEffect(ID, creator, Utils.Prefabs.GetIndex(prefab), origin, scale, parent, rotation, isModelTransform).Send(NetworkDestination.Server);
 
             return ID;
 
@@ -206,13 +216,10 @@ namespace Panthera.Utils
             DestroyEffectInternal(ID, delay);
 
             // Check if Multiplayer //
-            if (RoR2Application.isInMultiPlayer == true && emit == true)
-            {
-                if (NetworkServer.active == true)
-                    new ClientDestroyEffect(ID, delay).Send(NetworkDestination.Clients);
-                else
-                    new ServerDestroyEffect(ID, delay).Send(NetworkDestination.Server);
-            }
+            if (NetworkServer.active == true)
+                new ClientDestroyEffect(ID, delay).Send(NetworkDestination.Clients);
+            else
+                new ServerDestroyEffect(ID, delay).Send(NetworkDestination.Server);
         }
 
     }

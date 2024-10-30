@@ -19,8 +19,8 @@ namespace Panthera.Passives
         //    skill.skillID = PantheraConfig.TheRipper_SkillID;
         //    skill.name = "THE_RIPPER_SKILL_NAME";
         //    skill.desc = "THE_RIPPER_SKILL_DESC";
-        //    skill.icon = Assets.TheRipperAbility;
-        //    skill.iconPrefab = Assets.PassiveSkillPrefab;
+        //    skill.icon = PantheraAssets.TheRipperAbility;
+        //    skill.iconPrefab = PantheraAssets.PassiveSkillPrefab;
         //    skill.type = PantheraSkill.SkillType.passive;
         //    skill.associatedSkill = typeof(TheRipper);
 

@@ -16,6 +16,11 @@ namespace Panthera.Utils
     class Sound
     {
 
+        public const string soundBankFolder = "SoundBanks";
+        public const string soundBankFileName = "PantheraBank.bnk";
+        public const string soundBankName = "PantheraBank";
+        public static uint soundBankId;
+
         public static string Dodge = "Dodge"; // Dodge
         public static string Block = "Block"; // Block
         public static string Reduced = "Reduced"; // Reduced
@@ -62,11 +67,31 @@ namespace Panthera.Utils
 
         public static void PopulateSounds()
         {
-            using (Stream manifestResourceStream2 = Assembly.GetExecutingAssembly().GetManifestResourceStream("Panthera.Properties.PantheraBank.bnk"))
+
+            string soundBankDirectory = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Panthera.PInfo.Location), soundBankFolder);
+
+            var akResult = AkSoundEngine.AddBasePath(soundBankDirectory);
+            if (akResult == AKRESULT.AK_Success)
             {
-                byte[] array = new byte[manifestResourceStream2.Length];
-                manifestResourceStream2.Read(array, 0, array.Length);
-                SoundAPI.SoundBanks.Add(array);
+                Debug.Log($"Added bank base path : {soundBankDirectory}");
+            }
+            else
+            {
+                Debug.LogError(
+                    $"Error adding base path : {soundBankDirectory} " +
+                    $"Error code : {akResult}");
+            }
+
+            akResult = AkSoundEngine.LoadBank(soundBankFileName, out soundBankId);
+            if (akResult == AKRESULT.AK_Success)
+            {
+                Debug.Log($"Added bank : {soundBankFileName}");
+            }
+            else
+            {
+                Debug.LogError(
+                    $"Error loading bank : {soundBankFileName} " +
+                    $"Error code : {akResult}");
             }
 
         }

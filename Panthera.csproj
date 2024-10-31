@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Properties\PantheraBank.bnk" />
-    <None Remove="Properties\pantherabundle" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Publicizer.cs" />
   </ItemGroup>
 
@@ -69,12 +64,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\PantheraBank.bnk" />
-    <Resource Include="Properties\PantheraBank.txt" />
-    <EmbeddedResource Include="Properties\pantherabundle" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

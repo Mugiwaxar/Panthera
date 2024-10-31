@@ -134,7 +134,7 @@ namespace Panthera.Utils
             // ------------------------------------------ SKILLS --------------------------------- //
             #region Passive
             string skill_passiveName = "[Power] Feline Skills";
-            string skill_passiveDesc = "P4N7H3R4 can be configured by pressing the [" + ColorHelper.SetGreen(PantheraConfig.Keys_OpenPantheraPanelActionDesc) + "] key (Default P).";
+            string skill_passiveDesc = "Press [" + ColorHelper.SetGreen(PantheraConfig.Keys_OpenPantheraPanelActionDesc) + "] key (Default P) to open P4N7H3R4 Panel. This can be done in the lobby. Levels are retained between runs";
             PantheraTokens.Add("skill_passiveName", skill_passiveName);
             PantheraTokens.Add("skill_passiveDesc", skill_passiveDesc);
             #endregion

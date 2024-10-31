@@ -93,7 +93,7 @@ namespace Panthera.Base
         {
             get
             { 
-               return this.characterLevel;
+               return this.characterLevel - 1;
             }
         }
         public int usedAttributePoints
@@ -113,11 +113,18 @@ namespace Panthera.Base
                 return this.totalAttributePoints - this.usedAttributePoints;
             }
         }
+        public int totalSkillsPoints
+        {
+            get
+            {
+                return this.characterLevel - 1;
+            }
+        }
         public int skillPointsLeft
         {
             get
             {
-                return this.characterLevel - this.usedSkillPoints;
+                return totalSkillsPoints - this.usedSkillPoints;
             }
         }
         public int usedSkillPoints

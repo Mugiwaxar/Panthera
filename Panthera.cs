@@ -40,6 +40,8 @@ namespace Panthera
 
         public static BaseUnityPlugin Instance;
 
+
+        public static PluginInfo PInfo;
         public static ProfileComponent ProfileComponent;
         public static PantheraPanel PantheraPanelController;
         public static PantheraHUD PantheraHUD;
@@ -69,12 +71,14 @@ namespace Panthera
             // Set the Instance //
             Panthera.Instance = this;
 
+            // Get the Pluging Infos //
+            PInfo = Info;
+
             // Init all Components //
             PantheraSaveSystem.Init();
             Utils.Hooks.RegisterHooks();
             Tokens.RegisterTokens();
             PantheraAssets.PopulateAssets();
-            Utils.Sound.PopulateSounds();
             Prefab.RegisterCharacter();
             Skin.RegisterSkins();
             PantheraSkill.RegisterSkills();
@@ -89,9 +93,12 @@ namespace Panthera
 
         public static void ProfileLoaded(Action<RoR2.UserProfile> orig, RoR2.UserProfile self)
         {
-
+           
             // Call the Original Function //
             orig(self);
+
+            // Load the Sound Bank //
+            Utils.Sound.PopulateSounds();
 
             // Add the Profile Component //
             ProfileComponent = Instance.gameObject.GetComponent<ProfileComponent>();

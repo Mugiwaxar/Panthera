@@ -15,7 +15,7 @@ namespace Panthera.Abilities.Primaries
             base.abilityID = PantheraConfig.FelineSkills_AbilityID;
             base.type = AbilityType.primary;
             base.icon = PantheraAssets.FelineSkillsAbility;
-            base.maxLevel = 0;
+            base.maxLevel = 1;
             base.cooldown = 0;
             base.requiredAbility = 0;
             base.desc1 = Utils.PantheraTokens.Get("ability_FelineSkillsDesc");

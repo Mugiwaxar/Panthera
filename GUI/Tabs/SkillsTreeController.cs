@@ -103,20 +103,12 @@ namespace Panthera.GUI.Tabs
                     continue;
 
                 // Update the Amount //
-                if (ability.maxLevel > 0)
-                {
-                    ability.associatedGUIObj.transform.Find("Amount").gameObject.active = true;
-                    TextMeshProUGUI pointsAmountText = ability.associatedGUIObj.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
-                    pointsAmountText.text = String.Format("{0}/{1}", Panthera.ProfileComponent.getAbilityLevel(ability.abilityID), ability.maxLevel);
-                }
-                else
-                {
-                    ability.associatedGUIObj.transform.Find("Amount").gameObject.active = false;
-                }
+                TextMeshProUGUI pointsAmountText = ability.associatedGUIObj.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
+                pointsAmountText.text = String.Format("{0}/{1}", Panthera.ProfileComponent.getAbilityLevel(ability.abilityID), ability.maxLevel);
 
                 // Update the Icon Color //
                 Image abilityImage = ability.associatedGUIObj.transform.Find("Icon").GetComponent<Image>();
-                if (Panthera.ProfileComponent.getAbilityLevel(ability.abilityID) > 0 || ability.abilityID == PantheraConfig.FelineSkills_AbilityID)
+                if (Panthera.ProfileComponent.getAbilityLevel(ability.abilityID) > 0)
                     abilityImage.color = PantheraConfig.SkillsTreeUnlockedAbilityColor;
                 else
                     abilityImage.color = PantheraConfig.SkillsTreeLockedAbilityColor;

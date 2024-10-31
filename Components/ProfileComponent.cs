@@ -334,28 +334,29 @@ namespace Panthera.Components
                     }
                 }
 
-                // Add the Feline Skills Ability //
-                this.unlockedAbilitiesList[PantheraConfig.FelineSkills_AbilityID] = 0;
-
-                // Load Specials //
-                if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.UntamedSpitit_unlockLevel)
-                    this.unlockedAbilitiesList[PantheraConfig.UntamedSpirit_AbilityID] = 1;
-                else
-                    this.unlockedAbilitiesList[PantheraConfig.UntamedSpirit_AbilityID] = 0;
-                if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.GodPower_unlockLevel)
-                    this.unlockedAbilitiesList[PantheraConfig.GodPower_AbilityID] = 1;
-                else
-                    this.unlockedAbilitiesList[PantheraConfig.GodPower_AbilityID] = 0;
-                if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.PortalSurge_unlockLevel)
-                    this.unlockedAbilitiesList[PantheraConfig.PortalSurge_AbilityID] = 1;
-                else
-                    this.unlockedAbilitiesList[PantheraConfig.PortalSurge_AbilityID] = 0;
-
-                // Load Mastery Points //
-                string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_CharacterMastery);
-                this.totalMasteryPoints = (int)Utils.Functions.StringToFloat(stringValue);
-
             }
+
+
+            // Add the Feline Skills Ability //
+            this.unlockedAbilitiesList[PantheraConfig.FelineSkills_AbilityID] = 1;
+
+            // Load Specials //
+            if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.UntamedSpitit_unlockLevel)
+                this.unlockedAbilitiesList[PantheraConfig.UntamedSpirit_AbilityID] = 1;
+            else
+                this.unlockedAbilitiesList[PantheraConfig.UntamedSpirit_AbilityID] = 0;
+            if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.GodPower_unlockLevel)
+                this.unlockedAbilitiesList[PantheraConfig.GodPower_AbilityID] = 1;
+            else
+                this.unlockedAbilitiesList[PantheraConfig.GodPower_AbilityID] = 0;
+            if (Panthera.PantheraCharacter.characterLevel >= PantheraConfig.PortalSurge_unlockLevel)
+                this.unlockedAbilitiesList[PantheraConfig.PortalSurge_AbilityID] = 1;
+            else
+                this.unlockedAbilitiesList[PantheraConfig.PortalSurge_AbilityID] = 0;
+
+            // Load Mastery Points //
+            string stringValue = PantheraSaveSystem.ReadValue(PantheraConfig.SP_CharacterMastery);
+            this.totalMasteryPoints = (int)Utils.Functions.StringToFloat(stringValue);
 
         }
 
@@ -392,7 +393,7 @@ namespace Panthera.Components
             int i = 0;
             foreach (KeyValuePair<int, int> pair in this.unlockedAbilitiesList)
             {
-                if (pair.Key > 0)
+                if (pair.Key > 1)
                     i += pair.Value;
             }
             return i;
@@ -517,8 +518,6 @@ namespace Panthera.Components
         public bool isSkillUnlocked(int skillID)
         {
             int abilityID = Panthera.PantheraCharacter.characterSkills.SkillsList[skillID].requiredAbilityID;
-            //if (abilityID < 1)
-            //    return true;
             if (getAbilityLevel(abilityID) > 0)
                 return true;
             else

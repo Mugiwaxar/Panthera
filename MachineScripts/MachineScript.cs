@@ -106,7 +106,7 @@ namespace Panthera.MachineScripts
         public string desc1;
         public string desc2;
         public int skillID = -1;
-        public int requiredAbilityID = -1;
+        public int requiredAbilityID = 1;
         public int machineToUse = 1;
         public bool showCooldown = false;
         public bool removeStealth = true;

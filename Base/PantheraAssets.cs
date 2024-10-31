@@ -30,6 +30,7 @@ namespace Panthera.Base
         #region Project Parameters
         private const string csProjName = "Panthera";
         private const string assetbundleName = "PantheraBundle";
+        public const string assetBundleFolder = "AssetBundles";
         #endregion
 
         #region Content Pack
@@ -322,7 +323,8 @@ namespace Panthera.Base
         {
 
             #region Asset Bundle
-            MainAssetBundle = AssetBundle.LoadFromMemory(Properties.Resources.PantheraBundle);
+            string assetBundlePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Panthera.PInfo.Location), assetBundleFolder, assetbundleName);
+            MainAssetBundle = AssetBundle.LoadFromFile(assetBundlePath);
             #endregion
 
             #region Models

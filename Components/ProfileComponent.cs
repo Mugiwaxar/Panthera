@@ -509,20 +509,20 @@ namespace Panthera.Components
 
         public int GetAbilityLevel(int abilityID) => this.unlockedAbilitiesList.GetValueOrDefault(abilityID);
 
-        public bool IsSkillUnlocked(int skillID) => this.unlockedAbilitiesList.GetValueOrDefault(Panthera.PantheraCharacter.characterSkills.SkillsList[skillID].requiredAbilityID) > 0;
+        public bool IsSkillUnlocked(int skillID) => this.unlockedAbilitiesList.GetValueOrDefault(Panthera.PantheraCharacter.CharacterSkills.SkillsList[skillID].requiredAbilityID) > 0;
 
         public bool AbilityCanBeUpgraded(int abilityID)
         {
 
             // Get the Ability //
-            PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.AbilityList[abilityID];
+            PantheraAbility ability = Panthera.PantheraCharacter.CharacterAbilities.AbilityList[abilityID];
 
             // Check if the Ability Level is not max //
             if (GetAbilityLevel(abilityID) >= ability.maxLevel)
                 return false;
 
             // Get the Required Ability //
-            PantheraAbility requiredAbility = Panthera.PantheraCharacter.characterAbilities.AbilityList[ability.requiredAbility];
+            PantheraAbility requiredAbility = Panthera.PantheraCharacter.CharacterAbilities.AbilityList[ability.requiredAbility];
 
             // Check if the Required Skill is unlocked //
             if (requiredAbility != null && GetAbilityLevel(requiredAbility.abilityID) < requiredAbility.maxLevel)
@@ -536,7 +536,7 @@ namespace Panthera.Components
         {
 
             // Get the Combo //
-            PantheraCombo combo = Panthera.PantheraCharacter.characterCombos.CombosList[comboID];
+            PantheraCombo combo = Panthera.PantheraCharacter.CharacterCombos.CombosList[comboID];
 
             // Check the Combo Skills List //
             foreach (ComboSkill comboSkill in combo.comboSkillsList)
@@ -568,7 +568,7 @@ namespace Panthera.Components
                 this.unlockedAbilitiesList[abilityID] = 1;
 
             // Get the Required Ability //
-            PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.AbilityList[abilityID];
+            PantheraAbility ability = Panthera.PantheraCharacter.CharacterAbilities.AbilityList[abilityID];
 
             // Update the Desc //
             GUI.Tooltips.AbilitiesTooltip.ShowTooltip(ability, true);
@@ -628,7 +628,7 @@ namespace Panthera.Components
                 return;
 
             // Get the Ability //
-            PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.AbilityList[abilityID];
+            PantheraAbility ability = Panthera.PantheraCharacter.CharacterAbilities.AbilityList[abilityID];
 
             // Check the Ability //
             if (ability.hasMastery == false) return;

@@ -100,22 +100,22 @@ namespace Panthera.GUI.Tabs
             this.spell8Icon = this.tabObj.transform.Find("SpellsLayer").Find("Spell8Layer").Find("Spell8Image").GetComponent<Image>();
 
             // Add the Tooltip to all Icons //
-            this.skill1Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Rip_SkillID);
-            this.skill2Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Slash_SkillID);
-            this.skill3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Leap_SkillID);
-            this.skill4Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.MightyRoar_SkillID);
-            this.ability1Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Prowl_SkillID);
-            this.ability2Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Fury_SkillID);
-            this.ability3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Detection_SkillID);
-            this.ability4Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Guardian_SkillID);
+            this.skill1Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Rip_SkillID);
+            this.skill2Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Slash_SkillID);
+            this.skill3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Leap_SkillID);
+            this.skill4Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.MightyRoar_SkillID);
+            this.ability1Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Prowl_SkillID);
+            this.ability2Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Fury_SkillID);
+            this.ability3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Detection_SkillID);
+            this.ability4Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Guardian_SkillID);
             this.spell1Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell2Icon.gameObject.AddComponent<SkillsTooltipComponent>();
-            this.spell3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.Ambition_SkillID);
+            this.spell3Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Ambition_SkillID);
             this.spell4Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell5Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell6Icon.gameObject.AddComponent<SkillsTooltipComponent>();
             this.spell7Icon.gameObject.AddComponent<SkillsTooltipComponent>();
-            this.spell8Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.PortalSurge_SkillID); ;
+            this.spell8Icon.gameObject.AddComponent<SkillsTooltipComponent>().associatedScript = Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.PortalSurge_SkillID); ;
 
             // Change all Texts //
             this.skill1Text.text = PantheraTokens.Get("skill_RipName");

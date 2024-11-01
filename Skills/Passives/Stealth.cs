@@ -28,10 +28,10 @@ namespace Panthera.Skills.Passives
             if (ptraObj.stealthed == true) return;
 
             // Check if delay unsteath //
-            if (ptraObj.unstealthCoroutine != null)
+            if (ptraObj.UnstealthCoroutine != null)
             {
-                ptraObj.StopCoroutine(ptraObj.unstealthCoroutine);
-                ptraObj.unstealthCoroutine = null;
+                ptraObj.StopCoroutine(ptraObj.UnstealthCoroutine);
+                ptraObj.UnstealthCoroutine = null;
             }
 
             // Send the Stealth Message //
@@ -62,7 +62,7 @@ namespace Panthera.Skills.Passives
         {
 
             // Check if Stealthed //
-            if (ptraObj.stealthed == false || ptraObj.unstealthCoroutine != null) return;
+            if (ptraObj.stealthed == false || ptraObj.UnstealthCoroutine != null) return;
 
             // Start the Cooldown //
             ptraObj.skillLocator.startCooldown(PantheraConfig.Prowl_SkillID);
@@ -71,7 +71,7 @@ namespace Panthera.Skills.Passives
             float unStealthDelay = Math.Max(PantheraConfig.Prowl_unStealDelay, delay);
 
             // UnStealth //
-            ptraObj.unstealthCoroutine = ptraObj.StartCoroutine(DelayUnstealth(ptraObj, unStealthDelay));
+            ptraObj.UnstealthCoroutine = ptraObj.StartCoroutine(DelayUnstealth(ptraObj, unStealthDelay));
 
         }
 
@@ -128,8 +128,8 @@ namespace Panthera.Skills.Passives
             ptraObj.characterBody.RecalculateStats();
 
             // Remove the Coroutine //
-            ptraObj.StopCoroutine(ptraObj.unstealthCoroutine);
-            ptraObj.unstealthCoroutine = null;
+            ptraObj.StopCoroutine(ptraObj.UnstealthCoroutine);
+            ptraObj.UnstealthCoroutine = null;
 
         }
 

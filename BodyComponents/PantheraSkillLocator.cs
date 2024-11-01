@@ -24,7 +24,7 @@ namespace Panthera.BodyComponents
         public void createRechargeSkillsList()
         {
             this.rechargeSkillList = new Dictionary<int, RechargeSkill>();
-            foreach (KeyValuePair<int, MachineScript> pairs in this.ptraObj.characterSkills.SkillsList)
+            foreach (KeyValuePair<int, MachineScript> pairs in this.ptraObj.CharacterSkills.SkillsList)
             {
                 MachineScript skill = pairs.Value;
                 RechargeSkill rechargeSkill = new RechargeSkill(skill, skill.maxStock, skill.baseCooldown);

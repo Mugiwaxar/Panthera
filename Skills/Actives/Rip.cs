@@ -112,7 +112,7 @@ namespace Panthera.Skills.Actives
             }
             if (enemyFound == false)
             {
-                this.machine.SetScript((MachineScript)this.pantheraObj.characterSkills.getSkillByID(PantheraConfig.AirCleave_SkillID).Clone());
+                this.machine.SetScript((MachineScript)this.pantheraObj.CharacterSkills.GetSkillByID(PantheraConfig.AirCleave_SkillID).Clone());
                 return;
             }
 
@@ -140,7 +140,7 @@ namespace Panthera.Skills.Actives
             base.skillLocator.startCooldown(PantheraConfig.Rip_SkillID, this.baseCooldown);
 
             // Get the Combo Number //
-            this.comboNumber = base.pantheraObj.attackNumber;
+            this.comboNumber = base.pantheraObj.AttackNumber;
 
             // Play the Animation //
             string animString = "LeftRip";

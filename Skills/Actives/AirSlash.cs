@@ -60,7 +60,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Get the Combo Number //
-            this.comboNumber = base.pantheraObj.attackNumber;
+            this.comboNumber = base.pantheraObj.AttackNumber;
 
             // Set the character to forward //
             base.characterDirection.forward = GetAimRay().direction;

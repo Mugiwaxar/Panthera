@@ -60,7 +60,7 @@ namespace Panthera.Skills.Actives
             this.startTime = Time.time;
 
             // Get the Combo Number //
-            this.comboNumber = base.pantheraObj.attackNumber;
+            this.comboNumber = base.pantheraObj.AttackNumber;
 
             // Create the Attack //
             bool isCrit = RollCrit();

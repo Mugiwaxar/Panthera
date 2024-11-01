@@ -47,7 +47,7 @@ namespace Panthera.GUI.Tabs
             {
                 string abilityIDString = Regex.Replace(transform.gameObject.name, @"[^\d]", "");
                 int abilityID = Int32.Parse(abilityIDString);
-                PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(abilityID);
+                PantheraAbility ability = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(abilityID);
                 ability.associatedGUIObj = transform.gameObject;
                 transform.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = ability;
                 ButtonWatcher buttonWatcher = transform.gameObject.AddComponent<ButtonWatcher>();
@@ -70,9 +70,9 @@ namespace Panthera.GUI.Tabs
             this.special1 = this.skillsTreeWindow.transform.Find("Content").Find("SpecialsFrame").Find("UntamedSpiritSpecial");
             this.special2 = this.skillsTreeWindow.transform.Find("Content").Find("SpecialsFrame").Find("GodPowerSpecial");
             this.special3 = this.skillsTreeWindow.transform.Find("Content").Find("SpecialsFrame").Find("PortalSurgeSpecial");
-            this.special1.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(PantheraConfig.UntamedSpirit_AbilityID);
-            this.special2.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(PantheraConfig.GodPower_AbilityID);
-            this.special3.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(PantheraConfig.PortalSurge_AbilityID);
+            this.special1.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(PantheraConfig.UntamedSpirit_AbilityID);
+            this.special2.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(PantheraConfig.GodPower_AbilityID);
+            this.special3.gameObject.AddComponent<AbilitiesTooltipComponent>().associatedAbility = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(PantheraConfig.PortalSurge_AbilityID);
 
             // Add the Zoom Component //
             this.skillsTreeWindow.transform.Find("Content").Find("ScrollView").Find("Viewport").gameObject.AddComponent<SkillsTreeZoomComponent>().skillsTreeController = this;
@@ -95,7 +95,7 @@ namespace Panthera.GUI.Tabs
             this.skillsTreeWindow.transform.Find("Content").Find("SkillTreeAmountLimit").Find("MasteryBackground").Find("AvailableAmount").GetComponent<TextMeshProUGUI>().text = Panthera.ProfileComponent.getMasteryPointsLeft().ToString();
 
             // Update all Ability Icons //
-            foreach (PantheraAbility ability in Panthera.PantheraCharacter.characterAbilities.AbilityList.Values)
+            foreach (PantheraAbility ability in Panthera.PantheraCharacter.CharacterAbilities.AbilityList.Values)
             {
 
                 // Check the Ability type //
@@ -183,10 +183,10 @@ namespace Panthera.GUI.Tabs
                 int ID = int.Parse(line.name.Replace("ProgressLine", ""));
 
                 // Get the Ability //
-                PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(ID);
+                PantheraAbility ability = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(ID);
 
                 // Get the Required Ability //
-                PantheraAbility requiredAbility = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(ability.requiredAbility);
+                PantheraAbility requiredAbility = Panthera.PantheraCharacter.CharacterAbilities.getAbilityByID(ability.requiredAbility);
 
                 // Change the Color of the Line //
                 if (Panthera.ProfileComponent.GetAbilityLevel(requiredAbility.abilityID) >= requiredAbility.maxLevel)

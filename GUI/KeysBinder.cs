@@ -427,7 +427,7 @@ namespace Panthera.GUI
             else
                 data.responseCallback(InputMapper.ConflictResponse.Add);
         }
-
+        /*
         public enum KeysEnum
         {
             Interact = 5,
@@ -449,6 +449,37 @@ namespace Panthera.GUI
             Ability3 = 1303,
             Ability4 = 1304,
             SpellsMode = 1310
+        }
+        */
+
+        [Flags]
+        public enum KeysEnum : ushort
+        {
+            None = 0,
+
+            Forward = 1 << 0,
+            Backward = 1 << 1,
+            Left = 1 << 2,
+            Right = 1 << 3,
+
+            Skill1 = 1 << 4,
+            Skill2 = 1 << 5,
+            Skill3 = 1 << 6,
+            Skill4 = 1 << 7,
+
+            Ability1 = 1 << 8,
+            Ability2 = 1 << 9,
+            Ability3 = 1 << 10,
+            Ability4 = 1 << 11,
+
+            SpellsMode = 1 << 12,
+            Jump = 1 << 13,
+            Sprint = 1 << 14,
+            /*
+            Interact = 1 << 15,
+            Equipment = 1 << 16,
+            Info = 1 << 17,
+            Ping = 1 << 18,*/
         }
 
     }

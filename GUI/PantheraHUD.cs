@@ -175,36 +175,43 @@ namespace Panthera.GUI
 
             // Get all Ability Objects //
             this.ability1Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability1Image").gameObject;
-            this.ability2Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability2Image").gameObject;
-            this.ability3Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability3Image").gameObject;
-            this.ability4Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability4Image").gameObject;
+            this.ability1Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.Prowl_SkillID, PantheraAssets.ProwlSkill, PantheraAssets.ProwlSkillDisabled, (ptra) => ptra.stealthed);
 
-            // Change the Skills Colors //
-            this.ability1Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.ability2Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.ability3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.ability4Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.ability2Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability2Image").gameObject;
+            this.ability2Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.Fury_SkillID, PantheraAssets.FurySkill, PantheraAssets.FurySkillDisabled, (ptra) => ptra.furyMode);
+
+            this.ability3Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability3Image").gameObject;
+            this.ability3Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.Detection_SkillID, PantheraAssets.DetectionSkill, PantheraAssets.DetectionSkillDisabled, (ptra) => ptra.detectionMode);
+
+            this.ability4Obj = this.abilitiesIcons.transform.Find("Content").Find("Ability4Image").gameObject;
+            this.ability4Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.Guardian_SkillID, PantheraAssets.GuardianSkill, PantheraAssets.GuardianSkillDisabled, (ptra) => ptra.guardianMode);
 
             // Get all Spell Objects //
             this.spellsModeObj = this.spellsIcons.transform.Find("Content").Find("SpellsModeLayer").gameObject;
-            this.spell1Obj = this.spellsIcons.transform.Find("Content").Find("Spell1Layer").Find("Spell1Image").gameObject;
-            this.spell2Obj = this.spellsIcons.transform.Find("Content").Find("Spell2Layer").Find("Spell2Image").gameObject;
-            this.spell3Obj = this.spellsIcons.transform.Find("Content").Find("Spell3Layer").Find("Spell3Image").gameObject;
-            this.spell4Obj = this.spellsIcons.transform.Find("Content").Find("Spell4Layer").Find("Spell4Image").gameObject;
-            this.spell5Obj = this.spellsIcons.transform.Find("Content").Find("Spell5Layer").Find("Spell5Image").gameObject;
-            this.spell6Obj = this.spellsIcons.transform.Find("Content").Find("Spell6Layer").Find("Spell6Image").gameObject;
-            this.spell7Obj = this.spellsIcons.transform.Find("Content").Find("Spell7Layer").Find("Spell7Image").gameObject;
-            this.spell8Obj = this.spellsIcons.transform.Find("Content").Find("Spell8Layer").Find("Spell8Image").gameObject;
 
-            // Change the Spells Colors //
-            this.spell1Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell2Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell3Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell4Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell5Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell6Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell7Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
-            this.spell8Obj.GetComponent<Image>().color = PantheraConfig.SkillsLockedSkillColor;
+            this.spell1Obj = this.spellsIcons.transform.Find("Content").Find("Spell1Layer").Find("Spell1Image").gameObject;
+            //this.spell1Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
+
+            this.spell2Obj = this.spellsIcons.transform.Find("Content").Find("Spell2Layer").Find("Spell2Image").gameObject;
+            //this.spell2Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.spell, PantheraAssets.PortalSurgeSkill);
+
+            this.spell3Obj = this.spellsIcons.transform.Find("Content").Find("Spell3Layer").Find("Spell3Image").gameObject;
+            this.spell3Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.Ambition_SkillID, PantheraAssets.AmbitionSkill);
+
+            this.spell4Obj = this.spellsIcons.transform.Find("Content").Find("Spell4Layer").Find("Spell4Image").gameObject;
+            //this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
+
+            this.spell5Obj = this.spellsIcons.transform.Find("Content").Find("Spell5Layer").Find("Spell5Image").gameObject;
+            //this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
+
+            this.spell6Obj = this.spellsIcons.transform.Find("Content").Find("Spell6Layer").Find("Spell6Image").gameObject;
+            //this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
+
+            this.spell7Obj = this.spellsIcons.transform.Find("Content").Find("Spell7Layer").Find("Spell7Image").gameObject;
+            //this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
+
+            this.spell8Obj = this.spellsIcons.transform.Find("Content").Find("Spell8Layer").Find("Spell8Image").gameObject;
+            this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
 
             // Instantiate the Combos Template //
             this.combosFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboBaseTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
@@ -227,7 +234,7 @@ namespace Panthera.GUI
             this.blockBar.transform.localPosition = new Vector3(-0.5f, 0, 0);
             this.blockBar.transform.Find("Image").GetComponent<Image>().color = PantheraConfig.BlockBarColor;
 
-            origMainContainer.AddComponent<IconCooldown>();
+            origMainContainer.AddComponent<IconController>();
         }
 
         public void Update()

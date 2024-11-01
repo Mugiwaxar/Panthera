@@ -38,9 +38,9 @@ namespace Panthera.Base
         // (string name, GameObject prefab) Represent a list of all boss to defeat to obtain Mastery Points //
         public Dictionary<string, GameObject> bossList = new Dictionary<string, GameObject>();
 
-        public CharacterSkills characterSkills;
-        public CharacterAbilities characterAbilities;
-        public CharacterCombos characterCombos;
+        public CharacterSkills CharacterSkills;
+        public CharacterAbilities CharacterAbilities;
+        public CharacterCombos CharacterCombos;
         public PantheraObj pantheraObj;
 
         public int characterLevel
@@ -151,11 +151,11 @@ namespace Panthera.Base
         public void init()
         {
             // Create the Character Skills //
-            this.characterSkills = new CharacterSkills();
+            this.CharacterSkills = new CharacterSkills();
             // Create the Character Abilities //
-            this.characterAbilities = new CharacterAbilities();
+            this.CharacterAbilities = new CharacterAbilities();
             // Create the Character Combos //
-            this.characterCombos = new CharacterCombos();
+            this.CharacterCombos = new CharacterCombos();
             // Create the level experience list //
             CalculMaxExperiencePerLevel();
         }

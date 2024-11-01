@@ -161,11 +161,12 @@ namespace Panthera.Utils
 
         public static Sprite KeyEnumToSprite(KeysBinder.KeysEnum keyEnum)
         {
-            if (keyEnum == KeysBinder.KeysEnum.Interact) return PantheraAssets.XButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Equipment) return PantheraAssets.YButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Sprint) return PantheraAssets.LButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Info) return PantheraAssets.InfoButtonIcon;
-            else if (keyEnum == KeysBinder.KeysEnum.Ping) return PantheraAssets.RButtonIcon;
+            //if (keyEnum == KeysBinder.KeysEnum.Interact) return PantheraAssets.XButtonIcon;
+            //else if (keyEnum == KeysBinder.KeysEnum.Equipment) return PantheraAssets.YButtonIcon;
+            //else
+            if (keyEnum == KeysBinder.KeysEnum.Sprint) return PantheraAssets.LButtonIcon;
+            //else if (keyEnum == KeysBinder.KeysEnum.Info) return PantheraAssets.InfoButtonIcon;
+            //else if (keyEnum == KeysBinder.KeysEnum.Ping) return PantheraAssets.RButtonIcon;
             else if (keyEnum == KeysBinder.KeysEnum.Forward) return PantheraAssets.LUpButtonIcon;
             else if (keyEnum == KeysBinder.KeysEnum.Backward) return PantheraAssets.LDownButtonIcon;
             else if (keyEnum == KeysBinder.KeysEnum.Left) return PantheraAssets.LLeftButtonIcon;

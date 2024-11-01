@@ -14,7 +14,7 @@ namespace Panthera.Combos.List
 
         public ClawsStorm()
         {
-            ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.ClawsStorm_SkillID), KeysBinder.KeysEnum.Skill2);
+            ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.ClawsStorm_SkillID), KeysBinder.KeysEnum.Skill2);
             comboSkillsList.Add(comboSkill);
             comboID = PantheraConfig.ClawsStorm_CombosID;
             name = PantheraTokens.Get("combo_ClawsStormName");

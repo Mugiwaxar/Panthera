@@ -42,7 +42,7 @@ namespace Panthera.NetworkMessages
             PantheraObj ptraObj = player.GetComponent<PantheraObj>();
             if (ptraObj == null)
                 return;
-            if (ptraObj.hasAuthority() == true)
+            if (ptraObj.HasAuthority() == true)
             {
                 ptraObj.characterBody.RecalculateStats();
                 return;

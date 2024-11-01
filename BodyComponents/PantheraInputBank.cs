@@ -21,22 +21,13 @@ namespace Panthera.BodyComponents
 
         public PantheraObj ptraObj;
         public PantheraComboComponent comboComponent;
-        public Player rewirePlayer
-        {
-            get
-            {
-                return Panthera.InputPlayer;
-            }
-        }
+        public Player rewirePlayer => Panthera.InputPlayer;
         public PantheraSkillsMachine skillsMachine1;
         public PantheraSkillsMachine skillsMachine2;
         //public Dictionary<int, PantheraSkill> pressedSlot = new Dictionary<int, PantheraSkill>(); // List of pressed actions (key: SlotID, Value: ActionID)
         //public bool switchBarPressed;
 
-        public HashSet<KeysEnum> keysPressedList = [];
-        public HashSet<KeysEnum> keysDownList = [];
-
-        public KeysEnum directionKeyPressed = 0;
+        public KeysEnum keysPressedList;
 
         public void DoInit()
         {
@@ -49,65 +40,61 @@ namespace Panthera.BodyComponents
         public void Update()
         {
             // Return if server //
-            if (ptraObj.hasAuthority() == false) return;
+            if (ptraObj.HasAuthority() == false)
+                return;
 
             // Clear the Keys Lists //
-            this.keysPressedList.Clear();
-            this.keysDownList.Clear();
-            this.directionKeyPressed = 0;
+            this.keysPressedList = KeysEnum.None;
 
             // Return if dead //
-            if (ptraObj.healthComponent.alive == false) return;
+            if (ptraObj.healthComponent.alive == false)
+                return;
 
             // Return if sleeping //
-            if (ptraObj.GetPassiveScript() == null || ptraObj.GetPassiveScript().isSleeping == true) return;
-
-            // Return if no Button was pressed //
-            if (this.isAnyButtonChanged() == false) return;
+            if (ptraObj.GetPassiveScript() == null || ptraObj.GetPassiveScript().isSleeping == true)
+                return;
 
             // Check all Buttons //
-            if (IsUpPressed()) this.directionKeyPressed = KeysEnum.Forward;
-            if (IsDownPressed()) this.directionKeyPressed = KeysEnum.Backward;
-            if (IsLeftPressed()) this.directionKeyPressed = KeysEnum.Left;
-            if (IsRightPressed()) this.directionKeyPressed = KeysEnum.Right;
+            if (IsUpPressed()) this.keysPressedList = KeysEnum.Forward;
+            if (IsDownPressed()) this.keysPressedList |= KeysEnum.Backward;
+            if (IsLeftPressed()) this.keysPressedList |= KeysEnum.Left;
+            if (IsRightPressed()) this.keysPressedList |= KeysEnum.Right;
 
+            /*
             if (IsKeyPressed(PantheraConfig.InteractKey)) this.keysPressedList.Add(KeysEnum.Interact);
             if (IsKeyPressed(PantheraConfig.EquipmentKey)) this.keysPressedList.Add(KeysEnum.Equipment);
             if (IsKeyPressed(PantheraConfig.SprintKey)) this.keysPressedList.Add(KeysEnum.Sprint);
             if (IsKeyPressed(PantheraConfig.InfoKey)) this.keysPressedList.Add(KeysEnum.Info);
             if (IsKeyPressed(PantheraConfig.PingKey)) this.keysPressedList.Add(KeysEnum.Ping);
-            if (IsKeyPressed(PantheraConfig.JumpKey)) this.keysPressedList.Add(KeysEnum.Jump);
-            if (IsKeyPressed(PantheraConfig.Skill1Key)) this.keysPressedList.Add(KeysEnum.Skill1);
-            if (IsKeyPressed(PantheraConfig.Skill2Key)) this.keysPressedList.Add(KeysEnum.Skill2);
-            if (IsKeyPressed(PantheraConfig.Skill3Key)) this.keysPressedList.Add(KeysEnum.Skill3);
-            if (IsKeyPressed(PantheraConfig.Skill4Key)) this.keysPressedList.Add(KeysEnum.Skill4);
-            if (IsKeyPressed(PantheraConfig.Keys_Ability1ActionCode)) this.keysPressedList.Add(KeysEnum.Ability1);
-            if (IsKeyPressed(PantheraConfig.Keys_Ability2ActionCode)) this.keysPressedList.Add(KeysEnum.Ability2);
-            if (IsKeyPressed(PantheraConfig.Keys_Ability3ActionCode)) this.keysPressedList.Add(KeysEnum.Ability3);
-            if (IsKeyPressed(PantheraConfig.Keys_Ability4ActionCode)) this.keysPressedList.Add(KeysEnum.Ability4);
-            if (IsKeyPressed(PantheraConfig.Keys_SpellsModeActionCode)) this.keysPressedList.Add(KeysEnum.SpellsMode);
-
-            if (IsKeyDown(PantheraConfig.InteractKey)) this.keysDownList.Add(KeysEnum.Interact);
-            if (IsKeyDown(PantheraConfig.EquipmentKey)) this.keysDownList.Add(KeysEnum.Equipment);
-            if (IsKeyDown(PantheraConfig.SprintKey)) this.keysDownList.Add(KeysEnum.Sprint);
-            if (IsKeyDown(PantheraConfig.InfoKey)) this.keysDownList.Add(KeysEnum.Info);
-            if (IsKeyDown(PantheraConfig.PingKey)) this.keysDownList.Add(KeysEnum.Ping);
-            if (IsKeyDown(PantheraConfig.JumpKey)) this.keysDownList.Add(KeysEnum.Jump);
-            if (IsKeyDown(PantheraConfig.Skill1Key)) this.keysDownList.Add(KeysEnum.Skill1);
-            if (IsKeyDown(PantheraConfig.Skill2Key)) this.keysDownList.Add(KeysEnum.Skill2);
-            if (IsKeyDown(PantheraConfig.Skill3Key)) this.keysDownList.Add(KeysEnum.Skill3);
-            if (IsKeyDown(PantheraConfig.Skill4Key)) this.keysDownList.Add(KeysEnum.Skill4);
-            if (IsKeyDown(PantheraConfig.Keys_Ability1ActionCode)) this.keysDownList.Add(KeysEnum.Ability1);
-            if (IsKeyDown(PantheraConfig.Keys_Ability2ActionCode)) this.keysDownList.Add(KeysEnum.Ability2);
-            if (IsKeyDown(PantheraConfig.Keys_Ability3ActionCode)) this.keysDownList.Add(KeysEnum.Ability3);
-            if (IsKeyDown(PantheraConfig.Keys_Ability4ActionCode)) this.keysDownList.Add(KeysEnum.Ability4);
-            if (IsKeyDown(PantheraConfig.Keys_SpellsModeActionCode)) this.keysDownList.Add(KeysEnum.SpellsMode);
+            if (IsKeyPressed(PantheraConfig.JumpKey)) this.keysPressedList.Add(KeysEnum.Jump);*/
+            if (IsKeyPressed(PantheraConfig.Skill1Key)) this.keysPressedList |= KeysEnum.Skill1;
+            if (IsKeyPressed(PantheraConfig.Skill2Key)) this.keysPressedList |= KeysEnum.Skill2;
+            if (IsKeyPressed(PantheraConfig.Skill3Key)) this.keysPressedList |= KeysEnum.Skill3;
+            if (IsKeyPressed(PantheraConfig.Skill4Key)) this.keysPressedList |= KeysEnum.Skill4;
+            if (IsKeyPressed(PantheraConfig.Keys_Ability1ActionCode)) this.keysPressedList |= KeysEnum.Ability1;
+            if (IsKeyPressed(PantheraConfig.Keys_Ability2ActionCode)) this.keysPressedList |= KeysEnum.Ability2;
+            if (IsKeyPressed(PantheraConfig.Keys_Ability3ActionCode)) this.keysPressedList |= KeysEnum.Ability3;
+            if (IsKeyPressed(PantheraConfig.Keys_Ability4ActionCode)) this.keysPressedList |= KeysEnum.Ability4;
+            if (IsKeyPressed(PantheraConfig.Keys_SpellsModeActionCode)) this.keysPressedList |= KeysEnum.SpellsMode;
+            /*
+            if (IsKeyDown(PantheraConfig.InteractKey)) this.keysDownList |= KeysEnum.Interact;
+            if (IsKeyDown(PantheraConfig.EquipmentKey)) this.keysDownList |= KeysEnum.Equipment;
+            if (IsKeyDown(PantheraConfig.SprintKey)) this.keysDownList |= KeysEnum.Sprint;
+            if (IsKeyDown(PantheraConfig.InfoKey)) this.keysDownList |= KeysEnum.Info;
+            if (IsKeyDown(PantheraConfig.PingKey)) this.keysDownList |= KeysEnum.Ping;
+            if (IsKeyDown(PantheraConfig.JumpKey)) this.keysDownList |= KeysEnum.Jump;
+            if (IsKeyDown(PantheraConfig.Skill1Key)) this.keysDownList |= KeysEnum.Skill1;
+            if (IsKeyDown(PantheraConfig.Skill2Key)) this.keysDownList |= KeysEnum.Skill2;
+            if (IsKeyDown(PantheraConfig.Skill3Key)) this.keysDownList |= KeysEnum.Skill3;
+            if (IsKeyDown(PantheraConfig.Skill4Key)) this.keysDownList |= KeysEnum.Skill4;
+            if (IsKeyDown(PantheraConfig.Keys_Ability1ActionCode)) this.keysDownList |= KeysEnum.Ability1;
+            if (IsKeyDown(PantheraConfig.Keys_Ability2ActionCode)) this.keysDownList |= KeysEnum.Ability2;
+            if (IsKeyDown(PantheraConfig.Keys_Ability3ActionCode)) this.keysDownList |= KeysEnum.Ability3;
+            if (IsKeyDown(PantheraConfig.Keys_Ability4ActionCode)) this.keysDownList |= KeysEnum.Ability4;
+            if (IsKeyDown(PantheraConfig.Keys_SpellsModeActionCode)) this.keysDownList |= KeysEnum.SpellsMode;*/
 
             // Check the Interact Key //
-            if (IsKeyDown(PantheraConfig.InteractKey))
-                ptraObj.interactPressed = true;
-            else
-                ptraObj.interactPressed = false;
+            ptraObj.interactPressed = IsKeyDown(PantheraConfig.InteractKey);
 
             // Check the Jump key //
             if (IsKeyDown(PantheraConfig.JumpKey))
@@ -115,7 +102,7 @@ namespace Panthera.BodyComponents
                 ptraObj.jumpPressed = true;
                 ptraObj.pantheraMotor.doJump = true;
             }
-            else
+            else if (ptraObj.jumpPressed && IsKeyReleased(PantheraConfig.JumpKey))
             {
                 ptraObj.jumpPressed = false;
             }
@@ -126,21 +113,21 @@ namespace Panthera.BodyComponents
                 ptraObj.sprintPressed = true;
                 ptraObj.pantheraMotor.isSprinting = true;
             }
-            else
+            else if (ptraObj.sprintPressed && IsKeyReleased(PantheraConfig.SprintKey))
             {
                 ptraObj.sprintPressed = false;
             }
 
             // Check if Keys are Pressed //
-            if (this.keysPressedList.Count <= 0)
+            if (this.keysPressedList == KeysEnum.None)
                 return;
 
             // Try to launch a Skill //
-            this.ptraObj.comboComponent.tryLaunchSkill(this.keysPressedList, this.directionKeyPressed);
+            this.ptraObj.comboComponent.TryLaunchSkill(this.keysPressedList);
 
         }
 
-        private bool isAnyButtonChanged() => rewirePlayer.GetAnyButton() || rewirePlayer.GetAnyButtonDown();
+        private bool IsAnyButtonChanged() => rewirePlayer.GetAnyButton() || rewirePlayer.GetAnyButtonDown();
 
         private bool IsKeyDown(int key) => rewirePlayer.GetButtonDown(key);
 

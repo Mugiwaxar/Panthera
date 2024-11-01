@@ -139,7 +139,7 @@ namespace Panthera.MachineScripts
             this.modelAnimator = this.modelLocator.modelTransform.GetComponent<Animator>();
             this.aimAnimator = this.modelTransform.GetComponent<AimAnimator>();
             this.pantheraFX = player.GetComponent<PantheraFX>();
-            this.masterObj = this.pantheraObj.pantheraMaster;
+            this.masterObj = this.pantheraObj.PantheraMaster;
             this.bcp = this.pantheraObj.GetPassiveScript();
 
         }
@@ -208,7 +208,7 @@ namespace Panthera.MachineScripts
         {
             get
             {
-                return this.pantheraObj.hasAuthority();
+                return this.pantheraObj.HasAuthority();
             }
         }
         public Ray GetAimRay()

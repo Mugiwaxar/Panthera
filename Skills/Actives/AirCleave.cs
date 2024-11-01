@@ -63,7 +63,7 @@ namespace Panthera.Skills.Actives
                 this.isFireAirCleave = true;
 
             // Get the Combo Number //
-            this.comboNumber = base.pantheraObj.attackNumber;
+            this.comboNumber = base.pantheraObj.AttackNumber;
 
             // Get the Sharpened Fangs multiplicator //
             float sharpenedFangsMult = 1;

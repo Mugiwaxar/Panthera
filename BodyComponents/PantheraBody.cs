@@ -36,7 +36,7 @@ namespace Panthera.BodyComponents
                     _frontShield = maxFrontShield;
                 if (_frontShield < 0)
                     _frontShield = 0;
-                if (_frontShield != _lastFrontShield && RoR2Application.isInMultiPlayer == true && this.ptraObj.hasAuthority() == true)
+                if (_frontShield != _lastFrontShield && RoR2Application.isInMultiPlayer == true && this.ptraObj.HasAuthority() == true)
                 {
                     _lastFrontShield = _frontShield;
                     new ServerSetFrontShieldAmount(gameObject, frontShield).Send(NetworkDestination.Server);
@@ -68,7 +68,7 @@ namespace Panthera.BodyComponents
                     _block = PantheraConfig.Default_maxBlock;
                 if (_block < 0)
                     _block = 0;
-                if (_block != _lastBlock && RoR2Application.isInMultiPlayer == true && this.ptraObj.hasAuthority() == true)
+                if (_block != _lastBlock && RoR2Application.isInMultiPlayer == true && this.ptraObj.HasAuthority() == true)
                 {
                     _lastBlock = _block;
                     new ServerSetBlockAmount(gameObject, _block).Send(NetworkDestination.Server);
@@ -245,7 +245,7 @@ namespace Panthera.BodyComponents
             }
 
             // Calculate the model Scale //
-            if (ptraObj.hasAuthority() == true)
+            if (ptraObj.HasAuthority() == true)
             {
                 float modelScale = PantheraConfig.Model_defaultModelScale;
                 if (ptraObj.guardianMode == true)
@@ -297,7 +297,7 @@ namespace Panthera.BodyComponents
             self.healthComponent.health = Math.Min(actualHealth, self.maxHealth);
 
             // Update Skill max Stocks and Cooldowns //
-            if(ptraObj.hasAuthority() == true)
+            if(ptraObj.HasAuthority() == true)
             {
 
                 // Get the Skill Locator //

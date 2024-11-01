@@ -81,10 +81,11 @@ namespace Panthera.Components
                         {
                             // Get and check the Front Shield //
                             GameObject frontShieldObj = hit.collider.gameObject.transform.parent.gameObject;
-                            if (frontShieldObj != null && frontShieldObj.active == true)
+                            if (frontShieldObj != null && frontShieldObj.activeSelf == true)
                             {
                                 // Don't add this HitPoint to the List //
                                 addToList = false;
+                                break;
                             }
 
                         }

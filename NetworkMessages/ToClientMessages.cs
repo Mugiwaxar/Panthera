@@ -38,7 +38,7 @@ namespace Panthera.NetworkMessages
             PantheraObj ptraObj = player.GetComponent<PantheraObj>();
             if (ptraObj == null)
                 return;
-            if (ptraObj.hasAuthority() == true)
+            if (ptraObj.HasAuthority() == true)
             {
                 ptraObj.characterBody.RecalculateStats();
                 return;
@@ -100,7 +100,7 @@ namespace Panthera.NetworkMessages
         public void OnReceived()
         {
             PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
-            if (ptraObj == null || ptraObj.hasAuthority() == true) return;
+            if (ptraObj == null || ptraObj.HasAuthority() == true) return;
             Transform modelTransform = ptraObj.modelTransform;
             ptraObj.modelScale = scale;
             ptraObj.transform.localScale = new Vector3(scale, scale, scale);
@@ -143,7 +143,7 @@ namespace Panthera.NetworkMessages
         {
             if (this.attacker == null || this.victime == null) return;
             PantheraObj ptraObj = this.attacker.GetComponent<PantheraObj>();
-            if (ptraObj == null || ptraObj.hasAuthority() == false) return;
+            if (ptraObj == null || ptraObj.HasAuthority() == false) return;
             BigCatPassive bcp = ptraObj.GetPassiveScript();
             if (bcp == null) return;
             bcp.OnCharacterDieEventClient(this.attacker, this.victime);

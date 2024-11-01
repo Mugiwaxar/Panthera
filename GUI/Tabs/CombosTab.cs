@@ -61,14 +61,14 @@ namespace Panthera.GUI.Tabs
             Dictionary<int, PantheraCombo> combosList = new Dictionary<int, PantheraCombo>();
 
             // Add the Unlocked Combos to the List //
-            foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
+            foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.CharacterCombos.CombosList)
             {
                 if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == true)
                     combosList.Add(combo.Key, combo.Value);
             }
 
             // Add the Locked Combos to the List //
-            foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
+            foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.CharacterCombos.CombosList)
             {
                 if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == false)
                     combosList.Add(combo.Key, combo.Value);

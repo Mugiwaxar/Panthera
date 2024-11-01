@@ -8,6 +8,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using static Panthera.GUI.KeysBinder;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.BodyComponents
 {
@@ -29,7 +30,7 @@ namespace Panthera.BodyComponents
         {
 
             // Check the Authority //
-            if (ptraObj.hasAuthority() == false) return;
+            if (ptraObj.HasAuthority() == false) return;
 
             // Start the Combo Timer if the Skill Machines are iddle //
             if (this.machinesIddle == false && this.ptraObj.skillsMachine1.currentScript == null && this.ptraObj.skillsMachine2.currentScript == null)
@@ -55,20 +56,20 @@ namespace Panthera.BodyComponents
 
         }
 
-        public void tryLaunchSkill(HashSet<KeysEnum> keys, KeysEnum direction)
+        public void TryLaunchSkill(KeysEnum keys)
         {
 
             // Create the New Combo Boolean //
             bool newCombo = false;
 
             // Try to find a Skill //
-            ComboSkill comboSkill = this.GetSkill(this.actualCombosList, keys, direction);
+            ComboSkill comboSkill = this.GetSkill(this.actualCombosList, keys);
 
             // If no skill found, try with a new Combo //
             if (comboSkill == null)
             {
                 newCombo = true;
-                comboSkill = this.GetSkill(new List<ComboSkill>(), keys, direction);
+                comboSkill = this.GetSkill(new List<ComboSkill>(), keys);
             }
 
             // Check the Skill //
@@ -112,10 +113,10 @@ namespace Panthera.BodyComponents
 
         }
 
-        private ComboSkill GetSkill(List<ComboSkill> actualCombosList, HashSet<KeysEnum> keys, KeysEnum direction)
+        private ComboSkill GetSkill(List<ComboSkill> actualCombosList, KeysEnum keys)
         {
             // Create the filtered List //
-            Dictionary<int, PantheraCombo> filteredCombosList = this.ptraObj.characterCombos.CombosList;
+            Dictionary<int, PantheraCombo> filteredCombosList = this.ptraObj.CharacterCombos.CombosList;
 
             // Get the actual Combo number //
             int comboNumber = actualCombosList.Count;
@@ -126,27 +127,22 @@ namespace Panthera.BodyComponents
 
             // Create a null Machine Script //
             // Try to get the Skill with the Direction //
-            var comboSkill = this.GetNextSkill(filteredCombosList, keys, direction, comboNumber, true);
 
-            // Try to get the Skill without the Direction //
-            if (comboSkill == null)
-                comboSkill = this.GetNextSkill(filteredCombosList, keys, 0, comboNumber, false);
+            // Mask to get the 4 direction keys
+            var directionMask = KeysEnum.Forward | KeysEnum.Backward | KeysEnum.Left | KeysEnum.Right;
+            var directions = keys & directionMask;
 
-            // Return the Skill //
-            return comboSkill;
+            // reverse mask to remove direction keys
+            keys &= ~directionMask;
 
+            return this.GetNextSkill(filteredCombosList, keys, directions, comboNumber);
         }
 
-        private ComboSkill GetNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, HashSet<KeysEnum> keys, KeysEnum direction, int comboNumber, bool checkDirection)
+        private ComboSkill GetNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, KeysEnum keys, KeysEnum directions, int comboNumber)
         {
-
-            // Create a null ComboSkill //
-            ComboSkill foundComboSkill = null;
-
             // Itinerate the Combos List //
-            foreach (KeyValuePair<int, PantheraCombo> pair in filteredCombosList)
+            foreach (var pair in filteredCombosList)
             {
-
                 // Check if the Combo is locked //
                 if (this.ptraObj.IsComboUnlocked(pair.Value.comboID) == false)
                     continue;
@@ -155,45 +151,22 @@ namespace Panthera.BodyComponents
                 if (this.ptraObj.activatedComboList[pair.Key] == false)
                     continue;
 
-                // Check the Combo number //
-                if (comboNumber >= pair.Value.comboSkillsList.Count)
+                // Get Combo skill //
+                var comboSkill = pair.Value.comboSkillsList.ElementAtOrDefault(comboNumber);
+                if (comboSkill is null)
                     continue;
 
-                // Get the Skill //
-                ComboSkill comboSkill = pair.Value.comboSkillsList[comboNumber];
-                MachineScript skill = comboSkill.skill;
-
                 // Check if the Direction Key is the same //
-                if (comboSkill.direction > 0 && comboSkill.direction != direction)
+                if (comboSkill.direction != KeysEnum.None && !directions.HasFlag(comboSkill.direction))
                     continue;
 
                 // Check the Keys //
-                if (keys.Count > 1)
-                {
-                    if (keys.Contains(comboSkill.keyA) && keys.Contains(comboSkill.keyB))
-                    {
-                        if (checkDirection == true && direction == comboSkill.direction)
-                            return comboSkill;
-                        else if (checkDirection == false)
-                            return comboSkill;
-                    }
-                }
-                else if (comboSkill.keyB == 0)
-                {
-                    if (keys.Contains(comboSkill.keyA))
-                    {
-                        if (checkDirection == true && direction == comboSkill.direction)
-                            return comboSkill;
-                        else if (checkDirection == false)
-                            return comboSkill;
-                    }
-                }
-
+                if (keys.HasFlag(comboSkill.keyA) && (comboSkill.keyB == KeysEnum.None || keys.HasFlag(comboSkill.keyB)))
+                    return comboSkill;
             }
 
             // Return null //
             return null;
-
         }
 
         public Dictionary<int, PantheraCombo> FilterCompatibleCombos(Dictionary<int, PantheraCombo> allCombosList, List<ComboSkill> actualList)

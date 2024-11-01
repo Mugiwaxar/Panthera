@@ -481,7 +481,7 @@ namespace Panthera.Base
                 return;
 
             // Check if Panthera //
-            if (Panthera.PantheraCharacter.pantheraObj != null && Panthera.PantheraCharacter.pantheraObj.hasAuthority() == true)
+            if (Panthera.PantheraCharacter.pantheraObj != null && Panthera.PantheraCharacter.pantheraObj.HasAuthority() == true)
             {
                 Panthera.ProfileComponent.totalMasteryPoints++;
                 Panthera.ProfileComponent.saveSkillsTree();

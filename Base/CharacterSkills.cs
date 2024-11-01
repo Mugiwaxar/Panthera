@@ -17,26 +17,26 @@ namespace Panthera.Base
 
         public CharacterSkills()
         {
-            this.addSkillToList(PantheraConfig.Rip_SkillID, new Rip());
-            this.addSkillToList(PantheraConfig.AirCleave_SkillID, new AirCleave());
-            this.addSkillToList(PantheraConfig.Leap_SkillID, new Leap());
-            this.addSkillToList(PantheraConfig.MightyRoar_SkillID, new MightyRoar());
-            this.addSkillToList(PantheraConfig.Fury_SkillID, new Fury());
-            this.addSkillToList(PantheraConfig.Guardian_SkillID, new Guardian());
-            this.addSkillToList(PantheraConfig.Slash_SkillID, new Slash());
-            this.addSkillToList(PantheraConfig.Detection_SkillID, new Detection());
-            this.addSkillToList(PantheraConfig.Prowl_SkillID, new Prowl());
-            this.addSkillToList(PantheraConfig.Ambition_SkillID, new Ambition());
-            this.addSkillToList(PantheraConfig.AirSlash_SkillID, new AirSlash());
-            this.addSkillToList(PantheraConfig.FrontShield_SkillID, new FrontShield());
-            this.addSkillToList(PantheraConfig.ClawsStorm_SkillID, new ClawsStorm());
-            this.addSkillToList(PantheraConfig.ShieldBash_SkillID, new ShieldBash());
-            this.addSkillToList(PantheraConfig.ArcaneAnchor_SkillID, new ArcaneAnchor());
-            this.addSkillToList(PantheraConfig.ConvergenceHook_SkillID, new ConvergenceHook());
-            this.addSkillToList(PantheraConfig.PortalSurge_SkillID, new PortalSurge());
+            this.AddSkillToList(PantheraConfig.Rip_SkillID, new Rip());
+            this.AddSkillToList(PantheraConfig.AirCleave_SkillID, new AirCleave());
+            this.AddSkillToList(PantheraConfig.Leap_SkillID, new Leap());
+            this.AddSkillToList(PantheraConfig.MightyRoar_SkillID, new MightyRoar());
+            this.AddSkillToList(PantheraConfig.Fury_SkillID, new Fury());
+            this.AddSkillToList(PantheraConfig.Guardian_SkillID, new Guardian());
+            this.AddSkillToList(PantheraConfig.Slash_SkillID, new Slash());
+            this.AddSkillToList(PantheraConfig.Detection_SkillID, new Detection());
+            this.AddSkillToList(PantheraConfig.Prowl_SkillID, new Prowl());
+            this.AddSkillToList(PantheraConfig.Ambition_SkillID, new Ambition());
+            this.AddSkillToList(PantheraConfig.AirSlash_SkillID, new AirSlash());
+            this.AddSkillToList(PantheraConfig.FrontShield_SkillID, new FrontShield());
+            this.AddSkillToList(PantheraConfig.ClawsStorm_SkillID, new ClawsStorm());
+            this.AddSkillToList(PantheraConfig.ShieldBash_SkillID, new ShieldBash());
+            this.AddSkillToList(PantheraConfig.ArcaneAnchor_SkillID, new ArcaneAnchor());
+            this.AddSkillToList(PantheraConfig.ConvergenceHook_SkillID, new ConvergenceHook());
+            this.AddSkillToList(PantheraConfig.PortalSurge_SkillID, new PortalSurge());
         }
 
-        public void addSkillToList(int ID, MachineScript skill)
+        public void AddSkillToList(int ID, MachineScript skill)
         {
             if (this.SkillsList.ContainsKey(ID))
             {
@@ -46,12 +46,7 @@ namespace Panthera.Base
             this.SkillsList.Add(ID, skill);
         }
 
-        public MachineScript getSkillByID(int ID)
-        {
-            if (this.SkillsList.ContainsKey(ID))
-                return this.SkillsList[ID];
-            return null;
-        }
+        public MachineScript GetSkillByID(int ID) => this.SkillsList.ContainsKey(ID) ? this.SkillsList[ID] : null;
 
     }
 }

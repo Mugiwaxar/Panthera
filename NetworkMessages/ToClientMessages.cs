@@ -144,7 +144,7 @@ namespace Panthera.NetworkMessages
             if (this.attacker == null || this.victime == null) return;
             PantheraObj ptraObj = this.attacker.GetComponent<PantheraObj>();
             if (ptraObj == null || ptraObj.hasAuthority() == false) return;
-            BigCatPassive bcp = ptraObj.getPassiveScript();
+            BigCatPassive bcp = ptraObj.GetPassiveScript();
             if (bcp == null) return;
             bcp.OnCharacterDieEventClient(this.attacker, this.victime);
         }
@@ -444,11 +444,11 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ServerPlaySound(GameObject character, string soundName, bool ingloreAuthority = false)
+        public ServerPlaySound(GameObject character, string soundName, bool ignoreAuthority = false)
         {
             this.character = character;
             this.soundName = soundName;
-            this.ignoreAuthority = ingloreAuthority;
+            this.ignoreAuthority = ignoreAuthority;
         }
 
         public void OnReceived()

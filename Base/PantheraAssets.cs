@@ -322,7 +322,7 @@ namespace Panthera.Base
         {
 
             #region Asset Bundle
-            MainAssetBundle = AssetBundle.LoadFromMemory(Properties.Resources.PantheraBundle);
+            MainAssetBundle = AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Panthera.Instance.Info.Location), PantheraAssets.assetbundleName));
             #endregion
 
             #region Models

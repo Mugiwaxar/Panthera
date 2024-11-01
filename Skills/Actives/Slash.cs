@@ -98,10 +98,10 @@ namespace Panthera.Skills.Actives
                     // Play the Hit Sound //
                     Sound.playSound(Sound.Slash, hc.gameObject);
                     // Add Fury Point //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                    if (base.pantheraObj.GetAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                         base.characterBody.fury += PantheraConfig.Slash_furyAdded;
                     // Add the Razors Buff //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.ClawsSharpening_AbilityID) > 0 && base.characterBody.GetBuffCount(Buff.RazorsBuff) < PantheraConfig.Tenacity_maxStacks)
+                    if (base.pantheraObj.GetAbilityLevel(PantheraConfig.ClawsSharpening_AbilityID) > 0 && base.characterBody.GetBuffCount(Buff.RazorsBuff) < PantheraConfig.Tenacity_maxStacks)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.RazorsBuff).Send(NetworkDestination.Server);
                 }
             }

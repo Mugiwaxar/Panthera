@@ -59,7 +59,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Check if Fire Air Cleave //
-            if (base.pantheraObj.furyMode == true && base.pantheraObj.getAbilityLevel(PantheraConfig.HeatWave_AbilityID) > 0)
+            if (base.pantheraObj.furyMode == true && base.pantheraObj.GetAbilityLevel(PantheraConfig.HeatWave_AbilityID) > 0)
                 this.isFireAirCleave = true;
 
             // Get the Combo Number //

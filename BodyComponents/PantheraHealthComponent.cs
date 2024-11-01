@@ -101,7 +101,7 @@ namespace Panthera.BodyComponents
             }
 
             // Apply the Extended Protection Ability //
-            int extendedProtectionLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.ExtendedProtection_AbilityID);
+            int extendedProtectionLevel = hc.ptraObj.GetAbilityLevel(PantheraConfig.ExtendedProtection_AbilityID);
             if (hc.ptraObj.frontShieldObj.active == true && extendedProtectionLevel > 0)
             {
                 float absorbedDamagePercent = 0;
@@ -120,7 +120,7 @@ namespace Panthera.BodyComponents
 
 
             // Apply the Savage Revitalization Mastery //
-            if (hc.ptraObj.guardianMode == true && hc.ptraObj.isMastery(PantheraConfig.SavageRevitalization_AbilityID) == true)
+            if (hc.ptraObj.guardianMode == true && hc.ptraObj.IsMastery(PantheraConfig.SavageRevitalization_AbilityID) == true)
             {
                 float chance = hc.ptraObj.characterBody.mastery / 2;
                 if (UnityEngine.Random.RandomRange(0, 100) < chance)
@@ -128,7 +128,7 @@ namespace Panthera.BodyComponents
             }
 
             // Apply the Furrify Ability //
-            if (hc.ptraObj.guardianMode == true && hc.ptraObj.getAbilityLevel(PantheraConfig.Furrify_AbilityID) > 0)
+            if (hc.ptraObj.guardianMode == true && hc.ptraObj.GetAbilityLevel(PantheraConfig.Furrify_AbilityID) > 0)
             {
                 if (damageInfo.damage > (hc.ptraObj.characterBody.maxHealth * PantheraConfig.Furrify_percent))
                 {
@@ -142,7 +142,7 @@ namespace Panthera.BodyComponents
             }
 
             // Check the Enchanted Fur Ability //
-            int enchantedFurLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.EnchantedFur_AbilityID);
+            int enchantedFurLevel = hc.ptraObj.GetAbilityLevel(PantheraConfig.EnchantedFur_AbilityID);
             float enchantedFurDamageMultiplier = 1;
             if (enchantedFurLevel == 1)
                 enchantedFurDamageMultiplier -= PantheraConfig.EnchantedFur_percent1;
@@ -153,7 +153,7 @@ namespace Panthera.BodyComponents
             damageInfo.damage *= enchantedFurDamageMultiplier;
 
             // Check the Tornado Ability //
-            int tornadoLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.Tornado_AbilityID);
+            int tornadoLevel = hc.ptraObj.GetAbilityLevel(PantheraConfig.Tornado_AbilityID);
             float tornadoDamageMultiplier = 1;
             if (hc.ptraObj.clawsStormActivated == true)
             {
@@ -167,7 +167,7 @@ namespace Panthera.BodyComponents
             }
 
             // Check the Innate Protection Ability //
-            int protectionLevel = hc.ptraObj.getAbilityLevel(PantheraConfig.InnateProtection_AbilityID);
+            int protectionLevel = hc.ptraObj.GetAbilityLevel(PantheraConfig.InnateProtection_AbilityID);
             if (hc.ptraObj.guardianMode == true && protectionLevel > 0)
             {
                 float maxDamagePercent = 1;

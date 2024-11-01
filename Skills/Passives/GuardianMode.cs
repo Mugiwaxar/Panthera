@@ -25,7 +25,7 @@ namespace Panthera.Skills.Passives
             new NetworkMessages.ServerGuardianMessage(ptraObj.gameObject, true).Send(NetworkDestination.Server);
 
             // Apply the Mastery //
-            if (ptraObj.isMastery(PantheraConfig.Guardian_AbilityID) == true)
+            if (ptraObj.IsMastery(PantheraConfig.Guardian_AbilityID) == true)
             {
                 float healPercent = PantheraConfig.Guardian_masteryHealPercent + (ptraObj.characterBody.mastery / 100) ;
                 float healAmount = ptraObj.characterBody.maxHealth * healPercent;
@@ -33,7 +33,7 @@ namespace Panthera.Skills.Passives
             }
 
             // Apply the Savage Regeneration Ability //
-            if (ptraObj.getAbilityLevel(PantheraConfig.SavageRevitalization_AbilityID) > 0)
+            if (ptraObj.GetAbilityLevel(PantheraConfig.SavageRevitalization_AbilityID) > 0)
             {
                 int regenStackCount = ptraObj.characterBody.GetBuffCount(Base.Buff.RegenerationBuff);
                 int buffToRemove = Math.Min(PantheraConfig.SavageRevitalization_addedStack, regenStackCount);
@@ -42,7 +42,7 @@ namespace Panthera.Skills.Passives
             }
 
             // Apply the Warden Vitality Ability //
-            int wardensVitalityLevel = ptraObj.getAbilityLevel(PantheraConfig.WardensVitality_AbilityID);
+            int wardensVitalityLevel = ptraObj.GetAbilityLevel(PantheraConfig.WardensVitality_AbilityID);
             if (wardensVitalityLevel > 0)
             {
                 int addedPoints = 0;
@@ -66,7 +66,7 @@ namespace Panthera.Skills.Passives
             FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.GuardianOnFX, ptraObj.modelTransform.position, 1, ptraObj.gameObject, ptraObj.modelTransform.rotation, true);
 
             // Change the Skills //
-            if (ptraObj.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
+            if (ptraObj.GetAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
             {
                 ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = false;
                 ptraObj.activatedComboList[PantheraConfig.FrontShield_CombosID] = true;

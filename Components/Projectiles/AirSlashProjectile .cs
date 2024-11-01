@@ -50,11 +50,11 @@ namespace Panthera.Components.Projectiles
             if (tc != null && tc.teamIndex == TeamIndex.Monster)
             {
                 // Add Fury //
-                if (ptraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                if (ptraObj.GetAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                     new ClientAddFury(ptraObj.gameObject, PantheraConfig.AirSlash_furyAdded).Send(NetworkDestination.Clients);
 
                 // Add the Massive Hook Component //
-                if (ptraObj.getAbilityLevel(PantheraConfig.MassiveHook_AbilityID) > 0 && tc.body.isBoss == false)
+                if (ptraObj.GetAbilityLevel(PantheraConfig.MassiveHook_AbilityID) > 0 && tc.body.isBoss == false)
                 {
                     if (NetworkClient.active ==  false)
                     {

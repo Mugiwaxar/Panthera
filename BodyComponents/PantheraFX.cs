@@ -152,7 +152,7 @@ namespace Panthera.BodyComponents
             float fadeLevel = this.ptraObj.modelLocator.modelTransform.GetComponent<CharacterModel>().fade;
             if (this.ptraObj.stealthed == true)
                 fadeLevel = Math.Min(1f / 255f * 73f, fadeLevel);
-            SkinnedMeshRenderer redenrer = this.ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>();
+            SkinnedMeshRenderer redenrer = this.ptraObj.FindModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>();
             if (fadeLevel >= 1)
             {
                 Utils.Functions.ToOpaqueMode(redenrer.material);

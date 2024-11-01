@@ -140,7 +140,7 @@ namespace Panthera.MachineScripts
             this.aimAnimator = this.modelTransform.GetComponent<AimAnimator>();
             this.pantheraFX = player.GetComponent<PantheraFX>();
             this.masterObj = this.pantheraObj.pantheraMaster;
-            this.bcp = this.pantheraObj.getPassiveScript();
+            this.bcp = this.pantheraObj.GetPassiveScript();
 
         }
 
@@ -266,7 +266,7 @@ namespace Panthera.MachineScripts
 
         public int getAbilityLevel(int ID)
         {
-            return this.pantheraObj.getAbilityLevel(ID);
+            return this.pantheraObj.GetAbilityLevel(ID);
         }
         public object Clone()
         {

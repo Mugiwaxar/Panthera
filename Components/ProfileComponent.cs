@@ -91,7 +91,7 @@ namespace Panthera.Components
             float shieldHealthPercent = PantheraConfig.FrontShield_maxShieldHealthPercent;
             if (this.body != null)
             {
-                int improvedShieldAbilityLevel = this.body.ptraObj.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
+                int improvedShieldAbilityLevel = this.body.ptraObj.GetAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
                 if (improvedShieldAbilityLevel == 1) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent1 * this.body.level;
                 else if (improvedShieldAbilityLevel == 2) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent2 * this.body.level;
                 else if (improvedShieldAbilityLevel == 3) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent3 * this.body.level;
@@ -99,7 +99,7 @@ namespace Panthera.Components
             }
             else
             {
-                int improvedShieldAbilityLevel = Panthera.ProfileComponent.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
+                int improvedShieldAbilityLevel = Panthera.ProfileComponent.GetAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
                 if (improvedShieldAbilityLevel == 1) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent1 * (level+1);
                 else if (improvedShieldAbilityLevel == 2) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent2 * (level + 1);
                 else if (improvedShieldAbilityLevel == 3) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent3 * (level + 1);
@@ -507,39 +507,25 @@ namespace Panthera.Components
 
         }
 
-        public int getAbilityLevel(int abilityID)
-        {
-            if (this.unlockedAbilitiesList.ContainsKey(abilityID))
-                return this.unlockedAbilitiesList[abilityID];
-            return 0;
-        }
+        public int GetAbilityLevel(int abilityID) => this.unlockedAbilitiesList.GetValueOrDefault(abilityID);
 
-        public bool isSkillUnlocked(int skillID)
-        {
-            int abilityID = Panthera.PantheraCharacter.characterSkills.SkillsList[skillID].requiredAbilityID;
-            //if (abilityID < 1)
-            //    return true;
-            if (getAbilityLevel(abilityID) > 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsSkillUnlocked(int skillID) => this.unlockedAbilitiesList.GetValueOrDefault(Panthera.PantheraCharacter.characterSkills.SkillsList[skillID].requiredAbilityID) > 0;
 
-        public bool abilityCanBeUpgraded(int abilityID)
+        public bool AbilityCanBeUpgraded(int abilityID)
         {
 
             // Get the Ability //
             PantheraAbility ability = Panthera.PantheraCharacter.characterAbilities.AbilityList[abilityID];
 
             // Check if the Ability Level is not max //
-            if (getAbilityLevel(abilityID) >= ability.maxLevel)
+            if (GetAbilityLevel(abilityID) >= ability.maxLevel)
                 return false;
 
             // Get the Required Ability //
             PantheraAbility requiredAbility = Panthera.PantheraCharacter.characterAbilities.AbilityList[ability.requiredAbility];
 
             // Check if the Required Skill is unlocked //
-            if (requiredAbility != null && getAbilityLevel(requiredAbility.abilityID) < requiredAbility.maxLevel)
+            if (requiredAbility != null && GetAbilityLevel(requiredAbility.abilityID) < requiredAbility.maxLevel)
                 return false;
 
             return true;
@@ -555,7 +541,7 @@ namespace Panthera.Components
             // Check the Combo Skills List //
             foreach (ComboSkill comboSkill in combo.comboSkillsList)
             {
-                if (this.isSkillUnlocked(comboSkill.skill.skillID) == false)
+                if (this.IsSkillUnlocked(comboSkill.skill.skillID) == false)
                     return false;
             }
 
@@ -572,7 +558,7 @@ namespace Panthera.Components
                 return;
 
             // Check if the Ability can be upgraded //
-            if (this.abilityCanBeUpgraded(abilityID) == false)
+            if (this.AbilityCanBeUpgraded(abilityID) == false)
                 return;
 
             // Upgrade the Ability //

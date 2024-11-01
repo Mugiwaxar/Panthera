@@ -73,7 +73,7 @@ namespace Panthera.Skills.Passives
             ptraObj.characterBody.frontShield -= damage;
 
             // Start the Timer //
-            ptraObj.getPassiveScript().lastShieldDamageTime = Time.time;
+            ptraObj.GetPassiveScript().lastShieldDamageTime = Time.time;
 
             // Check if the Shield must be destroyed //
             if (ptraObj.characterBody.frontShield <= 0)
@@ -85,7 +85,7 @@ namespace Panthera.Skills.Passives
         {
 
             // Start the Timer //
-            ptraObj.getPassiveScript().destroyedShieldTime = Time.time;
+            ptraObj.GetPassiveScript().destroyedShieldTime = Time.time;
 
             // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.FrontShieldBreak, ptraObj.gameObject);

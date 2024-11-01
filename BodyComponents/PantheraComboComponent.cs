@@ -55,24 +55,24 @@ namespace Panthera.BodyComponents
 
         }
 
-        public void tryLaunchSkill(List<KeysEnum> keys, KeysEnum direction)
+        public void tryLaunchSkill(HashSet<KeysEnum> keys, KeysEnum direction)
         {
 
             // Create the New Combo Boolean //
             bool newCombo = false;
 
             // Try to find a Skill //
-            ComboSkill comboSkill = this.getSkill(this.actualCombosList, keys, direction);
+            ComboSkill comboSkill = this.GetSkill(this.actualCombosList, keys, direction);
 
             // If no skill found, try with a new Combo //
             if (comboSkill == null)
             {
                 newCombo = true;
-                comboSkill = this.getSkill(new List<ComboSkill>(), keys, direction);
+                comboSkill = this.GetSkill(new List<ComboSkill>(), keys, direction);
             }
 
             // Check the Skill //
-            if (comboSkill == null || this.ptraObj.isSkillUnlocked(comboSkill.skill.skillID) == false)
+            if (comboSkill == null || this.ptraObj.IsSkillUnlocked(comboSkill.skill.skillID) == false)
                 return;
 
             // Get the Skill //
@@ -112,12 +112,8 @@ namespace Panthera.BodyComponents
 
         }
 
-        private ComboSkill getSkill(List<ComboSkill> actualCombosList, List<KeysEnum> keys, KeysEnum direction)
+        private ComboSkill GetSkill(List<ComboSkill> actualCombosList, HashSet<KeysEnum> keys, KeysEnum direction)
         {
-
-            // Create a null Machine Script //
-            ComboSkill comboSkill = null;
-
             // Create the filtered List //
             Dictionary<int, PantheraCombo> filteredCombosList = this.ptraObj.characterCombos.CombosList;
 
@@ -126,21 +122,22 @@ namespace Panthera.BodyComponents
 
             // Check the ComboNumber and filter the List //
             if (comboNumber > 0)
-                filteredCombosList = this.filterCompatibleCombos(filteredCombosList, actualCombosList);
+                filteredCombosList = this.FilterCompatibleCombos(filteredCombosList, actualCombosList);
 
+            // Create a null Machine Script //
             // Try to get the Skill with the Direction //
-            comboSkill = this.getNextSkill(filteredCombosList, keys, direction, comboNumber, true);
+            var comboSkill = this.GetNextSkill(filteredCombosList, keys, direction, comboNumber, true);
 
             // Try to get the Skill without the Direction //
             if (comboSkill == null)
-                comboSkill = this.getNextSkill(filteredCombosList, keys, 0, comboNumber, false);
+                comboSkill = this.GetNextSkill(filteredCombosList, keys, 0, comboNumber, false);
 
             // Return the Skill //
             return comboSkill;
 
         }
 
-        private ComboSkill getNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, List<KeysEnum> keys, KeysEnum direction, int comboNumber, bool checkDirection)
+        private ComboSkill GetNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, HashSet<KeysEnum> keys, KeysEnum direction, int comboNumber, bool checkDirection)
         {
 
             // Create a null ComboSkill //
@@ -151,7 +148,7 @@ namespace Panthera.BodyComponents
             {
 
                 // Check if the Combo is locked //
-                if (this.ptraObj.isComboUnlocked(pair.Value.comboID) == false)
+                if (this.ptraObj.IsComboUnlocked(pair.Value.comboID) == false)
                     continue;
 
                 // Check if the Combo is activated //
@@ -199,7 +196,7 @@ namespace Panthera.BodyComponents
 
         }
 
-        public Dictionary<int, PantheraCombo> filterCompatibleCombos(Dictionary<int, PantheraCombo> allCombosList, List<ComboSkill> actualList)
+        public Dictionary<int, PantheraCombo> FilterCompatibleCombos(Dictionary<int, PantheraCombo> allCombosList, List<ComboSkill> actualList)
         {
             // Create the new List //
             Dictionary<int, PantheraCombo> tmpCombosList = new Dictionary<int, PantheraCombo>();
@@ -207,16 +204,15 @@ namespace Panthera.BodyComponents
             foreach (KeyValuePair<int, PantheraCombo> pair in allCombosList)
             {
                 // Check the Combo //
-                if (compareCombosList(actualList, pair.Value.comboSkillsList) == true)
+                if (CompareCombosList(actualList, pair.Value.comboSkillsList) == true)
                     tmpCombosList.Add(pair.Key, pair.Value);
             }
             // Return the List //
             return tmpCombosList;
         }
 
-        public bool compareCombosList(List<ComboSkill> list1, List<ComboSkill> list2)
+        public bool CompareCombosList(List<ComboSkill> list1, List<ComboSkill> list2)
         {
-
             // Check the Lists size //
             if (list1.Count > list2.Count)
                 return false;

@@ -132,7 +132,7 @@ namespace Panthera.MachineScripts
             //}
 
             // Add Shield //
-            if (base.pantheraObj.getAbilityLevel(PantheraConfig.Guardian_AbilityID) > 0 && base.pantheraObj.frontShieldDeployed == false)
+            if (base.pantheraObj.GetAbilityLevel(PantheraConfig.Guardian_AbilityID) > 0 && base.pantheraObj.frontShieldDeployed == false)
             {
                 float lastDamage = Time.time - this.lastShieldDamageTime;
                 float lastBroken = Time.time - this.destroyedShieldTime;
@@ -140,7 +140,7 @@ namespace Panthera.MachineScripts
 
                 // Check the Improved Shield Ability //
                 float rechargeRemoved = 0;
-                int improvedShieldAbilityLevel = base.pantheraObj.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
+                int improvedShieldAbilityLevel = base.pantheraObj.GetAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
                 if (improvedShieldAbilityLevel == 1) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay1;
                 if (improvedShieldAbilityLevel == 2) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay2;
                 if (improvedShieldAbilityLevel == 3) rechargeRemoved = PantheraConfig.ImprovedShield_RemovedRechargeDelay3;
@@ -244,7 +244,7 @@ namespace Panthera.MachineScripts
                     new ServerSetGodMode(base.gameObject, this.wasGod).Send(NetworkDestination.Server);
                     base.characterBody.RecalculateStats();
                     // Check the Golden Start Ability //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.GoldenStart_AbilityID) > 0)
+                    if (base.pantheraObj.GetAbilityLevel(PantheraConfig.GoldenStart_AbilityID) > 0)
                         new ServerAddGold(base.gameObject, PantheraConfig.GoldenStart_addedGold).Send(NetworkDestination.Server);
                 }
             }
@@ -394,7 +394,7 @@ namespace Panthera.MachineScripts
             Skills.Passives.Stealth.TookDamageUnstealth(base.pantheraObj);
 
             // Apply the Inner Rage Ability //
-            int innerRageLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.InnerRage_AbilityID);
+            int innerRageLvl = base.pantheraObj.GetAbilityLevel(PantheraConfig.InnerRage_AbilityID);
             if (innerRageLvl == 1)
                 base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent1;
             else if (innerRageLvl == 2)
@@ -405,7 +405,7 @@ namespace Panthera.MachineScripts
                 base.characterBody.trueFury += damageDealtMessage.damage * PantheraConfig.InnerRage_addedFuryPercent4;
 
             // Apply the Inner Rage Mastery //
-            if (base.pantheraObj.isMastery(PantheraConfig.InnerRage_AbilityID))
+            if (base.pantheraObj.IsMastery(PantheraConfig.InnerRage_AbilityID))
             {
                 float enrageChance = base.characterBody.mastery;
                 float enrageTime = base.pantheraObj.furyMode == true ? PantheraConfig.InnerRage_enrageTimeFuryMode : PantheraConfig.InnerRage_enrageTime;

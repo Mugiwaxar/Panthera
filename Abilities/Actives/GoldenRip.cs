@@ -28,7 +28,7 @@ namespace Panthera.Abilities.Actives
 
         public override void updateDesc()
         {
-            int level = Panthera.ProfileComponent.getAbilityLevel(base.abilityID);
+            int level = Panthera.ProfileComponent.GetAbilityLevel(base.abilityID);
             if (level <= 1)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_GoldenRipDesc"), PantheraConfig.GoldenRip_DamageMultiplier * 100, PantheraConfig.GoldenRip_addedCoin1) + String.Format(Utils.PantheraTokens.Get("skill_GoldenRipFuryDesc"), PantheraConfig.GoldenRip_furyAdded);
             else if (level == 2)

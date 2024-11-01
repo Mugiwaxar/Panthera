@@ -184,10 +184,7 @@ namespace Panthera.BodyComponents
             }
         }
 
-        public void doDamageSelf(float damage)
-        {
-            new ServerInflictDamage(base.gameObject, base.gameObject, base.transform.position, damage).Send(NetworkDestination.Server);
-        }
+        public void doDamageSelf(float damage) => new ServerInflictDamage(base.gameObject, base.gameObject, base.transform.position, damage).Send(NetworkDestination.Server);
 
         public void Awake()
         {
@@ -269,13 +266,10 @@ namespace Panthera.BodyComponents
 
         }
 
-        public void Start()
-        {
+        public void Start() =>
 
             // Start the Network Machine //
             this.networkMachine.enabled = true;
-
-        }
 
         public override void OnStartAuthority()
         {
@@ -330,7 +324,7 @@ namespace Panthera.BodyComponents
 
             // Get the minimum Fury //
             float minFury = 0;
-            int eternalFuryLvl = this.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
+            int eternalFuryLvl = this.GetAbilityLevel(PantheraConfig.EternalFury_AbilityID);
             if (eternalFuryLvl == 1)
                 minFury = this.characterBody.maxFury * PantheraConfig.EternalFury_startPercent1;
             else if (eternalFuryLvl == 2)
@@ -349,7 +343,7 @@ namespace Panthera.BodyComponents
                 this.skillLocator.createRechargeSkillsList();
 
             // Apply all Stats //
-            this.applyStats();
+            this.ApplyStats();
 
             // Create the Panthera Camera //
             GameObject camObj = GameObject.Instantiate(Camera.main.gameObject);
@@ -391,7 +385,7 @@ namespace Panthera.BodyComponents
             if (this.hasAuthority())
             {
                 // Enable or disable the Front Shield //
-                if (this.getSkillMachine1SciptType() == typeof(Skills.Actives.FrontShield) || this.getSkillMachine1SciptType() == typeof(Skills.Actives.ShieldBash) || this.frontShieldDeployed == true)
+                if (this.GetSkillMachine1SciptType() == typeof(Skills.Actives.FrontShield) || this.GetSkillMachine1SciptType() == typeof(Skills.Actives.ShieldBash) || this.frontShieldDeployed == true)
                 {
                     if (this.frontShieldObj.active == false)
                         Skills.Passives.FrontShield.EnableFrontShield(this);
@@ -519,17 +513,9 @@ namespace Panthera.BodyComponents
             CharacterBody.onBodyStartGlobal -= onEntitySpawned;
         }
 
-        public void applyStats()
-        {
-            characterBody.RecalculateStats();
-        }
+        public void ApplyStats() => characterBody.RecalculateStats();
 
-        public bool hasAuthority()
-        {
-            if (this.networkID.hasAuthority == true) return true;
-            if (NetworkServer.active == true && networkID.clientAuthorityOwner == null) return true;
-            return false;
-        }
+        public bool hasAuthority() => this.networkID.hasAuthority || (NetworkServer.active && networkID.clientAuthorityOwner == null);
 
         public void onEntitySpawned(CharacterBody body)
         {
@@ -540,66 +526,29 @@ namespace Panthera.BodyComponents
                 body.gameObject.AddComponent<PredatorComponent>();
         }
 
-        public int getAbilityLevel(int abilityID)
-        {
-            return this.profileComponent.getAbilityLevel(abilityID);
-        }
+        public int GetAbilityLevel(int abilityID) => this.profileComponent.GetAbilityLevel(abilityID);
 
-        public bool isMastery(int abilityID)
-        {
-            return this.profileComponent.isMastery(abilityID);
-        }
+        public bool IsMastery(int abilityID) => this.profileComponent.isMastery(abilityID);
 
-        public bool isSkillUnlocked(int skillId)
-        {
-            return this.profileComponent.isSkillUnlocked(skillId);
-        }
+        public bool IsSkillUnlocked(int skillId) => this.profileComponent.IsSkillUnlocked(skillId);
 
-        public bool isComboUnlocked(int comboID)
-        {
-            return this.profileComponent.isComboUnlocked(comboID);
-        }
+        public bool IsComboUnlocked(int comboID) => this.profileComponent.isComboUnlocked(comboID);
 
-        public Transform findModelChild(string childName)
-        {
-            return childLocator.FindChild(childName);
-        }
+        public Transform FindModelChild(string childName) => childLocator.FindChild(childName);
 
-        public MainScript getMainScript()
-        {
-            return (MainScript)GetComponent<PantheraMainMachine>().GetCurrentScript();
-        }
+        public MainScript GetMainScript() => (MainScript)GetComponent<PantheraMainMachine>().GetCurrentScript();
 
-        public BigCatPassive getPassiveScript()
-        {
-            return (BigCatPassive)GetComponent<PantheraPassiveMachine>().GetCurrentScript();
-        }
+        public BigCatPassive GetPassiveScript() => (BigCatPassive)GetComponent<PantheraPassiveMachine>().GetCurrentScript();
 
-        public MachineScript getSkillMachine1Scipt()
-        {
-            if (skillsMachine1.GetCurrentScript() == null) return null;
-            return skillsMachine1.GetCurrentScript();
-        }
+        public MachineScript GetSkillMachine1Scipt() => skillsMachine1.GetCurrentScript();
 
-        public MachineScript getSkillMachine2Scipt()
-        {
-            if (skillsMachine2.GetCurrentScript() == null) return null;
-            return skillsMachine2.GetCurrentScript();
-        }
+        public MachineScript GetSkillMachine2Scipt() => skillsMachine2.GetCurrentScript();
 
-        public Type getSkillMachine1SciptType()
-        {
-            if (skillsMachine1.GetCurrentScript() == null) return null;
-            return skillsMachine1.GetCurrentScript().GetType();
-        }
+        public Type GetSkillMachine1SciptType() => skillsMachine1.GetCurrentScript()?.GetType();
 
-        public Type getSkillMachine2SciptType()
-        {
-            if (skillsMachine2.GetCurrentScript() == null) return null;
-            return skillsMachine2.GetCurrentScript().GetType();
-        }
+        public Type GetSkillMachine2SciptType() => skillsMachine2.GetCurrentScript()?.GetType();
 
-        public void stopAllScripts()
+        public void StopAllScripts()
         {
             this.mainMachine.EndScript();
             this.mainMachine.nextScript = null;
@@ -613,7 +562,7 @@ namespace Panthera.BodyComponents
             this.networkMachine.nextScript = null;
         }
 
-        public static void readDefs()
+        public static void ReadDefs()
         {
 
             PantheraConfig.CloakBuffDef = RoR2Content.Buffs.Cloak;

@@ -105,7 +105,7 @@ namespace Panthera.GUI.Tabs
                     Image skillIcon = skillElem.transform.Find("Image").GetComponent<Image>();
                     skillIcon.sprite = skill.skill.icon;
                     // Change the Icon color //
-                    if (Panthera.ProfileComponent.isSkillUnlocked(skill.skill.skillID) == false)
+                    if (Panthera.ProfileComponent.IsSkillUnlocked(skill.skill.skillID) == false)
                         skillIcon.color = PantheraConfig.SkillsLockedSkillColor;
                     else
                         skillIcon.color = PantheraConfig.SkillsNormalSkillColor;

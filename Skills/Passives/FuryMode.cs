@@ -37,7 +37,7 @@ namespace Panthera.Skills.Passives
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID, 1);
 
             // Change the Skills //
-            if (ptraObj.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
+            if (ptraObj.GetAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
             {
                 ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = false;
                 ptraObj.activatedComboList[PantheraConfig.ClawsStorm_CombosID] = true;

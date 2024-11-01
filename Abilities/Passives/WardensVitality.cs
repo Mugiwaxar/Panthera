@@ -28,7 +28,7 @@ namespace Panthera.Abilities.Passives
 
         public override void updateDesc()
         {
-            int level = Panthera.ProfileComponent.getAbilityLevel(base.abilityID);
+            int level = Panthera.ProfileComponent.GetAbilityLevel(base.abilityID);
             if (level <= 1)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_WardensVitalityDesc"), (PantheraConfig.WardensVitality_maxHealthPercent1 - 1) * 100, PantheraConfig.WardensVitality_BlockAdded1);
             else if (level == 2)

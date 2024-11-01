@@ -52,7 +52,7 @@ namespace Panthera.BodyComponents
         {
 
             // Return if Panthera is Sleeping //
-            if (this.pantheraObj?.getPassiveScript()?.isSleeping == true)
+            if (this.pantheraObj?.GetPassiveScript()?.isSleeping == true)
                 return;
 
             // Do the jump //

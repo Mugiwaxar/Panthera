@@ -144,25 +144,25 @@ namespace Panthera.GUI.Tabs
         {
 
             // Prowl Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Prowl_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.Prowl_SkillID) == false)
                 this.ability1Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability1Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Fury Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Fury_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.Fury_SkillID) == false)
                 this.ability2Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability2Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Detection Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Detection_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.Detection_SkillID) == false)
                 this.ability3Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability3Icon.color = PantheraConfig.SkillsNormalSkillColor;
 
             // Guardian Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Guardian_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.Guardian_SkillID) == false)
                 this.ability4Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.ability4Icon.color = PantheraConfig.SkillsNormalSkillColor;
@@ -171,7 +171,7 @@ namespace Panthera.GUI.Tabs
             this.spell2Icon.color = PantheraConfig.SkillsLockedSkillColor;
 
             // Ambition Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.Ambition_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.Ambition_SkillID) == false)
                 this.spell3Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.spell3Icon.color = PantheraConfig.SkillsNormalSkillColor;
@@ -182,7 +182,7 @@ namespace Panthera.GUI.Tabs
             this.spell7Icon.color = PantheraConfig.SkillsLockedSkillColor;
 
             // Portal Surge Skill //
-            if (Panthera.ProfileComponent.isSkillUnlocked(PantheraConfig.PortalSurge_SkillID) == false)
+            if (Panthera.ProfileComponent.IsSkillUnlocked(PantheraConfig.PortalSurge_SkillID) == false)
                 this.spell8Icon.color = PantheraConfig.SkillsLockedSkillColor;
             else
                 this.spell8Icon.color = PantheraConfig.SkillsNormalSkillColor;

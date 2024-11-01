@@ -68,7 +68,6 @@ namespace Panthera.Utils
                 manifestResourceStream2.Read(array, 0, array.Length);
                 SoundAPI.SoundBanks.Add(array);
             }
-
         }
 
         public static void playSound(string soundName, GameObject obj, bool emit = true)
@@ -79,8 +78,7 @@ namespace Panthera.Utils
                 if (Utils.Functions.IsHost() == true) new ServerPlaySound(obj, soundName).Send(NetworkDestination.Server);
                 else if (Utils.Functions.IsClient() == true) new ServerPlaySound(obj, soundName).Send(NetworkDestination.Server);
                 else if (Utils.Functions.IsServer() == true) new ServerPlaySound(obj, soundName, true).Send(NetworkDestination.Server);
-            }
-                
+            } 
         }
 
     }

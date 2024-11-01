@@ -138,14 +138,14 @@ namespace Panthera.BodyComponents
             orig(self);
 
             // Check if Panthera //
-            if (self is not PantheraSkillLocator) return;
-            PantheraSkillLocator skillLocator = (PantheraSkillLocator)self;
-
-            // Add a Stock to all Skills //
-            skillLocator.addOneStock(PantheraConfig.Rip_SkillID);
-            skillLocator.addOneStock(PantheraConfig.Slash_SkillID);
-            skillLocator.addOneStock(PantheraConfig.Leap_SkillID);
-            skillLocator.addOneStock(PantheraConfig.MightyRoar_SkillID);
+            if (self is PantheraSkillLocator skillLocator && skillLocator)
+            {
+                // Add a Stock to all Skills //
+                skillLocator.addOneStock(PantheraConfig.Rip_SkillID);
+                skillLocator.addOneStock(PantheraConfig.Slash_SkillID);
+                skillLocator.addOneStock(PantheraConfig.Leap_SkillID);
+                skillLocator.addOneStock(PantheraConfig.MightyRoar_SkillID);
+            }
 
         }
 
@@ -167,7 +167,6 @@ namespace Panthera.BodyComponents
             this.maxStock = maxStock;
             this.baseCooldown = baseCooldown;
         }
-
     }
 
 }

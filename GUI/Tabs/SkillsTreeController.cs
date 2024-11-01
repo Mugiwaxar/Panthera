@@ -107,7 +107,7 @@ namespace Panthera.GUI.Tabs
                 {
                     ability.associatedGUIObj.transform.Find("Amount").gameObject.active = true;
                     TextMeshProUGUI pointsAmountText = ability.associatedGUIObj.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
-                    pointsAmountText.text = String.Format("{0}/{1}", Panthera.ProfileComponent.getAbilityLevel(ability.abilityID), ability.maxLevel);
+                    pointsAmountText.text = String.Format("{0}/{1}", Panthera.ProfileComponent.GetAbilityLevel(ability.abilityID), ability.maxLevel);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace Panthera.GUI.Tabs
 
                 // Update the Icon Color //
                 Image abilityImage = ability.associatedGUIObj.transform.Find("Icon").GetComponent<Image>();
-                if (Panthera.ProfileComponent.getAbilityLevel(ability.abilityID) > 0 || ability.abilityID == PantheraConfig.FelineSkills_AbilityID)
+                if (Panthera.ProfileComponent.GetAbilityLevel(ability.abilityID) > 0 || ability.abilityID == PantheraConfig.FelineSkills_AbilityID)
                     abilityImage.color = PantheraConfig.SkillsTreeUnlockedAbilityColor;
                 else
                     abilityImage.color = PantheraConfig.SkillsTreeLockedAbilityColor;
@@ -131,7 +131,7 @@ namespace Panthera.GUI.Tabs
             }
 
             // Update Specials 1 //
-            if (Panthera.ProfileComponent.getAbilityLevel(PantheraConfig.UntamedSpirit_AbilityID) > 0)
+            if (Panthera.ProfileComponent.GetAbilityLevel(PantheraConfig.UntamedSpirit_AbilityID) > 0)
             {
                 this.special1.Find("Icon").GetComponent<Image>().color = PantheraConfig.SkillsTreeUnlockedAbilityColor;
             }
@@ -141,7 +141,7 @@ namespace Panthera.GUI.Tabs
             }
 
             // Update Specials 2 //
-            if (Panthera.ProfileComponent.getAbilityLevel(PantheraConfig.GodPower_AbilityID) > 0)
+            if (Panthera.ProfileComponent.GetAbilityLevel(PantheraConfig.GodPower_AbilityID) > 0)
             {
                 this.special2.Find("Icon").GetComponent<Image>().color = PantheraConfig.SkillsTreeUnlockedAbilityColor;
                 this.skillsTreeWindow.transform.Find("Content").Find("SpecialsFrame").Find("ProgressLineSpecial2").GetComponent<Image>().color = PantheraConfig.SkillsTreeLineUnlockedColor;
@@ -153,7 +153,7 @@ namespace Panthera.GUI.Tabs
             }
 
             // Update Specials 3 //
-            if (Panthera.ProfileComponent.getAbilityLevel(PantheraConfig.PortalSurge_AbilityID) > 0)
+            if (Panthera.ProfileComponent.GetAbilityLevel(PantheraConfig.PortalSurge_AbilityID) > 0)
             {
                 this.special3.Find("Icon").GetComponent<Image>().color = PantheraConfig.SkillsTreeUnlockedAbilityColor;
                 this.skillsTreeWindow.transform.Find("Content").Find("SpecialsFrame").Find("ProgressLineSpecial3").GetComponent<Image>().color = PantheraConfig.SkillsTreeLineUnlockedColor;
@@ -189,7 +189,7 @@ namespace Panthera.GUI.Tabs
                 PantheraAbility requiredAbility = Panthera.PantheraCharacter.characterAbilities.getAbilityByID(ability.requiredAbility);
 
                 // Change the Color of the Line //
-                if (Panthera.ProfileComponent.getAbilityLevel(requiredAbility.abilityID) >= requiredAbility.maxLevel)
+                if (Panthera.ProfileComponent.GetAbilityLevel(requiredAbility.abilityID) >= requiredAbility.maxLevel)
                     line.GetComponent<Image>().color = PantheraConfig.SkillsTreeLineUnlockedColor;
                 else
                     line.GetComponent<Image>().color = PantheraConfig.SkillsTreeLinelockedColor;

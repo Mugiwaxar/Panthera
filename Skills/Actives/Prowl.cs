@@ -40,7 +40,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.characterBody.GetBuffCount(Buff.EclipseBuff) <= 0 && ptraObj.getPassiveScript().isOutOfCombat == false) return false;
+            if (ptraObj.characterBody.GetBuffCount(Buff.EclipseBuff) <= 0 && ptraObj.GetPassiveScript().isOutOfCombat == false) return false;
             if (ptraObj.skillLocator.getStock(PantheraConfig.Prowl_SkillID) <= 0) return false;
             return true;
         }

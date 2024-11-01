@@ -33,8 +33,9 @@ namespace Panthera.BodyComponents
         //public Dictionary<int, PantheraSkill> pressedSlot = new Dictionary<int, PantheraSkill>(); // List of pressed actions (key: SlotID, Value: ActionID)
         //public bool switchBarPressed;
 
-        public List<KeysEnum> keysPressedList = new List<KeysEnum>();
-        public List<KeysEnum> keysDownList = new List<KeysEnum>();
+        public HashSet<KeysEnum> keysPressedList = [];
+        public HashSet<KeysEnum> keysDownList = [];
+
         public KeysEnum directionKeyPressed = 0;
 
         public void DoInit()
@@ -45,9 +46,8 @@ namespace Panthera.BodyComponents
             this.skillsMachine2 = base.GetComponents<PantheraSkillsMachine>()[1];
         }
 
-        public void FixedUpdate()
+        public void Update()
         {
-
             // Return if server //
             if (ptraObj.hasAuthority() == false) return;
 
@@ -60,7 +60,7 @@ namespace Panthera.BodyComponents
             if (ptraObj.healthComponent.alive == false) return;
 
             // Return if sleeping //
-            if (ptraObj.getPassiveScript() == null || ptraObj.getPassiveScript().isSleeping == true) return;
+            if (ptraObj.GetPassiveScript() == null || ptraObj.GetPassiveScript().isSleeping == true) return;
 
             // Return if no Button was pressed //
             if (this.isAnyButtonChanged() == false) return;
@@ -140,61 +140,25 @@ namespace Panthera.BodyComponents
 
         }
 
-        private bool isAnyButtonChanged()
-        {
-            if (rewirePlayer.GetAnyButton() == true || rewirePlayer.GetAnyButtonDown() == true) return true;
-            return false;
-        }
+        private bool isAnyButtonChanged() => rewirePlayer.GetAnyButton() || rewirePlayer.GetAnyButtonDown();
 
-        private bool IsKeyDown(int key)
-        {
-            return rewirePlayer.GetButtonDown(key);
-        }
+        private bool IsKeyDown(int key) => rewirePlayer.GetButtonDown(key);
 
-        private bool IsKeyPressed(int key)
-        {
-            return rewirePlayer.GetButton(key);
-        }
+        private bool IsKeyPressed(int key) => rewirePlayer.GetButton(key);
 
-        private bool IsKeyReleased(int key)
-        {
-            return rewirePlayer.GetButtonUp(key);
-        }
+        private bool IsKeyReleased(int key) => rewirePlayer.GetButtonUp(key);
 
-        private bool IsKeyDoublePressed(int key)
-        {
-            return rewirePlayer.GetButtonDoublePressUp(key);
-        }
+        private bool IsKeyDoublePressed(int key) => rewirePlayer.GetButtonDoublePressUp(key);
 
-        private bool IsRightPressed()
-        {
-            if (rewirePlayer.GetAxis(0) > 0.9f) return true;
-            return false;
-        }
+        private bool IsRightPressed() => rewirePlayer.GetAxis(0) > 0.9f;
 
-        private bool IsLeftPressed()
-        {
-            if (rewirePlayer.GetAxis(0) < -0.9f) return true;
-            return false;
-        }
+        private bool IsLeftPressed() => rewirePlayer.GetAxis(0) < -0.9f;
 
-        private bool IsUpPressed()
-        {
-            if (rewirePlayer.GetAxis(1) > 0.9f) return true;
-            return false;
-        }
+        private bool IsUpPressed() => rewirePlayer.GetAxis(1) > 0.9f;
 
-        private bool IsDownPressed()
-        {
-            if (rewirePlayer.GetAxis(1) < -0.9f) return true;
-            return false;
-        }
+        private bool IsDownPressed() => rewirePlayer.GetAxis(1) < -0.9f;
 
-        private bool IsDirectionKeyPressed()
-        {
-            if (IsRightPressed() || IsLeftPressed() || IsUpPressed() || IsDownPressed()) return true;
-            return false;
-        }
+        private bool IsDirectionKeyPressed() => IsRightPressed() || IsLeftPressed() || IsUpPressed() || IsDownPressed();
 
 
     }

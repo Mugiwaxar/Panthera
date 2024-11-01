@@ -236,14 +236,14 @@ namespace Panthera.Components
                 return;
 
             // Check the Concentration Ability //
-            if (this.ptraObj.getAbilityLevel(PantheraConfig.Concentration_AbilityID) > 0)
+            if (this.ptraObj.GetAbilityLevel(PantheraConfig.Concentration_AbilityID) > 0)
             {
                 // Uptade the Color of the Body //
                 if (this.type == XRayObjectType.Body)
                     this.updateBodyColor();
 
                 // Update Colors //
-                if (this.ptraObj.detectionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
+                if (this.ptraObj.detectionMode == true && this.ptraObj.GetAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
                 {
                     // Update the Color of the Chest //
                     if (this.type == XRayObjectType.Purchase && this.name != "Duplicator(Clone)")

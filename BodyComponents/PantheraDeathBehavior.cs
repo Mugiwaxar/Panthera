@@ -37,7 +37,7 @@ namespace Panthera.BodyComponents
         {
 
             // Stop all Scripts //
-            ptraObj.stopAllScripts();
+            ptraObj.StopAllScripts();
 
             // Start the death Machine //
             deathMachine.enabled = true;

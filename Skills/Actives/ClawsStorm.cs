@@ -93,7 +93,7 @@ namespace Panthera.Skills.Actives
             base.pantheraObj.characterModel.invisibilityCount += 1;
 
             // Get the Damages //
-            int tornadoLevel = base.pantheraObj.getAbilityLevel(PantheraConfig.Tornado_AbilityID);
+            int tornadoLevel = base.pantheraObj.GetAbilityLevel(PantheraConfig.Tornado_AbilityID);
             if (tornadoLevel == 1)
                 this.damageMultiplier *= 1 + PantheraConfig.Tornado_damagePercent1;
             else if (tornadoLevel == 2)

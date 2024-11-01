@@ -138,7 +138,7 @@ namespace Panthera
         public void Update()
         {
             // Open/Close the Panthera Panel //
-            if (InputPlayer != null && InputPlayer.GetButtonDown(PantheraConfig.Keys_OpenPantheraPanelActionCode))
+            if (InputPlayer?.GetButtonDown(PantheraConfig.Keys_OpenPantheraPanelActionCode) == true)
             {
                 if (PantheraPanelController.pantheraPanelGUI.active == false)
                 {

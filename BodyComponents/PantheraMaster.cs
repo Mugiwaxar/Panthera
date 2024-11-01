@@ -32,7 +32,7 @@ namespace Panthera.BodyComponents
         {
             if (Util.HasEffectiveAuthority(gameObject) == true)
             {
-                PantheraObj.readDefs();
+                PantheraObj.ReadDefs();
             }
         }
 

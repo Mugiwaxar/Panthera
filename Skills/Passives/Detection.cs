@@ -142,7 +142,7 @@ namespace Panthera.Skills.Passives
 
         public static float GetDetectionMaxTime(PantheraObj ptraObj)
         {
-            int level = ptraObj.getAbilityLevel(PantheraConfig.SuperiorFlair_AbilityID);
+            int level = ptraObj.GetAbilityLevel(PantheraConfig.SuperiorFlair_AbilityID);
             float maxTime = PantheraConfig.Detection_maxTime;
             if (level == 1) maxTime = PantheraConfig.SuperiorFlair_percent1;
             else if (level == 2) maxTime = PantheraConfig.SuperiorFlair_percent2;

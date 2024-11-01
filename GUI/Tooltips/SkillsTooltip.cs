@@ -45,7 +45,7 @@ namespace Panthera.GUI.Tabs
                 TooltipObj.transform.Find("Description2").gameObject.active = true;
                 TooltipObj.transform.Find("Description2").GetComponent<TextMeshProUGUI>().text = script.desc2;
             }
-            if(Panthera.ProfileComponent.isSkillUnlocked(script.skillID) == false)
+            if(Panthera.ProfileComponent.IsSkillUnlocked(script.skillID) == false)
                 TooltipObj.transform.Find("Locked").gameObject.active = true;
             else
                 TooltipObj.transform.Find("Locked").gameObject.active = false;

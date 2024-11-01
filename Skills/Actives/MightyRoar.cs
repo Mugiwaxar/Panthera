@@ -155,7 +155,7 @@ namespace Panthera.Skills.Actives
                     new ServerStunTarget(hc.gameObject, stunDuration).Send(NetworkDestination.Server);
 
                     // Add the Tenacity Buff //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.RoarOfResilience_AbilityID) > 0)
+                    if (base.pantheraObj.GetAbilityLevel(PantheraConfig.RoarOfResilience_AbilityID) > 0)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.TenacityBuff).Send(NetworkDestination.Server);
 
                     // Bleed the Target //

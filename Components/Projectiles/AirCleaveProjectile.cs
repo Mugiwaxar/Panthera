@@ -29,7 +29,7 @@ namespace Panthera.Components.Projectiles
                 damageInfo.position = impactInfo.estimatedPointOfImpact;
                 damageInfo.force = base.projectileDamage.force * base.transform.forward;
                 damageInfo.procChainMask = base.controller.procChainMask;
-                damageInfo.procCoefficient = base.controller.procCoefficient;
+                damageInfo.procCoefficient = PantheraConfig.AirCleave_procCoefficient;
                 damageInfo.damageColorIndex = base.projectileDamage.damageColorIndex;
                 damageInfo.damageType = base.projectileDamage.damageType;
             }
@@ -50,7 +50,7 @@ namespace Panthera.Components.Projectiles
                 if (base.gameObject.name.Contains("Fire"))
                 {
                     float fireDamage = damageInfo.damage * PantheraConfig.InfernalSwipe_damagePercent2;
-                    new ServerInflictDamage(base.gameObject, healthComponent.gameObject, healthComponent.transform.position, fireDamage, damageInfo.crit, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
+                    new ServerInflictDamage(base.gameObject, healthComponent.gameObject, healthComponent.transform.position, fireDamage, damageInfo.crit, damageInfo.procCoefficient, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
                     float ignitionChance = PantheraConfig.InfernalSwipe_ingnitionChance2 * 100;
                     float ignitionRand = UnityEngine.Random.Range(0, 100);
                     if (ignitionRand < ignitionChance)

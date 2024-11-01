@@ -30,7 +30,7 @@ namespace Panthera.Components.Projectiles
                 damageInfo.position = impactInfo.estimatedPointOfImpact;
                 damageInfo.force = base.projectileDamage.force * base.transform.forward;
                 damageInfo.procChainMask = base.controller.procChainMask;
-                damageInfo.procCoefficient = base.controller.procCoefficient;
+                damageInfo.procCoefficient = PantheraConfig.AirSlash_procCoefficient;
                 damageInfo.damageColorIndex = base.projectileDamage.damageColorIndex;
                 damageInfo.damageType = base.projectileDamage.damageType;
             }

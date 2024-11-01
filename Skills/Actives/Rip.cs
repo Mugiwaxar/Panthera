@@ -191,7 +191,7 @@ namespace Panthera.Skills.Actives
                 float critChance = this.isGhostRip == true ? base.critStat * 2 : base.critStat;
                 bool isCrit = Util.CheckRoll(critChance, base.characterBody.master);
                 float damage = base.characterBody.damage * this.damageMultiplier * sharpenedFangsMult;
-                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_hitboxName, default, PantheraAssets.RipHitFX);
+                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_procCoefficient, PantheraConfig.Rip_hitboxName, default, 1, PantheraAssets.RipHitFX);
 
                 // Fire the attack //
                 List<HurtBox> enemiesHit = new List<HurtBox>();
@@ -307,7 +307,7 @@ namespace Panthera.Skills.Actives
                                 fireDamage *= PantheraConfig.InfernalSwipe_damagePercent1;
                             if (infernalSwipeLvl == 2)
                                 fireDamage *= PantheraConfig.InfernalSwipe_damagePercent2;
-                            new ServerInflictDamage(base.gameObject, hc.gameObject, enemy.transform.position, fireDamage, isCrit, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
+                            new ServerInflictDamage(base.gameObject, hc.gameObject, enemy.transform.position, fireDamage, isCrit, PantheraConfig.InfernalSwipe_procCoefficient, DamageType.Generic, DamageColorIndex.WeakPoint).Send(NetworkDestination.Server);
                             float ignitionChance = 0;
                             if (infernalSwipeLvl == 1)
                                 ignitionChance = PantheraConfig.InfernalSwipe_ingnitionChance1 * 100;

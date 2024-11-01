@@ -422,6 +422,7 @@ namespace Panthera.NetworkMessages
         GameObject target;
         Vector3 position;
         float damage;
+        float procCoefficient;
         bool isCrit;
         uint damageType;
         byte damageColor;
@@ -431,12 +432,13 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ServerInflictDamage(GameObject attacker, GameObject target, Vector3 position, float damage, bool isCrit = false, DamageType damageType = DamageType.Generic, DamageColorIndex damageColor = DamageColorIndex.Default)
+        public ServerInflictDamage(GameObject attacker, GameObject target, Vector3 position, float damage, bool isCrit = false, float procCoefficient = 1, DamageType damageType = DamageType.Generic, DamageColorIndex damageColor = DamageColorIndex.Default)
         {
             this.attacker = attacker;
             this.target = target;
             this.position = position;
             this.damage = damage;
+            this.procCoefficient = procCoefficient;
             this.isCrit = isCrit;
             this.damageType = (uint)damageType;
             this.damageColor = (byte)damageColor;
@@ -457,7 +459,7 @@ namespace Panthera.NetworkMessages
             damageInfo.damageColorIndex = (DamageColorIndex)this.damageColor;
             damageInfo.force = Vector3.zero;
             damageInfo.procChainMask = default(ProcChainMask);
-            damageInfo.procCoefficient = 1;
+            damageInfo.procCoefficient = this.procCoefficient;
             hc.TakeDamage(damageInfo);
         }
 
@@ -467,6 +469,7 @@ namespace Panthera.NetworkMessages
             writer.Write(this.target);
             writer.Write(this.position);
             writer.Write(this.damage);
+            writer.Write(this.procCoefficient);
             writer.Write(this.isCrit);
             writer.Write(this.damageType);
             writer.Write(this.damageColor);
@@ -478,6 +481,7 @@ namespace Panthera.NetworkMessages
             this.target = reader.ReadGameObject();
             this.position = reader.ReadVector3();
             this.damage = reader.ReadSingle();
+            this.procCoefficient = reader.ReadSingle();
             this.isCrit = reader.ReadBoolean();
             this.damageType = reader.ReadUInt32();
             this.damageColor = reader.ReadByte();

@@ -47,7 +47,7 @@ namespace Panthera.Utils
             hitBoxGroup.groupName = hitboxName;
         }
 
-        public static OverlapAttack CreateOverlapAttack(GameObject attacker, float damage, bool isCrit, string hitBoxName, Vector3 forceVector = new Vector3(), GameObject hitEffect = null)
+        public static OverlapAttack CreateOverlapAttack(GameObject attacker, float damage, bool isCrit, float procCoefficient, string hitBoxName, Vector3 forceVector = new Vector3(), float pushAwayForce = 1, GameObject hitEffect = null)
         {
             // Get the HitBox //
             HitBoxGroup hitBoxGroup = null;
@@ -67,19 +67,18 @@ namespace Panthera.Utils
             attack.inflictor = attacker;
             attack.teamIndex = TeamComponent.GetObjectTeam(attacker);
             attack.damage = damage;
-            attack.procCoefficient = PantheraConfig.Rip_procCoefficient;
+            attack.procCoefficient = procCoefficient;
             attack.hitEffectPrefab = hitEffect;
             attack.forceVector = forceVector;
-            attack.pushAwayForce = PantheraConfig.Rip_pushForce;
+            attack.pushAwayForce = pushAwayForce;
             attack.hitBoxGroup = hitBoxGroup;
             attack.isCrit = isCrit;
-            //attack.impactSound = hitSound;
 
             return attack;
 
         }
 
-        public static BlastAttack CreateBlastAttack(GameObject attacker, float damage, BlastAttack.FalloffModel falloffModel, bool isCrit, Vector3 position, float radius, Vector3 forceVector = new Vector3(), GameObject hitEffect = null)
+        public static BlastAttack CreateBlastAttack(GameObject attacker, float damage, BlastAttack.FalloffModel falloffModel, bool isCrit, float procCoefficient, Vector3 position, float radius, Vector3 forceVector = new Vector3(), float pushAwayForce = 1)
         {
 
             // Get the Body //
@@ -94,13 +93,12 @@ namespace Panthera.Utils
             attack.teamIndex = TeamComponent.GetObjectTeam(attacker);
             attack.baseDamage = damage;
             attack.falloffModel = falloffModel;
-            attack.procCoefficient = PantheraConfig.Rip_procCoefficient;
-            //attack.hitEffectPrefab = hitEffect;
+            attack.procCoefficient = procCoefficient;
+            //attack.impactEffect = hitEffect;
             attack.bonusForce = forceVector;
             attack.baseForce = PantheraConfig.Rip_pushForce;
             attack.radius = radius;
             attack.crit = isCrit;
-            //attack.impactSound = hitSound;
 
             return attack;
 

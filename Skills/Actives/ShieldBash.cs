@@ -135,7 +135,7 @@ namespace Panthera.Skills.Actives
                     {
                         this.enemiesHit.Add(obj);
                         new ServerStunTarget(obj, stunDuration).Send(NetworkDestination.Server);
-                        new ServerInflictDamage(base.gameObject, obj, obj.transform.position, damage, isCrit).Send(NetworkDestination.Server);
+                        new ServerInflictDamage(base.gameObject, obj, obj.transform.position, damage, isCrit, PantheraConfig.ShieldBash_procCoefficient).Send(NetworkDestination.Server);
                         if (tc.body.characterMotor != null && tc.body.isBoss == false)
                         {
                             float forceRand = UnityEngine.Random.Range(PantheraConfig.ShieldBash_pushMinMultiplier, PantheraConfig.ShieldBash_pushMaxMultiplier);

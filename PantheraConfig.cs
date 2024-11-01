@@ -368,6 +368,7 @@ namespace Panthera
         public static readonly float AirCleave_attackDuration = 0.8f;
         public static readonly float AirCleave_attackTime = 0.25f;
         public static readonly float AirCleave_attackDamageMultiplier = 1;
+        public static readonly float AirCleave_procCoefficient = 0.8f;
         public static readonly float AirCleave_projectileSpeed = 130;
         public static readonly float AirCleave_projectileForce = 15;
         public static readonly float AirCleave_minimumAimTime = 1f;
@@ -417,6 +418,7 @@ namespace Panthera
         public static readonly float Slash_duration = 0.8f;
         public static readonly float Slash_radius = 8;
         public static readonly float Slash_damageMultiplier = 2f;
+        public static readonly float Slash_procCoefficient = 0.7f;
         public static readonly int Slash_furyAdded = 2;
         #endregion
         #region Prowl
@@ -444,6 +446,7 @@ namespace Panthera
         public static readonly float AirSlash_cooldown = 7;
         public static readonly float AirSlash_comboMaxTime = 5;
         public static readonly float AirSlash_atkDamageMultiplier = 2f;
+        public static readonly float AirSlash_procCoefficient = 1.5f;
         public static readonly float AirSlash_furyAdded = 2;
         public static readonly float AirSlash_attackDuration = 0.5f;
         public static readonly float AirSlash_attackTime = 0.25f;
@@ -476,7 +479,7 @@ namespace Panthera
         public static readonly float ClawsStorm_continuousConsumeTime = 1;
         public static readonly float ClawsStorm_destroyFXDelay = 0.5f;
         public static readonly DamageType ClawsStorm_damageType = DamageType.Generic;
-        public static readonly float ClawsStorm_procCoefficient = 1f;
+        public static readonly float ClawsStorm_procCoefficient = 0.2f;
         public static readonly float ClawsStorm_pushForce = 1f;
         public static readonly Vector3 ClawsStorm_bonusForce = Vector3.zero;
         public static readonly float ClawsStorm_damageMultiplier = 0.50f;
@@ -499,6 +502,7 @@ namespace Panthera
         public static readonly float ShieldBash_upMinMultiplier = 1f;
         public static readonly float ShieldBash_upMaxMultiplier = 5f;
         public static readonly float ShieldBash_damageMultiplier = 3.5f;
+        public static readonly float ShieldBash_procCoefficient = 1.5f;
         public static readonly float ShieldBash_stunDuration = 2;
         public static readonly float ShieldBash_magnetudeDecreasePercent = 0.9f;
         #endregion
@@ -764,6 +768,7 @@ namespace Panthera
         public static readonly float InfernalSwipe_damagePercent2 = 0.50f;
         public static readonly float InfernalSwipe_ingnitionChance1 = 0.15f;
         public static readonly float InfernalSwipe_ingnitionChance2 = 0.30f;
+        public static readonly float InfernalSwipe_procCoefficient = 1.5f;
         #endregion
         #region Heat Wave
         public static readonly int HeatWave_maxLevel = 1;

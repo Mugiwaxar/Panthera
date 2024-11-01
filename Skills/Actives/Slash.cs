@@ -66,7 +66,7 @@ namespace Panthera.Skills.Actives
             bool isCrit = RollCrit();
             float damage = base.characterBody.damage * PantheraConfig.Slash_damageMultiplier;
             float scale = PantheraConfig.Slash_radius * base.pantheraObj.modelScale;
-            BlastAttack attack = Functions.CreateBlastAttack(base.gameObject, damage, FalloffModel.None, isCrit, base.characterBody.corePosition, scale, default, PantheraAssets.RipHitFX);
+            BlastAttack attack = Functions.CreateBlastAttack(base.gameObject, damage, FalloffModel.None, isCrit, PantheraConfig.Slash_procCoefficient, base.characterBody.corePosition, scale);
 
             // Get the Result //
             Result result = attack.Fire();

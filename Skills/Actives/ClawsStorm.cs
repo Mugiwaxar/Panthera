@@ -153,7 +153,7 @@ namespace Panthera.Skills.Actives
                 List<HurtBox> hitResults = new List<HurtBox>();
                 float damage = characterBody.damage * this.damageMultiplier;
                 bool isCrit = RollCrit();
-                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.ClawsStorm_hitboxName);
+                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.ClawsStorm_procCoefficient, PantheraConfig.ClawsStorm_hitboxName);
                 attack.Fire(hitResults);
                 this.lastFired = Time.time;
 

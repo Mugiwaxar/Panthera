@@ -197,6 +197,12 @@ namespace Panthera.Skills.Actives
                 List<HurtBox> enemiesHit = new List<HurtBox>();
                 attack.Fire(enemiesHit);
 
+                // Add camera recoil
+                if (this.comboNumber == 1)
+                    base.AddRecoil(0, 0, 1, 1.5f);
+                else
+                    base.AddRecoil(0, 0, -1.5f, -1);
+
                 // Play the Sound //
                 Sound.playSound(this.soundName, base.gameObject);
 

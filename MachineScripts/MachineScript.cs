@@ -219,7 +219,7 @@ namespace Panthera.MachineScripts
             }
             return new Ray(this.transform.position, this.transform.forward);
         }
-        protected void StartAimMode(float duration = 2f, bool snap = false)
+        public void StartAimMode(float duration = 2f, bool snap = false)
         {
             Ray aimRay = this.GetAimRay();
 
@@ -251,7 +251,7 @@ namespace Panthera.MachineScripts
                 }
             }
         }
-        protected bool RollCrit()
+        public bool RollCrit()
         {
             return Util.CheckRoll(this.critStat, this.characterBody.master);
         }
@@ -262,6 +262,10 @@ namespace Panthera.MachineScripts
         public TeamIndex GetTeam()
         {
             return TeamComponent.GetObjectTeam(this.gameObject);
+        }
+        public void AddRecoil(float verticalMin, float verticalMax, float horizontalMin, float horizontalMax)
+        {
+            cameraTargetParams.AddRecoil(verticalMin, verticalMax, horizontalMin, horizontalMax);
         }
 
         public int getAbilityLevel(int ID)

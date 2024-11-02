@@ -15,10 +15,11 @@ namespace Panthera.GUI
 {
     public class PantheraHUD : MonoBehaviour
     {
-
-        public HUD origHUD;
+        public bool isRiskUI = true;
+        public HUD hud;
         public ChildLocator origChildLoc;
         public GameObject origMainContainer;
+        public Transform springCanvas;
 
         public PantheraObj ptraObj;
 
@@ -66,7 +67,7 @@ namespace Panthera.GUI
             if (Panthera.PantheraHUD != null)
                 GameObject.DestroyImmediate(Panthera.PantheraHUD);
             Panthera.PantheraHUD = self.mainContainer.AddComponent<PantheraHUD>();
-            Panthera.PantheraHUD.origHUD = self;
+            Panthera.PantheraHUD.hud = self;
             Panthera.PantheraHUD.origMainContainer = self.mainContainer;
             Panthera.PantheraHUD.origChildLoc = self.GetComponent<ChildLocator>();
 
@@ -77,7 +78,24 @@ namespace Panthera.GUI
             Panthera.PantheraHUD.enabled = false;
 
         }
+        private Transform Find(Transform parent, string name)
+        {
+            if (!parent)
+            {
+                Debug.LogWarning($"Parent for {name} is null, can't search for child");
+                return null;
+            }
 
+            var res = parent.Find(name);
+
+            if (!res)
+            {
+                Debug.LogError($"{parent.name} does not have child {name}, did you mean: ");
+                foreach (Transform t in parent)
+                    Debug.LogWarning(t.name);
+            }
+            return res;
+        }
         public void StartHUD(PantheraObj ptraObj)
         {
             /*
@@ -102,6 +120,14 @@ namespace Panthera.GUI
             XPBar    LevelDisplayRoot                   .GetComponent<LevelText>();
             XPBar    ExpBarRoot/ShrunkenRoot/FillPanel  .GetComponent<RectTransform>();
 
+            RightInfoBar
+            TopCenterCluster
+            ScopeContainer
+            CrosshairExtras
+            BottomLeftCluster
+            BossHealthBar
+
+           ?? RightUtilityArea
              */
             // Save the Panthera Object //
             this.ptraObj = ptraObj;
@@ -114,42 +140,72 @@ namespace Panthera.GUI
             {
                 MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount = 0;
             }
+            var main = Find(this.origMainContainer.transform, "MainUIArea");
+            springCanvas = Find(main, "SpringCanvas");
+
+            var topCenter = origChildLoc.FindChild("TopCenterCluster");
+            var bottomLeft = origChildLoc.FindChild("BottomLeftCluster");
+            var bottomRight = Find(springCanvas, "BottomRightCluster");
+            var bottomCenter = Find(springCanvas, "BottomCenterCluster");
+
+            var rightInfo = origChildLoc.FindChild("RightInfoBar");
+            var scope = origChildLoc.FindChild("ScopeContainer");
+            var xhairExtras = origChildLoc.FindChild("CrosshairExtras");
+            var bossHp = origChildLoc.FindChild("BossHealthBar");
 
             // Init the Crosshair //
-            GameObject crosshairObj = GameObject.Instantiate<GameObject>(PantheraAssets.CrosshairPrefab, this.origMainContainer.transform.Find("MainUIArea").Find("CrosshairCanvas"));
+            GameObject crosshairObj = GameObject.Instantiate<GameObject>(PantheraAssets.CrosshairPrefab, xhairExtras.parent);
             this.ptraObj.crosshairComp = crosshairObj.AddComponent<CrosshairComp>();
             this.ptraObj.crosshairComp.ptraObj = this.ptraObj;
             this.ptraObj.crosshairComp.crosshairObj = crosshairObj;
 
             // Get the Cluster //
-            GameObject levelDisplayCluster = this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster")?.gameObject;
+            var hpBarRoot = this.hud.healthBar.transform;
+            var xpBarRoot = this.hud.expBar.transform.parent;
 
             // Create the Panthera XP Bar //
-            GameObject XPBar = GameObject.Instantiate<GameObject>(levelDisplayCluster, levelDisplayCluster.transform.parent);
+            GameObject XPBar = GameObject.Instantiate<GameObject>(xpBarRoot.gameObject, xpBarRoot.parent);
             XPBar.name = "PantheraLevel";
-            GameObject.DestroyImmediate(XPBar.transform.Find("BuffDisplayRoot").gameObject);
-            GameObject.DestroyImmediate(XPBar.transform.Find("ExpBarRoot").GetComponent<ExpBar>());
-            XPBar.transform.Find("LevelDisplayRoot").Find("PrefixText").GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
-            XPBar.transform.Find("LevelDisplayRoot").Find("ValueText").GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
-            XPBar.transform.Find("ExpBarRoot").Find("ShrunkenRoot").Find("FillPanel").GetComponent<Image>().color = PantheraConfig.PantheraHUDLevelBarColor;
-            XPBar.transform.Find("LevelDisplayRoot").GetComponent<LevelText>().SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
-            this.pantheraLevelTextComp = XPBar.transform.Find("LevelDisplayRoot").GetComponent<LevelText>();
-            this.pantheraLevelBarRect = XPBar.transform.Find("ExpBarRoot").Find("ShrunkenRoot").Find("FillPanel").GetComponent<RectTransform>();
-            this.levelUpObj = GameObject.Instantiate<GameObject>(new GameObject(), this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomCenterCluster"));
+
+            // image and xpbar component
+            var shrunkenRootParent = XPBar.transform.Find(isRiskUI ? "LevelBar" : "ExpBarRoot");
+            var shrunkenRoot = shrunkenRootParent.Find("ShrunkenRoot");
+            GameObject.DestroyImmediate(shrunkenRootParent.GetComponent<ExpBar>());
+
+            if (!isRiskUI)
+                GameObject.DestroyImmediate(XPBar.transform.Find("BuffDisplayRoot").gameObject);
+
+            // text
+            var levelDisplayRoot = isRiskUI ? XPBar.transform : XPBar.transform.Find("LevelDisplayRoot");
+            var prefixText = levelDisplayRoot.Find("PrefixText");
+            var valueText = levelDisplayRoot.Find(isRiskUI ? "LevelText" : "ValueText");
+            var fillPanel = shrunkenRoot.Find("FillPanel");
+
+            prefixText.GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            valueText.GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            fillPanel.GetComponent<Image>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            levelDisplayRoot.GetComponent<LevelText>().SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
+            
+            this.pantheraLevelTextComp = levelDisplayRoot.GetComponent<LevelText>();
+            this.pantheraLevelBarRect = fillPanel.GetComponent<RectTransform>();
+            
+            this.levelUpObj = GameObject.Instantiate<GameObject>(new GameObject(), bottomCenter);
             this.levelUpObj.name = "LevelUpImage";
             levelUpObj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             levelUpObj.transform.localPosition = new Vector3(0, -48, 0);
+
             Image imageComp = levelUpObj.AddComponent<Image>();
             imageComp.sprite = PantheraAssets.LevelUpIcon;
             this.levelUpObj.SetActive(false);
 
             // Change the Health Bar Order //
-            GameObject healthbarRoot = origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("HealthbarRoot").gameObject;
-            healthbarRoot.transform.SetParent(levelDisplayCluster.transform.parent.parent);
-            healthbarRoot.transform.SetParent(levelDisplayCluster.transform.parent);
+            if (!isRiskUI)
+            {
+                hpBarRoot.SetAsLastSibling();
+            }
 
             // Create the Fury Bar //
-            this.furyBarObj = GameObject.Instantiate<GameObject>(PantheraAssets.FuryBar, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+            this.furyBarObj = GameObject.Instantiate<GameObject>(PantheraAssets.FuryBar, hpBarRoot.parent);
             this.furyBarObj.transform.localPosition = new Vector3(-5, 38, 0);
             this.furyBarMat = this.furyBarObj?.transform?.Find("Health_ORB").GetComponent<Image>().materialForRendering;
 
@@ -157,12 +213,12 @@ namespace Panthera.GUI
             this.lastSawLevel = Panthera.PantheraCharacter.characterLevel;
 
             // Instantiate the Abilities Icons //
-            this.abilitiesIcons = GameObject.Instantiate<GameObject>(PantheraAssets.AbilitiesIcons, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+            this.abilitiesIcons = GameObject.Instantiate<GameObject>(PantheraAssets.AbilitiesIcons, bottomLeft);
             this.abilitiesIcons.transform.localPosition = new Vector3(-15, 230, 0);
             this.abilitiesIcons.SetActive(true);
 
             // Instantiate the Spells Icons //
-            this.spellsIcons = GameObject.Instantiate<GameObject>(PantheraAssets.SpellsIcons, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster"));
+            this.spellsIcons = GameObject.Instantiate<GameObject>(PantheraAssets.SpellsIcons, bottomRight);
             this.spellsIcons.transform.localPosition = new Vector3(30, 140, 0);
             this.spellsIcons.SetActive(true);
 
@@ -207,21 +263,21 @@ namespace Panthera.GUI
             this.spell8Obj.AddComponent<PantheraSkillIcon>().Init(this.ptraObj, PantheraConfig.PortalSurge_SkillID, PantheraAssets.PortalSurgeSkill);
 
             // Instantiate the Combos Template //
-            this.combosFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboBaseTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+            this.combosFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboBaseTemplate, springCanvas);
             this.combosFrame.transform.localPosition = new Vector3(0, -480, 0);
 
             // Instantiate the Cooldown Frame //
-            this.cooldownFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDCooldownFrame, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster"));
+            this.cooldownFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDCooldownFrame, bottomRight);
             this.cooldownFrame.transform.localPosition = new Vector3(-257, 80, 0);
 
             // Instantiate the Shield Bar //
-            this.shieldBar = GameObject.Instantiate<GameObject>(PantheraAssets.HUDShieldBar, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+            this.shieldBar = GameObject.Instantiate<GameObject>(PantheraAssets.HUDShieldBar, springCanvas);
             this.shieldBar.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
             this.shieldBar.transform.localPosition = new Vector3(0, -350, 0);
             this.shieldBar.AddComponent<ShieldBar>().ptraObj = this.ptraObj;
 
             // Instantiate the Block Bar //
-            Transform blockBarParrent = this.origHUD.healthBar.barContainer;
+            Transform blockBarParrent = this.hud.healthBar.barContainer;
             this.blockBar = GameObject.Instantiate<GameObject>(PantheraAssets.HUDBlockBar, blockBarParrent);
             this.blockBar.transform.localScale = new Vector3(0.42f, 0.55f, 0.42f);
             this.blockBar.transform.localPosition = new Vector3(-0.5f, 0, 0);
@@ -366,7 +422,7 @@ namespace Panthera.GUI
                 // Instantiate the Combo Failed Frame //
                 if (this.comboFailedFrame!= null)
                     GameObject.DestroyImmediate(this.comboFailedFrame);
-                this.comboFailedFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboSkillTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
+                this.comboFailedFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboSkillTemplate, springCanvas);
                 this.comboFailedFrame.transform.localPosition = new Vector3(0, -400, 0);
                 this.comboFailedFrame.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 

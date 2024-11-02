@@ -161,7 +161,7 @@ namespace Panthera.GUI.Components
             this.spellActiveImages[7].SetActive(spellModeEnabled && input.keysPressedList.HasFlag(KeysEnum.Ability4));
 
             // Change the Skill 1 Icon if Prowl or Ambition is activated //
-            var targetSkill = this.hud.origHUD.skillIcons[0].targetSkill;
+            var targetSkill = this.hud.hud.skillIcons[0].targetSkill;
             if (targetSkill && targetSkill.skillDef)
             {
                 if (this.ptraObj.stealthed && this.ptraObj.GetAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
@@ -173,7 +173,7 @@ namespace Panthera.GUI.Components
             }
 
             // Change the Skill 2 Icon if Guardian, Fury Mode or Arcane Anchor is activated //
-            targetSkill = this.hud.origHUD.skillIcons[1].targetSkill;
+            targetSkill = this.hud.hud.skillIcons[1].targetSkill;
             if (targetSkill && targetSkill.skillDef)
             {
                 if (this.ptraObj.frontShieldDeployed)

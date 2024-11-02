@@ -16,18 +16,15 @@ namespace Panthera.BodyComponents
 
         public void CreateRechargeSkillsList()
         {
-            var skillList = this.ptraObj.CharacterSkills.SkillsList;
-            this.rechargeSkillList = new RechargeSkill[skillList.Count];
-            for (int i = 0; i < skillList.Count; i++)
-            {
-                var skill = skillList[i];
-                this.rechargeSkillList[i] = new RechargeSkill(skill, skill.maxStock, skill.baseCooldown);
-            }
+            this.rechargeSkillList = [.. this.ptraObj.CharacterSkills.SkillsList.Select(skill => new RechargeSkill(skill, skill.maxStock, skill.baseCooldown))];
         }
 
         public void FixedUpdate()
         {
             // Itinerate all RechargeSkill
+            if (!this.rechargeSkillList?.Any() != true)
+                return;
+
             for (int i = 0; i < this.rechargeSkillList.Length; i++)
             {
                 // Check the RechargeSkill //
@@ -50,45 +47,45 @@ namespace Panthera.BodyComponents
             }
         }
 
-        public RechargeSkill GetSkill(int skillID) => this.rechargeSkillList.ElementAtOrDefault(skillID);
+        public RechargeSkill GetSkill(int skillID) => this.rechargeSkillList?.ElementAtOrDefault(skillID);
 
-        public int GetStock(int skillID) => this.rechargeSkillList.ElementAtOrDefault(skillID)?.stock ?? 0;
+        public int GetStock(int skillID) => this.rechargeSkillList?.ElementAtOrDefault(skillID)?.stock ?? 0;
 
         public void SetMaxStock(int skillID, int maxStock)
         {
-            var skill = this.rechargeSkillList.ElementAtOrDefault(skillID);
+            var skill = this.rechargeSkillList?.ElementAtOrDefault(skillID);
             if (skill is not null)
                 skill.maxStock = maxStock;
         }
 
         public void AddOneStock(int skillID)
         {
-            var skill = this.rechargeSkillList.ElementAtOrDefault(skillID);
+            var skill = this.rechargeSkillList?.ElementAtOrDefault(skillID);
             if (skill is not null && skill.stock < skill.maxStock)
                 skill.stock++;
         }
 
         public void RemoveOneStock(int skillID)
         {
-            var skill = this.rechargeSkillList.ElementAtOrDefault(skillID);
+            var skill = this.rechargeSkillList?.ElementAtOrDefault(skillID);
             if (skill is not null && skill.stock > 0)
                 skill.stock--;
         }
 
-        public float GetMaxCooldown(int skillID) => this.rechargeSkillList.ElementAtOrDefault(skillID)?.baseCooldown ?? 0;
+        public float GetMaxCooldown(int skillID) => this.rechargeSkillList?.ElementAtOrDefault(skillID)?.baseCooldown ?? 0;
 
         public void SetMaxCooldown(int skillID, float baseCooldown)
         {
-            var skill = this.rechargeSkillList.ElementAtOrDefault(skillID);
+            var skill = this.rechargeSkillList?.ElementAtOrDefault(skillID);
             if (skill is not null)
                 skill.baseCooldown = baseCooldown;
         }
 
-        public float GetCooldown(int skillID) => this.rechargeSkillList.ElementAtOrDefault(skillID)?.cooldown ?? 0;
+        public float GetCooldown(int skillID) => this.rechargeSkillList?.ElementAtOrDefault(skillID)?.cooldown ?? 0;
 
         public void SetCooldown(int skillID, float cooldown)
         {
-            var skill = this.rechargeSkillList.ElementAtOrDefault(skillID);
+            var skill = this.rechargeSkillList?.ElementAtOrDefault(skillID);
             if (skill is not null)
                 skill.cooldown = cooldown;
         }

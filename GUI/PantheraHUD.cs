@@ -168,21 +168,21 @@ namespace Panthera.GUI
             XPBar.name = "PantheraLevel";
 
             // image and xpbar component
-            var shrunkenRootParent = XPBar.transform.Find(isRiskUI ? "LevelBar" : "ExpBarRoot");
-            var shrunkenRoot = shrunkenRootParent.Find("ShrunkenRoot");
-            GameObject.DestroyImmediate(shrunkenRootParent.GetComponent<ExpBar>());
+            var sunkenRootParent = Find(XPBar.transform, isRiskUI ? "LevelBar" : "ExpBarRoot");
+            var sunkenRoot = Find(sunkenRootParent, "SunkenRoot");
+            GameObject.DestroyImmediate(sunkenRootParent.GetComponent<ExpBar>());
 
             if (!isRiskUI)
                 GameObject.DestroyImmediate(XPBar.transform.Find("BuffDisplayRoot").gameObject);
 
             // text
-            var levelDisplayRoot = isRiskUI ? XPBar.transform : XPBar.transform.Find("LevelDisplayRoot");
-            var prefixText = levelDisplayRoot.Find("PrefixText");
-            var valueText = levelDisplayRoot.Find(isRiskUI ? "LevelText" : "ValueText");
-            var fillPanel = shrunkenRoot.Find("FillPanel");
+            var levelDisplayRoot = isRiskUI ? XPBar.transform : Find(XPBar.transform, "LevelDisplayRoot");
+            var prefixText = Find(levelDisplayRoot, "PrefixText");
+            var valueText = Find(levelDisplayRoot, isRiskUI ? "LevelText" : "ValueText");
+            var fillPanel = Find(sunkenRoot, "FillPanel");
 
-            prefixText.GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
-            valueText.GetComponent<HGTextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            prefixText.GetComponent<TextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
+            valueText.GetComponent<TextMeshProUGUI>().color = PantheraConfig.PantheraHUDLevelBarColor;
             fillPanel.GetComponent<Image>().color = PantheraConfig.PantheraHUDLevelBarColor;
             levelDisplayRoot.GetComponent<LevelText>().SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
             

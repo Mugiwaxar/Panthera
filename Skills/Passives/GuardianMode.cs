@@ -3,11 +3,7 @@ using Panthera.BodyComponents;
 using Panthera.Utils;
 using R2API.Networking.Interfaces;
 using R2API.Networking;
-using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 using Panthera.NetworkMessages;
 
 namespace Panthera.Skills.Passives
@@ -60,7 +56,7 @@ namespace Panthera.Skills.Passives
             Utils.Sound.playSound(Utils.Sound.GardianOn, ptraObj.gameObject);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Guardian_SkillID, 1);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Guardian_SkillID, 1);
 
             // Create the FX //
             FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.GuardianOnFX, ptraObj.modelTransform.position, 1, ptraObj.gameObject, ptraObj.modelTransform.rotation, true);
@@ -96,7 +92,7 @@ namespace Panthera.Skills.Passives
             FrontShield.DisableFrontShield(ptraObj);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Guardian_SkillID);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Guardian_SkillID);
 
             // Set back the Skills //
             ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = true;

@@ -10,16 +10,8 @@ using System;
 using RoR2.Networking;
 using Panthera.Components;
 using Panthera.Machines;
-using Panthera.MachineScripts;
 using Panthera.Utils;
-using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
-using static R2API.LoadoutAPI;
-using System.Reflection;
-using MonoMod.RuntimeDetour.HookGen;
-using Panthera;
-using Panthera.Base;
 using Panthera.BodyComponents;
-using UnityEngine.AddressableAssets;
 
 namespace Panthera.Base
 {
@@ -36,7 +28,6 @@ namespace Panthera.Base
         public static GameObject CharacterDisplayPrefab;
 
         public static readonly Color CharacterColor = new Color(1, 1, 1);
-        public static DamageAPI.ModdedDamageType BarrierDamageType;
 
         public static void RegisterCharacter()
         {

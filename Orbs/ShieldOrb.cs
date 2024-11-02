@@ -4,9 +4,6 @@ using Panthera.NetworkMessages;
 using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.Orbs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Orbs

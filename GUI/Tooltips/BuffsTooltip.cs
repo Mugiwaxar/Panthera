@@ -1,8 +1,4 @@
 ﻿using Panthera.Base;
-using Panthera.GUI.Tabs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,11 +32,13 @@ namespace Panthera.GUI.Tooltips
             ShowCounter++;
 
             // Get the Type String //
+            /*
             string typeString = "";
             if (buff.isDebuff == false)
                 typeString = "Buff";
             else 
                 typeString = "Debuff";
+            */
 
             // Set the Tooltip //
             TooltipObj.transform.Find("Header").Find("BuffIcon").GetComponent<Image>().sprite = buff.iconSprite;
@@ -49,7 +47,6 @@ namespace Panthera.GUI.Tooltips
             TooltipObj.transform.Find("Duration").Find("Amount").GetComponent<TextMeshProUGUI>().text = buff.duration == 0 ? "Inf" : buff.duration.ToString();
             TooltipObj.transform.Find("MaxStacks").Find("Amount").GetComponent<TextMeshProUGUI>().text = buff.maxStacks == 0 ? "Inf" : buff.maxStacks.ToString();
             TooltipObj.transform.Find("Description1").GetComponent<TextMeshProUGUI>().text = buff.desc;
-
         }
 
         public static void HideTooltip()
@@ -68,7 +65,7 @@ namespace Panthera.GUI.Tooltips
                 TooltipObj.SetActive(false);
 
             // Return if the Tooltip is not active //
-            if (TooltipObj.active == false) return;
+            if (TooltipObj.activeSelf == false) return;
 
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;

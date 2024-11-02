@@ -1,12 +1,6 @@
-﻿using Panthera.Base;
-using Panthera.BodyComponents;
-using R2API;
+﻿using Panthera.BodyComponents;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Components

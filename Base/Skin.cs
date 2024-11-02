@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using HarmonyLib;
 using MonoMod.RuntimeDetour.HookGen;
-using Panthera;
-using Panthera.Base;
-using Panthera.Components;
 using Panthera.Utils;
 using RoR2;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Networking.Match;
-using static R2API.LoadoutAPI;
-using static UnityEngine.ParticleSystem;
 
 namespace Panthera.Base
 {
@@ -119,7 +107,7 @@ namespace Panthera.Base
 
             // Change Display Mesh and Materials //
             SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] displayMaterials = new Material[] { PantheraAssets.Body1Mat1, PantheraAssets.Body1Mat2 };
+            Material[] displayMaterials = [PantheraAssets.Body1Mat1, PantheraAssets.Body1Mat2];
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = PantheraAssets.BodyMesh1;
 
@@ -154,7 +142,7 @@ namespace Panthera.Base
 
             // Change Display Mesh and Materials //
             SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] displayMaterials = new Material[] { PantheraAssets.Body2Mat1, PantheraAssets.Body2Mat2 };
+            Material[] displayMaterials = [PantheraAssets.Body2Mat1, PantheraAssets.Body2Mat2];
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = PantheraAssets.BodyMesh2;
 
@@ -189,7 +177,7 @@ namespace Panthera.Base
 
             // Change Display Mesh and Materials //
             SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] displayMaterials = new Material[] { PantheraAssets.Body3Mat1, PantheraAssets.Body3Mat2 };
+            Material[] displayMaterials = [PantheraAssets.Body3Mat1, PantheraAssets.Body3Mat2];
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = PantheraAssets.BodyMesh3;
 
@@ -224,8 +212,8 @@ namespace Panthera.Base
 
             // Change Display Mesh and Materials //
             SkinnedMeshRenderer displaySmr = displayChildLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] displayMaterials = new Material[] { PantheraAssets.Body4Mat1, PantheraAssets.Body4Mat2, PantheraAssets.Body4Mat3, PantheraAssets.Body4Mat4, PantheraAssets.Body4Mat5, PantheraAssets.Body4Mat6, PantheraAssets.Body4Mat7,
-                PantheraAssets.Body4Mat8, PantheraAssets.Body4Mat9, PantheraAssets.Body4Mat10, PantheraAssets.Body4Mat11, PantheraAssets.Body4Mat12, PantheraAssets.Body4Mat13 };
+            Material[] displayMaterials = [ PantheraAssets.Body4Mat1, PantheraAssets.Body4Mat2, PantheraAssets.Body4Mat3, PantheraAssets.Body4Mat4, PantheraAssets.Body4Mat5, PantheraAssets.Body4Mat6, PantheraAssets.Body4Mat7,
+                PantheraAssets.Body4Mat8, PantheraAssets.Body4Mat9, PantheraAssets.Body4Mat10, PantheraAssets.Body4Mat11, PantheraAssets.Body4Mat12, PantheraAssets.Body4Mat13 ];
             displaySmr.sharedMaterials = displayMaterials;
             displaySmr.sharedMesh = PantheraAssets.BodyMesh4;
 
@@ -259,7 +247,7 @@ namespace Panthera.Base
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] materials = new Material[] { PantheraAssets.Body1Mat1, PantheraAssets.Body1Mat2 };
+            Material[] materials = [PantheraAssets.Body1Mat1, PantheraAssets.Body1Mat2];
             smr.sharedMaterials = materials;
             smr.sharedMesh = PantheraAssets.BodyMesh1;
 
@@ -287,7 +275,7 @@ namespace Panthera.Base
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] materials = new Material[] { PantheraAssets.Body2Mat1, PantheraAssets.Body2Mat2 };
+            Material[] materials = [PantheraAssets.Body2Mat1, PantheraAssets.Body2Mat2];
             smr.sharedMaterials = materials;
             smr.sharedMesh = PantheraAssets.BodyMesh2;
 
@@ -315,7 +303,7 @@ namespace Panthera.Base
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] materials = new Material[] { PantheraAssets.Body3Mat1, PantheraAssets.Body3Mat2 };
+            Material[] materials = [PantheraAssets.Body3Mat1, PantheraAssets.Body3Mat2];
             smr.sharedMaterials = materials;
             smr.sharedMesh = PantheraAssets.BodyMesh3;
 
@@ -343,8 +331,8 @@ namespace Panthera.Base
 
             // Change Mesh and Materials //
             SkinnedMeshRenderer smr = childLocator.FindChild("Body").GetComponent<SkinnedMeshRenderer>();
-            Material[] materials = new Material[] { PantheraAssets.Body4Mat1, PantheraAssets.Body4Mat2, PantheraAssets.Body4Mat3, PantheraAssets.Body4Mat4, PantheraAssets.Body4Mat5, PantheraAssets.Body4Mat6, PantheraAssets.Body4Mat7,
-                PantheraAssets.Body4Mat8, PantheraAssets.Body4Mat9, PantheraAssets.Body4Mat10, PantheraAssets.Body4Mat11, PantheraAssets.Body4Mat12, PantheraAssets.Body4Mat13 };
+            Material[] materials = [ PantheraAssets.Body4Mat1, PantheraAssets.Body4Mat2, PantheraAssets.Body4Mat3, PantheraAssets.Body4Mat4, PantheraAssets.Body4Mat5, PantheraAssets.Body4Mat6, PantheraAssets.Body4Mat7,
+                PantheraAssets.Body4Mat8, PantheraAssets.Body4Mat9, PantheraAssets.Body4Mat10, PantheraAssets.Body4Mat11, PantheraAssets.Body4Mat12, PantheraAssets.Body4Mat13 ];
             smr.sharedMaterials = materials;
             smr.sharedMesh = PantheraAssets.BodyMesh4;
 
@@ -353,16 +341,16 @@ namespace Panthera.Base
 
         public static SkinDef CreateSkinDef(string skinName, Sprite skinIcon, CharacterModel.RendererInfo[] rendererInfos, SkinnedMeshRenderer mainRenderer, GameObject mainModel)
         {
-            SkinDefInfo skinDefInfo = new SkinDefInfo
+            R2API.SkinDefInfo skinDefInfo = new R2API.SkinDefInfo
             {
-                BaseSkins = Array.Empty<SkinDef>(),
-                GameObjectActivations = new SkinDef.GameObjectActivation[0],
+                BaseSkins = [],
+                GameObjectActivations = [],
                 Icon = skinIcon,
-                MeshReplacements = new SkinDef.MeshReplacement[0],
-                MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
+                MeshReplacements = [],
+                MinionSkinReplacements = [],
                 Name = skinName,
                 NameToken = skinName,
-                ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
+                ProjectileGhostReplacements = [],
                 RendererInfos = rendererInfos,
                 RootObject = mainModel,
                 UnlockableDef = null
@@ -396,13 +384,9 @@ namespace Panthera.Base
 
         public static int GetActualSkinIndex(NetworkUser nUser)
         {
-            BodyIndex bodyIndex = nUser.bodyIndexPreference;
-            int index = 0;
-            if (bodyIndex == null) return 0;
-            Loadout.BodyLoadoutManager bodyLoadout = nUser?.networkLoadout?.loadout?.bodyLoadoutManager;
-            if (bodyLoadout == null) return 0;
-            index = (int)bodyLoadout.GetSkinIndex(bodyIndex);
-            return index + 1;
+            var bodyLoadout = nUser?.networkLoadout?.loadout?.bodyLoadoutManager;
+
+            return bodyLoadout == null ? 0 : (int)bodyLoadout.GetSkinIndex(nUser.bodyIndexPreference) + 1;
         }
 
     }

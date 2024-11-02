@@ -1,18 +1,9 @@
-﻿using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.MachineScripts;
-using Panthera.Passives;
-using Panthera.OldSkills;
+﻿using Panthera.BodyComponents;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using Panthera.Skills.Passives;
 
 namespace Panthera.NetworkMessages
 {
@@ -88,7 +79,7 @@ namespace Panthera.NetworkMessages
             else if (this.set == false && ptraObj.frontShieldObj != null)
                 ptraObj.frontShieldObj.SetActive(false);
             ptraObj.frontShieldObj.layer = LayerIndex.entityPrecise.intVal;
-            ptraObj.frontShieldObj.transform.FindChild("WorldHitBox").gameObject.layer = LayerIndex.world.intVal;
+            ptraObj.frontShieldObj.transform.Find("WorldHitBox").gameObject.layer = LayerIndex.world.intVal;
             ptraObj.characterBody.RecalculateStats();
         }
 

@@ -1,12 +1,6 @@
 ﻿using Panthera.BodyComponents;
 using RoR2;
-using RoR2.CameraModes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 using static RoR2.CameraTargetParams;
-using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.Utils
 {

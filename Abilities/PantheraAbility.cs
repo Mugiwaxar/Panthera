@@ -1,12 +1,4 @@
-﻿using Panthera;
-using Panthera.Abilities;
-using Panthera.Base;
-using Panthera.Components;
-using Panthera.NetworkMessages;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Panthera.Abilities
 {

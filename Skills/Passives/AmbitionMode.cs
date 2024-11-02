@@ -6,8 +6,6 @@ using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Skills.Passives
@@ -31,7 +29,7 @@ namespace Panthera.Skills.Passives
             Utils.Sound.playSound(Utils.Sound.AmbitionOn, ptraObj.gameObject);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Ambition_SkillID);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Ambition_SkillID);
 
             // Spawn the Effect //
             FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.AmbitionOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);

@@ -1,25 +1,11 @@
-﻿using EntityStates;
-using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.GUI;
 using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills;
-using Panthera.Skills.Actives;
 using Panthera.Utils;
 using R2API;
-using R2API.Networking;
-using R2API.Networking.Interfaces;  
-using Rewired;
 using RoR2;
-using RoR2.Audio;
 using RoR2.Projectile;
-using RoR2.Skills;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Panthera.Skills.Actives
@@ -52,7 +38,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.AirSlash_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.AirSlash_SkillID) <= 0) return false;
             return true;
         }
 
@@ -160,7 +146,7 @@ namespace Panthera.Skills.Actives
             // Hide the Crosshair //
             base.pantheraObj.crosshairComp.delayHideCrosshair(PantheraConfig.AirSlash_hideCrosshairTime);
             // Start the Cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.AirSlash_SkillID);
+            base.skillLocator.StartCooldown(PantheraConfig.AirSlash_SkillID);
         }
 
     }

@@ -1,10 +1,6 @@
 ﻿using Panthera.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace Panthera.GUI.Tooltips
@@ -49,7 +45,7 @@ namespace Panthera.GUI.Tooltips
                 TooltipObj.SetActive(false);
 
             // Return if the Tooltip is not active //
-            if (TooltipObj.active == false) return;
+            if (TooltipObj.activeSelf == false) return;
 
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;

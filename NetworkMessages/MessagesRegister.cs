@@ -1,7 +1,4 @@
 ﻿using R2API.Networking;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Panthera.NetworkMessages
 {

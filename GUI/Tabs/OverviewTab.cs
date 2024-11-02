@@ -1,9 +1,6 @@
 ﻿using Panthera.Base;
 using Panthera.Components;
 using Panthera.GUI.Tooltips;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,11 +1,6 @@
-﻿using EntityStates.LunarGolem;
-using Panthera.Abilities;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.Utils;
-using RoR2.UI;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -65,7 +60,7 @@ namespace Panthera.GUI
         public void updateTooltipPosition()
         {
             // Return if the Tooltip is not Active //
-            if (this.tooltipGUI.gameObject.active == false) return;
+            if (this.tooltipGUI.gameObject.activeInHierarchy == false) return;
 
             // Create the Pivot //
             float pivotX = 0;

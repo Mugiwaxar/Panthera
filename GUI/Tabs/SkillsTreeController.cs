@@ -2,13 +2,9 @@
 using Panthera.Base;
 using Panthera.GUI.Tooltips;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Panthera.GUI.Tabs
@@ -105,13 +101,13 @@ namespace Panthera.GUI.Tabs
                 // Update the Amount //
                 if (ability.maxLevel > 0)
                 {
-                    ability.associatedGUIObj.transform.Find("Amount").gameObject.active = true;
+                    ability.associatedGUIObj.transform.Find("Amount").gameObject.SetActive(true);
                     TextMeshProUGUI pointsAmountText = ability.associatedGUIObj.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
                     pointsAmountText.text = String.Format("{0}/{1}", Panthera.ProfileComponent.GetAbilityLevel(ability.abilityID), ability.maxLevel);
                 }
                 else
                 {
-                    ability.associatedGUIObj.transform.Find("Amount").gameObject.active = false;
+                    ability.associatedGUIObj.transform.Find("Amount").gameObject.SetActive(false);
                 }
 
                 // Update the Icon Color //

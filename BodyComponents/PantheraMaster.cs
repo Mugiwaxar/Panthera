@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using RoR2;
+﻿using RoR2;
 using UnityEngine.Networking;
 
 namespace Panthera.BodyComponents
@@ -13,10 +6,9 @@ namespace Panthera.BodyComponents
 
     public class PantheraMaster : NetworkBehaviour
     {
-
         public float savedFury = 0;
         public bool firstStarted = false;
-        public Dictionary<int, RechargeSkill> savedCooldownList;
+        public RechargeSkill[] savedCooldownList;
 
         public PantheraObj ptraObj
         {

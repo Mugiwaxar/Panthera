@@ -1,19 +1,13 @@
-﻿using HG;
-using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills.Actives;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using static RoR2.BlastAttack;
 
@@ -40,7 +34,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.Slash_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.Slash_SkillID) <= 0) return false;
             return true;
         }
 
@@ -48,7 +42,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Set the cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.Slash_SkillID);
+            base.skillLocator.StartCooldown(PantheraConfig.Slash_SkillID);
 
             // Set the Fake Skill Cooldown //
             //base.skillLocator.secondary.DeductStock(1);

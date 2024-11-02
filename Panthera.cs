@@ -1,40 +1,22 @@
 using BepInEx;
-using MonoMod.RuntimeDetour.HookGen;
-using Panthera.Abilities;
 using Panthera.Base;
 using Panthera.Components;
 using Panthera.GUI;
-using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
 using Panthera.Utils;
-using R2API;
-using R2API.Networking;
 using R2API.Utils;
 using Rewired;
-using Rewired.Utils;
 using RoR2;
-using RoR2.CameraModes;
-using RoR2.UI;
-using RoR2.UI.MainMenu;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace Panthera
 {
-
-    // Loading dependencies //
     [BepInPlugin("com.Dexy.Panthera", "P4N7H3R4", "0.0.1")]
     [BepInDependency("com.bepis.r2api")]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(
-        nameof(NetworkingAPI),
-        nameof(DamageAPI)
-        )]
-
     public class Panthera : BaseUnityPlugin
     {
 
@@ -140,7 +122,7 @@ namespace Panthera
             // Open/Close the Panthera Panel //
             if (InputPlayer?.GetButtonDown(PantheraConfig.Keys_OpenPantheraPanelActionCode) == true)
             {
-                if (PantheraPanelController.pantheraPanelGUI.active == false)
+                if (!PantheraPanelController.pantheraPanelGUI.activeInHierarchy)
                 {
                     PantheraPanelController.open();
                 }

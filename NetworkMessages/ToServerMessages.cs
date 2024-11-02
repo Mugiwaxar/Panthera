@@ -1,19 +1,13 @@
 ﻿using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
-using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Orbs;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.TextCore;
-using static Panthera.Base.PantheraSkill;
-using static Rewired.UI.ControlMapper.ControlMapper;
 using static RoR2.DotController;
 
 namespace Panthera.NetworkMessages

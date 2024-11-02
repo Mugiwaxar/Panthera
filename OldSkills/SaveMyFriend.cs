@@ -1,17 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.MachineScripts;
-using Panthera.OldSkills;
-using Panthera.Utils;
-using RoR2;
-using RoR2.Skills;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using Panthera.MachineScripts;
 
 namespace Panthera.OldSkills
 {

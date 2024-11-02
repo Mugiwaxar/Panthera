@@ -1,22 +1,10 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.Components.Projectiles;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
+﻿using Panthera.BodyComponents;
 using Panthera.Utils;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.Projectile;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static RoR2.DotController;
 
 namespace Panthera.Components.Projectiles
 {

@@ -1,10 +1,5 @@
 ﻿using Panthera.BodyComponents;
-using Rewired.Utils;
 using RoR2;
-using RoR2.Projectile;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Components

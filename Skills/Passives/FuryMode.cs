@@ -3,11 +3,6 @@ using Panthera.BodyComponents;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace Panthera.Skills.Passives
 {
@@ -34,7 +29,7 @@ namespace Panthera.Skills.Passives
             FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.FuryOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID, 1);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Fury_SkillID, 1);
 
             // Change the Skills //
             if (ptraObj.GetAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
@@ -61,7 +56,7 @@ namespace Panthera.Skills.Passives
             new NetworkMessages.ServerFuryMessage(ptraObj.gameObject, false).Send(NetworkDestination.Server);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Fury_SkillID);
 
             // Set back the Skills //
             ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = true;

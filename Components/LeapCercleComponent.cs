@@ -1,15 +1,4 @@
-﻿using Panthera.Base;
-using Panthera.Components;
-using Panthera.NetworkMessages;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Networking;
-
-namespace Panthera.Components
+﻿namespace Panthera.Components
 {
     //class LeapCercleComponent : MonoBehaviour
     //{

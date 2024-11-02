@@ -1,17 +1,4 @@
-﻿using Panthera;
-using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Utils;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-
-namespace Panthera.OldSkills
+﻿namespace Panthera.OldSkills
 {
     //class RightRip : MachineScript
     //{

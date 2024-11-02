@@ -1,13 +1,4 @@
-﻿using Panthera;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.Passives;
-using Panthera.OldSkills;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Panthera.Passives
+﻿namespace Panthera.Passives
 {
     class Barrier
     {

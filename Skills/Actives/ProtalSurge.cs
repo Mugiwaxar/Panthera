@@ -6,9 +6,7 @@ using Panthera.Utils;
 using R2API.Networking.Interfaces;
 using RoR2;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Skills.Actives
@@ -41,7 +39,7 @@ namespace Panthera.Skills.Actives
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
             if (Panthera.PantheraCharacter.lunarCoin < PantheraConfig.PortalSurge_lunarCost) return false;
-            if (ptraObj.skillLocator.getStock(PantheraConfig.PortalSurge_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.PortalSurge_SkillID) <= 0) return false;
             if (ptraObj.characterBody.level < PantheraConfig.PortalSurge_requiredIngameLevel) return false;
             return true;
         }
@@ -142,7 +140,7 @@ namespace Panthera.Skills.Actives
             if (this.succeeds == true)
             {
                 // Start the Cooldown //
-                base.skillLocator.startCooldown(PantheraConfig.PortalSurge_SkillID);
+                base.skillLocator.StartCooldown(PantheraConfig.PortalSurge_SkillID);
                 // Create the new Teleporter Effect //
                 Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.PortalOverChargeFX, this.teleporter.transform.position, 1, this.teleporter, this.teleporter.transform.rotation);
                 // Send to the Server //
@@ -158,7 +156,7 @@ namespace Panthera.Skills.Actives
             else
             {
                 // Start the Cooldown //
-                base.skillLocator.startCooldown(PantheraConfig.PortalSurge_SkillID, PantheraConfig.PortalSurge_failCoolDown);
+                base.skillLocator.StartCooldown(PantheraConfig.PortalSurge_SkillID, PantheraConfig.PortalSurge_failCoolDown);
                 // Play the Fail sound //
                 Utils.Sound.playSound(Utils.Sound.PortalChargeFailed, gameObject);
                 // Stop the Sound //

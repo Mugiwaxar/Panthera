@@ -1,8 +1,4 @@
-﻿using Panthera.MachineScripts;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static RoR2.Skills.ComboSkillDef;
+﻿using System.Collections.Generic;
 
 namespace Panthera.Combos
 {

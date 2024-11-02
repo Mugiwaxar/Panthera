@@ -1,16 +1,6 @@
-﻿using HarmonyLib;
-using Panthera;
-using Panthera.Base;
-using Panthera.Components;
-using Panthera.Machines;
-using Panthera.MachineScripts;
-using Panthera.Passives;
-using Panthera.OldSkills;
-using Panthera.Skills;
-using RoR2;
+﻿using Panthera.MachineScripts;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Base

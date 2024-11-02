@@ -1,16 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.NetworkMessages;
-using Panthera.Passives;
-using Panthera.OldSkills;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Panthera.Passives
+﻿namespace Panthera.Passives
 {
     public class Ripper
     {

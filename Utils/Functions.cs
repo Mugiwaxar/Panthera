@@ -1,17 +1,7 @@
-﻿using EntityStates;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.GUI;
-using Panthera.NetworkMessages;
-using R2API;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Audio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 

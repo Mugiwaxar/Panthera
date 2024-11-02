@@ -3,19 +3,11 @@ using Panthera.BodyComponents;
 using Panthera.GUI.Tabs;
 using Panthera.GUI.Tooltips;
 using Panthera.Utils;
-using Rewired;
-using Rewired.Data;
-using RewiredConsts;
 using RoR2;
 using RoR2.UI;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using Player = Rewired.Player;
 
 namespace Panthera.GUI
 {
@@ -142,7 +134,7 @@ namespace Panthera.GUI
         {
 
             // Stop if the Panthera Panel GUI is inactive //
-            if (this.pantheraPanelGUI.active == false)
+            if (this.pantheraPanelGUI.activeInHierarchy == false)
                 return;
 
             // Close if the Character Selection is null //
@@ -160,13 +152,13 @@ namespace Panthera.GUI
             }
 
             // Updates Tabs //
-            if (this.overviewTab.tabObj.active == true) 
+            if (this.overviewTab.tabObj.activeInHierarchy == true) 
                this.overviewTab.update();
-            if (this.skillsTab.tabObj.active == true)
+            if (this.skillsTab.tabObj.activeInHierarchy == true)
                 this.skillsTab.update();
-            if (this.combosTab.tabObj.active == true)
+            if (this.combosTab.tabObj.activeInHierarchy == true)
                 this.combosTab.update();
-            if (this.keysBindTab.tabObj.active == true)
+            if (this.keysBindTab.tabObj.activeInHierarchy == true)
                 this.keysBindTab.update();
 
         }
@@ -209,7 +201,7 @@ namespace Panthera.GUI
 
             // Set the Level for the HUD //
             if (Panthera.PantheraHUD != null)
-                Panthera.PantheraHUD.levelUpObj.active = false;
+                Panthera.PantheraHUD.levelUpObj.SetActive(false);
 
             // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.OpenGUI, this.gameObject, false);
@@ -232,7 +224,7 @@ namespace Panthera.GUI
             KeysBinder.GamepadSetEnable(true);
 
             // Close the Skills Tree Window //
-            this.skillsTab.skillTreeController.skillsTreeWindow.active = false;
+            this.skillsTab.skillTreeController.skillsTreeWindow.SetActive(false);
 
             // Disable the Cursor //
             if (this.ptraObj != null && Panthera.InputPlayer != null && MPEventSystemManager.FindEventSystem(Panthera.InputPlayer) != null)

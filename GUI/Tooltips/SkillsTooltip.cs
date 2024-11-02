@@ -1,8 +1,5 @@
 ﻿using Panthera.Base;
 using Panthera.MachineScripts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,19 +33,19 @@ namespace Panthera.GUI.Tabs
             TooltipObj.transform.Find("Description1").GetComponent<TextMeshProUGUI>().text = script.desc1;
             if(string.IsNullOrEmpty(script.desc2))
             {
-                TooltipObj.transform.Find("Line2").gameObject.active = false;
-                TooltipObj.transform.Find("Description2").gameObject.active = false;
+                TooltipObj.transform.Find("Line2").gameObject.SetActive(false);
+                TooltipObj.transform.Find("Description2").gameObject.SetActive(false);
             }
             else
             {
-                TooltipObj.transform.Find("Line2").gameObject.active = true;
-                TooltipObj.transform.Find("Description2").gameObject.active = true;
+                TooltipObj.transform.Find("Line2").gameObject.SetActive(true);
+                TooltipObj.transform.Find("Description2").gameObject.SetActive(true);
                 TooltipObj.transform.Find("Description2").GetComponent<TextMeshProUGUI>().text = script.desc2;
             }
             if(Panthera.ProfileComponent.IsSkillUnlocked(script.skillID) == false)
-                TooltipObj.transform.Find("Locked").gameObject.active = true;
+                TooltipObj.transform.Find("Locked").gameObject.SetActive(true);
             else
-                TooltipObj.transform.Find("Locked").gameObject.active = false;
+                TooltipObj.transform.Find("Locked").gameObject.SetActive(false);
         }
 
         public static void HideTooltip()
@@ -67,7 +64,7 @@ namespace Panthera.GUI.Tabs
                 TooltipObj.SetActive(false);
 
             // Return if the Tooltip is not active //
-            if (TooltipObj.active == false) return;
+            if (TooltipObj.activeSelf == false) return;
 
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;

@@ -1,13 +1,7 @@
-﻿using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills;
-using Panthera.Skills.Actives;
-using Panthera.Skills.Passives;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -15,10 +9,7 @@ using RoR2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using UnityEngine;
-using Random = System.Random;
 
 namespace Panthera.Skills.Actives
 {
@@ -54,8 +45,8 @@ namespace Panthera.Skills.Actives
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
             if (ptraObj.characterBody.frontShield <= 0) return false;
-            if (ptraObj.frontShieldObj.active == false) return false;
-            if (ptraObj.skillLocator.getStock(PantheraConfig.ShieldBash_SkillID) <= 0) return false;
+            if (ptraObj.frontShieldObj.activeSelf == false) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.ShieldBash_SkillID) <= 0) return false;
             return true;
         }
 
@@ -63,7 +54,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Set the Cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.ShieldBash_SkillID);
+            base.skillLocator.StartCooldown(PantheraConfig.ShieldBash_SkillID);
 
             // Save the time //
             this.startTime = Time.time;

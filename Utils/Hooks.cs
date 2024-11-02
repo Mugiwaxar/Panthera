@@ -1,20 +1,10 @@
 ﻿using MonoMod.RuntimeDetour.HookGen;
-using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.Machines;
-using Panthera.MachineScripts;
-using Rewired;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Networking;
-using Debug = UnityEngine.Debug;
 
 namespace Panthera.Utils
 {
@@ -84,7 +74,7 @@ namespace Panthera.Utils
             AddHooks(typeof(RoR2.HealthComponent), nameof(RoR2.HealthComponent.TakeDamage), PantheraHealthComponent.TakeDamageHook);
 
             // Used to decrease Cooldowns //
-            AddHooks(typeof(RoR2.SkillLocator), nameof(RoR2.SkillLocator.ApplyAmmoPack), PantheraSkillLocator.applyAmmoPackHook);
+            AddHooks(typeof(RoR2.SkillLocator), nameof(RoR2.SkillLocator.ApplyAmmoPack), PantheraSkillLocator.ApplyAmmoPackHook);
 
             // Set the Character visibility when stealthed //
             AddHooks(typeof(RoR2.CharacterBody), nameof(RoR2.CharacterBody.GetVisibilityLevel), new Type[] { typeof(RoR2.TeamIndex)}, PantheraBody.GetVisibilityLevelHook);

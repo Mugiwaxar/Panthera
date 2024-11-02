@@ -1,16 +1,9 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.GUI;
+﻿using Panthera.Components;
 using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Panthera.BodyComponents
@@ -310,16 +303,16 @@ namespace Panthera.BodyComponents
                 skillLocator.special.RecalculateValues();
 
                 // Set Skills max Stock //
-                skillLocator.setMaxStock(PantheraConfig.Rip_SkillID, skillLocator.primary.maxStock);
-                skillLocator.setMaxStock(PantheraConfig.Slash_SkillID, skillLocator.secondary.maxStock);
-                skillLocator.setMaxStock(PantheraConfig.Leap_SkillID, skillLocator.utility.maxStock);
-                skillLocator.setMaxStock(PantheraConfig.MightyRoar_SkillID, skillLocator.special.maxStock);
+                skillLocator.SetMaxStock(PantheraConfig.Rip_SkillID, skillLocator.primary.maxStock);
+                skillLocator.SetMaxStock(PantheraConfig.Slash_SkillID, skillLocator.secondary.maxStock);
+                skillLocator.SetMaxStock(PantheraConfig.Leap_SkillID, skillLocator.utility.maxStock);
+                skillLocator.SetMaxStock(PantheraConfig.MightyRoar_SkillID, skillLocator.special.maxStock);
 
                 // Set Skills cooldown //
-                skillLocator.setMaxCooldown(PantheraConfig.Rip_SkillID, skillLocator.primary.finalRechargeInterval);
-                skillLocator.setMaxCooldown(PantheraConfig.Slash_SkillID, skillLocator.secondary.finalRechargeInterval);
-                skillLocator.setMaxCooldown(PantheraConfig.Leap_SkillID, skillLocator.utility.finalRechargeInterval);
-                skillLocator.setMaxCooldown(PantheraConfig.MightyRoar_SkillID, skillLocator.special.finalRechargeInterval);
+                skillLocator.SetMaxCooldown(PantheraConfig.Rip_SkillID, skillLocator.primary.finalRechargeInterval);
+                skillLocator.SetMaxCooldown(PantheraConfig.Slash_SkillID, skillLocator.secondary.finalRechargeInterval);
+                skillLocator.SetMaxCooldown(PantheraConfig.Leap_SkillID, skillLocator.utility.finalRechargeInterval);
+                skillLocator.SetMaxCooldown(PantheraConfig.MightyRoar_SkillID, skillLocator.special.finalRechargeInterval);
 
                 // Check if Guardian Mode //
                 if (ptraObj.guardianMode == true)

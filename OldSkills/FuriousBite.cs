@@ -1,27 +1,4 @@
-﻿using EntityStates;
-using HarmonyLib;
-using KinematicCharacterController;
-using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.GUI;
-using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.Passives;
-using Panthera.OldSkills;
-using Panthera.Utils;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Networking;
-using static Panthera.Base.PantheraSkill;
-using Panthera.Skills.Passives;
+﻿using Panthera.MachineScripts;
 
 namespace Panthera.OldSkills
 {

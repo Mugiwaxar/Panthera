@@ -1,7 +1,5 @@
-﻿using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using RoR2.ContentManagement;
-using UnityEngine;
 
 namespace Panthera.Utils
 {

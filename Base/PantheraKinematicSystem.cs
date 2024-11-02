@@ -1,11 +1,4 @@
 ﻿using KinematicCharacterController;
-using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Panthera.Base
 {

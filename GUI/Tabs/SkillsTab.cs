@@ -1,9 +1,5 @@
-﻿using Panthera.Base;
-using Panthera.GUI.Tooltips;
+﻿using Panthera.GUI.Tooltips;
 using Panthera.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -134,7 +130,7 @@ namespace Panthera.GUI.Tabs
         public void update()
         {
             // Update the Skills Tree Controller //
-            if (this.skillTreeController.skillsTreeWindow.active == true)
+            if (this.skillTreeController.skillsTreeWindow.activeInHierarchy == true)
                 this.skillTreeController.update();
             // Update all Skills Icons //
             this.updateSkillsIcons();

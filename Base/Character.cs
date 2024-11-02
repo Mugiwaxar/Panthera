@@ -1,30 +1,8 @@
-﻿
-using MonoMod.RuntimeDetour.HookGen;
-using Panthera;
-using Panthera.Abilities;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.GUI;
-using Panthera.MachineScripts;
+﻿using Panthera.BodyComponents;
 using Panthera.Utils;
-using R2API;
-using RoR2;
-using RoR2.Projectile;
-using RoR2.Stats;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
-using static R2API.LoadoutAPI;
-using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
-using static RoR2.Navigation.NodeGraph;
 
 namespace Panthera.Base
 {

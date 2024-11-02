@@ -1,20 +1,10 @@
-﻿using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.NetworkMessages;
-using Panthera.Passives;
-using Panthera.OldSkills;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using RoR2;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using Panthera.Skills.Passives;
-using Panthera.MachineScripts;
 
 namespace Panthera.Skills.Passives
 {
@@ -44,7 +34,7 @@ namespace Panthera.Skills.Passives
             ptraObj.stealthed = true;
 
             // Start the Stealth Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Prowl_SkillID, 1);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Prowl_SkillID, 1);
 
             // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.Prowl, ptraObj.characterBody.gameObject);
@@ -65,7 +55,7 @@ namespace Panthera.Skills.Passives
             if (ptraObj.stealthed == false || ptraObj.UnstealthCoroutine != null) return;
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Prowl_SkillID);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Prowl_SkillID);
 
             // Calcule the delay //
             float unStealthDelay = Math.Max(PantheraConfig.Prowl_unStealDelay, delay);

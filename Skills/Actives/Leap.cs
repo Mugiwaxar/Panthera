@@ -1,28 +1,13 @@
-﻿using EntityStates;
-using KinematicCharacterController;
-using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills;
-using Panthera.Skills.Actives;
 using Panthera.Utils;
-using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Audio;
-using RoR2.Skills;
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Networking;
-using static RoR2.CharacterMotor;
-using static UnityEngine.ParticleSystem;
 
 namespace Panthera.Skills.Actives
 {
@@ -62,7 +47,7 @@ namespace Panthera.Skills.Actives
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
             //if (ptraObj.characterBody.stamina < PantheraConfig.Leap_requiredStamina) return false;
-            if (ptraObj.skillLocator.getStock(PantheraConfig.Leap_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.Leap_SkillID) <= 0) return false;
             return true;
         }
 
@@ -148,7 +133,7 @@ namespace Panthera.Skills.Actives
             float cooldown = this.baseCooldown;
             if (this.targetFound == true && base.pantheraObj.GetAbilityLevel(PantheraConfig.RelentlessStalker_AbilityID) > 0)
                 cooldown -= PantheraConfig.RelentlessStalker_CooldownReduction;
-            base.skillLocator.startCooldown(PantheraConfig.Leap_SkillID, cooldown);
+            base.skillLocator.StartCooldown(PantheraConfig.Leap_SkillID, cooldown);
 
             // Set the Fake Skill Cooldown //
             //skillLocator.utility.DeductStock(1);

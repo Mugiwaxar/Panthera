@@ -61,12 +61,12 @@ namespace Panthera.GUI.Components
         /// </summary>
         public void UpdateStocks()
         {
-            this.ripSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Rip_SkillID];
-            this.frontShieldSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.FrontShield_SkillID];
-            this.clawStormSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.ClawsStorm_SkillID];
-            this.slashSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Slash_SkillID];
-            this.leapSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Leap_SkillID];
-            this.mightyRoarSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.MightyRoar_SkillID];
+            this.ripSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.Rip_SkillID);
+            this.frontShieldSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.FrontShield_SkillID);
+            this.clawStormSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.ClawsStorm_SkillID);
+            this.slashSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.Slash_SkillID);
+            this.leapSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.Leap_SkillID);
+            this.mightyRoarSkill ??= this.ptraObj.skillLocator.GetSkill(PantheraConfig.MightyRoar_SkillID);
 
             // Rip
             this.ptraObj.skillLocator.primary.rechargeStopwatch = this.ripSkill.cooldown > 0 ? this.ripSkill.baseCooldown - this.ripSkill.cooldown : 0;
@@ -103,10 +103,10 @@ namespace Panthera.GUI.Components
 
         public void UpdateCooldowns()
         {
-
             // Update others Skills Cooldown //
-            foreach (var rechargeSkill in this.ptraObj.skillLocator.rechargeSkillList.Values)
+            for (int i = 0; i < this.ptraObj.skillLocator.rechargeSkillList.Length; i++)
             {
+                var rechargeSkill = this.ptraObj.skillLocator.rechargeSkillList[i];
                 var rechargeSkillImage = this.hud.cooldownFrame.transform.Find(rechargeSkill.skill.name);
                 if (!rechargeSkill.skill.showCooldown || rechargeSkill.stock >= rechargeSkill.maxStock)
                 {

@@ -1,23 +1,4 @@
-﻿using EntityStates;
-using Panthera;
-using Panthera.Components;
-using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using R2API;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using RoR2.Audio;
-using RoR2.Projectile;
-using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Networking;
-
-namespace Panthera.OldSkills
+﻿namespace Panthera.OldSkills
 {
     //class RaySlash : MachineScript
     //{

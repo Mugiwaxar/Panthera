@@ -1,13 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.MachineScripts;
-using Panthera.OldSkills;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using Panthera.MachineScripts;
 
 namespace Panthera.OldSkills
 {

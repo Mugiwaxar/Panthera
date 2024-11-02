@@ -1,9 +1,5 @@
-﻿ using Panthera.Components;
-using Panthera.MachineScripts;
+﻿using Panthera.MachineScripts;
 using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using static RoR2.DotController;
 
@@ -306,23 +302,23 @@ namespace Panthera
 
         // -- Skills -- //
         #region Skills ID
-        public static readonly int Rip_SkillID = 1;
-        public static readonly int AirCleave_SkillID = 2;
-        public static readonly int Leap_SkillID = 3;
-        public static readonly int MightyRoar_SkillID = 4;
-        public static readonly int Fury_SkillID = 5;
-        public static readonly int Guardian_SkillID = 6;
-        public static readonly int Slash_SkillID = 7;
-        public static readonly int Prowl_SkillID = 8;
-        public static readonly int Detection_SkillID = 9;
-        public static readonly int Ambition_SkillID = 10;
-        public static readonly int AirSlash_SkillID = 11;
-        public static readonly int FrontShield_SkillID = 12;
-        public static readonly int ClawsStorm_SkillID = 13;
-        public static readonly int ShieldBash_SkillID = 14;
-        public static readonly int ArcaneAnchor_SkillID = 15;
-        public static readonly int ConvergenceHook_SkillID = 16;
-        public static readonly int PortalSurge_SkillID = 17;
+        public static int Rip_SkillID;
+        public static int AirCleave_SkillID;
+        public static int Leap_SkillID;
+        public static int MightyRoar_SkillID;
+        public static int Fury_SkillID;
+        public static int Guardian_SkillID;
+        public static int Slash_SkillID;
+        public static int Prowl_SkillID;
+        public static int Detection_SkillID;
+        public static int Ambition_SkillID;
+        public static int AirSlash_SkillID;
+        public static int FrontShield_SkillID;
+        public static int ClawsStorm_SkillID;
+        public static int ShieldBash_SkillID;
+        public static int ArcaneAnchor_SkillID;
+        public static int ConvergenceHook_SkillID;
+        public static int PortalSurge_SkillID;
         #endregion
 
         #region Portal Surge

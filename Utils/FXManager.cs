@@ -1,22 +1,14 @@
-﻿using EntityStates.Missions.Goldshores;
-using Panthera.Abilities.Passives;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.NetworkMessages;
+﻿using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.Audio;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using static UnityEngine.ParticleSystem;
-using static UnityEngine.UI.Image;
 
 namespace Panthera.Utils
 {

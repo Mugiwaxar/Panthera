@@ -3,12 +3,8 @@ using Panthera.NetworkMessages;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Projectile;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
 using static UnityEngine.ParticleSystem;
 
 namespace Panthera.Components
@@ -37,6 +33,11 @@ namespace Panthera.Components
 
         public void FixedUpdate()
         {
+            if (!(this.ptraObj && this.ptraObj.characterBody && this.ptraObj.modelTransform))
+            {
+                this.enabled = false;
+                return;
+            }
 
             // Check if Frozen Paws Buff is active //
             bool hasFrozenPawsBuff = this.ptraObj.characterBody.HasBuff(Base.Buff.FrozenPawsBuff.buffIndex);
@@ -66,18 +67,10 @@ namespace Panthera.Components
             }
 
             // Update Transform //
-            try
-            {
-                float finalYPos = this.yPos == 0 ? this.ptraObj.characterBody.footPosition.y : this.yPos;
-                base.transform.position = new Vector3(this.ptraObj.characterBody.footPosition.x, finalYPos, this.ptraObj.characterBody.footPosition.z);
-                base.transform.rotation = Quaternion.Euler(new Vector3(base.transform.rotation.x, this.ptraObj.modelTransform.rotation.y, base.transform.rotation.z));
-                base.transform.localScale = new Vector3(this.baseScale.x * this.ptraObj.modelScale, this.baseScale.y, this.baseScale.z * this.ptraObj.modelScale);
-            }
-            catch (Exception e)
-            {
-                // The Game ended //
-                this.enabled = false;
-            }
+            float finalYPos = this.yPos == 0 ? this.ptraObj.characterBody.footPosition.y : this.yPos;
+            base.transform.position = new Vector3(this.ptraObj.characterBody.footPosition.x, finalYPos, this.ptraObj.characterBody.footPosition.z);
+            base.transform.rotation = Quaternion.Euler(new Vector3(base.transform.rotation.x, this.ptraObj.modelTransform.rotation.y, base.transform.rotation.z));
+            base.transform.localScale = new Vector3(this.baseScale.x * this.ptraObj.modelScale, this.baseScale.y, this.baseScale.z * this.ptraObj.modelScale);
 
         }
 

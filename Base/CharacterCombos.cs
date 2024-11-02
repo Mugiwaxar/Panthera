@@ -1,15 +1,6 @@
-﻿using EntityStates.LunarGolem;
-using Panthera.BodyComponents;
-using Panthera.Combos;
-using Panthera.GUI;
-using Panthera.MachineScripts;
-using System;
+﻿using Panthera.Combos;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using static Panthera.GUI.KeysBinder;
 
 namespace Panthera.Base
 {

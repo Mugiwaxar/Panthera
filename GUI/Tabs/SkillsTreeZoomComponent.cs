@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Panthera;
-using Panthera.Components;
-using Panthera.GUI.Tabs;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Panthera.GUI.Tabs
@@ -17,7 +11,7 @@ namespace Panthera.GUI.Tabs
         public void OnScroll(PointerEventData eventData)
         {
             // Return if the Skills Tree Window is not active //
-            if (this.skillsTreeController.skillsTreeWindow.active == false) return;
+            if (this.skillsTreeController.skillsTreeWindow.activeSelf == false) return;
 
             // Get the Transform //
             RectTransform transform = this.skillsTreeController.skillsTreeContent;

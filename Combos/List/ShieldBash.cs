@@ -1,11 +1,5 @@
-﻿using Panthera;
-using Panthera.Combos;
-using Panthera.Combos.List;
-using Panthera.GUI;
+﻿using Panthera.GUI;
 using Panthera.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Panthera.Combos.List
 {

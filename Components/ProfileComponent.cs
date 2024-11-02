@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using Panthera.Abilities;
+﻿using Panthera.Abilities;
 using Panthera.BodyComponents;
 using Panthera.Combos;
 using Panthera.NetworkMessages;
@@ -8,7 +7,6 @@ using R2API.Networking.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Components

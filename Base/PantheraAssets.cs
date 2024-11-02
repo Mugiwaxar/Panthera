@@ -1,26 +1,15 @@
-﻿using Panthera;
-using Panthera.Abilities.Actives;
-using Panthera.Base;
-using Panthera.Components;
+﻿using Panthera.Components;
 using Panthera.Components.Projectiles;
-using Panthera.OldSkills;
-using Panthera.Orbs;
 using Panthera.Utils;
 using R2API;
 using RoR2;
-using RoR2.Audio;
 using RoR2.Orbs;
 using RoR2.Projectile;
 using RoR2.UI;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using static Rewired.UI.ControlMapper.ControlMapper;
 
 namespace Panthera.Base
 {

@@ -2,11 +2,7 @@
 using Panthera.Abilities.Actives;
 using Panthera.Abilities.Passives;
 using Panthera.Abilities.Primaries;
-using Panthera.MachineScripts;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Base

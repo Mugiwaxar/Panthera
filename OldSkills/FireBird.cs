@@ -1,19 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills.Passives;
-using Panthera.Utils;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using RoR2.Projectile;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using Panthera.MachineScripts;
 
 namespace Panthera.OldSkills
 {

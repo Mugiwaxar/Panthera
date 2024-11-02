@@ -2,9 +2,6 @@
 using Panthera.BodyComponents;
 using Panthera.MachineScripts;
 using Panthera.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.Skills.Actives
@@ -30,7 +27,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.Fury_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.Fury_SkillID) <= 0) return false;
             if (ptraObj.characterBody.fury <= 0) return false;
             return true;
         }

@@ -1,11 +1,6 @@
-﻿    using Panthera.MachineScripts;
+﻿using Panthera.MachineScripts;
 using Panthera.Skills.Actives;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace Panthera.Base
 {
@@ -13,40 +8,36 @@ namespace Panthera.Base
     {
 
         // (int SkillID, MachineScript skill) Represent the Skill List //
-        public Dictionary<int, MachineScript> SkillsList = new Dictionary<int, MachineScript>();
+        public List<MachineScript> SkillsList { get; set; } = [];
 
         public CharacterSkills()
         {
-            this.AddSkillToList(PantheraConfig.Rip_SkillID, new Rip());
-            this.AddSkillToList(PantheraConfig.AirCleave_SkillID, new AirCleave());
-            this.AddSkillToList(PantheraConfig.Leap_SkillID, new Leap());
-            this.AddSkillToList(PantheraConfig.MightyRoar_SkillID, new MightyRoar());
-            this.AddSkillToList(PantheraConfig.Fury_SkillID, new Fury());
-            this.AddSkillToList(PantheraConfig.Guardian_SkillID, new Guardian());
-            this.AddSkillToList(PantheraConfig.Slash_SkillID, new Slash());
-            this.AddSkillToList(PantheraConfig.Detection_SkillID, new Detection());
-            this.AddSkillToList(PantheraConfig.Prowl_SkillID, new Prowl());
-            this.AddSkillToList(PantheraConfig.Ambition_SkillID, new Ambition());
-            this.AddSkillToList(PantheraConfig.AirSlash_SkillID, new AirSlash());
-            this.AddSkillToList(PantheraConfig.FrontShield_SkillID, new FrontShield());
-            this.AddSkillToList(PantheraConfig.ClawsStorm_SkillID, new ClawsStorm());
-            this.AddSkillToList(PantheraConfig.ShieldBash_SkillID, new ShieldBash());
-            this.AddSkillToList(PantheraConfig.ArcaneAnchor_SkillID, new ArcaneAnchor());
-            this.AddSkillToList(PantheraConfig.ConvergenceHook_SkillID, new ConvergenceHook());
-            this.AddSkillToList(PantheraConfig.PortalSurge_SkillID, new PortalSurge());
+            PantheraConfig.Rip_SkillID = this.AddSkillToList(new Rip());
+            PantheraConfig.AirCleave_SkillID = this.AddSkillToList(new AirCleave());
+            PantheraConfig.Leap_SkillID = this.AddSkillToList(new Leap());
+            PantheraConfig.MightyRoar_SkillID = this.AddSkillToList(new MightyRoar());
+            PantheraConfig.Fury_SkillID = this.AddSkillToList(new Fury());
+            PantheraConfig.Guardian_SkillID = this.AddSkillToList(new Guardian());
+            PantheraConfig.Slash_SkillID = this.AddSkillToList(new Slash());
+            PantheraConfig.Detection_SkillID = this.AddSkillToList(new Detection());
+            PantheraConfig.Prowl_SkillID = this.AddSkillToList(new Prowl());
+            PantheraConfig.Ambition_SkillID = this.AddSkillToList(new Ambition());
+            PantheraConfig.AirSlash_SkillID = this.AddSkillToList(new AirSlash());
+            PantheraConfig.FrontShield_SkillID = this.AddSkillToList(new FrontShield());
+            PantheraConfig.ClawsStorm_SkillID = this.AddSkillToList(new ClawsStorm());
+            PantheraConfig.ShieldBash_SkillID = this.AddSkillToList(new ShieldBash());
+            PantheraConfig.ArcaneAnchor_SkillID = this.AddSkillToList(new ArcaneAnchor());
+            PantheraConfig.ConvergenceHook_SkillID = this.AddSkillToList(new ConvergenceHook());
+            PantheraConfig.PortalSurge_SkillID = this.AddSkillToList(new PortalSurge());
         }
 
-        public void AddSkillToList(int ID, MachineScript skill)
+        public int AddSkillToList(MachineScript skill)
         {
-            if (this.SkillsList.ContainsKey(ID))
-            {
-                Debug.LogWarning("[Panthera -> Character.addSkillToList] The Skills List already contain a Skill with the ID: " + ID);
-                return;
-            }
-            this.SkillsList.Add(ID, skill);
+            this.SkillsList.Add(skill);
+            return this.SkillsList.IndexOf(skill);
         }
 
-        public MachineScript GetSkillByID(int ID) => this.SkillsList.ContainsKey(ID) ? this.SkillsList[ID] : null;
+        public MachineScript GetSkillByID(int ID) => this.SkillsList[ID];
 
     }
 }

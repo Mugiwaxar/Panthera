@@ -1,12 +1,8 @@
 ﻿using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine.Networking;
 using UnityEngine;
 using Panthera.Components;
-using RoR2.Navigation;
-using UnityEngine.Bindings;
 
 namespace Panthera.Base
 {
@@ -377,7 +373,7 @@ namespace Panthera.Base
                 self.enabled = false;
                 return;
             }
-
+            /*
             // Create the Selection //
             WeightedSelection<DirectorCard> weightedSelection = new WeightedSelection<DirectorCard>(8);
 
@@ -434,7 +430,7 @@ namespace Panthera.Base
 
             // Set Spawn Timer to -600 //
             self.monsterSpawnTimer = -600f;
-
+            */
         }
 
         public static void SetSurged(GameObject teleporter, bool set)

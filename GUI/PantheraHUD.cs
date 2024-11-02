@@ -3,20 +3,13 @@ using Panthera.BodyComponents;
 using Panthera.Combos;
 using Panthera.Components;
 using Panthera.GUI.Components;
-using Panthera.GUI.Tooltips;
-using Panthera.Utils;
-using RewiredConsts;
 using RoR2;
 using RoR2.UI;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using static Panthera.GUI.KeysBinder;
-using static RoR2.Skills.ComboSkillDef;
 
 namespace Panthera.GUI
 {
@@ -148,7 +141,7 @@ namespace Panthera.GUI
             levelUpObj.transform.localPosition = new Vector3(0, -48, 0);
             Image imageComp = levelUpObj.AddComponent<Image>();
             imageComp.sprite = PantheraAssets.LevelUpIcon;
-            this.levelUpObj.active = false;
+            this.levelUpObj.SetActive(false);
 
             // Change the Health Bar Order //
             GameObject healthbarRoot = origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("HealthbarRoot").gameObject;
@@ -344,19 +337,19 @@ namespace Panthera.GUI
                     buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.direction);
                 }
                 // Add the Cooldown //
-                float coolDown = this.ptraObj.skillLocator.getCooldown(comboSkill.skill.skillID);
-                float maxCooldown = this.ptraObj.skillLocator.getMaxCooldown(comboSkill.skill.skillID);
+                float coolDown = this.ptraObj.skillLocator.GetCooldown(comboSkill.skill.skillID);
+                float maxCooldown = this.ptraObj.skillLocator.GetMaxCooldown(comboSkill.skill.skillID);
                 skillElem.transform.Find("CooldownFill").GetComponent<Image>().fillAmount = coolDown / maxCooldown;
                 skillElem.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>().text = ((int)Math.Ceiling(coolDown)).ToString();
                 if (coolDown <= 0)
                 {
                     //skillElem.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownNormalIconColor;
-                    skillElem.transform.Find("CooldownText").gameObject.active = false;
+                    skillElem.transform.Find("CooldownText").gameObject.SetActive(false);
                 }
                 else
                 {
                     //skillElem.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownLoadingIconColor;
-                    skillElem.transform.Find("CooldownText").gameObject.active = true;
+                    skillElem.transform.Find("CooldownText").gameObject.SetActive(true);
                 }
                 // Add the Line //
                 lastLine = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboLineTemplate, skillsLayout);
@@ -376,9 +369,9 @@ namespace Panthera.GUI
                 this.comboFailedFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboSkillTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
                 this.comboFailedFrame.transform.localPosition = new Vector3(0, -400, 0);
                 this.comboFailedFrame.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                this.comboFailedFrame.active = false;
+
                 // Enable the Frame //
-                this.comboFailedFrame.active = true;
+                this.comboFailedFrame.SetActive(true);
                 // Change the Icon //
                 Image skillIcon = this.comboFailedFrame.transform.Find("Image").GetComponent<Image>();
                 skillIcon.sprite = lastFailedCombo.skill.icon;
@@ -400,19 +393,19 @@ namespace Panthera.GUI
                     buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.direction);
                 }
                 // Add the Cooldown //
-                float coolDown = this.ptraObj.skillLocator.getCooldown(lastFailedCombo.skill.skillID);
-                float maxCooldown = this.ptraObj.skillLocator.getMaxCooldown(lastFailedCombo.skill.skillID);
+                float coolDown = this.ptraObj.skillLocator.GetCooldown(lastFailedCombo.skill.skillID);
+                float maxCooldown = this.ptraObj.skillLocator.GetMaxCooldown(lastFailedCombo.skill.skillID);
                 this.comboFailedFrame.transform.Find("CooldownFill").GetComponent<Image>().fillAmount = coolDown / maxCooldown;
                 this.comboFailedFrame.transform.Find("CooldownText").GetComponent<TextMeshProUGUI>().text = ((int)Math.Ceiling(coolDown)).ToString();
                 if (coolDown <= 0)
                 {
                     this.comboFailedFrame.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownNormalIconColor;
-                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.active = false;
+                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.SetActive(false);
                 }
                 else
                 {
                     this.comboFailedFrame.transform.Find("Image").Find("Frame").GetComponent<Image>().color = PantheraConfig.ComboCooldownLoadingIconColor;
-                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.active = true;
+                    this.comboFailedFrame.transform.Find("CooldownText").gameObject.SetActive(true);
                 }
             }
             else

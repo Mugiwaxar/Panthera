@@ -1,13 +1,9 @@
 ﻿using Panthera.BodyComponents;
 using R2API.Networking.Interfaces;
 using R2API.Networking;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine.Networking;
 using UnityEngine;
 using RoR2;
-using static UnityEngine.UIElements.UIR.BestFitAllocator;
 
 namespace Panthera.NetworkMessages
 {

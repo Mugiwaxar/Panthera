@@ -1,16 +1,5 @@
 ﻿using Panthera.Abilities;
-using Panthera.Base;
-using Panthera.Components;
-using Panthera.GUI;
-using Panthera.NetworkMessages;
-using Panthera.Utils;
-using R2API.Networking.Interfaces;
-using R2API.Networking;
 using Rewired;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -226,7 +215,7 @@ namespace Panthera.GUI
             // Skills Open Skills Tree Button //
             if (this.gameObject.name == "OpenSkillsTreeButton" == true)
             {
-                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.active = true;
+                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.SetActive(true);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }
@@ -234,14 +223,14 @@ namespace Panthera.GUI
             // Skills Tree Window Exit Button //
             if (this.name == "SkillsTreeWindowExitButton")
             {
-                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.active = false;
+                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.SetActive(false);
                 return;
             }
 
             // Key Bind Button pressed //
             if (this.gameObject.name.Contains("KBButton") == true)
             {
-                this.pantheraPanel.keysBindTab.keysBindWindow.active = true;
+                this.pantheraPanel.keysBindTab.keysBindWindow.SetActive(true);
                 KeysBinder.StartMapping(this.name, this.keyBindObj, this.pantheraPanel.keysBindTab);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
@@ -276,7 +265,7 @@ namespace Panthera.GUI
             // Reset Key Bind Button pressed //
             if (this.gameObject.name == "DefaultButton")
             {
-                this.pantheraPanel.keysBindTab.keysBindResetWindow.active = true;
+                this.pantheraPanel.keysBindTab.keysBindResetWindow.SetActive(true);
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }

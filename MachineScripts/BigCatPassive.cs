@@ -1,31 +1,11 @@
-﻿using EntityStates;
-using KinematicCharacterController;
-using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.Components;
-using Panthera.GUI;
-using Panthera.Machines;
-using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.Skills;
-using Panthera.OldSkills;
-using Panthera.Utils;
-using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using Rewired;
 using RoR2;
-using RoR2.Audio;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Rendering;
-using static RoR2.DotController;
-using static UnityEngine.ParticleSystem;
-using TMPro;
-using System.Linq;
 
 namespace Panthera.MachineScripts
 {
@@ -50,6 +30,8 @@ namespace Panthera.MachineScripts
         public bool wasOutOfCombat = true;
         public float cupidityTimer = 0;
         public bool wasGod = false;
+        public ParticleSystem shield1;
+        public ParticleSystem shield2;
 
         public override void Start()
         {
@@ -98,6 +80,8 @@ namespace Panthera.MachineScripts
             // Save the Last Level //
             this.pantheraLastLevel = Panthera.PantheraCharacter.characterLevel;
 
+            shield1 = base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("MagicShieldFX").GetComponent<ParticleSystem>();
+            shield2 = base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("CenterShield").GetComponent<ParticleSystem>();
         }
 
         public override void Update()
@@ -154,17 +138,20 @@ namespace Panthera.MachineScripts
             }
 
             // Apply the Front Shield Color //
-            if (base.pantheraObj.frontShieldObj.active == true)
+            if (base.pantheraObj.frontShieldObj.activeInHierarchy == true)
             {
+                var main = shield1.main;
+                var main2 = shield2.main;
+
                 if (base.characterBody.frontShield / base.characterBody.maxFrontShield > PantheraConfig.FrontShield_criticColorPercent)
                 {
-                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("MagicShieldFX").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldNormalColor;
-                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("CenterShield").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldNormalColor;
+                    main.startColor = new ParticleSystem.MinMaxGradient() { color = PantheraConfig.FrontShieldNormalColor };
+                    main2.startColor = new ParticleSystem.MinMaxGradient() { color = PantheraConfig.FrontShieldNormalColor };
                 }
                 else
                 {
-                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("MagicShieldFX").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldCriticColor;
-                    base.pantheraObj.frontShieldObj.transform.Find("ShieldFX").Find("CenterShield").GetComponent<ParticleSystem>().startColor = PantheraConfig.FrontShieldCriticColor;
+                    main.startColor = new ParticleSystem.MinMaxGradient() { color = PantheraConfig.FrontShieldCriticColor };
+                    main2.startColor = new ParticleSystem.MinMaxGradient() { color = PantheraConfig.FrontShieldCriticColor };
                 }
             }
 
@@ -297,21 +284,14 @@ namespace Panthera.MachineScripts
             {
 
                 // Increase the Cooldown //
-                float detectionCooldown = base.skillLocator.getCooldown(PantheraConfig.Detection_SkillID);
-                detectionCooldown += Time.deltaTime * 2;
-                base.skillLocator.setCooldown(PantheraConfig.Detection_SkillID, detectionCooldown);
+                float detectionCooldown = base.skillLocator.GetCooldown(PantheraConfig.Detection_SkillID);
+                detectionCooldown += Time.fixedDeltaTime * 2;
+                base.skillLocator.SetCooldown(PantheraConfig.Detection_SkillID, detectionCooldown);
 
                 // Check if Detecion must stop //
                 float maxTime = Skills.Passives.Detection.GetDetectionMaxTime(base.pantheraObj);
                 if (detectionCooldown > maxTime)
                     Skills.Passives.Detection.DisableDetection(base.pantheraObj);
-
-                // Check if Rescan //
-                if (Time.time - this.lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionMode == true)
-                {
-                    this.lastDetectionScanTime = Time.time;
-                    Skills.Passives.Detection.ReScanBody(base.pantheraObj);
-                }
 
             }
 
@@ -470,7 +450,7 @@ namespace Panthera.MachineScripts
             if (Time.time - predComp.lastStealthStrikeTime < PantheraConfig.MortalMirage_duration)
             {
                 new ServerAddBuff(base.gameObject, base.gameObject, Buff.EclipseBuff).Send(NetworkDestination.Server);
-                base.skillLocator.setCooldown(PantheraConfig.Prowl_SkillID, 0);
+                base.skillLocator.SetCooldown(PantheraConfig.Prowl_SkillID, 0);
             }
 
         }

@@ -1,20 +1,9 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
+﻿using Panthera.BodyComponents;
 using Panthera.Components;
-using Panthera.NetworkMessages;
-using Panthera.Passives;
-using Panthera.OldSkills;
-using Panthera.Skills.Passives;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Skills;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -25,7 +14,6 @@ namespace Panthera.Skills.Passives
 
         public static void EnableDetection(PantheraObj ptraObj)
         {
-            
             // Enable the Detection Mode //
             ptraObj.detectionMode = true;
 
@@ -33,7 +21,7 @@ namespace Panthera.Skills.Passives
             Utils.Sound.playSound(Utils.Sound.DetectionEnable, ptraObj.gameObject);
 
             // Start the Cooldown //
-            ptraObj.skillLocator.startCooldown(PantheraConfig.Detection_SkillID, 0.1f);
+            ptraObj.skillLocator.StartCooldown(PantheraConfig.Detection_SkillID, 0.1f);
 
             // Set the Camera //
             Camera cam = Camera.main;
@@ -85,7 +73,6 @@ namespace Panthera.Skills.Passives
 
         public static IEnumerator EnableDetectionFX(PantheraObj ptraObj)
         {
-
             PostProcessVolume postProcess = ptraObj.pantheraPostProcess.GetComponent<PostProcessVolume>();
             postProcess.weight = 0;
             ptraObj.origPostProcess.SetActive(false);
@@ -97,16 +84,14 @@ namespace Panthera.Skills.Passives
                 weight += 0.05f;
                 if (weight > 1) weight = 1;
                 postProcess.weight = weight;
-                yield return new WaitForSeconds(0.01f);
+                yield return null;
             }
 
             yield break;
-
         }
 
         public static IEnumerator DisableDetectionFX(PantheraObj ptraObj)
         {
-
             PostProcessVolume postProcess = ptraObj.pantheraPostProcess.GetComponent<PostProcessVolume>();
             postProcess.weight = 1;
 
@@ -116,28 +101,13 @@ namespace Panthera.Skills.Passives
                 weight -= 0.05f;
                 if (weight < 0) weight = 0;
                 postProcess.weight = weight;
-                yield return new WaitForSeconds(0.01f);
+                yield return null;
             }
 
             ptraObj.origPostProcess.SetActive(true);
             ptraObj.pantheraPostProcess.SetActive(false);
 
             yield break;
-
-        }
-
-        public static void ReScanBody(PantheraObj ptraObj)
-        {
-            List<CharacterBody> bodyLists = UnityEngine.Object.FindObjectsOfType<CharacterBody>().ToList();
-            if (bodyLists == null || bodyLists.Count == 0) return;
-            foreach (CharacterBody body in bodyLists)
-            {
-                if (body == ptraObj.characterBody) continue;
-                XRayComponent component = body.GetComponent<XRayComponent>();
-                if (component == null) component = body.gameObject.AddComponent<XRayComponent>();
-                component.ptraObj = ptraObj;
-                component.type = XRayComponent.XRayObjectType.Body;
-            }
         }
 
         public static float GetDetectionMaxTime(PantheraObj ptraObj)

@@ -1,21 +1,9 @@
-﻿using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills.Actives;
 using Panthera.Utils;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Panthera.Skills.Actives
 {
@@ -40,7 +28,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.FrontShield_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.FrontShield_SkillID) <= 0) return false;
             if (ptraObj.characterBody.frontShield <= 0) return false;
             return true;
         }
@@ -49,7 +37,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Set the Cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.FrontShield_SkillID);
+            base.skillLocator.StartCooldown(PantheraConfig.FrontShield_SkillID);
 
             // Save the time //
             //this.startTime = Time.time;

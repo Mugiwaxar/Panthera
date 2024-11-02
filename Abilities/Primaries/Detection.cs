@@ -1,12 +1,5 @@
-﻿using Panthera;
-using Panthera.Abilities;
-using Panthera.Abilities.Actives;
-using Panthera.Abilities.Primaries;
-using Panthera.Base;
+﻿using Panthera.Base;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace Panthera.Abilities.Primaries
 {

@@ -1,28 +1,14 @@
-﻿using EntityStates;
-using Panthera;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
-using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.OldSkills;
-using Panthera.Skills;
-using Panthera.Skills.Actives;
 using Panthera.Utils;
-using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
-using Rewired;
 using RoR2;
-using RoR2.Audio;
-using RoR2.Orbs;
-using RoR2.Projectile;
-using RoR2.Skills;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Panthera.Skills.Actives
 {
@@ -60,7 +46,7 @@ namespace Panthera.Skills.Actives
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            if (ptraObj.skillLocator.getStock(PantheraConfig.Rip_SkillID) <= 0) return false;
+            if (ptraObj.skillLocator.GetStock(PantheraConfig.Rip_SkillID) <= 0) return false;
             return true;
         }
 
@@ -137,7 +123,7 @@ namespace Panthera.Skills.Actives
             this.attackTime = this.attackTime / base.attackSpeedStat;
 
             // Set the Cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.Rip_SkillID, this.baseCooldown);
+            base.skillLocator.StartCooldown(PantheraConfig.Rip_SkillID, this.baseCooldown);
 
             // Get the Combo Number //
             this.comboNumber = base.pantheraObj.AttackNumber;
@@ -261,7 +247,7 @@ namespace Panthera.Skills.Actives
                                 if (hc.alive == false)
                                 {
                                     new ServerAddBuff(base.gameObject, base.gameObject, Buff.EclipseBuff).Send(NetworkDestination.Server);
-                                    base.skillLocator.setCooldown(PantheraConfig.Prowl_SkillID, 0);
+                                    base.skillLocator.SetCooldown(PantheraConfig.Prowl_SkillID, 0);
                                 }
                                 else
                                 {

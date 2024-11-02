@@ -1,13 +1,8 @@
 ﻿using Panthera.BodyComponents;
 using RoR2;
-using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
-using static RoR2.BlastAttack;
 
 namespace Panthera.Components
 {

@@ -1,22 +1,11 @@
-﻿using MonoMod.RuntimeDetour.HookGen;
-using Panthera;
-using Panthera.Components;
-using Panthera.GUI;
-using Panthera.GUI.Tabs;
+﻿using Panthera.GUI.Tabs;
 using Rewired;
 using Rewired.Data;
 using RoR2;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static Rewired.InputMapper;
-using static Rewired.Platforms.Custom.CustomInputSource;
 
 namespace Panthera.GUI
 {
@@ -357,14 +346,14 @@ namespace Panthera.GUI
             }
             else
             {
-                keyBindTab.keysBindWindow.active = false;
+                keyBindTab.keysBindWindow.SetActive(false);
                 return;
             }
 
             // Check the Map //
             if (map == null)
             {
-                keyBindTab.keysBindWindow.active = false;
+                keyBindTab.keysBindWindow.SetActive(false);
                 return;
             }
 
@@ -406,7 +395,7 @@ namespace Panthera.GUI
             //ConfigPanel.instance.updateAllKeyBindTexts();
 
             // Close the Keys Bind Window //
-            Panthera.PantheraPanelController.keysBindTab.keysBindWindow.active = false;
+            Panthera.PantheraPanelController.keysBindTab.keysBindWindow.SetActive(false);
 
             // Save the Profil //
             Panthera.LoadedUserProfile.RequestEventualSave();

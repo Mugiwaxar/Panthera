@@ -1,17 +1,6 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Combos;
-using Panthera.Components;
-using Panthera.Machines;
-using Panthera.MachineScripts;
+﻿using Panthera.Machines;
 using Rewired;
 using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 using static Panthera.GUI.KeysBinder;
 
 namespace Panthera.BodyComponents

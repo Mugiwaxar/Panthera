@@ -1,14 +1,10 @@
 ﻿using Panthera.Combos;
 using Panthera.MachineScripts;
-using Rewired.Utils.Classes.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using static Panthera.GUI.KeysBinder;
-using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.BodyComponents
 {

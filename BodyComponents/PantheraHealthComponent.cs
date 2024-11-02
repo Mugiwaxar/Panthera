@@ -1,18 +1,10 @@
-﻿using EntityStates;
-using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
+﻿using Panthera.Base;
 using Panthera.Components;
 using Panthera.NetworkMessages;
-using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
-using RoR2.Audio;
-using RoR2.Orbs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -102,7 +94,7 @@ namespace Panthera.BodyComponents
 
             // Apply the Extended Protection Ability //
             int extendedProtectionLevel = hc.ptraObj.GetAbilityLevel(PantheraConfig.ExtendedProtection_AbilityID);
-            if (hc.ptraObj.frontShieldObj.active == true && extendedProtectionLevel > 0)
+            if (hc.ptraObj.frontShieldObj.activeInHierarchy == true && extendedProtectionLevel > 0)
             {
                 float absorbedDamagePercent = 0;
                 if (extendedProtectionLevel == 1)
@@ -123,7 +115,7 @@ namespace Panthera.BodyComponents
             if (hc.ptraObj.guardianMode == true && hc.ptraObj.IsMastery(PantheraConfig.SavageRevitalization_AbilityID) == true)
             {
                 float chance = hc.ptraObj.characterBody.mastery / 2;
-                if (UnityEngine.Random.RandomRange(0, 100) < chance)
+                if (UnityEngine.Random.Range(0, 100) < chance)
                     new ServerAddBuff(hc.gameObject, hc.gameObject, Base.Buff.RegenerationBuff, 1, PantheraConfig.SavageRevitalization_MasteryBuffTime).Send(NetworkDestination.Server);
             }
 

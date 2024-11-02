@@ -1,12 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RoR2;
 using UnityEngine;
 
 namespace Panthera.BodyComponents
@@ -62,9 +54,9 @@ namespace Panthera.BodyComponents
             // NoCooldowns Buff //
             if (ptraObj.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns))
             {
-                foreach (int key in skillLocator.rechargeSkillList.Keys.ToList())
+                for (int i = 0; i < skillLocator.rechargeSkillList.Length; i++)
                 {
-                    skillLocator.rechargeSkillList[key].cooldown -= PantheraConfig.ItemChange_noCooldownTimeRemoved;
+                    skillLocator.rechargeSkillList[i].cooldown -= PantheraConfig.ItemChange_noCooldownTimeRemoved;
                 }
             }
 

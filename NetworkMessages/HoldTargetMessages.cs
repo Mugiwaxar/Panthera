@@ -1,19 +1,4 @@
-﻿using KinematicCharacterController;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UIElements;
-using static UnityEngine.UI.Image;
-
-namespace Panthera.NetworkMessages
+﻿namespace Panthera.NetworkMessages
 {
     //public class ServerAttachHoldTargetComp : INetMessage
     //{

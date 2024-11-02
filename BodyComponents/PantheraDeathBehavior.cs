@@ -1,13 +1,7 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
-using Panthera.Machines;
+﻿using Panthera.Machines;
 using Panthera.MachineScripts;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.BodyComponents
@@ -33,7 +27,7 @@ namespace Panthera.BodyComponents
 
         }
 
-        public void OnDeath()
+        public new void OnDeath()
         {
 
             // Stop all Scripts //

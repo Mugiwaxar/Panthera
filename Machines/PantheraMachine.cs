@@ -1,24 +1,12 @@
-﻿using EntityStates.LunarGolem;
-using Panthera.Base;
-using Panthera.BodyComponents;
-using Panthera.Components;
+﻿using Panthera.BodyComponents;
 using Panthera.MachineScripts;
-using Panthera.NetworkMessages;
-using R2API.Networking;
-using R2API.Networking.Interfaces;
-using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Panthera.Machines
 {
     public class PantheraMachine : MonoBehaviour
     {
-
-        public string name;
+        public new string name;
         public MachineScript currentScript;
         public MachineScript nextScript;
 

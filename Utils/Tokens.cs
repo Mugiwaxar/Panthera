@@ -1,17 +1,4 @@
-﻿using EntityStates.AffixEarthHealer;
-using EntityStates.LunarGolem;
-using Panthera.Base;
-using Panthera.Components;
-using R2API;
-using RoR2;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
-using static UnityEngine.Rendering.PostProcessing.HopooSSRRenderer;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
+﻿using System;
 
 namespace Panthera.Utils
 {

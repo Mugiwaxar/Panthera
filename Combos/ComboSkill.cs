@@ -1,7 +1,4 @@
 ﻿using Panthera.MachineScripts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static Panthera.GUI.KeysBinder;
 
 namespace Panthera.Combos

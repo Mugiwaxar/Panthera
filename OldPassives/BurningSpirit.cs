@@ -1,13 +1,4 @@
-﻿using Panthera;
-using Panthera.Base;
-using Panthera.Components;
-using Panthera.Passives;
-using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Panthera.Passives
+﻿namespace Panthera.Passives
 {
     public class BurningSpirit
     {

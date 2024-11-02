@@ -1,12 +1,7 @@
 ﻿using Panthera.Abilities;
 using Panthera.Base;
-using Panthera.GUI.Tabs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using static Panthera.Abilities.PantheraAbility;
 
@@ -54,26 +49,26 @@ namespace Panthera.GUI.Tooltips
             TooltipObj.transform.Find("Header").Find("AbilityType").GetComponent<TextMeshProUGUI>().text = typeString;
             if (string.IsNullOrEmpty(ability.cooldown.ToString()) || ability.cooldown.ToString() == "0")
             {
-                TooltipObj.transform.Find("Cooldown").gameObject.active = false;
-                TooltipObj.transform.Find("Line").gameObject.active = false;
+                TooltipObj.transform.Find("Cooldown").gameObject.SetActive(false);
+                TooltipObj.transform.Find("Line").gameObject.SetActive(false);
             }
             else
             {
-                TooltipObj.transform.Find("Cooldown").gameObject.active = true;
+                TooltipObj.transform.Find("Cooldown").gameObject.SetActive(true);
                 TooltipObj.transform.Find("Cooldown").Find("Amount").GetComponent<TextMeshProUGUI>().text = ability.cooldown.ToString();
-                TooltipObj.transform.Find("Line").gameObject.active = true;
+                TooltipObj.transform.Find("Line").gameObject.SetActive(true);
             }
             TooltipObj.transform.Find("Cooldown").Find("Amount").GetComponent<TextMeshProUGUI>().text = ability.cooldown.ToString();
             TooltipObj.transform.Find("Description1").GetComponent<TextMeshProUGUI>().text = ability.desc1;
             if (string.IsNullOrEmpty(ability.desc2))
             {
-                TooltipObj.transform.Find("Line2").gameObject.active = false;
-                TooltipObj.transform.Find("Description2").gameObject.active = false;
+                TooltipObj.transform.Find("Line2").gameObject.SetActive(false);
+                TooltipObj.transform.Find("Description2").gameObject.SetActive(false);
             }
             else
             {
-                TooltipObj.transform.Find("Line2").gameObject.active = true;
-                TooltipObj.transform.Find("Description2").gameObject.active = true;
+                TooltipObj.transform.Find("Line2").gameObject.SetActive(true);
+                TooltipObj.transform.Find("Description2").gameObject.SetActive(true);
                 TooltipObj.transform.Find("Description2").GetComponent<TextMeshProUGUI>().text = ability.desc2;
             }
 
@@ -95,7 +90,7 @@ namespace Panthera.GUI.Tooltips
                 TooltipObj.SetActive(false);
 
             // Return if the Tooltip is not active //
-            if (TooltipObj.active == false) return;
+            if (TooltipObj.activeSelf == false) return;
 
             // Change the pivot //
             Vector3 mousePosition = Input.mousePosition;

@@ -1,14 +1,8 @@
-﻿using EntityStates;
-using Panthera.Base;
+﻿using Panthera.Base;
 using Panthera.BodyComponents;
-using Panthera.Components;
 using Panthera.Machines;
-using Panthera.MachineScripts;
-using Panthera.Utils;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Panthera.MachineScripts

@@ -206,8 +206,9 @@ namespace Panthera.GUI
 
             // Create the Fury Bar //
             this.furyBarObj = GameObject.Instantiate<GameObject>(PantheraAssets.FuryBar, hpBarRoot.parent);
-            this.furyBarObj.transform.localPosition = new Vector3(-5, 38, 0);
-            this.furyBarMat = this.furyBarObj?.transform?.Find("Health_ORB").GetComponent<Image>().materialForRendering;
+            var furyBar = this.furyBarObj.AddComponent<FuryBar>();
+            furyBar.ptraObj = this.ptraObj;
+            furyBar.pos = !isRiskUI ? new Vector3(-5, 38, 0) : new Vector3(-10, 50, 0);
 
             // Set the Current Level //
             this.lastSawLevel = Panthera.PantheraCharacter.characterLevel;
@@ -299,12 +300,6 @@ namespace Panthera.GUI
             // Update te Panthera Level Text //
             this.pantheraLevelTextComp.SetDisplayData((uint)Panthera.PantheraCharacter.characterLevel);
 
-            // Update the Fury Bar //
-            float furyValue = this.ptraObj.characterBody.fury;
-            float furyShownValue = 1 - (furyValue / this.ptraObj.characterBody.maxFury * 2);
-            this.furyBarMat.SetFloat("PositionUV_X_1", furyShownValue);
-            this.furyBarObj.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = Math.Round(furyValue).ToString();
-
             // Show the LevelUP Image //
             if (this.lastSawLevel != Panthera.PantheraCharacter.characterLevel)
             {
@@ -333,7 +328,6 @@ namespace Panthera.GUI
 
             // Update the Combos Display //
             this.updateCombos();
-
         }
 
 

@@ -49,7 +49,6 @@ namespace Panthera.GUI.Components
             float frontShieldShownValue = value / max;
             this.fillImage.fillAmount = frontShieldShownValue;
             this.valueText.SetText(Math.Floor(value).ToString());
-
         }
     }
 }

@@ -12,13 +12,12 @@ namespace Panthera.Combos
         public KeysEnum modifier;
         public bool biggerIcon = false;
 
-        public ComboSkill (MachineScript skill, KeysEnum keyA, KeysEnum keyB = 0, KeysEnum modifier = 0)
+        public ComboSkill(MachineScript skill, KeysEnum keyA, KeysEnum keyB = 0, KeysEnum modifier = 0)
         {
             this.skill = skill;
             this.keyA = keyA;
             this.keyB = keyB;
             this.modifier = modifier;
         }
-
     }
 }

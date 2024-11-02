@@ -12,7 +12,6 @@ namespace Panthera.GUI.Components
         public PantheraHUD hud;
         public PantheraObj ptraObj;
 
-        public RechargeSkill ripSkill, frontShieldSkill, clawStormSkill, slashSkill, leapSkill, mightyRoarSkill;
 
         public GameObject spellModeImage;
         public GameObject[] abilityActiveImages;
@@ -50,55 +49,11 @@ namespace Panthera.GUI.Components
         {
             if (!this.ptraObj)
                 return;
+            hud.spellsIcons.transform.localPosition = new Vector3(-120, 200, 0);
+            hud.abilitiesIcons.transform.localPosition = new Vector3(0, 230, 0);
 
-            UpdateStocks();
             UpdateCooldowns();
             UpdateIcons();
-        }
-
-        /// <summary>
-        /// Update the Skill Cooldown and Stock Icon
-        /// </summary>
-        public void UpdateStocks()
-        {
-            this.ripSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Rip_SkillID];
-            this.frontShieldSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.FrontShield_SkillID];
-            this.clawStormSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.ClawsStorm_SkillID];
-            this.slashSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Slash_SkillID];
-            this.leapSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.Leap_SkillID];
-            this.mightyRoarSkill ??= this.ptraObj.skillLocator.rechargeSkillList[PantheraConfig.MightyRoar_SkillID];
-
-            // Rip
-            this.ptraObj.skillLocator.primary.rechargeStopwatch = this.ripSkill.cooldown > 0 ? this.ripSkill.baseCooldown - this.ripSkill.cooldown : 0;
-            this.ptraObj.skillLocator.primary.stock = this.ripSkill.stock;
-
-            // Update the Skill2 Cooldown and Stock Icon //
-            if (this.ptraObj.guardianMode)
-            {
-                // Front Shield
-                this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.frontShieldSkill.cooldown > 0 ? this.frontShieldSkill.baseCooldown - this.frontShieldSkill.cooldown : 0;
-                this.ptraObj.skillLocator.secondary.stock = this.frontShieldSkill.stock;
-            }
-            else if (this.ptraObj.furyMode)
-            {
-                // Claw Storm
-                this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.clawStormSkill.cooldown > 0 ? this.clawStormSkill.baseCooldown - this.clawStormSkill.cooldown : 0;
-                this.ptraObj.skillLocator.secondary.stock = this.clawStormSkill.stock;
-            }
-            else
-            {
-                // Slash
-                this.ptraObj.skillLocator.secondary.rechargeStopwatch = this.slashSkill.cooldown > 0 ? this.slashSkill.baseCooldown - this.slashSkill.cooldown : 0;
-                this.ptraObj.skillLocator.secondary.stock = this.slashSkill.stock;
-            }
-
-            // Leap
-            this.ptraObj.skillLocator.utility.rechargeStopwatch = this.leapSkill.cooldown > 0 ? this.leapSkill.baseCooldown - this.leapSkill.cooldown : 0;
-            this.ptraObj.skillLocator.utility.stock = this.leapSkill.stock;
-
-            // Mighty Roar
-            this.ptraObj.skillLocator.special.rechargeStopwatch = this.mightyRoarSkill.cooldown > 0 ? this.mightyRoarSkill.baseCooldown - this.mightyRoarSkill.cooldown : 0;
-            this.ptraObj.skillLocator.special.stock = this.mightyRoarSkill.stock;
         }
 
         public void UpdateCooldowns()

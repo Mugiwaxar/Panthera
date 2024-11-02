@@ -154,6 +154,10 @@ namespace Panthera.BodyComponents
                 if (comboSkill.modifier != KeysEnum.None && !modifiers.HasFlag(comboSkill.modifier))
                     continue;
 
+                //filter down to only spells/non-spells
+                if ((comboSkill.modifier == KeysEnum.SpellsMode) != modifiers.HasFlag(KeysEnum.SpellsMode))
+                    continue;
+
                 // Check the Keys //
                 if (keys.HasFlag(comboSkill.keyA) && (comboSkill.keyB == KeysEnum.None || keys.HasFlag(comboSkill.keyB)))
                     return comboSkill;

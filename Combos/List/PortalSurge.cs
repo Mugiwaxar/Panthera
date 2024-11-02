@@ -8,7 +8,8 @@ namespace Panthera.Combos.List
 
         public PortalSurge()
         {
-            ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.PortalSurge_SkillID), KeysBinder.KeysEnum.Ability4, KeysBinder.KeysEnum.None, KeysBinder.KeysEnum.SpellsMode);
+            ComboSkill comboSkill = new ComboSkill(Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.PortalSurge_SkillID), KeysBinder.KeysEnum.Ability4);
+            comboSkill.modifier = KeysBinder.KeysEnum.SpellsMode;
             comboSkillsList.Add(comboSkill);
             comboID = PantheraConfig.PortalSurge_CombosID;
             name = PantheraTokens.Get("combo_PortalSurgeName");

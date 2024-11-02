@@ -84,6 +84,7 @@ namespace Panthera.BodyComponents
         public GameObject pantheraPostProcess;
         public int origLayerIndex;
 
+        public RechargeSkill ripSkill, frontShieldSkill, clawStormSkill, slashSkill, leapSkill, mightyRoarSkill;
         public bool stealthed = false;
         public bool furyMode = false;
         public bool detectionMode = false;
@@ -358,8 +359,53 @@ namespace Panthera.BodyComponents
                 }
             }
 
+            UpdateStocks();
         }
 
+        /// <summary>
+        /// Update the Skill Cooldown and Stock Icon
+        /// </summary>
+        public void UpdateStocks()
+        {
+            this.ripSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.Rip_SkillID];
+            this.frontShieldSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.FrontShield_SkillID];
+            this.clawStormSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.ClawsStorm_SkillID];
+            this.slashSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.Slash_SkillID];
+            this.leapSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.Leap_SkillID];
+            this.mightyRoarSkill ??= this.skillLocator.rechargeSkillList[PantheraConfig.MightyRoar_SkillID];
+
+            // Rip
+            this.skillLocator.primary.rechargeStopwatch = this.ripSkill.cooldown > 0 ? this.ripSkill.baseCooldown - this.ripSkill.cooldown : 0;
+            this.skillLocator.primary.stock = this.ripSkill.stock;
+
+            // Update the Skill2 Cooldown and Stock Icon //
+            if (this.guardianMode)
+            {
+                // Front Shield
+                this.skillLocator.secondary.rechargeStopwatch = this.frontShieldSkill.cooldown > 0 ? this.frontShieldSkill.baseCooldown - this.frontShieldSkill.cooldown : 0;
+                this.skillLocator.secondary.stock = this.frontShieldSkill.stock;
+            }
+            else if (this.furyMode)
+            {
+                // Claw Storm
+                this.skillLocator.secondary.rechargeStopwatch = this.clawStormSkill.cooldown > 0 ? this.clawStormSkill.baseCooldown - this.clawStormSkill.cooldown : 0;
+                this.skillLocator.secondary.stock = this.clawStormSkill.stock;
+            }
+            else
+            {
+                // Slash
+                this.skillLocator.secondary.rechargeStopwatch = this.slashSkill.cooldown > 0 ? this.slashSkill.baseCooldown - this.slashSkill.cooldown : 0;
+                this.skillLocator.secondary.stock = this.slashSkill.stock;
+            }
+
+            // Leap
+            this.skillLocator.utility.rechargeStopwatch = this.leapSkill.cooldown > 0 ? this.leapSkill.baseCooldown - this.leapSkill.cooldown : 0;
+            this.skillLocator.utility.stock = this.leapSkill.stock;
+
+            // Mighty Roar
+            this.skillLocator.special.rechargeStopwatch = this.mightyRoarSkill.cooldown > 0 ? this.mightyRoarSkill.baseCooldown - this.mightyRoarSkill.cooldown : 0;
+            this.skillLocator.special.stock = this.mightyRoarSkill.stock;
+        }
         public void FixedUpdate()
         {
             // Set the Model //

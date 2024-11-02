@@ -302,23 +302,23 @@ namespace Panthera
 
         // -- Skills -- //
         #region Skills ID
-        public static int Rip_SkillID;
-        public static int AirCleave_SkillID;
-        public static int Leap_SkillID;
-        public static int MightyRoar_SkillID;
-        public static int Fury_SkillID;
-        public static int Guardian_SkillID;
-        public static int Slash_SkillID;
-        public static int Prowl_SkillID;
-        public static int Detection_SkillID;
-        public static int Ambition_SkillID;
-        public static int AirSlash_SkillID;
-        public static int FrontShield_SkillID;
-        public static int ClawsStorm_SkillID;
-        public static int ShieldBash_SkillID;
-        public static int ArcaneAnchor_SkillID;
-        public static int ConvergenceHook_SkillID;
-        public static int PortalSurge_SkillID;
+        public const int Rip_SkillID = 1;
+        public const int AirCleave_SkillID = 2;
+        public const int Leap_SkillID = 3;
+        public const int MightyRoar_SkillID = 4;
+        public const int Fury_SkillID = 5;
+        public const int Guardian_SkillID = 6;
+        public const int Slash_SkillID = 7;
+        public const int Prowl_SkillID = 8;
+        public const int Detection_SkillID = 9;
+        public const int Ambition_SkillID = 10;
+        public const int AirSlash_SkillID = 11;
+        public const int FrontShield_SkillID = 12;
+        public const int ClawsStorm_SkillID = 13;
+        public const int ShieldBash_SkillID = 14;
+        public const int ArcaneAnchor_SkillID = 15;
+        public const int ConvergenceHook_SkillID = 16;
+        public const int PortalSurge_SkillID = 17;
         #endregion
 
         #region Portal Surge
@@ -427,7 +427,6 @@ namespace Panthera
         public static readonly float Detection_scanRate = 0.5f;
         public static readonly float Detection_skillMinDuration = 0.3f;
         public static readonly float Detection_skillMaxDuration = 2.5f;
-        public static readonly int Detection_maxScanPerFrame = 100;
         public static readonly int Detection_layerIndex = 31;
         #endregion
         #region Ambition

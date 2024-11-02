@@ -387,10 +387,10 @@ namespace Panthera.GUI
                     GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboButtonTemplate, buttonsLayout);
                     buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.keyB);
                 }
-                if (comboSkill.direction > 0)
+                if (comboSkill.modifier > 0)
                 {
                     GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboButtonTemplate, buttonsLayout);
-                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.direction);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(comboSkill.modifier);
                 }
                 // Add the Cooldown //
                 float coolDown = this.ptraObj.skillLocator.GetCooldown(comboSkill.skill.skillID);
@@ -443,10 +443,10 @@ namespace Panthera.GUI
                     GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboButtonTemplate, buttonsLayout);
                     buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.keyB);
                 }
-                if (lastFailedCombo.direction > 0)
+                if (lastFailedCombo.modifier > 0)
                 {
                     GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboButtonTemplate, buttonsLayout);
-                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.direction);
+                    buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(lastFailedCombo.modifier);
                 }
                 // Add the Cooldown //
                 float coolDown = this.ptraObj.skillLocator.GetCooldown(lastFailedCombo.skill.skillID);

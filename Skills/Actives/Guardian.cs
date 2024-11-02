@@ -58,7 +58,7 @@ namespace Panthera.Skills.Actives
 
             // Stop if the duration is reached //
             float skillDuration = Time.time - this.startTime;
-            if (skillDuration >= PantheraConfig.Fury_duration)
+            if (skillDuration >= PantheraConfig.Guardian_cooldown)
             {
                 base.EndScript();
                 return;

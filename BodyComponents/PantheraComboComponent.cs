@@ -121,20 +121,18 @@ namespace Panthera.BodyComponents
             if (comboNumber > 0)
                 filteredCombosList = this.FilterCompatibleCombos(filteredCombosList, actualCombosList);
 
-            // Create a null Machine Script //
             // Try to get the Skill with the Direction //
-
             // Mask to get the 4 direction keys
-            var directionMask = KeysEnum.Forward | KeysEnum.Backward | KeysEnum.Left | KeysEnum.Right;
-            var directions = keys & directionMask;
+            var modifierMask = KeysEnum.Forward | KeysEnum.Backward | KeysEnum.Left | KeysEnum.Right | KeysEnum.SpellsMode;
+            var modifiers = keys & modifierMask;
 
-            // reverse mask to remove direction keys
-            keys &= ~directionMask;
+            // reverse mask to remove modifier keys
+            keys &= ~modifierMask;
 
-            return this.GetNextSkill(filteredCombosList, keys, directions, comboNumber);
+            return this.GetNextSkill(filteredCombosList, keys, modifiers, comboNumber);
         }
 
-        private ComboSkill GetNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, KeysEnum keys, KeysEnum directions, int comboNumber)
+        private ComboSkill GetNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, KeysEnum keys, KeysEnum modifiers, int comboNumber)
         {
             // Itinerate the Combos List //
             foreach (var pair in filteredCombosList)
@@ -153,7 +151,7 @@ namespace Panthera.BodyComponents
                     continue;
 
                 // Check if the Direction Key is the same //
-                if (comboSkill.direction != KeysEnum.None && !directions.HasFlag(comboSkill.direction))
+                if (comboSkill.modifier != KeysEnum.None && !modifiers.HasFlag(comboSkill.modifier))
                     continue;
 
                 // Check the Keys //

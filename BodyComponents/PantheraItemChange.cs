@@ -54,9 +54,9 @@ namespace Panthera.BodyComponents
             // NoCooldowns Buff //
             if (ptraObj.characterBody.HasBuff(RoR2Content.Buffs.NoCooldowns))
             {
-                for (int i = 0; i < skillLocator.rechargeSkillList.Length; i++)
+                foreach (var pair in skillLocator.rechargeSkillList)
                 {
-                    skillLocator.rechargeSkillList[i].cooldown -= PantheraConfig.ItemChange_noCooldownTimeRemoved;
+                    pair.Value.cooldown -= PantheraConfig.ItemChange_noCooldownTimeRemoved;
                 }
             }
 

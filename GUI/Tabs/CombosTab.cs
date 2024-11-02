@@ -126,10 +126,10 @@ namespace Panthera.GUI.Tabs
                         GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboButtonTemplate, buttonsLayout);
                         buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.keyB);
                     }
-                    if (skill.direction > 0)
+                    if (skill.modifier > 0)
                     {
                         GameObject buttonElem = GameObject.Instantiate<GameObject>(PantheraAssets.ComboButtonTemplate, buttonsLayout);
-                        buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.direction);
+                        buttonElem.GetComponent<Image>().sprite = Utils.Functions.KeyEnumToSprite(skill.modifier);
                     }
                     // Add the Line //
                     lastLine = GameObject.Instantiate<GameObject>(PantheraAssets.ComboLineTemplate, skillsLayout);

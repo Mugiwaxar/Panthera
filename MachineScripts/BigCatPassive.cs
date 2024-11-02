@@ -282,7 +282,6 @@ namespace Panthera.MachineScripts
             // Check the Detection //
             if (base.pantheraObj.detectionMode == true)
             {
-
                 // Increase the Cooldown //
                 float detectionCooldown = base.skillLocator.GetCooldown(PantheraConfig.Detection_SkillID);
                 detectionCooldown += Time.fixedDeltaTime * 2;

@@ -8,7 +8,7 @@ namespace Panthera.Combos.List
 
         public Ambition()
         {
-            ComboSkill comboSkill1 = new ComboSkill(Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Ambition_SkillID), KeysBinder.KeysEnum.SpellsMode, KeysBinder.KeysEnum.Skill3);
+            ComboSkill comboSkill1 = new ComboSkill(Panthera.PantheraCharacter.CharacterSkills.GetSkillByID(PantheraConfig.Ambition_SkillID), KeysBinder.KeysEnum.Skill3, KeysBinder.KeysEnum.None, KeysBinder.KeysEnum.SpellsMode);
             comboSkillsList.Add(comboSkill1);
             visible = false;
             comboID = PantheraConfig.Ambition_CombosID;

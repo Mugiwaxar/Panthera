@@ -1,4 +1,5 @@
-﻿using Panthera.Base;
+﻿using Panthera.Abilities.Passives;
+using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.MachineScripts;
@@ -20,8 +21,7 @@ namespace Panthera.Skills.Actives
             "ShrineChance(Clone)", "ShrineChanceSnowy Variant(Clone)", "ShrineBlood(Clone)", "ShrineBloodSnowy Variant(Clone)", "ShrineHealing(Clone)", "ShrineBoss(Clone)", "ShrineBossSnowy Variant(Clone)", "ShrineGoldshoresAccess(Clone)", "ShrineCombat(Clone)",
             "Drone1Broken(Clone)", "Drone2Broken(Clone)", "Turret1Broken(Clone)", "MegaDroneBroken(Clone)", "MissileDroneBroken(Clone)", "FlameDroneBroken(Clone)", "EquipmentDroneBroken(Clone)"];
 
-        public float totalScanTime, lastDetectionScanTime;
-        public bool scanFinished;
+        public float totalScanTime;
         public bool sixthSense = false;
 
         public Detection()
@@ -50,7 +50,6 @@ namespace Panthera.Skills.Actives
         {
             // Save the time //
             totalScanTime = 0f;
-            lastDetectionScanTime = 0f;
 
             // Set the Max Time //
             float maxTime = Skills.Passives.Detection.GetDetectionMaxTime(base.pantheraObj);
@@ -66,7 +65,7 @@ namespace Panthera.Skills.Actives
                 if (this.pantheraObj.GetAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
                     sixthSense = true;
 
-                this.pantheraObj.StartCoroutine(ScanAll());
+                ScanBody(this.pantheraObj);
             }
             else
             {
@@ -74,59 +73,46 @@ namespace Panthera.Skills.Actives
                 Passives.Detection.DisableDetection(pantheraObj);
             }
         }
-
-        public IEnumerator ScanAll()
-        {
-            // Scan all Objects //
-            // Check if Body //
-            ScanBody(pantheraObj);
-
-            // Check Prescience Ability //
-            if (sixthSense == true)
-            {
-                // Check if Teleporter //
-                yield return new WaitForFixedUpdate();
-                ScanTeleporter(pantheraObj);
-
-                // Check if Scrapper //
-                yield return new WaitForFixedUpdate();
-                ScanScrapper(pantheraObj);
-
-                // Check if Purchase //
-                yield return new WaitForFixedUpdate();
-                ScanPurchaseObjects(pantheraObj);
-
-                // Check if Barrel //
-                yield return new WaitForFixedUpdate();
-                ScanBarrels(pantheraObj);
-
-                // Check if Triple Shop Base //
-                yield return new WaitForFixedUpdate();
-                ScanTripleShopBases(pantheraObj);
-
-                // Check if Triple Shop Terminal //
-                yield return new WaitForFixedUpdate();
-                ScanTripleShopTerminals(pantheraObj);
-            }
-            scanFinished = true;
-        }
+        public int scanned = 0;
         
         public override void FixedUpdate()
         {
             // Stop if the Skill last too long //
             totalScanTime += Time.fixedDeltaTime;
-            if ((scanFinished && totalScanTime >= PantheraConfig.Detection_skillMinDuration) || totalScanTime >= PantheraConfig.Detection_skillMaxDuration || !base.pantheraObj.detectionMode)
+            if (totalScanTime >= PantheraConfig.Detection_skillMaxDuration)
             {
                 EndScript();
                 return;
             }
 
-            // Check if Rescan //
-            lastDetectionScanTime += Time.fixedDeltaTime;
-            if (lastDetectionScanTime > PantheraConfig.Detection_scanRate && base.pantheraObj.detectionMode == true)
+            // Check Prescience Ability //
+            if (sixthSense == true && scanned < 6)
             {
-                this.lastDetectionScanTime = 0;
-                ScanBody(base.pantheraObj);
+                switch (scanned)
+                {
+                    case 0:
+                        ScanTeleporter(pantheraObj);
+                        break;
+                    case 1:
+                        ScanScrapper(pantheraObj);
+                        break;
+                    case 2:
+                        ScanPurchaseObjects(pantheraObj);
+                        break;
+                    case 3:
+                        ScanBarrels(pantheraObj);
+                        break;
+                    case 4:
+                        ScanTripleShopBases(pantheraObj);
+                        break;
+                    case 5:
+                        ScanTripleShopTerminals(pantheraObj);
+                        break;
+                    default:
+                        break;
+                }
+
+                scanned++;
             }
         }
 
@@ -143,7 +129,7 @@ namespace Panthera.Skills.Actives
         {
             foreach (var body in CharacterBody.instancesList)
             {
-                if (body)
+                if (body && body.gameObject != ptra.gameObject)
                     GetOrAddXrayComponent(ptra, body.gameObject, XRayComponent.XRayObjectType.Body);
             }
         }

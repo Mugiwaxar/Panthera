@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using System.Collections.Generic;
+using RoR2;
 using UnityEngine.Networking;
 
 namespace Panthera.BodyComponents
@@ -8,7 +9,7 @@ namespace Panthera.BodyComponents
     {
         public float savedFury = 0;
         public bool firstStarted = false;
-        public RechargeSkill[] savedCooldownList;
+        public Dictionary<int, RechargeSkill> savedCooldownList;
 
         public PantheraObj ptraObj
         {

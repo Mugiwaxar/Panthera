@@ -355,8 +355,8 @@ namespace Panthera
         public static readonly float Rip_atkDuration = 0.6f;
         public static readonly float Rip_attackTime = 0.20f;
         public static readonly int Rip_furyAdded = 3;
-        public static readonly float Rip_enemiesForwardScanDistance = 1.5f;
-        public static readonly float Rip_enemiesScanRadius = 5f;
+        public static readonly float Rip_enemiesForwardScanDistance = 1.7f;
+        public static readonly float Rip_enemiesScanRadius = 6f;
         public static readonly float Rip_hideCrosshairTime = 3f;
         #endregion
         #region Air Cleaves

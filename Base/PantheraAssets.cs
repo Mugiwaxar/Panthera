@@ -457,14 +457,14 @@ namespace Panthera.Base
             GoldenRipSkillMenu = MainAssetBundle.LoadAsset<Sprite>("GoldenRipIconMenu");
             ArcaneAnchorSkill = MainAssetBundle.LoadAsset<Sprite>("ArcaneAnchorIcon");
             ArcaneAnchorSkillMenu = MainAssetBundle.LoadAsset<Sprite>("ArcaneAnchorIconMenu");
-            ConvergenceHookSkill = MainAssetBundle.LoadAsset<Sprite>("ConvergenceHookIcon");            
-            PortalSurgeSkill = MainAssetBundle.LoadAsset<Sprite>("PortalSurgeIcon");            
+            ConvergenceHookSkill = MainAssetBundle.LoadAsset<Sprite>("ConvergenceHookIcon");
+            PortalSurgeSkill = MainAssetBundle.LoadAsset<Sprite>("PortalSurgeIcon");
             #endregion
 
             #region Abilities Icones
             FelineSkillsAbility = MainAssetBundle.LoadAsset<Sprite>("FelineSkillsIcon");
             FelineSkillsAbilityMenu = MainAssetBundle.LoadAsset<Sprite>("FelineSkillsIconMenu");
-            SharpenedFangsAbility  = MainAssetBundle.LoadAsset<Sprite>("SharpenedFangsIcon");
+            SharpenedFangsAbility = MainAssetBundle.LoadAsset<Sprite>("SharpenedFangsIcon");
             EnchantedFurAbility = MainAssetBundle.LoadAsset<Sprite>("EnchantedFurIcon");
             WindWalkerAbility = MainAssetBundle.LoadAsset<Sprite>("WindWalkerIcon");
             PredatorAbility = MainAssetBundle.LoadAsset<Sprite>("PredatorIcon");
@@ -683,7 +683,7 @@ namespace Panthera.Base
             LoadEffect(RegenerationFX);
             LoadEffect(FireRipLeftFX, 3);
             LoadEffect(FireRipRightFX, 3);
-        #endregion
+            #endregion
 
             #region Create Projectiles
             // ---- Air Cleave Left ---- //

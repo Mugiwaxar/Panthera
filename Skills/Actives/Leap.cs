@@ -106,7 +106,7 @@ namespace Panthera.Skills.Actives
                 this.targetFound = true;
                 this.targetPosition = target.transform.position;
                 this.targetBody = target.healthComponent?.GetComponent<CharacterBody>();
-                this.targetRigidBody = this. targetBody.GetComponent<Rigidbody>();
+                this.targetRigidBody = this.targetBody.GetComponent<Rigidbody>();
                 this.targetCollider = this.targetBody.GetComponent<Collider>();
 
                 // Set the air control to 0 //

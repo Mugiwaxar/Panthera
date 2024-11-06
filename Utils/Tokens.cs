@@ -109,7 +109,7 @@ namespace Panthera.Utils
 
             #region Help Text
 
-            string help_Mastery = ColorHelper.SetMastery("Mastery Points") +  " are consumed when right-clicking a compatible skill, activating its specialized " + ColorHelper.SetMastery("[Mastery]") + " effect." + Environment.NewLine
+            string help_Mastery = ColorHelper.SetMastery("Mastery Points") + " are consumed when right-clicking a compatible skill, activating its specialized " + ColorHelper.SetMastery("[Mastery]") + " effect." + Environment.NewLine
                 + "Right-click once more to deactivate it (can only be done in the lobby).";
             PantheraTokens.Add("help_Mastery", help_Mastery);
 
@@ -142,8 +142,8 @@ namespace Panthera.Utils
             #region Rip
             string skill_RipName = "Rip and Shred";
             string skill_RipDesc = "Rips and Shreds all enemies in front of you for "
-                + ColorHelper.SetDamage("{0}%") 
-                + " damage." +Environment.NewLine
+                + ColorHelper.SetDamage("{0}%")
+                + " damage." + Environment.NewLine
                 + "If there are no enemies, " + ColorHelper.SetUtility("Rip and Shred") + " becomes " + ColorHelper.SetUtility("Air Cleave") + ".";
             string skill_RipFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury("Every time " + skill_RipName + " hits an enemy, you generate {0} Fury Points.");
             PantheraTokens.Add("skill_RipName", skill_RipName);
@@ -353,7 +353,7 @@ namespace Panthera.Utils
             #region Ghost Rip
             string ability_GhostRipName = "Ghost Rip";
             string ability_GhostRipDesc = ColorHelper.SetGreen("Replace " + skill_RipName + " while Prowl is active") + Environment.NewLine + Environment.NewLine
-                + "Rips and Shreds all enemies in front of you for " 
+                + "Rips and Shreds all enemies in front of you for "
                 + ColorHelper.SetDamage("{0}%") + " damage "
                 + "and stuns them for " + ColorHelper.SetUtility("{1}s") + "." + Environment.NewLine
                 + "The Critic Chance of Ghost Rip is multiplied by " + ColorHelper.SetUtility("{2}") + ".";
@@ -375,7 +375,7 @@ namespace Panthera.Utils
             #region Shield Bash
             string ability_ShieldBashName = "Shield Bash";
             string ability_ShieldBashDesc = ColorHelper.SetBlue("Activated by pressing " + skill_RipName + " while the Front Shield is active.") + Environment.NewLine + Environment.NewLine
-                + "Perform a forward rush that deals " + ColorHelper.SetDamage("{0}%") 
+                + "Perform a forward rush that deals " + ColorHelper.SetDamage("{0}%")
                 + " damage and stuns all enemies in its path for " + ColorHelper.SetUtility("{1}s")
                 + "." + Environment.NewLine
                 + "While using Shield Bash, you are immune to all damage and you gain an additional jump at the end of the rush.";
@@ -386,7 +386,7 @@ namespace Panthera.Utils
             #region Golden Rip
             string ability_GoldenRipName = "Golden Rip";
             string ability_GoldenRipDesc = ColorHelper.SetGreen("Replace " + skill_RipName + " while Ambition is active") + Environment.NewLine + Environment.NewLine
-                + "Rips and Shreds all enemies in front of you for " 
+                + "Rips and Shreds all enemies in front of you for "
                 + ColorHelper.SetDamage("{0}%") + " damage "
                 + "and generating " + ColorHelper.SetYellow("{1}") + " Gold for each Enemy hit.";
             string skill_GoldenRipFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury("Every time " + ability_GoldenRipName + " hits an enemy, you generate {0} Fury Points.");
@@ -476,7 +476,7 @@ namespace Panthera.Utils
             #region Cryo-Leap
             string ability_CryoLeapName = "Cryo-Leap";
             string ability_CryoLeapDesc = "At the end of the " + ColorHelper.SetUtility(skill_LeapName) + " when the enemy is reached, you gain the " + ColorHelper.SetBuff("Frozen Paws") + " buff"
-                + " for " + ColorHelper.SetUtility("{0}s") + ".";   
+                + " for " + ColorHelper.SetUtility("{0}s") + ".";
             PantheraTokens.Add("ability_CryoLeapName", ability_CryoLeapName);
             PantheraTokens.Add("ability_CryoLeapDesc", ability_CryoLeapDesc);
             #endregion
@@ -521,7 +521,7 @@ namespace Panthera.Utils
 
             #region Furrify
             string ability_FurrifyName = "Furrify";
-            string ability_FurrifyDesc = "Each time you take damage exceeding " + ColorHelper.SetUtility("{0}%") + " of your max Health, you gain a stack of the " 
+            string ability_FurrifyDesc = "Each time you take damage exceeding " + ColorHelper.SetUtility("{0}%") + " of your max Health, you gain a stack of the "
                 + ColorHelper.SetBuff("Resilience") + " buff. When this effect occurs, the duration of all other stacks is reset." + Environment.NewLine
                 + "Can only appen if Guardian mode is enabled.";
             PantheraTokens.Add("ability_FurrifyName", ability_FurrifyName);
@@ -562,7 +562,7 @@ namespace Panthera.Utils
 
             #region Infernal Swipe
             string ability_InfernalSwipeName = "Infernal Swipe";
-            string ability_InfernalSwipeDesc = "The Fury mode ignite P4N7H3R4's claws, " + ColorHelper.SetUtility(skill_RipName) + " deals " + ColorHelper.SetDamage("{0}%") 
+            string ability_InfernalSwipeDesc = "The Fury mode ignite P4N7H3R4's claws, " + ColorHelper.SetUtility(skill_RipName) + " deals " + ColorHelper.SetDamage("{0}%")
                 + " additional fire damage and has a " + ColorHelper.SetDamage("{1}%") + " chance to apply the " + ColorHelper.SetDeBuff("Ignition") + " debuff to the affected enemies.";
             PantheraTokens.Add("ability_InfernalSwipeName", ability_InfernalSwipeName);
             PantheraTokens.Add("ability_InfernalSwipeDesc", ability_InfernalSwipeDesc);

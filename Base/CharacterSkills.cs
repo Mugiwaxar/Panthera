@@ -1,4 +1,4 @@
-﻿    using Panthera.MachineScripts;
+﻿using Panthera.MachineScripts;
 using Panthera.Skills.Actives;
 using System;
 using System.Collections.Generic;

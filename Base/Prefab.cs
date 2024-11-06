@@ -1,25 +1,25 @@
-﻿using System.Collections.Generic;
-using R2API;
-using EntityStates;
-using RoR2;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using EntityStates;
 using KinematicCharacterController;
-using RoR2.Skills;
-using System;
-using RoR2.Networking;
-using Panthera.Components;
-using Panthera.Machines;
-using Panthera.MachineScripts;
-using Panthera.Utils;
-using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
-using static R2API.LoadoutAPI;
-using System.Reflection;
 using MonoMod.RuntimeDetour.HookGen;
 using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
+using Panthera.Components;
+using Panthera.Machines;
+using Panthera.MachineScripts;
+using Panthera.Utils;
+using R2API;
+using RoR2;
+using RoR2.Networking;
+using RoR2.Skills;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
+using static R2API.LoadoutAPI;
+using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
 
 namespace Panthera.Base
 {

@@ -105,7 +105,7 @@ namespace Panthera.Utils
                 else if (Utils.Functions.IsClient() == true) new ServerPlaySound(obj, soundName).Send(NetworkDestination.Server);
                 else if (Utils.Functions.IsServer() == true) new ServerPlaySound(obj, soundName, true).Send(NetworkDestination.Server);
             }
-                
+
         }
 
     }

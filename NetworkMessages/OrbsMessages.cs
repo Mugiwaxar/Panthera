@@ -1,12 +1,12 @@
-﻿using R2API.Networking.Interfaces;
+﻿using Panthera.Orbs;
+using R2API.Networking.Interfaces;
+using RoR2;
+using RoR2.Orbs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine.Networking;
 using UnityEngine;
-using RoR2.Orbs;
-using RoR2;
-using Panthera.Orbs;
+using UnityEngine.Networking;
 
 namespace Panthera.NetworkMessages
 {
@@ -52,7 +52,7 @@ namespace Panthera.NetworkMessages
             this.target = reader.ReadGameObject();
             this.amount = reader.ReadInt32();
         }
-    
+
     }
 
     class ServerSpawnShieldOrb : INetMessage

@@ -115,7 +115,7 @@ namespace Panthera.MachineScripts
 
         public override void Update()
         {
-            
+
         }
 
         public override void FixedUpdate()
@@ -142,7 +142,7 @@ namespace Panthera.MachineScripts
                     CamHelper.ApplyAimType(CamHelper.AimType.Death, base.pantheraObj);
                 }
             }
-            
+
 
             if (NetworkServer.active)
             {

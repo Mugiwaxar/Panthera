@@ -15,7 +15,7 @@ namespace Panthera.Combos
         public KeysEnum direction;
         public bool biggerIcon = false;
 
-        public ComboSkill (MachineScript skill, KeysEnum keyA, KeysEnum keyB = 0, KeysEnum direction = 0)
+        public ComboSkill(MachineScript skill, KeysEnum keyA, KeysEnum keyB = 0, KeysEnum direction = 0)
         {
             this.skill = skill;
             this.keyA = keyA;

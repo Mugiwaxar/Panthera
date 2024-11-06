@@ -1,14 +1,14 @@
 ﻿using Panthera.Base;
 using Panthera.BodyComponents;
+using Panthera.NetworkMessages;
 using Panthera.Utils;
-using R2API.Networking.Interfaces;
 using R2API.Networking;
+using R2API.Networking.Interfaces;
 using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using Panthera.NetworkMessages;
 
 namespace Panthera.Skills.Passives
 {
@@ -27,7 +27,7 @@ namespace Panthera.Skills.Passives
             // Apply the Mastery //
             if (ptraObj.isMastery(PantheraConfig.Guardian_AbilityID) == true)
             {
-                float healPercent = PantheraConfig.Guardian_masteryHealPercent + (ptraObj.characterBody.mastery / 100) ;
+                float healPercent = PantheraConfig.Guardian_masteryHealPercent + (ptraObj.characterBody.mastery / 100);
                 float healAmount = ptraObj.characterBody.maxHealth * healPercent;
                 new NetworkMessages.ServerHeal(ptraObj.gameObject, healAmount).Send(NetworkDestination.Server);
             }
@@ -54,7 +54,7 @@ namespace Panthera.Skills.Passives
 
             // Stop the Fury Mode //
             if (ptraObj.furyMode == true)
-            Skills.Passives.FuryMode.FuryOff(ptraObj);
+                Skills.Passives.FuryMode.FuryOff(ptraObj);
 
             // Play the Sound //
             Utils.Sound.playSound(Utils.Sound.GardianOn, ptraObj.gameObject);

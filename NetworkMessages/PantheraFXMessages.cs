@@ -50,7 +50,7 @@ namespace Panthera.NetworkMessages
         }
     }
 
-    class ClientSetLeapTrailFX: INetMessage
+    class ClientSetLeapTrailFX : INetMessage
     {
 
         GameObject player;

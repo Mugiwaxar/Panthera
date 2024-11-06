@@ -121,11 +121,11 @@ namespace Panthera.GUI
             GameObject.DestroyImmediate(this.iconObj);
 
             // Instanciate the Prefab //
-           this.iconObj = GameObject.Instantiate<GameObject>(iconPrefab, this.iconLocation);
+            this.iconObj = GameObject.Instantiate<GameObject>(iconPrefab, this.iconLocation);
 
             // Set the Ability image //
             Image image = iconObj.transform.Find("Icon").GetComponent<Image>();
-            image.sprite = icon;            
+            image.sprite = icon;
 
             // Set the Cooldown //
             if (cooldown > 0)

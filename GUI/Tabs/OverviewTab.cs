@@ -182,7 +182,7 @@ namespace Panthera.GUI.Tabs
             this.sliderLevelText.SetText(slider.value.ToString());
 
             // Get the Slider Level //
-            int addedLevel = (int) (this.slider.value - 1);
+            int addedLevel = (int)(this.slider.value - 1);
 
             // Get the Profile Component //
             ProfileComponent profile = Panthera.ProfileComponent;

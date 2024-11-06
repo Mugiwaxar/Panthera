@@ -71,7 +71,7 @@ namespace Panthera.Utils
 
         public static IEnumerator DelayDestroyEffect(GameObject effect, int ID, float delay)
         {
-            foreach(ParticleSystem particle in effect.GetComponentsInChildren<ParticleSystem>())
+            foreach (ParticleSystem particle in effect.GetComponentsInChildren<ParticleSystem>())
             {
                 EmissionModule emission = particle.emission;
                 emission.enabled = false;
@@ -79,12 +79,12 @@ namespace Panthera.Utils
 
             yield return new WaitForSeconds(delay);
 
-            if(EffectsList.ContainsKey(ID))
+            if (EffectsList.ContainsKey(ID))
             {
                 GameObject.Destroy(EffectsList[ID]);
                 EffectsList.Remove(ID);
             }
-            
+
         }
 
         public static GameObject CreateEffectInternal(GameObject creator, GameObject prefab, Vector3 origin, float scale = 1, GameObject parent = null, Quaternion rotation = new Quaternion(), bool isModelTransform = false)
@@ -173,7 +173,7 @@ namespace Panthera.Utils
             if (parent != null)
             {
                 effectObject.transform.localPosition = Vector3.zero;
-                effectObject.transform.localRotation = Quaternion.identity;                
+                effectObject.transform.localRotation = Quaternion.identity;
             }
 
             // Return the effect object //

@@ -168,7 +168,7 @@ namespace Panthera.NetworkMessages
             }
 
             if (buffToAdd <= 0) return;
-            for(int i = 0; i < buffToAdd; i++)
+            for (int i = 0; i < buffToAdd; i++)
             {
                 if (this.duration == 0) body.AddBuff((BuffIndex)this.buffId);
                 else body.AddTimedBuff((BuffIndex)this.buffId, this.duration);
@@ -217,7 +217,7 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ServerSetBuffCount(GameObject player,int buffId, int buffCount)
+        public ServerSetBuffCount(GameObject player, int buffId, int buffCount)
         {
             this.player = player;
             this.buffId = buffId;
@@ -256,7 +256,7 @@ namespace Panthera.NetworkMessages
 
         public ServerClearTimedBuffs()
         {
-            
+
         }
 
         public ServerClearTimedBuffs(GameObject player, int buffId)
@@ -637,7 +637,7 @@ namespace Panthera.NetworkMessages
             this.setValue = setValue;
         }
 
-        
+
 
         public void OnReceived()
         {

@@ -104,7 +104,7 @@ namespace Panthera.Components
 
         public void Update()
         {
-            
+
             // Get the Combat Director //
             CombatDirector teleportDirector = base.GetComponent<TeleporterInteraction>().bonusDirector;
 
@@ -167,7 +167,7 @@ namespace Panthera.Components
                 teleportDirector.finalMonsterCardsSelection.Clear();
                 foreach (DirectorCardCategorySelection.Category cat in RoR2.RoR2Content.mixEnemyMonsterCards.categories)
                 {
-                    foreach(DirectorCard card in cat.cards)
+                    foreach (DirectorCard card in cat.cards)
                     {
                         teleportDirector.finalMonsterCardsSelection.AddChoice(card, card.selectionWeight);
                     }
@@ -195,7 +195,7 @@ namespace Panthera.Components
                 // Check if Charge less than 10% //
                 else if (hzc.charge < 0.1)
                 {
-                    if(teleportDirector.monsterCredit < 1000)
+                    if (teleportDirector.monsterCredit < 1000)
                         teleportDirector.monsterCredit += 30;
                     teleportDirector.minSeriesSpawnInterval = 1f;
                     teleportDirector.maxSeriesSpawnInterval = 3f;

@@ -222,7 +222,7 @@ namespace Panthera.BodyComponents
                 return false;
 
             // Itinerate the List 1 //
-            for (int i = 0; i < list1.Count; i++ )
+            for (int i = 0; i < list1.Count; i++)
             {
                 // Check the Skill //
                 if (list1[i].skill.skillID != list2[i].skill.skillID)

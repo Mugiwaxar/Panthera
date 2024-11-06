@@ -1,12 +1,12 @@
 ﻿using Panthera.BodyComponents;
+using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine.Networking;
 using UnityEngine;
-using R2API.Networking;
+using UnityEngine.Networking;
 
 namespace Panthera.NetworkMessages
 {

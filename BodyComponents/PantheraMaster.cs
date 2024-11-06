@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Panthera;
+﻿using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
 using RoR2;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine.Networking;
 
 namespace Panthera.BodyComponents

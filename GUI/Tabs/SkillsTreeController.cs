@@ -25,7 +25,7 @@ namespace Panthera.GUI.Tabs
         Transform special2;
         Transform special3;
 
-        public SkillsTreeController (PantheraPanel pantheraPanel)
+        public SkillsTreeController(PantheraPanel pantheraPanel)
         {
 
             // Set the Panthera Panel //

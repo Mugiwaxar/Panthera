@@ -131,7 +131,7 @@ namespace Panthera.Machines
             else
                 return false;
         }
-       
+
         public virtual bool SetScript(MachineScript script)
         {
             if (script == null) return false;

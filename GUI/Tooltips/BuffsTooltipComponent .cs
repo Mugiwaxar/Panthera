@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine.EventSystems;
-using UnityEngine;
+﻿using Panthera.Abilities;
+using Panthera.Base;
 using Panthera.GUI.Tabs;
 using Panthera.MachineScripts;
-using Panthera.Abilities;
-using Panthera.Base;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Panthera.GUI.Tooltips
 {

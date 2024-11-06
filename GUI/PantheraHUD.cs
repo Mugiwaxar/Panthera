@@ -711,7 +711,7 @@ namespace Panthera.GUI
             if (lastFailedCombo != null)
             {
                 // Instantiate the Combo Failed Frame //
-                if (this.comboFailedFrame!= null)
+                if (this.comboFailedFrame != null)
                     GameObject.DestroyImmediate(this.comboFailedFrame);
                 this.comboFailedFrame = GameObject.Instantiate<GameObject>(PantheraAssets.HUDComboSkillTemplate, origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas"));
                 this.comboFailedFrame.transform.localPosition = new Vector3(0, -400, 0);

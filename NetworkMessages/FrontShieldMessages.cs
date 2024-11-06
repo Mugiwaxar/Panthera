@@ -2,8 +2,9 @@
 using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.MachineScripts;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
+using Panthera.Skills.Passives;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using Panthera.Skills.Passives;
 
 namespace Panthera.NetworkMessages
 {

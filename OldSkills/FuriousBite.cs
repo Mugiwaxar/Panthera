@@ -8,8 +8,9 @@ using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
+using Panthera.Skills.Passives;
 using Panthera.Utils;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -21,7 +22,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using static Panthera.Base.PantheraSkill;
-using Panthera.Skills.Passives;
 
 namespace Panthera.OldSkills
 {

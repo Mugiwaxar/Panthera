@@ -76,7 +76,7 @@ namespace Panthera.MachineScripts
         public void OnCharacterDieEventServer(DamageReport damageReport)
         {
             if (damageReport.attacker == null || damageReport.victim == null) return;
-                new ClientCharacterDieEvent(damageReport.attacker, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+            new ClientCharacterDieEvent(damageReport.attacker, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
         }
 
     }

@@ -34,7 +34,7 @@ namespace Panthera.GUI.Tabs
             TooltipObj.transform.Find("Header").Find("SkillName").GetComponent<TextMeshProUGUI>().text = script.name;
             TooltipObj.transform.Find("Cooldown").Find("Amount").GetComponent<TextMeshProUGUI>().text = script.baseCooldown.ToString();
             TooltipObj.transform.Find("Description1").GetComponent<TextMeshProUGUI>().text = script.desc1;
-            if(string.IsNullOrEmpty(script.desc2))
+            if (string.IsNullOrEmpty(script.desc2))
             {
                 TooltipObj.transform.Find("Line2").gameObject.active = false;
                 TooltipObj.transform.Find("Description2").gameObject.active = false;
@@ -45,7 +45,7 @@ namespace Panthera.GUI.Tabs
                 TooltipObj.transform.Find("Description2").gameObject.active = true;
                 TooltipObj.transform.Find("Description2").GetComponent<TextMeshProUGUI>().text = script.desc2;
             }
-            if(Panthera.ProfileComponent.isSkillUnlocked(script.skillID) == false)
+            if (Panthera.ProfileComponent.isSkillUnlocked(script.skillID) == false)
                 TooltipObj.transform.Find("Locked").gameObject.active = true;
             else
                 TooltipObj.transform.Find("Locked").gameObject.active = false;

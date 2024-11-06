@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using UnityEngine;
-using Random = System.Random;
 
 namespace Panthera.Skills.Actives
 {
@@ -38,7 +37,7 @@ namespace Panthera.Skills.Actives
 
         public ShieldBash()
         {
-            base.icon = PantheraAssets.ShieldBashSkill  ;
+            base.icon = PantheraAssets.ShieldBashSkill;
             base.name = PantheraTokens.Get("ability_ShieldBashName");
             base.baseCooldown = PantheraConfig.ShieldBash_cooldown;
             base.desc1 = String.Format(Utils.PantheraTokens.Get("ability_ShieldBashDesc"), PantheraConfig.ShieldBash_damageMultiplier * 100, PantheraConfig.ShieldBash_stunDuration);
@@ -199,7 +198,7 @@ namespace Panthera.Skills.Actives
         {
             float startTime = Time.time;
             bool effectDestroyed = false;
-            while(motor.velocity.sqrMagnitude > originalVelocity.sqrMagnitude)
+            while (motor.velocity.sqrMagnitude > originalVelocity.sqrMagnitude)
             {
                 yield return new WaitForSeconds(0.05f);
                 float time = Time.time - startTime;

@@ -23,8 +23,8 @@ namespace Panthera.Utils
         public static string Green = "50C878";
         public static string Red = "FF0000";
         public static string Cyan = "30F9FF";
-        public static string Blue = "1D59FE";        
-        public static string Yellow = "FFEA00";        
+        public static string Blue = "1D59FE";
+        public static string Yellow = "FFEA00";
 
         public static string SetEnergy(String text)
         {
@@ -115,7 +115,7 @@ namespace Panthera.Utils
         {
             return String.Format("<style=cIsUtility>{0}</style>", text);
         }
-        
+
         public static string SetHeal(String text)
         {
             return String.Format("<style=cIsHealing>{0}</style>", text);

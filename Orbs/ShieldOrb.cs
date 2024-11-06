@@ -26,7 +26,7 @@ namespace Panthera.Orbs
 
             // Check the Body //
             if (body == null) return;
-            
+
             // Set the Orb Duration //
             base.duration = PantheraConfig.ShieldOrb_Duration;
 

@@ -7,8 +7,8 @@ using Panthera.GUI;
 using Panthera.Machines;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.Skills;
 using Panthera.OldSkills;
+using Panthera.Skills;
 using Panthera.Utils;
 using R2API;
 using R2API.Networking;
@@ -18,14 +18,14 @@ using RoR2;
 using RoR2.Audio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using static RoR2.DotController;
 using static UnityEngine.ParticleSystem;
-using TMPro;
-using System.Linq;
 
 namespace Panthera.MachineScripts
 {
@@ -110,7 +110,7 @@ namespace Panthera.MachineScripts
                 this.lastFuryDecreasedTime = Time.time;
                 base.characterBody.fury--;
                 if (base.characterBody.fury <= 0)
-                   Skills.Passives.FuryMode.FuryOff(base.pantheraObj);
+                    Skills.Passives.FuryMode.FuryOff(base.pantheraObj);
             }
 
             //// Add Energy //

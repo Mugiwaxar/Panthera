@@ -51,7 +51,7 @@ namespace Panthera.Components
 
         public void Start()
         {
-            
+
             // Check the Panthera Object //
             if (this.ptraObj == null) return;
 

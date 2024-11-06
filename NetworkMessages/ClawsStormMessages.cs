@@ -4,8 +4,8 @@ using R2API.Networking.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine.Networking;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Panthera.NetworkMessages
 {

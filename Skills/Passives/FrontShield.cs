@@ -3,8 +3,10 @@ using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
+using Panthera.Skills.Actives;
+using Panthera.Skills.Passives;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -13,8 +15,6 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using Panthera.Skills.Passives;
-using Panthera.Skills.Actives;
 
 namespace Panthera.Skills.Passives
 {
@@ -52,7 +52,7 @@ namespace Panthera.Skills.Passives
 
         }
 
-        public static void DeployShield(PantheraObj ptraObj,bool active)
+        public static void DeployShield(PantheraObj ptraObj, bool active)
         {
 
             // Set the Front Shield as deployed //

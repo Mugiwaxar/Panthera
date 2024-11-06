@@ -100,7 +100,7 @@ namespace Panthera.Components
             else
             {
                 int improvedShieldAbilityLevel = Panthera.ProfileComponent.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
-                if (improvedShieldAbilityLevel == 1) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent1 * (level+1);
+                if (improvedShieldAbilityLevel == 1) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent1 * (level + 1);
                 else if (improvedShieldAbilityLevel == 2) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent2 * (level + 1);
                 else if (improvedShieldAbilityLevel == 3) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent3 * (level + 1);
                 return getMaxHealth(level) * shieldHealthPercent;
@@ -502,7 +502,7 @@ namespace Panthera.Components
             // Sync the Profile //
             ProfileComponent profile2 = Panthera.ProfileComponent;
             ptraProfile.deserialize(profile2.serialize());
-            
+
             // Send the Profile to the Server //
             new ServerSyncProfile(ptraProfile.gameObject, ptraProfile.serialize()).Send(R2API.Networking.NetworkDestination.Server);
 
@@ -605,11 +605,11 @@ namespace Panthera.Components
             // Sync Profile //
             this.syncProfile();
 
-    }
+        }
 
         public void resetSkillsTree()
         {
-            
+
             // Set all Abilities to 0 //
             foreach (int key in this.unlockedAbilitiesList.Keys.ToArray())
             {

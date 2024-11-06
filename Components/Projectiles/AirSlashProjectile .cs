@@ -56,7 +56,7 @@ namespace Panthera.Components.Projectiles
                 // Add the Massive Hook Component //
                 if (ptraObj.getAbilityLevel(PantheraConfig.MassiveHook_AbilityID) > 0 && tc.body.isBoss == false)
                 {
-                    if (NetworkClient.active ==  false)
+                    if (NetworkClient.active == false)
                     {
                         ConvergenceHookComp comp = tc.body.gameObject.AddComponent<ConvergenceHookComp>();
                         comp.ptraObj = ptraObj;

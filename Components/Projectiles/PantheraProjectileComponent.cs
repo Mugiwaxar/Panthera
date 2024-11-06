@@ -183,7 +183,7 @@ namespace Panthera.Components.Projectiles
                 {
                     this.alive = false;
                 }
-                    
+
             }
 
             // Check the Projectile //
@@ -203,7 +203,7 @@ namespace Panthera.Components.Projectiles
                     this.alive = false;
                     Destroy(base.gameObject);
                 }
-                    
+
             }
 
             // I don't know what this do ?? //

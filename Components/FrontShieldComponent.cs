@@ -28,7 +28,7 @@ namespace Panthera.Components
             if (this.ptraObj == null || this.ptraObj.frontShieldDeployed == true) return;
             // Update the Shield Transform //
             base.transform.position = ptraObj.pantheraInputBank.aimOrigin + (ptraObj.direction.forward * PantheraConfig.FrontShield_addedforwardMultiplier);
-            base.transform.position = new Vector3 (base.transform.position.x, base.transform.position.y + PantheraConfig.FrontShield_addedUpPosition, base.transform.position.z);
+            base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y + PantheraConfig.FrontShield_addedUpPosition, base.transform.position.z);
             //if (this.ptraObj.hasAuthority() == true)
             //    base.transform.rotation = Util.QuaternionSafeLookRotation(Camera.main.transform.forward);
             //else
@@ -96,7 +96,7 @@ namespace Panthera.Components
                 if (addToList == true)
                 {
                     hitPointsBuffer.Add(hitPoint);
-                }   
+                }
 
             }
 

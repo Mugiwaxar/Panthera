@@ -46,7 +46,7 @@ namespace Panthera.GUI.Tabs
         {
             this.tabObj.SetActive(false);
         }
-        
+
         public void updateCombosList()
         {
 

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MonoMod.RuntimeDetour.HookGen;
 using Panthera;
 using Panthera.Base;
 using Panthera.Components;
 using Panthera.Utils;
 using RoR2;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking.Match;
@@ -86,8 +86,8 @@ namespace Panthera.Base
             BodyIndex bodyIndexFromSurvivorIndex = SurvivorCatalog.GetBodyIndexFromSurvivorIndex(self.currentSurvivorDef.survivorIndex);
             int skinIndex = (int)self.currentLoadout.bodyLoadoutManager.GetSkinIndex(bodyIndexFromSurvivorIndex);
 
-           // Get the Child Locator //
-           ChildLocator childLocator = displayModel.childLocator;
+            // Get the Child Locator //
+            ChildLocator childLocator = displayModel.childLocator;
 
             // Change the Model //
             if (skinIndex == 0) ChangedToDisplayModel1(childLocator);

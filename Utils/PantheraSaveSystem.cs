@@ -37,10 +37,10 @@ namespace Panthera.Utils
         {
 
             // Create the Table //
-            Dictionary<string,string> save = new Dictionary<string,string>();
+            Dictionary<string, string> save = new Dictionary<string, string>();
 
             // Add all Data to the Table //
-            foreach(string key in savedData.Keys)
+            foreach (string key in savedData.Keys)
             {
                 save[key] = savedData[key];
             }
@@ -66,7 +66,7 @@ namespace Panthera.Utils
 
         public static void Load()
         {
-            
+
             // Create the full path //
             string fullFilePath = System.IO.Path.Combine(saveDir, saveFileName + "--Data");
 
@@ -110,7 +110,7 @@ namespace Panthera.Utils
             }
 
             // Load the Save //
-            foreach(KeyValuePair<string, string> kvp in save)
+            foreach (KeyValuePair<string, string> kvp in save)
             {
                 savedData[kvp.Key] = kvp.Value;
             }
@@ -132,7 +132,7 @@ namespace Panthera.Utils
         public static Dictionary<string, string> LoadPreset(int ID)
         {
             // Create the full path //
-            string fullFilePath = System.IO.Path.Combine(saveDir, saveFileName + "--Preset" + ID.ToString() );
+            string fullFilePath = System.IO.Path.Combine(saveDir, saveFileName + "--Preset" + ID.ToString());
 
             // Create the List //
             Dictionary<string, string> dataList = new Dictionary<string, string>();

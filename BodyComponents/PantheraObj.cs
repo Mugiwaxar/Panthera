@@ -10,8 +10,10 @@ using Panthera.GUI;
 using Panthera.Machines;
 using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
+using Panthera.Skills.Actives;
+using Panthera.Skills.Passives;
 using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -23,16 +25,14 @@ using RoR2.PostProcessing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ThreeEyedGames;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering.PostProcessing;
-using static RoR2.CameraTargetParams;
-using Panthera.Skills.Actives;
-using Panthera.Skills.Passives;
 using UnityEngine.TextCore;
-using System.Linq;
+using static RoR2.CameraTargetParams;
 using static UnityEngine.ParticleSystem;
 
 namespace Panthera.BodyComponents
@@ -402,7 +402,7 @@ namespace Panthera.BodyComponents
                         Skills.Passives.FrontShield.DisableFrontShield(this);
                 }
                 // Disable the Shield Deployement if to far away //
-                if(this.frontShieldObj.active == true)
+                if (this.frontShieldObj.active == true)
                 {
                     if (Vector3.Distance(this.transform.position, this.frontShieldObj.transform.position) > PantheraConfig.ArcaneAnchor_MaxDistance)
                     {
@@ -502,7 +502,7 @@ namespace Panthera.BodyComponents
             if (this.hasAuthority() == true)
             {
                 // Check the Master //
-                if(this.pantheraMaster != null)
+                if (this.pantheraMaster != null)
                 {
                     // Save the Fury //
                     this.pantheraMaster.savedFury = this.characterBody.fury;

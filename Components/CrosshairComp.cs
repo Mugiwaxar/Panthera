@@ -1,8 +1,8 @@
 ﻿using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.NetworkMessages;
-using R2API.Networking.Interfaces;
 using R2API.Networking;
+using R2API.Networking.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,7 +65,7 @@ namespace Panthera.Components
         public void delayHideCrosshair(float time)
         {
             // Delay hide the Crosshair //
-            if(this.gameObject.active == true)
+            if (this.gameObject.active == true)
                 this.hideCrosshairCoroutine = base.StartCoroutine(DelayUnstealth(this.crosshairObj, time));
         }
 

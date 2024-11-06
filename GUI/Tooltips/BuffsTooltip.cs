@@ -39,7 +39,7 @@ namespace Panthera.GUI.Tooltips
             string typeString = "";
             if (buff.isDebuff == false)
                 typeString = "Buff";
-            else 
+            else
                 typeString = "Debuff";
 
             // Set the Tooltip //

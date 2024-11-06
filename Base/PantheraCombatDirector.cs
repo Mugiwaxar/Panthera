@@ -1,12 +1,12 @@
-﻿using RoR2;
+﻿using Panthera.Components;
+using RoR2;
+using RoR2.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine.Networking;
 using UnityEngine;
-using Panthera.Components;
-using RoR2.Navigation;
 using UnityEngine.Bindings;
+using UnityEngine.Networking;
 
 namespace Panthera.Base
 {
@@ -88,7 +88,7 @@ namespace Panthera.Base
                     }
 
                     // Increase the Spawn Timer //
-                   // self.monsterSpawnTimer += self.rng.RangeFloat(self.minSeriesSpawnInterval, self.maxSeriesSpawnInterval);
+                    // self.monsterSpawnTimer += self.rng.RangeFloat(self.minSeriesSpawnInterval, self.maxSeriesSpawnInterval);
 
                     return;
                 }
@@ -446,7 +446,7 @@ namespace Panthera.Base
 
         public static bool IsSurged()
         {
-            if (NetworkServer.active == true && Panthera.surgeComponent != null && Panthera.surgeComponent.GetComponent<HoldoutZoneController>() != null &&  Panthera.surgeComponent.GetComponent<HoldoutZoneController>().enabled == true)
+            if (NetworkServer.active == true && Panthera.surgeComponent != null && Panthera.surgeComponent.GetComponent<HoldoutZoneController>() != null && Panthera.surgeComponent.GetComponent<HoldoutZoneController>().enabled == true)
                 return true;
             else
                 return false;

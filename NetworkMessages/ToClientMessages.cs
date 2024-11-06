@@ -299,7 +299,7 @@ namespace Panthera.NetworkMessages
 
         }
 
-        public ClientSetAnimatorBoolean (GameObject character, string paramName, bool setValue)
+        public ClientSetAnimatorBoolean(GameObject character, string paramName, bool setValue)
         {
             this.character = character;
             this.paramName = paramName;

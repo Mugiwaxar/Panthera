@@ -64,7 +64,7 @@ namespace Panthera.Skills.Actives
 
         public override void Stop()
         {
-            
+
         }
 
     }

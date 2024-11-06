@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Panthera.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine.EventSystems;
 using UnityEngine;
-using Panthera.Utils;
+using UnityEngine.EventSystems;
 
 namespace Panthera.GUI.Tooltips
 {

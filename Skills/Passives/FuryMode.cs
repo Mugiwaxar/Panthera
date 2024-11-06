@@ -53,7 +53,7 @@ namespace Panthera.Skills.Passives
 
         public static void FuryOff(PantheraObj ptraObj)
         {
-            
+
             // Disable the Fury Mode //
             ptraObj.furyMode = false;
 

@@ -206,7 +206,7 @@ namespace Panthera.BodyComponents
             // Check the Profile Component //
             if (profile == null)
                 return;
-                
+
             // Apply Panthera Attributes //
             self.maxHealth = profile.getMaxHealth();
             self.regen = profile.getHealthRegen();
@@ -297,7 +297,7 @@ namespace Panthera.BodyComponents
             self.healthComponent.health = Math.Min(actualHealth, self.maxHealth);
 
             // Update Skill max Stocks and Cooldowns //
-            if(ptraObj.hasAuthority() == true)
+            if (ptraObj.hasAuthority() == true)
             {
 
                 // Get the Skill Locator //

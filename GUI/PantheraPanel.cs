@@ -55,7 +55,7 @@ namespace Panthera.GUI
                 {
                     return false;
                 }
-                    
+
             }
             set
             {
@@ -153,15 +153,15 @@ namespace Panthera.GUI
             }
 
             // Close if P4N7H3R4 is not played //
-            if(CharacterSelectUI != null && CharacterSelectUI.survivorName.text != "P4N7H3R4")
+            if (CharacterSelectUI != null && CharacterSelectUI.survivorName.text != "P4N7H3R4")
             {
                 this.close();
                 return;
             }
 
             // Updates Tabs //
-            if (this.overviewTab.tabObj.active == true) 
-               this.overviewTab.update();
+            if (this.overviewTab.tabObj.active == true)
+                this.overviewTab.update();
             if (this.skillsTab.tabObj.active == true)
                 this.skillsTab.update();
             if (this.combosTab.tabObj.active == true)

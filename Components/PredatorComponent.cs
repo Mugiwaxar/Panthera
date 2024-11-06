@@ -19,7 +19,7 @@ namespace Panthera.Components
         public float bleedOutTime = 0; // Server
         public float IgnitionTime = 0; // Server
         public float lastStealthStrikeTime = 0; // Local
-        
+
         public void Start()
         {
             if (NetworkServer.active == false) base.enabled = false;

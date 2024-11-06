@@ -181,7 +181,7 @@ namespace Panthera.Base
             buffDefs.Add(IgnitionDebuff);
             pantheraBuffList.Add(IgnitionDebuff);
 
-        } 
+        }
 
     }
 
@@ -194,9 +194,9 @@ namespace Panthera.Base
         public float damage = 0;
         public int index
         {
-            get 
-            { 
-                return (int)this.buffIndex; 
+            get
+            {
+                return (int)this.buffIndex;
             }
         }
     }

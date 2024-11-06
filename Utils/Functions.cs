@@ -124,7 +124,7 @@ namespace Panthera.Utils
         public static float GetCollideDistance(Rigidbody r1, Rigidbody r2)
         {
 
-            if (r1 == null || r2 == null) 
+            if (r1 == null || r2 == null)
                 return 999999;
 
             Collider c1 = r1.GetComponent<Collider>();

@@ -92,8 +92,8 @@ namespace Panthera.Base
         public int totalAttributePoints
         {
             get
-            { 
-               return this.characterLevel - 1;
+            {
+                return this.characterLevel - 1;
             }
         }
         public int usedAttributePoints
@@ -176,7 +176,7 @@ namespace Panthera.Base
                 this.maxExperienceList.Add(i, levelMaxXP);
             }
         }
-        
+
         public void CreateMasteryBossList()
         {
             foreach (GameObject prefab in RoR2.ContentManagement.ContentManager.masterPrefabs)

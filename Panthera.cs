@@ -93,7 +93,7 @@ namespace Panthera
 
         public static void ProfileLoaded(Action<RoR2.UserProfile> orig, RoR2.UserProfile self)
         {
-           
+
             // Call the Original Function //
             orig(self);
 
@@ -105,7 +105,7 @@ namespace Panthera
             if (ProfileComponent != null)
                 GameObject.DestroyImmediate(ProfileComponent);
             ProfileComponent = Instance.gameObject.AddComponent<ProfileComponent>();
-                
+
 
             // Create the Caracter //
             PantheraCharacter = new Character();

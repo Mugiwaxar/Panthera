@@ -1,8 +1,8 @@
 ﻿using Panthera;
 using Panthera.Base;
 using Panthera.Components;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
 using RoR2;
 using System;
 using System.Collections.Generic;

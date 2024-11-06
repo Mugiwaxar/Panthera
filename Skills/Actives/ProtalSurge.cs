@@ -53,10 +53,10 @@ namespace Panthera.Skills.Actives
             this.startTime = Time.time;
 
             // Start the Sound //
-                Utils.Sound.playSound(Utils.Sound.PortalCharging, base.gameObject);
+            Utils.Sound.playSound(Utils.Sound.PortalCharging, base.gameObject);
 
             // Play the start Animation //
-                Utils.Animation.PlayAnimation(base.pantheraObj, "KneelStart");
+            Utils.Animation.PlayAnimation(base.pantheraObj, "KneelStart");
 
             // Scan around //
             Collider[] colliders = Physics.OverlapSphere(base.characterBody.footPosition, PantheraConfig.PortalSurge_detectionRadius);
@@ -127,7 +127,7 @@ namespace Panthera.Skills.Actives
             }
 
             // Play the End Effect //
-            if(skillDuration > PantheraConfig.PortalSurge_endEffectTime && this.playedEndEffect == false)
+            if (skillDuration > PantheraConfig.PortalSurge_endEffectTime && this.playedEndEffect == false)
             {
                 this.playedEndEffect = true;
                 Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.PortalCharingEndFX, this.teleporter.transform.position, 1, this.teleporter, this.teleporter.transform.rotation);

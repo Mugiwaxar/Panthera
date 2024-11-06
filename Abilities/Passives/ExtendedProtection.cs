@@ -30,7 +30,7 @@ namespace Panthera.Abilities.Passives
         {
             int level = Panthera.ProfileComponent.getAbilityLevel(base.abilityID);
             if (level <= 1)
-                base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_ExtendedProtectionDesc"),PantheraConfig.ExtendedProtection_percent1 * 100);
+                base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_ExtendedProtectionDesc"), PantheraConfig.ExtendedProtection_percent1 * 100);
             else if (level == 2)
                 base.desc1 = string.Format(Utils.PantheraTokens.Get("ability_ExtendedProtectionDesc"), PantheraConfig.ExtendedProtection_percent2 * 100);
             else if (level == 3)

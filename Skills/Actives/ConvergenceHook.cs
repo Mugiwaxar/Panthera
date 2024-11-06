@@ -12,7 +12,7 @@ using Panthera.Skills.Actives;
 using Panthera.Utils;
 using R2API;
 using R2API.Networking;
-using R2API.Networking.Interfaces;  
+using R2API.Networking.Interfaces;
 using Rewired;
 using RoR2;
 using RoR2.Audio;

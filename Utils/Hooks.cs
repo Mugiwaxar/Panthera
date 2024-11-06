@@ -87,7 +87,7 @@ namespace Panthera.Utils
             AddHooks(typeof(RoR2.SkillLocator), nameof(RoR2.SkillLocator.ApplyAmmoPack), PantheraSkillLocator.applyAmmoPackHook);
 
             // Set the Character visibility when stealthed //
-            AddHooks(typeof(RoR2.CharacterBody), nameof(RoR2.CharacterBody.GetVisibilityLevel), new Type[] { typeof(RoR2.TeamIndex)}, PantheraBody.GetVisibilityLevelHook);
+            AddHooks(typeof(RoR2.CharacterBody), nameof(RoR2.CharacterBody.GetVisibilityLevel), new Type[] { typeof(RoR2.TeamIndex) }, PantheraBody.GetVisibilityLevelHook);
 
             // Apply the Cupidity Buff //
             AddHooks(typeof(RoR2.CharacterMaster), nameof(RoR2.CharacterMaster.GiveMoney), Skills.Passives.AmbitionMode.CalculateAddedMoney);

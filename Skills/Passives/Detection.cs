@@ -3,8 +3,8 @@ using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
 using Panthera.Skills.Passives;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -25,7 +25,7 @@ namespace Panthera.Skills.Passives
 
         public static void EnableDetection(PantheraObj ptraObj)
         {
-            
+
             // Enable the Detection Mode //
             ptraObj.detectionMode = true;
 
@@ -47,7 +47,7 @@ namespace Panthera.Skills.Passives
 
             // Change the Model Layer //
             ptraObj.characterModel.mainSkinnedMeshRenderer.gameObject.layer = PantheraConfig.Detection_layerIndex;
-            
+
             // Recalculate Stats //
             ptraObj.characterBody.RecalculateStats();
 

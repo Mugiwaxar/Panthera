@@ -70,7 +70,7 @@ namespace Panthera.BodyComponents
             return this.rechargeSkillList[skillID].stock;
         }
 
-        public void addOneStock (int skillID)
+        public void addOneStock(int skillID)
         {
             if (this.rechargeSkillList.ContainsKey(skillID) == false) return;
             RechargeSkill rechargeSkill = this.rechargeSkillList[skillID];
@@ -133,7 +133,7 @@ namespace Panthera.BodyComponents
 
         public static void applyAmmoPackHook(Action<SkillLocator> orig, SkillLocator self)
         {
-            
+
             // Call the Original Function //
             orig(self);
 

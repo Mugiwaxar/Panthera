@@ -4,8 +4,8 @@ using Panthera.Base;
 using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
 using Panthera.Skills;
 using RoR2;
 using System;
@@ -79,7 +79,7 @@ namespace Panthera.Base
 
         public PantheraSkill clone()
         {
-            return (PantheraSkill) MemberwiseClone();
+            return (PantheraSkill)MemberwiseClone();
         }
     }
 }

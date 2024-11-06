@@ -1,7 +1,7 @@
 ﻿using Panthera;
 using Panthera.NetworkMessages;
-using Panthera.Passives;
 using Panthera.OldSkills;
+using Panthera.Passives;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2;

@@ -424,9 +424,9 @@ namespace Panthera.Base
             #endregion
             #region Hitboxes
             Functions.CreateHitbox(model, childLocator.FindChild("RipHitBox"), "Rip");
-            Functions.CreateHitbox(model, childLocator.FindChild("FrontRipHitBox"), "FrontRip");
-            Functions.CreateHitbox(model, childLocator.FindChild("RightRipHitBox"), "RightRip");
-            Functions.CreateHitbox(model, childLocator.FindChild("LeftRipHitBox"), "LeftRip");
+            //Functions.CreateHitbox(model, childLocator.FindChild("FrontRipHitBox"), "FrontRip");
+            //Functions.CreateHitbox(model, childLocator.FindChild("RightRipHitBox"), "RightRip");
+            //Functions.CreateHitbox(model, childLocator.FindChild("LeftRipHitBox"), "LeftRip");
             Functions.CreateHitbox(model, childLocator.FindChild("ClawsStormHitBox"), "ClawStorm");
             #endregion
             #region ItemChange

@@ -238,7 +238,7 @@ namespace Panthera
         public static readonly Color32 BlockBarColor = new Color32(255, 255, 255, 230);
         #endregion
         #region Model
-        public static readonly float Model_defaultModelScale = 1.0f;
+        public static readonly float Model_defaultModelScale = 1.3f;
         public static readonly string Model_PrefabName = "Panthera";
         public static readonly float Model_fadeStartDistance = 5;
         public static readonly float Model_fadeEndDistance = 10;
@@ -410,7 +410,7 @@ namespace Panthera
         public static readonly float Guardian_increasedArmor = 0.75f;
         public static readonly float Guardian_increasedHealthRegen = 1.0f;
         public static readonly float Guardian_barrierDecayRatePercent = 0.25f;
-        public static readonly float Guardian_increasedSize = 1.5f;
+        public static readonly float Guardian_increasedSize = 1.6f;
         public static readonly float Guardian_masteryHealPercent = 0.15f;
         #endregion
         #region Slash

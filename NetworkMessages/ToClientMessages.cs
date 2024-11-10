@@ -593,55 +593,6 @@ namespace Panthera.NetworkMessages
 
     }
 
-
-    class ClientApplyForceToBody : INetMessage
-    {
-
-        public GameObject target;
-        public Vector3 force;
-
-        public ClientApplyForceToBody()
-        {
-
-        }
-
-        public ClientApplyForceToBody(GameObject target, Vector3 velocity)
-        {
-            this.target = target;
-            this.force = velocity;
-        }
-
-        public void OnReceived()
-        {
-            if (this.target == null) return;
-            CharacterMotor characterMotor = this.target.GetComponent<CharacterMotor>();
-            if (characterMotor)
-            {
-                characterMotor.velocity += this.force;
-                if (characterMotor.Motor != null)
-                    characterMotor.Motor.ForceUnground(0.1f);
-            }
-            Rigidbody rigidBody = this.target.GetComponent<Rigidbody>();
-            if (rigidBody)
-            {
-                rigidBody.velocity += this.force;
-            }
-        }
-
-        public void Serialize(NetworkWriter writer)
-        {
-            writer.Write(this.target);
-            writer.Write(this.force);
-        }
-
-        public void Deserialize(NetworkReader reader)
-        {
-            this.target = reader.ReadGameObject();
-            this.force = reader.ReadVector3();
-        }
-
-    }
-
     public class ClientSetPortalSurge : INetMessage
     {
 

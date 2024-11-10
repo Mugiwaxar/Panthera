@@ -1,4 +1,5 @@
 ﻿using EntityStates;
+using EntityStates.Jellyfish;
 using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.MachineScripts
 {
@@ -282,6 +284,16 @@ namespace Panthera.MachineScripts
         public object Clone()
         {
             return this.MemberwiseClone();
+        }
+
+        public void Dash(float power)
+        {
+            PhysForceInfo physForceInfo = PhysForceInfo.Create();
+            physForceInfo.force = this.characterDirection.forward * power;
+            physForceInfo.ignoreGroundStick = true;
+            physForceInfo.disableAirControlUntilCollision = true;
+            physForceInfo.massIsOne = true;
+            characterMotor.ApplyForceImpulse(physForceInfo);
         }
 
     }

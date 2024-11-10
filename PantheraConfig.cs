@@ -349,7 +349,8 @@ namespace Panthera
         public static readonly DamageType Rip_damageType = DamageType.Generic;
         public static readonly float Rip_minimumAimTime = 1.5f;
         public static readonly float Rip_procCoefficient = 1f;
-        public static readonly float Rip_pushForce = 1;
+        public static readonly float Rip_dashForce = 10;
+        public static readonly float Rip_pushForce = 5;
         public static readonly Vector3 Rip_bonusForce = Vector3.zero;
         public static readonly float Rip_atkDamageMultiplier = 1.5f;
         public static readonly float Rip_atkDuration = 0.6f;
@@ -415,14 +416,14 @@ namespace Panthera
         public static readonly float Guardian_masteryHealPercent = 0.15f;
         #endregion
         #region Slash
-        public static readonly int Slash_cooldown = 5;
+        public static readonly int Slash_cooldown = 1;
         public static readonly float Slash_duration = 0.8f;
         public static readonly float Slash_radius = 8;
-        public static readonly float Slash_damageMultiplier = 2f;
-        public static readonly float Slash_knockbackPowerMin = 2f;
-        public static readonly float Slash_knockbackPowerMax = 8f;
+        public static readonly float Slash_damageMultiplier = 2;
+        public static readonly float Slash_knockbackPowerMin = 5;
+        public static readonly float Slash_knockbackPowerMax = 15;
         public static readonly float Slash_procCoefficient = 0.7f;
-        public static readonly float Slash_BleedDuration = 7f;
+        public static readonly float Slash_BleedDuration = 7;
         public static readonly int Slash_furyAdded = 2;
         #endregion
         #region Prowl

@@ -272,6 +272,7 @@ namespace Panthera.Utils
             }
             return value;
         }
+       
         public static float StringToFloat(string text)
         {
             if (text == null) return 0;
@@ -287,6 +288,16 @@ namespace Panthera.Utils
                 value = 0f;
             }
             return value;
+        }
+
+        public static float RandomLog(float minValue, float maxValue, float curveIntensity = 1)
+        {
+            // Limite la valeur de curveIntensity pour éviter des résultats extrêmes
+            curveIntensity = Mathf.Clamp(curveIntensity, 0.1f, 10f);
+
+            // Calcule un biais logarithmique avec l'intensité ajustée
+            float rand = Mathf.Log(1 - UnityEngine.Random.value * 0.99f + 0.01f) / curveIntensity;
+            return minValue + (maxValue - minValue) * -rand;
         }
 
     }

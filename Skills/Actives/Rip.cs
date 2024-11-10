@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.Skills.Actives
 {
@@ -158,12 +159,6 @@ namespace Panthera.Skills.Actives
         public override void FixedUpdate()
         {
 
-            // Stop the dash if the target is dead //
-            //if (this.target != null && this.target.healthComponent.alive == false)
-            //{
-            //    this.target = null;
-            //}
-
             // Stop if the duration is reached //
             float skillDuration = Time.time - startTime;
             if (skillDuration >= this.baseDuration && this.hasFired == true)
@@ -196,6 +191,9 @@ namespace Panthera.Skills.Actives
                 // Fire the attack //
                 List<HurtBox> enemiesHit = new List<HurtBox>();
                 attack.Fire(enemiesHit);
+
+                // Do a small Dash //
+                base.Dash(PantheraConfig.Rip_dashForce);
 
                 // Add camera recoil
                 if (this.comboNumber == 1)
@@ -257,6 +255,14 @@ namespace Panthera.Skills.Actives
                         // Add Fury //
                         if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                             base.characterBody.fury += this.furyAdded;
+
+                        // Move the target //
+                        Vector3 pushDirection = Vector3.zero;
+                        if (comboNumber == 1)
+                            pushDirection = base.modelTransform.transform.right * PantheraConfig.Rip_pushForce;
+                        else
+                            pushDirection = (-base.modelTransform.transform.right) * PantheraConfig.Rip_pushForce;
+                        new ServerApplyForceToBody(hc.gameObject, pushDirection + base.characterDirection.forward).Send(NetworkDestination.Server);
 
                         // Apply Ghost Rip //
                         if (this.isGhostRip)
@@ -326,143 +332,6 @@ namespace Panthera.Skills.Actives
 
             }
 
-
-            // Check if the attack has already fired //
-            //if (this.hasFired == false)
-            //{
-
-            //    // Fire the attack //
-            //    List<HurtBox> enemiesHit = new List<HurtBox>();
-            //    this.hasFired = true;
-            //    this.attack.Fire(enemiesHit);
-
-            //    // Create the Sound //
-            //    string ripSound = "";
-
-            //    // Combo 1 //
-            //    if (this.comboNumber == 1 == true)
-            //    {
-            //        Sound.playSound(Sound.Rip1, base.gameObject);
-            //        this.PlayAnimation("LeftRip", 0.2f);
-            //        ripSound = Sound.RipHit1;
-            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeftRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
-            //        if (this.isFireRip)
-            //        {
-            //            Sound.playSound(Sound.FireRip1, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeftFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
-            //        }
-            //    }
-            //    // Combo 2 //
-            //    else if (this.comboNumber == 2)
-            //    {
-            //        Sound.playSound(Sound.Rip1, gameObject);
-            //        this.PlayAnimation("RightRip", 0.2f);
-            //        ripSound = Sound.RipHit1;
-            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.RightRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
-            //        if (isFireRip == true)
-            //        {
-            //            Sound.playSound(Sound.FireRip1, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.RightFireRipFX, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
-            //        }
-            //    }
-            //    // Combo 3 //
-            //    else if (comboNumber == 3)
-            //    {
-            //        Sound.playSound(Sound.Rip2, base.gameObject);
-            //        this.PlayAnimation("FrontRip", 0.2f);
-            //        ripSound = Sound.RipHit2;
-            //        FXManager.SpawnEffect(base.gameObject, PantheraAssets.FrontRipFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
-            //        if (this.isFireRip == true)
-            //        {
-            //            Sound.playSound(Sound.FireRip2, base.gameObject);
-            //            FXManager.SpawnEffect(base.gameObject, PantheraAssets.FrontFireRipFX, base.characterBody.corePosition, 1, null, base.modelTransform.rotation);
-            //        }
-            //    }
-
-            // Check if Enemies was hit //
-            //if (enemiesHit != null && enemiesHit.Count > 0)
-            //{
-
-            // Add The Rip-per buff //
-            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.TheRipperAbilityID) > 0)
-            //    OldPassives.Ripper.AddBuff(pantheraObj);
-
-            //// Apply the Bloody Rage Ability //
-            //int abilityLevel = CharacterAbilities.getAbilityLevel(PantheraConfig.BloodyRageAbilityID);
-            //int ripperBuffCount = base.characterBody.GetBuffCount(Buff.TheRipperBuff);
-            //float rand = UnityEngine.Random.Range(0f, 1f);
-            //bool ok = false;
-            //if (ripperBuffCount > 0 && abilityLevel > 0)
-            //{
-            //    float chance = 0;
-            //    if (abilityLevel == 1)
-            //        chance = PantheraConfig.BloodyRage_Percent1 * ripperBuffCount;
-            //    else if (abilityLevel == 2)
-            //        chance = PantheraConfig.BloodyRage_Percent2 * ripperBuffCount;
-            //    else if (abilityLevel == 3)
-            //        chance = PantheraConfig.BloodyRage_Percent3 * ripperBuffCount;
-            //    else if (abilityLevel == 4)
-            //        chance = PantheraConfig.BloodyRage_Percent4 * ripperBuffCount;
-            //    else if (abilityLevel == 5)
-            //        chance = PantheraConfig.BloodyRage_Percent5 * ripperBuffCount;
-            //    if (rand <= chance)
-            //        base.pantheraObj.characterBody.fury += 1;
-            //}
-
-            // Apply the Ghost Rip Ability //
-            //float stunDuration = 0;
-            //if (this.ghostRipLevel > 0 && this.pantheraObj.stealthed == true)
-            //    Sound.playSound(Sound.GhostRip, gameObject);
-            //if (this.ghostRipLevel == 1)
-            //    stunDuration = PantheraConfig.GhostRip_stunDuration1;
-            //else if (this.ghostRipLevel == 2)
-            //    stunDuration = PantheraConfig.GhostRip_stunDuration2;
-            //else if (this.ghostRipLevel == 3)
-            //    stunDuration = PantheraConfig.GhostRip_stunDuration3;
-            //else if (this.ghostRipLevel == 4)
-            //    stunDuration = PantheraConfig.GhostRip_stunDuration4;
-            //else if (this.ghostRipLevel == 5)
-            //    stunDuration = PantheraConfig.GhostRip_stunDuration5;
-
-            // Check all Enemies //
-            //List<GameObject> enemiesHurt = new List<GameObject>();
-            //foreach (HurtBox enemy in enemiesHit)
-            //{
-            //    HealthComponent hc = enemy.healthComponent;
-            //    if (hc == null) continue;
-            //    if (enemiesHurt.Contains(hc.gameObject)) continue;
-            //    enemiesHurt.Add(hc.gameObject);
-            //    Sound.playSound(ripSound, hc.gameObject);
-            // Apply the Ghost Rip Ability //
-            //if (stunDuration > 0 && base.pantheraObj.stealthed == true)
-            //    new ServerStunTarget(enemy.healthComponent.gameObject, stunDuration).Send(NetworkDestination.Server);
-            // Apply the Burning Spirit Ability //
-            //if (this.isFireRip == true)
-            //    new ServerInflictDot(base.gameObject, enemy.healthComponent.gameObject, PantheraConfig.BurnDotIndex, PantheraConfig.BurningSpirit_burnDuration, PantheraConfig.BurningSpirit_burnDamage).Send(NetworkDestination.Server);
-            // Apply the Hell Cat Ability //
-            //if (CharacterAbilities.getAbilityLevel(PantheraConfig.HellCatAbilityID) > 0 && this.isFireRip == true)
-            //{
-            //    base.characterBody.fury += 1;
-            //    base.characterBody.power += 1;
-            //}
-            //}
-
-            // Add a Combo Point if this is the third combo //
-            //if (this.comboNumber == 3)
-            //{
-            //    base.characterBody.comboPoint += 1;
-            //}
-
-            // Apply Weak //
-            //foreach (HurtBox enemy in enemiesHit)
-            //{
-            //    new ServerApplyWeak(enemy.healthComponent.gameObject, PantheraConfig.Rip_weakDuration).Send(NetworkDestination.Server);
-            //}
-            //}
-
-
-            //}
-
         }
 
         public override void Stop()
@@ -470,16 +339,6 @@ namespace Panthera.Skills.Actives
 
             // Hide the Crosshair //
             base.pantheraObj.crosshairComp.delayHideCrosshair(PantheraConfig.Rip_hideCrosshairTime);
-
-            //// Increate the combo number //
-            //this.comboNumber += 1;
-            //if (comboNumber > 3) comboNumber = 1;
-
-            //// Start the combo //
-            //if (base.characterBody.energy >= getSkillDef().requiredEnergy && this.wasInterrupted == false && base.inputBank.isSkillPressed(getSkillDef().skillID)) // && !(base.inputBank.IsDirectionKeyPressed() && base.inputBank.IsKeyPressed(PantheraConfig.SprintKey)))
-            //{
-            //    SetScript(new Rip { comboNumber = this.comboNumber });
-            //}
 
         }
 

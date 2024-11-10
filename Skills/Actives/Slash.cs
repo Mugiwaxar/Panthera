@@ -93,26 +93,34 @@ namespace Panthera.Skills.Actives
                 List<GameObject> enemiesHurt = new List<GameObject>();
                 foreach (HitPoint enemy in enemiesHit)
                 {
+
                     // Get the Enemy //
                     HealthComponent hc = enemy.hurtBox?.healthComponent;
                     if (hc == null) continue;
                     if (enemiesHurt.Contains(hc.gameObject)) continue;
                     enemiesHurt.Add(hc.gameObject);
+
                     // Play the Hit Sound //
                     Sound.playSound(Sound.Slash, hc.gameObject);
+
                     // Spawn the Hit Effect //
                     FXManager.SpawnEffect(hc.gameObject, PantheraAssets.SlashHitFX, enemy.hitPosition);
+
                     // Knockback //
-                    float forceRand = UnityEngine.Random.Range(PantheraConfig.Slash_knockbackPowerMin, PantheraConfig.Slash_knockbackPowerMax);
-                    Utils.Functions.ApplyKnockback(base.gameObject, hc.gameObject, forceRand); ;
+                    float forceRand = Utils.Functions.RandomLog(PantheraConfig.Slash_knockbackPowerMin, PantheraConfig.Slash_knockbackPowerMax, 2);
+                    Utils.Functions.ApplyKnockback(base.gameObject, hc.gameObject, forceRand);
+
                     // Add the Bleed //
                     new ServerAddBuff(base.gameObject, hc.gameObject, Buff.BleedOutDebuff, 1, PantheraConfig.Slash_BleedDuration).Send(NetworkDestination.Server);
+
                     // Add Fury Point //
                     if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                         base.characterBody.fury += PantheraConfig.Slash_furyAdded;
+
                     // Add the Razors Buff //
                     if (base.pantheraObj.getAbilityLevel(PantheraConfig.ClawsSharpening_AbilityID) > 0 && base.characterBody.GetBuffCount(Buff.RazorsBuff) < PantheraConfig.Tenacity_maxStacks)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.RazorsBuff).Send(NetworkDestination.Server);
+
                 }
             }
 

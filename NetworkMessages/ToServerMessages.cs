@@ -766,16 +766,18 @@ namespace Panthera.NetworkMessages
             CharacterMotor characterMotor = this.target.GetComponent<CharacterMotor>();
             if (characterMotor)
             {
-                characterMotor.velocity += this.force;
-                if (characterMotor.Motor != null)
-                    characterMotor.Motor.ForceUnground(0.1f);
+                PhysForceInfo physForceInfo = PhysForceInfo.Create();
+                physForceInfo.force = force;
+                physForceInfo.ignoreGroundStick = true;
+                physForceInfo.disableAirControlUntilCollision = true;
+                physForceInfo.massIsOne = true;
+                characterMotor.ApplyForceImpulse(physForceInfo);
             }
             Rigidbody rigidBody = this.target.GetComponent<Rigidbody>();
             if (rigidBody)
             {
-                rigidBody.velocity += this.force;
+                rigidBody.AddForce(force, ForceMode.Impulse);
             }
-            new ClientApplyForceToBody(this.target, force).Send(NetworkDestination.Clients);
         }
 
         public void Serialize(NetworkWriter writer)

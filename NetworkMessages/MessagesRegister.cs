@@ -36,7 +36,6 @@ namespace Panthera.NetworkMessages
             NetworkingAPI.RegisterMessageType<ServerChangePantheraScale>();
             NetworkingAPI.RegisterMessageType<ClientChangePantheraScale>();
             NetworkingAPI.RegisterMessageType<ServerApplyForceToBody>();
-            NetworkingAPI.RegisterMessageType<ClientApplyForceToBody>();
             NetworkingAPI.RegisterMessageType<ServerSyncProfile>();
             NetworkingAPI.RegisterMessageType<ClientSyncProfile>();
             NetworkingAPI.RegisterMessageType<ClientAddFury>();

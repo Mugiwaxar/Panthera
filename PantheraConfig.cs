@@ -419,7 +419,10 @@ namespace Panthera
         public static readonly float Slash_duration = 0.8f;
         public static readonly float Slash_radius = 8;
         public static readonly float Slash_damageMultiplier = 2f;
+        public static readonly float Slash_knockbackPowerMin = 2f;
+        public static readonly float Slash_knockbackPowerMax = 8f;
         public static readonly float Slash_procCoefficient = 0.7f;
+        public static readonly float Slash_BleedDuration = 7f;
         public static readonly int Slash_furyAdded = 2;
         #endregion
         #region Prowl
@@ -836,7 +839,7 @@ namespace Panthera
         #endregion
         #region Bleed Out
         public static readonly float BleedOut_duration = 5;
-        public static readonly float BleedOut_damage = 0.3f;
+        public static readonly float BleedOut_damage = 0.1f;
         public static readonly float BleedOut_damageTime = 0.3f;
         #endregion
         #region Frozen Paws

@@ -77,6 +77,9 @@ namespace Panthera.Skills.Actives
             // Play the Sound //
             Sound.playSound(Sound.Slash, base.gameObject);
 
+            // Add camera recoil
+            base.RandomHorizontalRecoil(3, 6);
+
             // Spawn the Effect //
             FXManager.SpawnEffect(base.gameObject, PantheraAssets.SlashFX, base.characterBody.corePosition, 1, base.characterBody.gameObject, base.modelTransform.rotation, true);
 
@@ -97,6 +100,13 @@ namespace Panthera.Skills.Actives
                     enemiesHurt.Add(hc.gameObject);
                     // Play the Hit Sound //
                     Sound.playSound(Sound.Slash, hc.gameObject);
+                    // Spawn the Hit Effect //
+                    FXManager.SpawnEffect(hc.gameObject, PantheraAssets.SlashHitFX, enemy.hitPosition);
+                    // Knockback //
+                    float forceRand = UnityEngine.Random.Range(PantheraConfig.Slash_knockbackPowerMin, PantheraConfig.Slash_knockbackPowerMax);
+                    Utils.Functions.ApplyKnockback(base.gameObject, hc.gameObject, forceRand); ;
+                    // Add the Bleed //
+                    new ServerAddBuff(base.gameObject, hc.gameObject, Buff.BleedOutDebuff, 1, PantheraConfig.Slash_BleedDuration).Send(NetworkDestination.Server);
                     // Add Fury Point //
                     if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                         base.characterBody.fury += PantheraConfig.Slash_furyAdded;

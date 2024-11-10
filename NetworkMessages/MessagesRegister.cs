@@ -35,8 +35,8 @@ namespace Panthera.NetworkMessages
             // Character Sync //
             NetworkingAPI.RegisterMessageType<ServerChangePantheraScale>();
             NetworkingAPI.RegisterMessageType<ClientChangePantheraScale>();
-            NetworkingAPI.RegisterMessageType<ServerSetBodyVelocity>();
-            NetworkingAPI.RegisterMessageType<ClientSetBodyVelocity>();
+            NetworkingAPI.RegisterMessageType<ServerApplyForceToBody>();
+            NetworkingAPI.RegisterMessageType<ClientApplyForceToBody>();
             NetworkingAPI.RegisterMessageType<ServerSyncProfile>();
             NetworkingAPI.RegisterMessageType<ClientSyncProfile>();
             NetworkingAPI.RegisterMessageType<ClientAddFury>();

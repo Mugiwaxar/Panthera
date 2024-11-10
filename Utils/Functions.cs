@@ -96,7 +96,7 @@ namespace Panthera.Utils
             attack.procCoefficient = procCoefficient;
             //attack.impactEffect = hitEffect;
             attack.bonusForce = forceVector;
-            attack.baseForce = PantheraConfig.Rip_pushForce;
+            attack.baseForce = pushAwayForce;
             attack.radius = radius;
             attack.crit = isCrit;
 
@@ -119,6 +119,13 @@ namespace Panthera.Utils
             damageInfo.procCoefficient = 1;
             damageInfo.damageColorIndex = damageColorIndex;
             return damageInfo;
+        }
+
+        public static void ApplyKnockback(GameObject attacker, GameObject victim, float knockbackPower)
+        {
+            Vector3 direction = (victim.transform.position - attacker.transform.position).normalized;
+            Vector3 force = direction * knockbackPower;
+            new ServerApplyForceToBody(victim, force).Send(NetworkDestination.Server);
         }
 
         public static float GetCollideDistance(Rigidbody r1, Rigidbody r2)

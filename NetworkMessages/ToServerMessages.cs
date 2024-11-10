@@ -743,42 +743,51 @@ namespace Panthera.NetworkMessages
         }
     }
 
-    class ServerSetBodyVelocity : INetMessage
+    class ServerApplyForceToBody : INetMessage
     {
 
         public GameObject target;
-        public Vector3 velocity;
+        public Vector3 force;
 
-        public ServerSetBodyVelocity()
+        public ServerApplyForceToBody()
         {
 
         }
 
-        public ServerSetBodyVelocity(GameObject target, Vector3 velocity)
+        public ServerApplyForceToBody(GameObject target, Vector3 force)
         {
             this.target = target;
-            this.velocity = velocity;
+            this.force = force;
         }
 
         public void OnReceived()
         {
             if (this.target == null) return;
-            CharacterMotor motor = this.target.GetComponent<CharacterMotor>();
-            if (motor == null) return;
-            motor.velocity = velocity;
-            new ClientSetBodyVelocity(this.target, velocity).Send(NetworkDestination.Clients);
+            CharacterMotor characterMotor = this.target.GetComponent<CharacterMotor>();
+            if (characterMotor)
+            {
+                characterMotor.velocity += this.force;
+                if (characterMotor.Motor != null)
+                    characterMotor.Motor.ForceUnground(0.1f);
+            }
+            Rigidbody rigidBody = this.target.GetComponent<Rigidbody>();
+            if (rigidBody)
+            {
+                rigidBody.velocity += this.force;
+            }
+            new ClientApplyForceToBody(this.target, force).Send(NetworkDestination.Clients);
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.target);
-            writer.Write(this.velocity);
+            writer.Write(this.force);
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.target = reader.ReadGameObject();
-            this.velocity = reader.ReadVector3();
+            this.force = reader.ReadVector3();
         }
 
     }

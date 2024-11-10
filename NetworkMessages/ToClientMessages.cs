@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Panthera.NetworkMessages
 {
@@ -593,41 +594,50 @@ namespace Panthera.NetworkMessages
     }
 
 
-    class ClientSetBodyVelocity : INetMessage
+    class ClientApplyForceToBody : INetMessage
     {
 
         public GameObject target;
-        public Vector3 velocity;
+        public Vector3 force;
 
-        public ClientSetBodyVelocity()
+        public ClientApplyForceToBody()
         {
 
         }
 
-        public ClientSetBodyVelocity(GameObject target, Vector3 velocity)
+        public ClientApplyForceToBody(GameObject target, Vector3 velocity)
         {
             this.target = target;
-            this.velocity = velocity;
+            this.force = velocity;
         }
 
         public void OnReceived()
         {
             if (this.target == null) return;
-            CharacterMotor motor = this.target.GetComponent<CharacterMotor>();
-            if (motor == null) return;
-            motor.velocity = velocity;
+            CharacterMotor characterMotor = this.target.GetComponent<CharacterMotor>();
+            if (characterMotor)
+            {
+                characterMotor.velocity += this.force;
+                if (characterMotor.Motor != null)
+                    characterMotor.Motor.ForceUnground(0.1f);
+            }
+            Rigidbody rigidBody = this.target.GetComponent<Rigidbody>();
+            if (rigidBody)
+            {
+                rigidBody.velocity += this.force;
+            }
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(this.target);
-            writer.Write(this.velocity);
+            writer.Write(this.force);
         }
 
         public void Deserialize(NetworkReader reader)
         {
             this.target = reader.ReadGameObject();
-            this.velocity = reader.ReadVector3();
+            this.force = reader.ReadVector3();
         }
 
     }

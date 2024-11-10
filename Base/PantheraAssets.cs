@@ -305,6 +305,7 @@ namespace Panthera.Base
 
         #region HitFX
         public static GameObject RipHitFX;
+        public static GameObject SlashHitFX;
         public static GameObject AirCleaveHitFX;
         public static GameObject FrontShieldHitFX;
         #endregion
@@ -586,6 +587,7 @@ namespace Panthera.Base
 
             #region HitFX
             RipHitFX = MainAssetBundle.LoadAsset<GameObject>("RipHitFX");
+            SlashHitFX = MainAssetBundle.LoadAsset<GameObject>("SlashHitFX");
             AirCleaveHitFX = MainAssetBundle.LoadAsset<GameObject>("AirCleaveHitFX");
             FrontShieldHitFX = MainAssetBundle.LoadAsset<GameObject>("FrontShieldHitFX");
             #endregion
@@ -658,7 +660,8 @@ namespace Panthera.Base
             LoadEffect(FuryAuraFX);
             LoadEffect(GuardianOnFX, 5);
             LoadEffect(GuardianAuraFX);
-            LoadEffect(SlashFX, 1);
+            LoadEffect(SlashFX, 2);
+            LoadEffect(SlashHitFX, 1);
             LoadEffect(AmbitionOnFX, 5);
             LoadEffect(AmbitionAuraFX);
             LoadEffect(AirSlashStartLeftFX, 2);

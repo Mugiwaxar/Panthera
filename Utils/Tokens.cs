@@ -181,7 +181,8 @@ namespace Panthera.Utils
 
             #region Slash
             string skill_SlashName = "Slash";
-            string skill_SlashDesc = "Slash all enemies around you for " + ColorHelper.SetDamage("{0}%") + " damage.";
+            string skill_SlashDesc = "Slash all enemies around you for " + ColorHelper.SetDamage("{0}%") + " damage, applying a stack of the " + ColorHelper.SetBuff("Bleed Out") 
+                                   + " debuff to each enemy hit that lasts for " + ColorHelper.SetUtility( PantheraConfig.Slash_BleedDuration + "s") + ".";
             string skill_SlashFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury("Every time " + skill_SlashName + " hits an enemy, you generate {0} Fury Points.");
             PantheraTokens.Add("skill_SlashName", skill_SlashName);
             PantheraTokens.Add("skill_SlashDesc", skill_SlashDesc);

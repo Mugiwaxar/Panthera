@@ -267,7 +267,14 @@ namespace Panthera.MachineScripts
         {
             cameraTargetParams.AddRecoil(verticalMin, verticalMax, horizontalMin, horizontalMax);
         }
-
+        public void RandomHorizontalRecoil(float min, float max)
+        {
+            int rand = UnityEngine.Random.Range(0, 2);
+            if (rand == 0)
+                this.AddRecoil(0, 0, min, max);
+            else
+                this.AddRecoil(0, 0, 1 - min, 1 - max);
+        }
         public int getAbilityLevel(int ID)
         {
             return this.pantheraObj.getAbilityLevel(ID);

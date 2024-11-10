@@ -142,7 +142,7 @@ namespace Panthera.Skills.Actives
                             Vector3 direction = tc.body.corePosition - base.characterBody.corePosition;
                             Vector3 velocity = direction.normalized * base.characterBody.moveSpeed * forceRand;
                             velocity.y = base.characterBody.moveSpeed * upRand;
-                            new ClientSetBodyVelocity(tc.body.gameObject, velocity).Send(NetworkDestination.Server);
+                            new ServerApplyForceToBody(tc.body.gameObject, velocity).Send(NetworkDestination.Server);
                         }
                     }
                 }

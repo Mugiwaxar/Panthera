@@ -214,7 +214,7 @@ namespace Panthera.BodyComponents
             self.damage = profile.getDamage();
             self.attackSpeed = profile.getAttackSpeed();
             self.crit = profile.getCritic();
-            self.armor = profile.getDefence();
+            self.armor = profile.getDefense();
             self.maxJumpCount = (int)profile.getJumpCount();
 
             // Check Wind Walker //
@@ -228,11 +228,15 @@ namespace Panthera.BodyComponents
                 self.attackSpeed *= 1 + PantheraConfig.Fury_increasedAttackSpeed;
             }
 
+            // Set the Walk Speed Coefficient //
+            self.characterMotor.walkSpeedPenaltyCoefficient = 1;
+
             // Apply the Guardian Mode //
             if (ptraObj.guardianMode == true)
             {
                 self.regen *= 1 + PantheraConfig.Guardian_increasedHealthRegen;
                 self.armor *= 1 + PantheraConfig.Guardian_increasedArmor;
+                self.characterMotor.walkSpeedPenaltyCoefficient = PantheraConfig.Guardian_increasedMoveSpeedCoef;
 
                 // Apply the Warden's Vitality //
                 int wardensVitalityLevel = ptraObj.getAbilityLevel(PantheraConfig.WardensVitality_AbilityID);
@@ -348,18 +352,18 @@ namespace Panthera.BodyComponents
                 furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime * (1 + PantheraConfig.EternalFury_reductionPercent3);
             ptraObj.furyDecreaseTime = furyDecreaseTime;
 
-            //// Debug //
-            //Utils.DebugInfo.addText("maxHealth", "maxHealth: " + self.maxHealth);
-            //Utils.DebugInfo.addText("regen", "regen: " + self.regen);
-            //Utils.DebugInfo.addText("moveSpeed", "moveSpeed: " + self.moveSpeed);
-            //Utils.DebugInfo.addText("damage", "damage: " + self.damage);
-            //Utils.DebugInfo.addText("attackSpeed", "attackSpeed: " + self.attackSpeed);
-            //Utils.DebugInfo.addText("crit", "crit: " + self.crit);
-            //Utils.DebugInfo.addText("dodge", "dodge: " + body.dodge);
-            //Utils.DebugInfo.addText("armor", "armor: " + self.armor);
-            //Utils.DebugInfo.addText("mastery", "mastery: " + body.mastery);
-            //Utils.DebugInfo.addText("maxFury", "maxFury: " + body.maxFury);
-            //Utils.DebugInfo.addText("maxFrontShield", "maxFrontShield: " + body.maxFrontShield);
+            // Debug //
+            Utils.DebugInfo.addText("maxHealth", "maxHealth: " + self.maxHealth);
+            Utils.DebugInfo.addText("regen", "regen: " + self.regen);
+            Utils.DebugInfo.addText("moveSpeed", "moveSpeed: " + self.moveSpeed);
+            Utils.DebugInfo.addText("damage", "damage: " + self.damage);
+            Utils.DebugInfo.addText("attackSpeed", "attackSpeed: " + self.attackSpeed);
+            Utils.DebugInfo.addText("crit", "crit: " + self.crit);
+            Utils.DebugInfo.addText("dodge", "dodge: " + body.dodge);
+            Utils.DebugInfo.addText("armor", "armor: " + self.armor);
+            Utils.DebugInfo.addText("mastery", "mastery: " + body.mastery);
+            Utils.DebugInfo.addText("maxFury", "maxFury: " + body.maxFury);
+            Utils.DebugInfo.addText("maxFrontShield", "maxFrontShield: " + body.maxFrontShield);
 
             //if (NetworkClient.active == false && NetworkServer.active == true)
             //{

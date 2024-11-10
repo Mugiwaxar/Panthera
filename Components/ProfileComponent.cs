@@ -44,15 +44,17 @@ namespace Panthera.Components
         #region Stats
         public float getMaxHealth(int level = 0)
         {
-            float mult = 1;
-            mult += this.endurance * 0.05f;
+            float mult1 = 0;
+            mult1 += this.endurance * 0.15f;
+
+            float mult2 = 2 * Mathf.Log(mult1 * 0.13f + 1, 3) + 1;
 
             if (level > 0 && this.body != null)
                 return body.maxHealth;
             else if (this.body != null)
-                return body.maxHealth * mult;
+                return body.maxHealth * mult2;
             else
-                return (PantheraConfig.Default_MaxHealth + (PantheraConfig.Default_MaxHealthLevel * level)) * mult;
+                return (PantheraConfig.Default_MaxHealth + (PantheraConfig.Default_MaxHealthLevel * level)) * mult2;
         }
         public float getMaxHealthLevel()
         {
@@ -60,16 +62,18 @@ namespace Panthera.Components
         }
         public float getHealthRegen(int level = 0)
         {
-            float mult = 1;
-            mult += this.endurance * 0.03f;
-            mult += this.spirit * 0.05f;
+            float mult1 = 0;
+            mult1 += this.endurance * 0.1f;
+            mult1 += this.spirit * 0.15f;
+
+            float mult2 = 10 * Mathf.Log(mult1 * 0.02f + 1, 3) + 1;
 
             if (level > 0 && this.body != null)
                 return body.regen;
             else if (this.body != null)
-                return body.regen * mult;
+                return body.regen * mult2;
             else
-                return (PantheraConfig.Default_HealthRegen + (PantheraConfig.Default_HealthRegenLevel * level)) * mult;
+                return (PantheraConfig.Default_HealthRegen + (PantheraConfig.Default_HealthRegenLevel * level)) * mult2;
         }
         public float getHealthRegenLevel()
         {
@@ -108,16 +112,18 @@ namespace Panthera.Components
         }
         public float getMoveSpeed(int level = 0)
         {
-            float mult = 1;
-            mult += this.agility * 0.02f;
-            mult += this.swiftness * 0.03f;
+            float mult1 = 0;
+            mult1 += this.agility * 0.05f;
+            mult1 += this.swiftness * 0.15f;
+
+            float mult2 = 0.75f * Mathf.Log(mult1 * 0.7f + 1, 10) + 1;
 
             if (level > 0 && this.body != null)
                 return body.moveSpeed;
             else if (this.body != null)
-                return body.moveSpeed * mult;
+                return body.moveSpeed * mult2;
             else
-                return (PantheraConfig.Default_MoveSpeed + (PantheraConfig.Default_MoveSpeedLevel * level)) * mult;
+                return (PantheraConfig.Default_MoveSpeed + (PantheraConfig.Default_MoveSpeedLevel * level)) * mult2;
         }
         public float getMoveSpeedLevel()
         {
@@ -125,16 +131,18 @@ namespace Panthera.Components
         }
         public float getDamage(int level = 0)
         {
-            float mult = 1;
-            mult += this.force * 0.05f;
-            mult += this.dexterity * 0.02f;
+            float mult1 = 0;
+            mult1 += this.force * 0.15f;
+            mult1 += this.dexterity * 0.05f;
+
+            float mult2 = 0.75f * Mathf.Log(mult1 * 0.2f + 1, 2) + 1;
 
             if (level > 0 && this.body != null)
                 return body.damage;
             else if (this.body != null)
-                return body.damage * mult;
+                return body.damage * mult2;
             else
-                return (PantheraConfig.Default_Damage + (PantheraConfig.Default_DamageLevel * level)) * mult;
+                return (PantheraConfig.Default_Damage + (PantheraConfig.Default_DamageLevel * level)) * mult2;
         }
         public float getDamageLevel()
         {
@@ -142,15 +150,17 @@ namespace Panthera.Components
         }
         public float getAttackSpeed(int level = 0)
         {
-            float mult = 1;
-            mult += this.swiftness * 0.02f;
+            float mult1 = 0;
+            mult1 += this.swiftness * 0.1f;
+
+            float mult2 = 1.2f * Mathf.Log(mult1 * 0.25f + 1, 5) + 1;
 
             if (level > 0 && this.body != null)
                 return body.attackSpeed;
             else if (this.body != null)
-                return body.attackSpeed * mult;
+                return body.attackSpeed * mult2;
             else
-                return (PantheraConfig.Default_AttackSpeed + (PantheraConfig.Default_AttackSpeedLevel * level)) * mult;
+                return (PantheraConfig.Default_AttackSpeed + (PantheraConfig.Default_AttackSpeedLevel * level)) * mult2;
         }
         public float getAttackSpeedLevel()
         {
@@ -158,16 +168,18 @@ namespace Panthera.Components
         }
         public float getCritic(int level = 0)
         {
-            float mult = 1;
-            mult += this.agility * 0.02f;
-            mult += this.dexterity * 0.04f;
+            float mult1 = 0;
+            mult1 += this.agility * 0.15f;
+            mult1 += this.dexterity * 0.1f;
+
+            float mult2 = Mathf.Log(mult1 * 0.8f + 1, 5) + 1;
 
             if (level > 0 && this.body != null)
                 return body.crit;
             else if (this.body != null)
-                return body.crit * mult;
+                return body.crit * mult2;
             else
-                return (PantheraConfig.Default_Critic + (PantheraConfig.Default_CriticLevel * level)) * mult;
+                return (PantheraConfig.Default_Critic + (PantheraConfig.Default_CriticLevel * level)) * mult2;
         }
         public float getCriticLevel()
         {
@@ -175,32 +187,34 @@ namespace Panthera.Components
         }
         public float getDodge(int level = 0)
         {
-            float mult = 1;
-            mult += this.agility * 0.01f;
-            mult += this.swiftness * 0.02f;
-            mult += this.dexterity * 0.01f;
+            float mult1 = 0;
+            mult1 += this.agility * 0.1f;
+            mult1 += this.dexterity * 0.15f;
+
+            float mult2 = 2.5f * Mathf.Log(mult1 * 0.25f + 1, 3) + 1;
 
             if (this.body != null)
-                return (PantheraConfig.Default_Dodge + (PantheraConfig.Default_DodgeLevel * (this.body.level - 1))) * mult;
+                return (PantheraConfig.Default_Dodge + (PantheraConfig.Default_DodgeLevel * (this.body.level - 1))) * mult2;
             else
-                return (PantheraConfig.Default_Dodge + (PantheraConfig.Default_DodgeLevel * level)) * mult;
+                return (PantheraConfig.Default_Dodge + (PantheraConfig.Default_DodgeLevel * level)) * mult2;
         }
         public float getDodgeLevel()
         {
             return PantheraConfig.Default_DodgeLevel;
         }
-        public float getDefence(int level = 0)
+        public float getDefense(int level = 0)
         {
-            float mult = 1;
-            mult += this.endurance * 0.02f;
-            mult += this.force * 0.04f;
+            float mult1 = 0;
+            mult1 += this.force * 0.15f;
+
+            float mult2 = 1.5f * Mathf.Log(mult1 * 0.3f + 1, 3) + 1;
 
             if (level > 0 && this.body != null)
                 return body.armor;
             else if (this.body != null)
-                return body.armor * mult;
+                return body.armor * mult2;
             else
-                return (PantheraConfig.Default_Defense + (PantheraConfig.Default_DefenseLevel * level)) * mult;
+                return (PantheraConfig.Default_Defense + (PantheraConfig.Default_DefenseLevel * level)) * mult2;
         }
         public float getDefenseLevel()
         {
@@ -208,13 +222,15 @@ namespace Panthera.Components
         }
         public float getMastery(int level = 0)
         {
-            float mult = 1;
-            mult += this.spirit * 0.03f;
+            float mult1 = 0;
+            mult1 += this.spirit * 0.2f;
+
+            float mult2 = 3 * Mathf.Log(mult1 * 0.5f + 1, 2) + 1;
 
             if (this.body != null)
-                return (PantheraConfig.Default_Mastery + (PantheraConfig.Default_MasteryLevel * (this.body.level - 1))) * mult;
+                return (PantheraConfig.Default_Mastery + (PantheraConfig.Default_MasteryLevel * (this.body.level - 1))) * mult2;
             else
-                return (PantheraConfig.Default_Mastery + (PantheraConfig.Default_MasteryLevel * level)) * mult;
+                return (PantheraConfig.Default_Mastery + (PantheraConfig.Default_MasteryLevel * level)) * mult2;
         }
         public float getMasteryLevel()
         {

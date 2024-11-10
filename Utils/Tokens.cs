@@ -51,33 +51,31 @@ namespace Panthera.Utils
 
             #region Attributes
 
-            string attribute_Endurance = "Max Health: " + ColorHelper.SetUtility("+5%") + Environment.NewLine
-                                       + "Health Regen: " + ColorHelper.SetUtility("+3%") + Environment.NewLine
-                                       + "Defense: " + ColorHelper.SetUtility("+2%");
+            string attribute_Endurance = "Max Health: " + ColorHelper.SetUtility("+++") + Environment.NewLine
+                                       + "Health Regen: " + ColorHelper.SetUtility("+") + Environment.NewLine;
             PantheraTokens.Add("attribute_Endurance", attribute_Endurance);
 
-            string attribute_Force = "Damages: " + ColorHelper.SetUtility("+5%") + Environment.NewLine
-                                   + "Defense: " + ColorHelper.SetUtility("+4%");
+            string attribute_Force = "Damage: " + ColorHelper.SetUtility("++") + Environment.NewLine
+                                   + "Defense: " + ColorHelper.SetUtility("++");
             PantheraTokens.Add("attribute_Force", attribute_Force);
 
 
-            string attribute_Agility = "Move Speed: " + ColorHelper.SetUtility("+2%") + Environment.NewLine
-                                     + "Critic: " + ColorHelper.SetUtility("+2%") + Environment.NewLine
-                                     + "Dodge: " + ColorHelper.SetUtility("+1%");
+            string attribute_Agility = "Move Speed: " + ColorHelper.SetUtility("+") + Environment.NewLine
+                                     + "Critic: " + ColorHelper.SetUtility("++") + Environment.NewLine
+                                     + "Dodge: " + ColorHelper.SetUtility("+");
             PantheraTokens.Add("attribute_Agility", attribute_Agility);
 
-            string attribute_Swiftness = "Move Speed: " + ColorHelper.SetUtility("+3%") + Environment.NewLine
-                                       + "Attack Speed: " + ColorHelper.SetUtility("+2%") + Environment.NewLine
-                                       + "Dodge: " + ColorHelper.SetUtility("+2%");
+            string attribute_Swiftness = "Move Speed: " + ColorHelper.SetUtility("++") + Environment.NewLine
+                                       + "Attack Speed: " + ColorHelper.SetUtility("++") + Environment.NewLine;
             PantheraTokens.Add("attribute_Swiftness", attribute_Swiftness);
 
-            string attribute_Dexterity = "Damages: " + ColorHelper.SetUtility("+2%") + Environment.NewLine
-                                       + "Critic: " + ColorHelper.SetUtility("+4%") + Environment.NewLine
-                                       + "Dodge: " + ColorHelper.SetUtility("+1%");
+            string attribute_Dexterity = "Damages: " + ColorHelper.SetUtility("+") + Environment.NewLine
+                                       + "Critic: " + ColorHelper.SetUtility("+") + Environment.NewLine
+                                       + "Dodge: " + ColorHelper.SetUtility("++");
             PantheraTokens.Add("attribute_Dexterity", attribute_Dexterity);
 
-            string attribute_Spirit = "Health Regen: : " + ColorHelper.SetUtility("+5%") + Environment.NewLine
-                                      + "Mastery: " + ColorHelper.SetUtility("+3%");
+            string attribute_Spirit = "Health Regen: : " + ColorHelper.SetUtility("+") + Environment.NewLine
+                                      + "Mastery: " + ColorHelper.SetUtility("+++");
             PantheraTokens.Add("attribute_Spirit", attribute_Spirit);
 
             #endregion

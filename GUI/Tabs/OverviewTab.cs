@@ -207,17 +207,17 @@ namespace Panthera.GUI.Tabs
             this.swiftnessText.SetText((profile.swiftness + 1).ToString());
             this.dexterityText.SetText((profile.dexterity + 1).ToString());
             this.spiritText.SetText((profile.spirit + 1).ToString());
-            this.healthText.SetText(profile.getMaxHealth(addedLevel).ToString());
-            this.healthRegenText.SetText(profile.getHealthRegen(addedLevel).ToString());
-            this.moveSpeedText.SetText(profile.getMoveSpeed(addedLevel).ToString());
-            this.damageText.SetText(profile.getDamage(addedLevel).ToString());
-            this.attackSpeedText.SetText(profile.getAttackSpeed(addedLevel).ToString());
-            this.criticText.SetText(profile.getCritic(addedLevel).ToString());
-            this.dodgeText.SetText(profile.getDodge(addedLevel).ToString());
-            this.defenseText.SetText(profile.getDefence(addedLevel).ToString());
-            this.masteryText.SetText(profile.getMastery(addedLevel).ToString());
-            this.furyText.SetText(profile.getMaxFury(addedLevel).ToString());
-            this.shieldText.SetText(profile.getMaxFrontShield(addedLevel).ToString());
+            this.healthText.SetText(profile.getMaxHealth(addedLevel).ToString("F2"));
+            this.healthRegenText.SetText(profile.getHealthRegen(addedLevel).ToString("F2"));
+            this.moveSpeedText.SetText(profile.getMoveSpeed(addedLevel).ToString("F2"));
+            this.damageText.SetText(profile.getDamage(addedLevel).ToString("F2"));
+            this.attackSpeedText.SetText(profile.getAttackSpeed(addedLevel).ToString("F2"));
+            this.criticText.SetText(profile.getCritic(addedLevel).ToString("F2"));
+            this.dodgeText.SetText(profile.getDodge(addedLevel).ToString("F2"));
+            this.defenseText.SetText(profile.getDefense(addedLevel).ToString("F2"));
+            this.masteryText.SetText(profile.getMastery(addedLevel).ToString("F2"));
+            this.furyText.SetText(profile.getMaxFury(addedLevel).ToString("F2"));
+            this.shieldText.SetText(profile.getMaxFrontShield(addedLevel).ToString("F2"));
 
             // Update Attribute Buttons //
             if (Panthera.PantheraCharacter.attributePointsLeft > 0)

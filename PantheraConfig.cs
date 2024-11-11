@@ -372,6 +372,7 @@ namespace Panthera
         public static readonly float AirCleave_procCoefficient = 0.8f;
         public static readonly float AirCleave_projectileSpeed = 130;
         public static readonly float AirCleave_projectileForce = 15;
+        public static readonly float AirCleave_pushForce = 10;
         public static readonly float AirCleave_minimumAimTime = 1f;
         public static readonly float AirCleave_furyAdded = 5;
         public static readonly float AirCleave_projScale = 0.5f;

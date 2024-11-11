@@ -353,17 +353,17 @@ namespace Panthera.BodyComponents
             ptraObj.furyDecreaseTime = furyDecreaseTime;
 
             // Debug //
-            Utils.DebugInfo.addText("maxHealth", "maxHealth: " + self.maxHealth);
-            Utils.DebugInfo.addText("regen", "regen: " + self.regen);
-            Utils.DebugInfo.addText("moveSpeed", "moveSpeed: " + self.moveSpeed);
-            Utils.DebugInfo.addText("damage", "damage: " + self.damage);
-            Utils.DebugInfo.addText("attackSpeed", "attackSpeed: " + self.attackSpeed);
-            Utils.DebugInfo.addText("crit", "crit: " + self.crit);
-            Utils.DebugInfo.addText("dodge", "dodge: " + body.dodge);
-            Utils.DebugInfo.addText("armor", "armor: " + self.armor);
-            Utils.DebugInfo.addText("mastery", "mastery: " + body.mastery);
-            Utils.DebugInfo.addText("maxFury", "maxFury: " + body.maxFury);
-            Utils.DebugInfo.addText("maxFrontShield", "maxFrontShield: " + body.maxFrontShield);
+            //Utils.DebugInfo.addText("maxHealth", "maxHealth: " + self.maxHealth);
+            //Utils.DebugInfo.addText("regen", "regen: " + self.regen);
+            //Utils.DebugInfo.addText("moveSpeed", "moveSpeed: " + self.moveSpeed);
+            //Utils.DebugInfo.addText("damage", "damage: " + self.damage);
+            //Utils.DebugInfo.addText("attackSpeed", "attackSpeed: " + self.attackSpeed);
+            //Utils.DebugInfo.addText("crit", "crit: " + self.crit);
+            //Utils.DebugInfo.addText("dodge", "dodge: " + body.dodge);
+            //Utils.DebugInfo.addText("armor", "armor: " + self.armor);
+            //Utils.DebugInfo.addText("mastery", "mastery: " + body.mastery);
+            //Utils.DebugInfo.addText("maxFury", "maxFury: " + body.maxFury);
+            //Utils.DebugInfo.addText("maxFrontShield", "maxFrontShield: " + body.maxFrontShield);
 
             //if (NetworkClient.active == false && NetworkServer.active == true)
             //{

@@ -56,6 +56,8 @@ namespace Panthera.Components.Projectiles
                     if (ignitionRand < ignitionChance)
                         new ServerAddBuff(base.gameObject, healthComponent.gameObject, Buff.IgnitionDebuff).Send(NetworkDestination.Server);
                 }
+                // Move the target //
+                new ServerApplyForceToBody(healthComponent.gameObject, base.transform.forward * PantheraConfig.AirCleave_pushForce).Send(NetworkDestination.Server);
 
             }
 

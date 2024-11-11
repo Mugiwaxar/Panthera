@@ -31,7 +31,7 @@ namespace Panthera.Skills.Passives
             Utils.Sound.playSound(Utils.Sound.FuryOn, ptraObj.gameObject);
 
             // Create the FX //
-            FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.FuryOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);
+            FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.FuryOnFX, ptraObj.modelTransform.position, ptraObj.actualModelScale, null, ptraObj.modelTransform.rotation, false);
 
             // Start the Cooldown //
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID, 1);

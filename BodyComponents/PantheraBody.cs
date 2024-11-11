@@ -254,7 +254,7 @@ namespace Panthera.BodyComponents
                 float modelScale = PantheraConfig.Model_defaultModelScale;
                 if (ptraObj.guardianMode == true)
                     modelScale *= PantheraConfig.Guardian_increasedSize;
-                ptraObj.changeModelScale = modelScale;
+                ptraObj.desiredModelScale = modelScale;
             }
 
             // Apply the Resilience Buff //

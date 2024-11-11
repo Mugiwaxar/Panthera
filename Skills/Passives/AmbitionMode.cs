@@ -34,7 +34,7 @@ namespace Panthera.Skills.Passives
             ptraObj.skillLocator.startCooldown(PantheraConfig.Ambition_SkillID);
 
             // Spawn the Effect //
-            FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.AmbitionOnFX, ptraObj.modelTransform.position, ptraObj.modelScale, null, ptraObj.modelTransform.rotation, false);
+            FXManager.SpawnEffect(ptraObj.gameObject, PantheraAssets.AmbitionOnFX, ptraObj.modelTransform.position, ptraObj.actualModelScale, null, ptraObj.modelTransform.rotation, false);
 
             // Start the Aura FX //
             ptraObj.GetComponent<PantheraFX>().setAmbitionAuraFX(true);

@@ -235,7 +235,7 @@ namespace Panthera.Skills.Actives
                     if (comboNumber == 2)
                         fireEffect = PantheraAssets.FireRipRightFX;
                     // Spawn the Effect //
-                    FXManager.SpawnEffect(base.gameObject, fireEffect, base.characterBody.corePosition, base.pantheraObj.modelScale, null, base.modelTransform.rotation);
+                    FXManager.SpawnEffect(base.gameObject, fireEffect, base.characterBody.corePosition, base.pantheraObj.actualModelScale, null, base.modelTransform.rotation);
                     // Play the sound //
                     Sound.playSound(Utils.Sound.FireRip1, base.gameObject);
                 }

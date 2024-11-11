@@ -126,7 +126,7 @@ namespace Panthera.Skills.Actives
             Sound.playSound(Sound.AirSlash, base.gameObject);
 
             // Spawn the Effect //
-            FXManager.SpawnEffect(base.gameObject, FX, base.GetAimRay().origin, base.pantheraObj.modelScale, base.characterBody.gameObject, Util.QuaternionSafeLookRotation(base.GetAimRay().direction));
+            FXManager.SpawnEffect(base.gameObject, FX, base.GetAimRay().origin, base.pantheraObj.actualModelScale, base.characterBody.gameObject, Util.QuaternionSafeLookRotation(base.GetAimRay().direction));
 
             // Play the Animation //
             base.PlayAnimation(animation);
@@ -134,7 +134,7 @@ namespace Panthera.Skills.Actives
             // Create the projectile info //
             GameObject projectile = PantheraAssets.AirSlashProjectile.InstantiateClone("AirSlashLoop(ProjectileClone)");
             float damage = base.characterBody.damage * this.damageMultiplier;
-            Vector3 scale = projectile.transform.localScale * PantheraConfig.AirSlash_projScale * base.pantheraObj.modelScale;
+            Vector3 scale = projectile.transform.localScale * PantheraConfig.AirSlash_projScale * base.pantheraObj.actualModelScale;
             projectile.transform.localScale = scale;
             projectile.GetComponent<ProjectileController>().ghostPrefab.transform.localScale = scale;
             FireProjectileInfo projectileInfo = new FireProjectileInfo();

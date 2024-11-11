@@ -53,7 +53,7 @@ namespace Panthera.BodyComponents
             //this.shieldRenderer.enabled = false;
 
             // Create the Leap Trail //
-            this.leapTrailFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeapTrailFX, ptraObj.modelTransform.position, ptraObj.modelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
+            this.leapTrailFXID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeapTrailFX, ptraObj.modelTransform.position, ptraObj.actualModelScale, ptraObj.characterBody.gameObject, new Quaternion(), true, false);
             GameObject leapTrailEffect = Utils.FXManager.GetEffect(leapTrailFXID);
             this.leapTrailParticles = leapTrailEffect.GetComponentInChildren<ParticleSystem>();
             this.leapTrailEmission = leapTrailParticles.emission;

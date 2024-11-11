@@ -87,7 +87,7 @@ namespace Panthera.Skills.Actives
                 if (this.isFireAirCleave) projectile = PantheraAssets.FireAirCleaveRightProjectile;
             }
             float damage = base.characterBody.damage * this.damageMultiplier * sharpenedFangsMult;
-            float projScale = base.pantheraObj.modelScale * PantheraConfig.AirCleave_projScale;
+            float projScale = base.pantheraObj.actualModelScale * PantheraConfig.AirCleave_projScale;
             projectile.transform.localScale = new Vector3(projScale, projScale, projScale);
             projectile.GetComponent<ProjectileController>().ghostPrefab.transform.localScale = new Vector3(projScale, projScale, projScale);
             this.projectileInfo.projectilePrefab = projectile;

@@ -244,6 +244,7 @@ namespace Panthera
         public static readonly float Model_fadeEndDistance = 10;
         #endregion
         #region Camera Parameters
+        public static readonly float defaultFOV = 60;
         public static readonly Vector3 defaultCamPosition = new Vector3(0, 1, -13);
         public static readonly Vector3 Death_cameraPos = new Vector3(0f, 5, -50);
         public static readonly Vector3 ClawsStorm_cameraPos = new Vector3(0, 3, -40);
@@ -378,7 +379,7 @@ namespace Panthera
         public static readonly float AirCleave_projScale = 0.5f;
         #endregion
         #region Leap
-        public static readonly float Leap_cooldown = 8;
+        public static readonly float Leap_cooldown = 1; // ----------------------------------------- //
         public static readonly float Leap_airControl = 0.10f;
         public static readonly float Leap_maxMoveSpeed = 100;
         public static readonly float Leap_speedMultiplier = 3.5f;
@@ -392,6 +393,7 @@ namespace Panthera
         public static readonly float Leap_duration = 3;
         public static readonly float Leap_leapStopDistance = 3f;
         public static readonly float Leap_leapScanRadius = 5f;
+        public static readonly float Leap_Fov = 100f;
         #endregion
         #region Myghty Roar
         public static readonly float MightyRoar_cooldown = 20;
@@ -417,7 +419,7 @@ namespace Panthera
         public static readonly float Guardian_masteryHealPercent = 0.15f;
         #endregion
         #region Slash
-        public static readonly int Slash_cooldown = 1;
+        public static readonly int Slash_cooldown = 5;
         public static readonly float Slash_duration = 0.8f;
         public static readonly float Slash_radius = 8;
         public static readonly float Slash_damageMultiplier = 2;

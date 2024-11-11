@@ -68,7 +68,7 @@ namespace Panthera.Skills.Actives
             base.characterBody.outOfCombatStopwatch = 0f;
 
             // Set the camera to ClawsStorm //
-            CamHelper.ApplyAimType(CamHelper.AimType.ClawsStorm, pantheraObj);
+            CamHelper.ApplyCameraType(CamHelper.AimType.ClawsStorm, pantheraObj);
 
             // Get the Effect //
             GameObject effectColor = PantheraAssets.ClawsStormWhiteFX;
@@ -204,7 +204,7 @@ namespace Panthera.Skills.Actives
             //}
 
             // Restore the camera //
-            CamHelper.ApplyAimType(CamHelper.AimType.Standard, pantheraObj);
+            CamHelper.ApplyCameraType(CamHelper.AimType.Standard, pantheraObj);
 
             // Restore the Player layer //
             //gameObject.layer = origPlayerLayer;

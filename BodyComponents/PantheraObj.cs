@@ -86,6 +86,7 @@ namespace Panthera.BodyComponents
         public PantheraFX pantheraFX;
         public PantheraDeathBehavior deathBehavior;
         public CameraTargetParams pantheraCamParam;
+        public CameraRigController cameraRigController;
         public PantheraMaster pantheraMaster
         {
             get
@@ -116,8 +117,8 @@ namespace Panthera.BodyComponents
             }
         }
         public int ActualPantheraSkinIndex;
-        public float modelScale = PantheraConfig.Model_defaultModelScale;
-        public float changeModelScale = PantheraConfig.Model_defaultModelScale;
+        public float actualModelScale = PantheraConfig.Model_defaultModelScale;
+        public float desiredModelScale = PantheraConfig.Model_defaultModelScale;
 
         public CameraParamsOverrideHandle lastCamHandle;
         public Camera pantheraCam;
@@ -308,15 +309,15 @@ namespace Panthera.BodyComponents
 
             // Set Default Camera Parameters //
             Vector3 camPos = PantheraConfig.defaultCamPosition;
-            this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * modelScale);
-            Utils.CamHelper.ApplyAimType(Utils.CamHelper.AimType.Standard, this);
+            this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
+            Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this);
 
             // Set Camera Fade distance //
-            CameraRigController rigCtrl = Camera.main.transform.parent.GetComponent<CameraRigController>();
-            if (rigCtrl != null)
+            this.cameraRigController = this.characterBody.master?.playerCharacterMasterController?.networkUser.cameraRigController;
+            if (cameraRigController != null)
             {
-                rigCtrl.fadeStartDistance = PantheraConfig.Model_fadeStartDistance;
-                rigCtrl.fadeEndDistance = PantheraConfig.Model_fadeEndDistance;
+                cameraRigController.fadeStartDistance = PantheraConfig.Model_fadeStartDistance;
+                cameraRigController.fadeEndDistance = PantheraConfig.Model_fadeEndDistance;
             }
 
             // Start the machines //
@@ -349,7 +350,7 @@ namespace Panthera.BodyComponents
                 this.skillLocator.createRechargeSkillsList();
 
             // Apply all Stats //
-            this.applyStats();
+            this.characterBody.RecalculateStats();
 
             // Create the Panthera Camera //
             GameObject camObj = GameObject.Instantiate(Camera.main.gameObject);
@@ -453,22 +454,22 @@ namespace Panthera.BodyComponents
             }
 
             // Check the Model Scale //
-            if (this.hasAuthority() == true && this.modelScale != this.changeModelScale)
+            if (this.hasAuthority() == true && this.actualModelScale != this.desiredModelScale)
             {
-                if (this.modelScale > this.changeModelScale)
-                    this.modelScale -= 0.01f;
-                else if (this.modelScale < this.changeModelScale)
-                    this.modelScale += 0.01f;
-                if (Math.Abs(this.modelScale - this.changeModelScale) < 0.02f)
+                if (this.actualModelScale > this.desiredModelScale)
+                    this.actualModelScale -= 0.01f;
+                else if (this.actualModelScale < this.desiredModelScale)
+                    this.actualModelScale += 0.01f;
+                if (Math.Abs(this.actualModelScale - this.desiredModelScale) < 0.02f)
                 {
-                    this.modelScale = this.changeModelScale;
+                    this.actualModelScale = this.desiredModelScale;
                     Vector3 camPos = PantheraConfig.defaultCamPosition;
-                    this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * modelScale);
-                    Utils.CamHelper.ApplyAimType(Utils.CamHelper.AimType.Standard, this);
+                    this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
+                    Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this, 2);
                 }
-                this.transform.localScale = new Vector3(this.modelScale, this.modelScale, this.modelScale);
-                this.modelTransform.localScale = new Vector3(this.modelScale, this.modelScale, this.modelScale);
-                new ServerChangePantheraScale(base.gameObject, this.modelScale).Send(NetworkDestination.Server);
+                this.transform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
+                this.modelTransform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
+                new ServerChangePantheraScale(base.gameObject, this.actualModelScale).Send(NetworkDestination.Server);
             }
 
             // Update the Front Shield Scale //
@@ -476,24 +477,12 @@ namespace Panthera.BodyComponents
             if (this.frontShieldDeployed == true && scale < PantheraConfig.ArcaneAnchor_deployedScale)
                 scale += PantheraConfig.ArcaneAnchor_deployedScaleSpeed;
             else if (this.frontShieldDeployed == false)
-                scale = PantheraConfig.FrontShield_defaultScale * this.modelScale;
+                scale = PantheraConfig.FrontShield_defaultScale * this.actualModelScale;
             if (scale != this.frontShieldScale)
             {
                 this.frontShieldScale = scale;
                 this.frontShieldObj.transform.localScale = new Vector3(scale, scale, scale);
             }
-
-            // Create a Debug Line //
-            //LineRenderer lineComp = base.gameObject.GetComponent<LineRenderer>();
-            //if (lineComp == null)
-            //{
-            //    lineComp = base.gameObject.AddComponent<LineRenderer>();
-            //    lineComp.widthMultiplier = 0.2f;
-            //    lineComp.positionCount = 2;
-            //}
-
-            //lineComp.SetPosition(0, this.pantheraInputBank.aimOrigin);
-            //lineComp.SetPosition(1, this.pantheraInputBank.aimOrigin + (this.pantheraInputBank.aimDirection * 1000));
 
         }
 
@@ -517,11 +506,6 @@ namespace Panthera.BodyComponents
             GameObject.Destroy(this.frontShieldObj);
             // Stop all Events //
             CharacterBody.onBodyStartGlobal -= onEntitySpawned;
-        }
-
-        public void applyStats()
-        {
-            characterBody.RecalculateStats();
         }
 
         public bool hasAuthority()

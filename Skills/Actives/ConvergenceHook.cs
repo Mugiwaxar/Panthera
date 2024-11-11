@@ -69,7 +69,7 @@ namespace Panthera.Skills.Actives
             this.baseDuration = this.baseDuration / base.attackSpeedStat;
 
             // Spawn the Effect //
-            FXManager.SpawnEffect(base.pantheraObj.gameObject, PantheraAssets.ConvergenceHookFX, base.modelTransform.position, base.pantheraObj.modelScale, null, base.modelTransform.rotation, false);
+            FXManager.SpawnEffect(base.pantheraObj.gameObject, PantheraAssets.ConvergenceHookFX, base.modelTransform.position, base.pantheraObj.actualModelScale, null, base.modelTransform.rotation, false);
 
             // Send the Message to active the Component //
             new ServerActivateConvergenceHookComp(this.gameObject).Send(NetworkDestination.Server);

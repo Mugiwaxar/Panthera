@@ -71,7 +71,7 @@ namespace Panthera.Components
                 float finalYPos = this.yPos == 0 ? this.ptraObj.characterBody.footPosition.y : this.yPos;
                 base.transform.position = new Vector3(this.ptraObj.characterBody.footPosition.x, finalYPos, this.ptraObj.characterBody.footPosition.z);
                 base.transform.rotation = Quaternion.Euler(new Vector3(base.transform.rotation.x, this.ptraObj.modelTransform.rotation.y, base.transform.rotation.z));
-                base.transform.localScale = new Vector3(this.baseScale.x * this.ptraObj.modelScale, this.baseScale.y, this.baseScale.z * this.ptraObj.modelScale);
+                base.transform.localScale = new Vector3(this.baseScale.x * this.ptraObj.actualModelScale, this.baseScale.y, this.baseScale.z * this.ptraObj.actualModelScale);
             }
             catch (Exception e)
             {

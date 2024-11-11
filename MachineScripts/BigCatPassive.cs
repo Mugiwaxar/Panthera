@@ -456,7 +456,7 @@ namespace Panthera.MachineScripts
                 {
                     this.pantheraLastLevel = Panthera.PantheraCharacter.characterLevel;
                     Utils.Sound.playSound(Utils.Sound.LevelUP, base.gameObject);
-                    Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LevelUPFX, modelTransform.position, pantheraObj.modelScale, base.characterBody.gameObject, base.modelTransform.rotation, true);
+                    Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.LevelUPFX, modelTransform.position, pantheraObj.actualModelScale, base.characterBody.gameObject, base.modelTransform.rotation, true);
                 }
             }
 

@@ -103,7 +103,7 @@ namespace Panthera.NetworkMessages
             PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
             if (ptraObj == null || ptraObj.hasAuthority() == true) return;
             Transform modelTransform = ptraObj.modelTransform;
-            ptraObj.modelScale = scale;
+            ptraObj.actualModelScale = scale;
             ptraObj.transform.localScale = new Vector3(scale, scale, scale);
             if (modelTransform == null) return;
             modelTransform.localScale = new Vector3(scale, scale, scale);

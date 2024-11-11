@@ -182,11 +182,18 @@ namespace Panthera.Skills.Actives
                 else if (base.getAbilityLevel(PantheraConfig.SharpenedFangs_AbilityID) == 3)
                     sharpenedFangsMult += PantheraConfig.SharpenedFangs_damagePercent3;
 
+                // Get the Hit FX //
+                GameObject hitFX = PantheraAssets.RipHitFX;
+                if (this.isGhostRip == true)
+                    hitFX = PantheraAssets.GhostRipHitFX;
+                else if (this.isGoldenRip == true)
+                    hitFX = PantheraAssets.GoldenRipHitFX;
+
                 // Create the Attack //
                 float critChance = this.isGhostRip == true ? base.critStat * 2 : base.critStat;
                 bool isCrit = Util.CheckRoll(critChance, base.characterBody.master);
                 float damage = base.characterBody.damage * this.damageMultiplier * sharpenedFangsMult;
-                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_procCoefficient, PantheraConfig.Rip_hitboxName, default, 1, PantheraAssets.RipHitFX);
+                OverlapAttack attack = Functions.CreateOverlapAttack(base.gameObject, damage, isCrit, PantheraConfig.Rip_procCoefficient, PantheraConfig.Rip_hitboxName, default, 1, hitFX);
 
                 // Fire the attack //
                 List<HurtBox> enemiesHit = new List<HurtBox>();

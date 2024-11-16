@@ -291,8 +291,8 @@ namespace Panthera.Base
             capsuleCollider.isTrigger = false;
             capsuleCollider.material = null;
             capsuleCollider.direction = 0;
-            capsuleCollider.radius = 0.4f;
-            capsuleCollider.height = 2;
+            capsuleCollider.radius = PantheraConfig.Model_defaultCapsuleRadius;
+            capsuleCollider.height = PantheraConfig.Model_defaultCapsuleHeight;
             capsuleCollider.center = Vector3.zero;
             #endregion
             #region Kinematic Panthera Motor

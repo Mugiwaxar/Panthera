@@ -466,6 +466,8 @@ namespace Panthera.BodyComponents
                     Vector3 camPos = PantheraConfig.defaultCamPosition;
                     this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
                     Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this, 2);
+                    this.pantheraMotor.capsuleCollider.radius = PantheraConfig.Model_defaultCapsuleRadius * this.actualModelScale;
+                    this.pantheraMotor.capsuleCollider.height = PantheraConfig.Model_defaultCapsuleHeight * this.actualModelScale;
                 }
                 this.transform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
                 this.modelTransform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);

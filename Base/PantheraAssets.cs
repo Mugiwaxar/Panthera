@@ -267,6 +267,7 @@ namespace Panthera.Base
         public static GameObject RightRipFX;
         public static GameObject AirCleaveLeftFX;
         public static GameObject AirCleaveRightFX;
+        public static GameObject LeapFX;
         public static GameObject LeapTrailFX;
         public static GameObject MightyRoarFX;
         public static GameObject FuryOnFX;
@@ -406,10 +407,11 @@ namespace Panthera.Base
             #endregion
 
             #region Bodies
-            BodyMesh1 = MainAssetBundle.LoadAsset<Mesh>("PantheraBody1");
-            BodyMesh2 = MainAssetBundle.LoadAsset<Mesh>("PantheraBody2");
-            BodyMesh3 = MainAssetBundle.LoadAsset<Mesh>("PantheraBody3");
-            BodyMesh4 = MainAssetBundle.LoadAsset<Mesh>("PantheraBody4");
+            Transform arm = MainAssetBundle.LoadAsset<GameObject>("PantheraFull").transform.Find("Arm");
+            BodyMesh1 = arm.Find("Body1").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            BodyMesh2 = arm.Find("Body2").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            BodyMesh3 = arm.Find("Body3").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            BodyMesh4 = arm.Find("Body4").GetComponent<SkinnedMeshRenderer>().sharedMesh;
             #endregion
 
             #region Portraits
@@ -550,6 +552,7 @@ namespace Panthera.Base
             RightRipFX = MainAssetBundle.LoadAsset<GameObject>("RipRightFX");
             AirCleaveLeftFX = MainAssetBundle.LoadAsset<GameObject>("AirCleaveLeftFX");
             AirCleaveRightFX = MainAssetBundle.LoadAsset<GameObject>("AirCleaveRightFX");
+            LeapFX = MainAssetBundle.LoadAsset<GameObject>("LeapFX");
             LeapTrailFX = MainAssetBundle.LoadAsset<GameObject>("LeapTrailFX");
             MightyRoarFX = MainAssetBundle.LoadAsset<GameObject>("MightyRoarFX");
             FuryOnFX = MainAssetBundle.LoadAsset<GameObject>("FuryOnFX");
@@ -660,6 +663,7 @@ namespace Panthera.Base
             LoadEffect(GhostRipHitFX, 2);
             LoadEffect(GoldenRipHitFX, 2);
             LoadEffect(AirCleaveHitFX, 0.5f);
+            LoadEffect(LeapFX, 2);
             LoadEffect(LeapTrailFX);
             LoadEffect(MightyRoarFX, 3);
             LoadEffect(FuryOnFX, 5);

@@ -161,7 +161,7 @@ namespace Panthera.Base
             bodyComponent._defaultCrosshairPrefab = null;
             bodyComponent.aimOriginTransform = gameObject3.transform;
             bodyComponent.hullClassification = HullClassification.Human;
-            bodyComponent.portraitIcon = PantheraAssets.DefaultPortrait;
+            bodyComponent.portraitIcon = PantheraAssets.Portrait1.texture;
             bodyComponent.isChampion = false;
             bodyComponent.currentVehicle = null;
             bodyComponent.skinIndex = 0U;
@@ -204,40 +204,22 @@ namespace Panthera.Base
             modelLocator.preserveModel = false;
             #endregion
             #region CharacterModel
-            //Material mat1 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("7020102");
-            //Material mat2 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("effect_7020102_L");
-            //Material mat3 = PantheraAssets.mainAssetBundle.LoadAsset<Material>("7020102_Alpha");
-
-            CharacterModel CharacterModel = model.AddComponent<CharacterModel>();
-            CharacterModel.body = bodyComponent;
-            CharacterModel.baseRendererInfos = new CharacterModel.RendererInfo[]
+            CharacterModel characterModel = model.AddComponent<CharacterModel>();
+            characterModel.body = bodyComponent;
+            characterModel.baseRendererInfos = new CharacterModel.RendererInfo[]
             {
-                //new CharacterModel.RendererInfo
-                //{
-                //    defaultMaterial = mat1,
-                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
-                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                //    ignoreOverlays = true
-                //},
-                //new CharacterModel.RendererInfo
-                //{
-                //    defaultMaterial = mat2,
-                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
-                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                //    ignoreOverlays = true
-                //},
-                //new CharacterModel.RendererInfo
-                //{
-                //    defaultMaterial = mat3,
-                //    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
-                //    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                //    ignoreOverlays = true
-                //}
+                new CharacterModel.RendererInfo
+                {
+                    defaultMaterial = PantheraAssets.skin1Mat,
+                    renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(),
+                    defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                    ignoreOverlays = false
+                }
             };
-            CharacterModel.autoPopulateLightInfos = true;
-            CharacterModel.invisibilityCount = 0;
-            CharacterModel.temporaryOverlays = new List<TemporaryOverlayInstance>();
-            CharacterModel.mainSkinnedMeshRenderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
+            characterModel.autoPopulateLightInfos = true;
+            characterModel.invisibilityCount = 0;
+            characterModel.temporaryOverlays = new List<TemporaryOverlayInstance>();
+            characterModel.mainSkinnedMeshRenderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
             #endregion
             #region TeamComponent
             TeamComponent teamComponent = CharacterPrefab.GetComponent<TeamComponent>();
@@ -301,6 +283,7 @@ namespace Panthera.Base
             kinematicCharacterMotor.Capsule = capsuleCollider;
             kinematicCharacterMotor.CapsuleRadius = capsuleCollider.radius;
             kinematicCharacterMotor.CapsuleHeight = capsuleCollider.height;
+            kinematicCharacterMotor.CapsuleYOffset = 0;
             kinematicCharacterMotor._attachedRigidbody = rigidbody;
             kinematicCharacterMotor.playerCharacter = true;
             //kinematicCharacterMotor.DetectDiscreteCollisions = false;
@@ -455,6 +438,9 @@ namespace Panthera.Base
 
             // Get the display model //
             GameObject model = prefab;
+
+            // Up the model //
+            model.transform.localPosition = new Vector3(0f, 0.7f, 0f);
 
             // Set up the display model //
             GameObject modelBase = new GameObject("ModelBase");

@@ -29,7 +29,7 @@ namespace Panthera.Base
 
         #region Project Parameters
         private const string csProjName = "Panthera";
-        private const string assetbundleName = "PantheraBundle";
+        private const string assetbundleName = "pantherabundle";
         public const string assetBundleFolder = "AssetBundles";
         #endregion
 
@@ -103,46 +103,15 @@ namespace Panthera.Base
         #endregion
 
         #region Materials
-        public static Material Body1Mat1;
-        public static Material Body1Mat2;
-        public static Material Body2Mat1;
-        public static Material Body2Mat2;
-        public static Material Body3Mat1;
-        public static Material Body3Mat2;
-        public static Material Body4Mat1;
-        public static Material Body4Mat2;
-        public static Material Body4Mat3;
-        public static Material Body4Mat4;
-        public static Material Body4Mat5;
-        public static Material Body4Mat6;
-        public static Material Body4Mat7;
-        public static Material Body4Mat8;
-        public static Material Body4Mat9;
-        public static Material Body4Mat10;
-        public static Material Body4Mat11;
-        public static Material Body4Mat12;
-        public static Material Body4Mat13;
+        public static Material skin1Mat;
+        public static Material skin1MatCloaked;
         public static Material XRayMat;
         public static GameObject PantheraPostProcess;
         #endregion
 
-        #region Bodies
-        public static Mesh BodyMesh1;
-        public static Mesh BodyMesh2;
-        public static Mesh BodyMesh3;
-        public static Mesh BodyMesh4;
-        #endregion
-
         #region Portraits
-        public static Texture DefaultPortrait;
         public static Sprite Portrait1;
-        public static Sprite Portrait2;
-        public static Sprite Portrait3;
-        public static Sprite Portrait4;
         public static Sprite OverviewPortrait1;
-        public static Sprite OverviewPortrait2;
-        public static Sprite OverviewPortrait3;
-        public static Sprite OverviewPortrait4;
         #endregion
 
         #region Skills Icones
@@ -383,47 +352,15 @@ namespace Panthera.Base
             #endregion
 
             #region Materials
-            Body1Mat1 = MainAssetBundle.LoadAsset<Material>("Cat1Mat1");
-            Body1Mat2 = MainAssetBundle.LoadAsset<Material>("Cat1Mat2");
-            Body2Mat1 = MainAssetBundle.LoadAsset<Material>("Cat2Mat1");
-            Body2Mat2 = MainAssetBundle.LoadAsset<Material>("Cat2Mat2");
-            Body3Mat1 = MainAssetBundle.LoadAsset<Material>("Cat3Mat1");
-            Body3Mat2 = MainAssetBundle.LoadAsset<Material>("Cat3Mat2");
-            Body4Mat1 = MainAssetBundle.LoadAsset<Material>("hair2_d");
-            Body4Mat2 = MainAssetBundle.LoadAsset<Material>("face");
-            Body4Mat3 = MainAssetBundle.LoadAsset<Material>("hair_d");
-            Body4Mat4 = MainAssetBundle.LoadAsset<Material>("jewelry");
-            Body4Mat5 = MainAssetBundle.LoadAsset<Material>("jewelry2");
-            Body4Mat6 = MainAssetBundle.LoadAsset<Material>("whiskers_d");
-            Body4Mat7 = MainAssetBundle.LoadAsset<Material>("whiskers");
-            Body4Mat8 = MainAssetBundle.LoadAsset<Material>("body");
-            Body4Mat9 = MainAssetBundle.LoadAsset<Material>("Claws");
-            Body4Mat10 = MainAssetBundle.LoadAsset<Material>("mouth");
-            Body4Mat11 = MainAssetBundle.LoadAsset<Material>("eye");
-            Body4Mat12 = MainAssetBundle.LoadAsset<Material>("hair2");
-            Body4Mat13 = MainAssetBundle.LoadAsset<Material>("Body_2");
+            skin1Mat = MainAssetBundle.LoadAsset<Material>("CombinedCat1");
+            skin1MatCloaked = MainAssetBundle.LoadAsset<Material>("ClokedCombinedCat1 1");
             XRayMat = MainAssetBundle.LoadAsset<Material>("XRayMaterial");
             PantheraPostProcess = MainAssetBundle.LoadAsset<GameObject>("PantheraPostProcess");
             #endregion
 
-            #region Bodies
-            Transform arm = MainAssetBundle.LoadAsset<GameObject>("PantheraFull").transform.Find("Arm");
-            BodyMesh1 = arm.Find("Body1").GetComponent<SkinnedMeshRenderer>().sharedMesh;
-            BodyMesh2 = arm.Find("Body2").GetComponent<SkinnedMeshRenderer>().sharedMesh;
-            BodyMesh3 = arm.Find("Body3").GetComponent<SkinnedMeshRenderer>().sharedMesh;
-            BodyMesh4 = arm.Find("Body4").GetComponent<SkinnedMeshRenderer>().sharedMesh;
-            #endregion
-
             #region Portraits
-            DefaultPortrait = MainAssetBundle.LoadAsset<Texture>("Portrait1");
-            Portrait1 = MainAssetBundle.LoadAsset<Sprite>("Portrait1");
-            Portrait2 = MainAssetBundle.LoadAsset<Sprite>("Portrait2");
-            Portrait3 = MainAssetBundle.LoadAsset<Sprite>("Portrait3");
-            Portrait4 = MainAssetBundle.LoadAsset<Sprite>("Portrait4");
-            OverviewPortrait1 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitWhite");
-            OverviewPortrait2 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitOrange");
-            OverviewPortrait3 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitPrimalStalker");
-            OverviewPortrait4 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitRed");
+            Portrait1 = MainAssetBundle.LoadAsset<Sprite>("Portrait");
+            OverviewPortrait1 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitPrimalStalker");
             #endregion
 
             #region HUD Icones

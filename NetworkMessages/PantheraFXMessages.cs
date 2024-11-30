@@ -184,7 +184,7 @@ namespace Panthera.NetworkMessages
             if (this.player == null) return;
             PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
             if (ptraObj == null) return;
-            if (this.setValue == true) Utils.Functions.ToFadeMode(ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>().material);
+            if (this.setValue == true) Utils.Functions.ToTransparentMode(ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>().material);
             else Utils.Functions.ToOpaqueMode(ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>().material);
         }
 

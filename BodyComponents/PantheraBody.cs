@@ -153,6 +153,7 @@ namespace Panthera.BodyComponents
             this.frontShield = 0;
             this.block = 0;
         }
+
         public static VisibilityLevel GetVisibilityLevelHook(Func<CharacterBody, TeamIndex, VisibilityLevel> orig, CharacterBody self, TeamIndex observerTeam)
         {
             // Check if Panthera //
@@ -162,7 +163,7 @@ namespace Panthera.BodyComponents
             // Change the Visibility //
             if (ptraObj.stealthed == true)
             {
-                return VisibilityLevel.Invisible;
+                return VisibilityLevel.Cloaked;
             }
             if (self.hasCloakBuff == false)
             {
@@ -175,6 +176,7 @@ namespace Panthera.BodyComponents
             return VisibilityLevel.Revealed;
 
         }
+
         public static void RecalculateStatsHook(Action<CharacterBody> orig, CharacterBody self)
         {
 

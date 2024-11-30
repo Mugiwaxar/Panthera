@@ -242,6 +242,8 @@ namespace Panthera
         public static readonly string Model_PrefabName = "Panthera";
         public static readonly float Model_fadeStartDistance = 5;
         public static readonly float Model_fadeEndDistance = 10;
+        public static readonly float Model_defaultCapsuleRadius = 0.5f;
+        public static readonly float Model_defaultCapsuleHeight = 1.75f;
         #endregion
         #region Camera Parameters
         public static readonly float defaultFOV = 60;
@@ -379,7 +381,7 @@ namespace Panthera
         public static readonly float AirCleave_projScale = 0.5f;
         #endregion
         #region Leap
-        public static readonly float Leap_cooldown = 1; // ----------------------------------------- //
+        public static readonly float Leap_cooldown = 8;
         public static readonly float Leap_airControl = 0.10f;
         public static readonly float Leap_maxMoveSpeed = 100;
         public static readonly float Leap_speedMultiplier = 3.5f;

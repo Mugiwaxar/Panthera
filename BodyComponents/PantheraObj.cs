@@ -217,11 +217,14 @@ namespace Panthera.BodyComponents
             this.deathBehavior = base.gameObject.GetComponent<PantheraDeathBehavior>();
             this.pantheraCamParam = base.gameObject.GetComponent<CameraTargetParams>();
 
+            // Visual debug component //
+            //this.gameObject.AddComponent<CapsuleColliderVisualizerWithHeight>();
+
             // Set the Main Renderer //
-            characterModel.mainSkinnedMeshRenderer = this.modelTransform.GetComponentInChildren<SkinnedMeshRenderer>();
+            //characterModel.mainSkinnedMeshRenderer = this.modelTransform.GetComponentInChildren<SkinnedMeshRenderer>();
 
             // Get the Original Layer Index //
-            this.origLayerIndex = this.characterModel.mainSkinnedMeshRenderer.gameObject.layer;
+            this.origLayerIndex = this.modelTransform.GetComponentInChildren<SkinnedMeshRenderer>().gameObject.layer;
 
             // Init Body //
             this.characterBody.DoInit();
@@ -416,30 +419,30 @@ namespace Panthera.BodyComponents
 
         public void FixedUpdate()
         {
-            // Set the Model //
-            if (this.ActualPantheraSkinIndex != this.PantheraSkinIndex)
-            {
-                if (this.PantheraSkinIndex == 1)
-                {
-                    Skin.ChangedToMainModel1(this.childLocator);
-                    this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
-                }
-                else if (PantheraSkinIndex == 2)
-                {
-                    Skin.ChangedToMainModel2(this.childLocator);
-                    this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
-                }
-                else if (PantheraSkinIndex == 3)
-                {
-                    Skin.ChangedToMainModel3(this.childLocator);
-                    this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
-                }
-                else if (PantheraSkinIndex == 4)
-                {
-                    Skin.ChangedToMainModel4(this.childLocator);
-                    this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
-                }
-            }
+            //// Set the Model //
+            //if (this.ActualPantheraSkinIndex != this.PantheraSkinIndex)
+            //{
+            //    if (this.PantheraSkinIndex == 1)
+            //    {
+            //        Skin.ChangedToMainModel1(this.childLocator);
+            //        this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
+            //    }
+            //    else if (PantheraSkinIndex == 2)
+            //    {
+            //        Skin.ChangedToMainModel2(this.childLocator);
+            //        this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
+            //    }
+            //    else if (PantheraSkinIndex == 3)
+            //    {
+            //        Skin.ChangedToMainModel3(this.childLocator);
+            //        this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
+            //    }
+            //    else if (PantheraSkinIndex == 4)
+            //    {
+            //        Skin.ChangedToMainModel4(this.childLocator);
+            //        this.ActualPantheraSkinIndex = this.PantheraSkinIndex;
+            //    }
+            //}
 
             // Update the Panthera Camera //
             if (this.pantheraCam != null && this.pantheraCam.gameObject.active == true)
@@ -463,15 +466,14 @@ namespace Panthera.BodyComponents
                 if (Math.Abs(this.actualModelScale - this.desiredModelScale) < 0.02f)
                 {
                     this.actualModelScale = this.desiredModelScale;
-                    Vector3 camPos = PantheraConfig.defaultCamPosition;
-                    this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
-                    Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this, 2);
-                    this.pantheraMotor.capsuleCollider.radius = PantheraConfig.Model_defaultCapsuleRadius * this.actualModelScale;
-                    this.pantheraMotor.capsuleCollider.height = PantheraConfig.Model_defaultCapsuleHeight * this.actualModelScale;
                 }
                 this.transform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
                 this.modelTransform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
                 new ServerChangePantheraScale(base.gameObject, this.actualModelScale).Send(NetworkDestination.Server);
+                Vector3 camPos = PantheraConfig.defaultCamPosition;
+                this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
+                Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this, 2);
+                this.kinematicPantheraMotor.SetCapsuleDimensions(PantheraConfig.Model_defaultCapsuleRadius * this.actualModelScale, PantheraConfig.Model_defaultCapsuleHeight * this.actualModelScale, 0);
             }
 
             // Update the Front Shield Scale //
@@ -634,6 +636,148 @@ namespace Panthera.BodyComponents
 
         }
 
+    }
+
+
+    public class CapsuleColliderVisualizerWithHeight : MonoBehaviour
+    {
+
+        CharacterBody body;
+        Transform model;
+
+        public Color hitboxColor = new Color(1f, 0f, 0f, 0.3f); // Couleur des hitbox (semi-transparente)
+
+        private Collider[] hitboxes = new Collider[1];
+        private GameObject[] visualizers;
+
+        private GameObject visualHeightPlane;
+        private GameObject visualHeightPlaneFoot;
+
+        void Start()
+        {
+            this.body = transform.GetComponent<CharacterBody>();
+            this.model = transform.GetComponent<PantheraObj>().modelTransform;
+            CapsuleCollider capsule = GetComponent<CapsuleCollider>();
+
+            // Récupérer tous les colliders des enfants
+            //hitboxes = model.GetComponentsInChildren<Collider>();
+            hitboxes[0] = model.GetComponent<HitBoxGroup>().hitBoxes[0].gameObject.GetComponent<Collider>();
+            visualizers = new GameObject[hitboxes.Length];
+            CreateVisualizers();
+
+
+            //// Crée un plan pour visualiser la hauteur
+            //visualHeightPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            //Destroy(visualHeightPlane.GetComponent<Collider>()); // Supprime le collider du plan
+            //visualHeightPlane.transform.SetParent(transform);
+            //visualHeightPlane.transform.localScale = new Vector3(
+            //    7,
+            //    1, // Le plan est toujours plat sur l'axe Z
+            //    1
+            //);
+
+            //visualHeightPlaneFoot = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            //Destroy(visualHeightPlaneFoot.GetComponent<Collider>()); // Supprime le collider du plan
+            //visualHeightPlaneFoot.transform.SetParent(transform);
+            //visualHeightPlaneFoot.transform.localScale = new Vector3(
+            //    7,
+            //    1, // Le plan est toujours plat sur l'axe Z
+            //    1
+            //);
+
+            //UpdateVisualHeightPlane();
+
+        }
+
+        private void CreateVisualizers()
+        {
+            for (int i = 0; i < hitboxes.Length; i++)
+            {
+                Collider hitbox = hitboxes[i];
+                GameObject visualizer = null;
+
+                // Créer une primitive correspondant au type de collider
+                if (hitbox is BoxCollider)
+                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                else if (hitbox is SphereCollider)
+                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                else if (hitbox is CapsuleCollider)
+                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+
+                if (visualizer != null)
+                {
+                    //visualizer.transform.SetParent(hitbox.transform, false);
+                    visualizer.GetComponent<Renderer>().material.color = hitboxColor;
+                    visualizer.GetComponent<Collider>().enabled = false; // Désactiver la collision sur les visualisateurs
+                    visualizers[i] = visualizer;
+                }
+            }
+        }
+
+        void Update()
+        {
+            UpdateVisualizers();
+            //UpdateVisualHeightPlane();
+        }
+
+        private void UpdateVisualizers()
+        {
+            for (int i = 0; i < hitboxes.Length; i++)
+            {
+                Collider hitbox = hitboxes[i];
+                GameObject visualizer = visualizers[i];
+
+                if (hitbox is BoxCollider box)
+                {
+                    visualizer.transform.position = box.transform.position;
+                    visualizer.transform.localScale = box.size * box.transform.localScale.y;
+                    visualizer.transform.rotation = box.transform.rotation;
+                }
+                else if (hitbox is SphereCollider sphere)
+                {
+                    visualizer.transform.localPosition = sphere.center;
+                    visualizer.transform.localScale = Vector3.one * sphere.radius * 2f;
+                }
+                else if (hitbox is CapsuleCollider capsule)
+                {
+                    visualizer.transform.localPosition = capsule.center;
+                    visualizer.transform.localScale = new Vector3(capsule.radius * 2f, capsule.height / 2f, capsule.radius * 2f);
+                }
+            }
+        }
+
+        private void UpdateVisualHeightPlane()
+        {
+
+            // Ajuste la position du plan à la hauteur du CapsuleCollider
+            visualHeightPlane.transform.position = new Vector3(
+                transform.position.x,
+                transform.position.y,
+                transform.position.z
+            );
+            visualHeightPlane.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
+
+            visualHeightPlaneFoot.transform.position = new Vector3(
+            body.footPosition.x,
+            body.footPosition.y,
+            body.footPosition.z
+);
+            visualHeightPlaneFoot.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
+        }
+
+
+        void OnDestroy()
+        {
+
+            foreach (var visualizer in visualizers)
+            {
+                if (visualizer != null)
+                    Destroy(visualizer);
+            }
+
+            if (visualHeightPlane != null) Destroy(visualHeightPlane);
+
+        }
     }
 
 }

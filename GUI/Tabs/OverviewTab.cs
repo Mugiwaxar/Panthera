@@ -156,17 +156,17 @@ namespace Panthera.GUI.Tabs
             this.lunarCoinText.SetText(Panthera.PantheraCharacter.lunarCoin.ToString());
 
             // Update the Panthera Image //
-            int skinIndex = 1;
-            if (Panthera.FirstLocalUser != null && Panthera.FirstLocalUser.currentNetworkUser != null)
-                skinIndex = Base.Skin.GetActualSkinIndex(Panthera.FirstLocalUser.currentNetworkUser);
-            if (skinIndex == 1)
-                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait1;
-            else if (skinIndex == 2)
-                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait2;
-            else if (skinIndex == 3)
-                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait3;
-            else if (skinIndex == 4)
-                this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait4;
+            //int skinIndex = 1;
+            //if (Panthera.FirstLocalUser != null && Panthera.FirstLocalUser.currentNetworkUser != null)
+            //    skinIndex = Base.Skin.GetActualSkinIndex(Panthera.FirstLocalUser.currentNetworkUser);
+            //if (skinIndex == 1)
+            //    this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait1;
+            //else if (skinIndex == 2)
+            //    this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait2;
+            //else if (skinIndex == 3)
+            //    this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait3;
+            //else if (skinIndex == 4)
+            //    this.pantheraImage.sprite = Base.PantheraAssets.OverviewPortrait4;
 
             // Set the Level //
             this.levelText.SetText(Panthera.PantheraCharacter.characterLevel.ToString());

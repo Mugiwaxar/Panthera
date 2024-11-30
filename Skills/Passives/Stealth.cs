@@ -38,8 +38,8 @@ namespace Panthera.Skills.Passives
             new NetworkMessages.ServerStealthMessage(ptraObj.gameObject, true).Send(NetworkDestination.Server);
 
             // Remove the Eclipse Buff //
-
             new NetworkMessages.ServerClearTimedBuffs(ptraObj.gameObject, Buff.EclipseBuff.index).Send(NetworkDestination.Server);
+
             // Set as Stealthed //
             ptraObj.stealthed = true;
 

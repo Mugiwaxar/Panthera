@@ -75,7 +75,7 @@ namespace Panthera.Utils
             AddHooks(typeof(RoR2.UI.HUD), nameof(RoR2.UI.HUD.Awake), GUI.PantheraHUD.HUDAwakeHook);
 
             // Get the Skin Index //
-            AddHooks(typeof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController), nameof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController.ApplyLoadoutToMannequinInstance), Base.Skin.SkinChangeHook);
+            //AddHooks(typeof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController), nameof(RoR2.SurvivorMannequins.SurvivorMannequinSlotController.ApplyLoadoutToMannequinInstance), Base.Skin.SkinChangeHook);
 
             // Panthera Death //
             AddHooks(typeof(RoR2.CharacterDeathBehavior), nameof(RoR2.CharacterDeathBehavior.OnDeath), BodyComponents.PantheraDeathBehavior.CharacterDeathBehaviorHook);
@@ -88,6 +88,9 @@ namespace Panthera.Utils
 
             // Set the Character visibility when stealthed //
             AddHooks(typeof(RoR2.CharacterBody), nameof(RoR2.CharacterBody.GetVisibilityLevel), new Type[] { typeof(RoR2.TeamIndex) }, PantheraBody.GetVisibilityLevelHook);
+
+            // Set the character Material //
+            AddHooks(typeof(RoR2.CharacterModel), nameof(RoR2.CharacterModel.UpdateRendererMaterials), PantheraFX.UpdateRendererMaterialsHook);
 
             // Apply the Cupidity Buff //
             AddHooks(typeof(RoR2.CharacterMaster), nameof(RoR2.CharacterMaster.GiveMoney), Skills.Passives.AmbitionMode.CalculateAddedMoney);

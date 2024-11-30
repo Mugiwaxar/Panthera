@@ -31,8 +31,7 @@ namespace Panthera
     [BepInDependency("com.bepis.r2api")]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [R2APISubmoduleDependency(
-        nameof(NetworkingAPI),
-        nameof(DamageAPI)
+        nameof(NetworkingAPI)
         )]
 
     public class Panthera : BaseUnityPlugin

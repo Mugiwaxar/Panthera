@@ -33,6 +33,7 @@ namespace Panthera.BodyComponents
         public GameObject GuardianAuraObj;
         public int AmbitionAuraFXID;
         public GameObject AmbitionAuraObj;
+        public Renderer renderer;
 
         public void DoInit()
         {
@@ -97,18 +98,7 @@ namespace Panthera.BodyComponents
 
         public void FixedUpdate()
         {
-            if (this.ptraObj.characterModel.invisibilityCount > 0)
-            {
-                this.ptraObj.modelTransform.Find("Body").gameObject.SetActive(false);
-                this.ptraObj.modelTransform.Find("Arm").gameObject.SetActive(false);
 
-            }
-            else
-            {
-                this.ptraObj.modelTransform.Find("Body").gameObject.SetActive(true);
-                this.ptraObj.modelTransform.Find("Arm").gameObject.SetActive(true);
-            }
-            this.updateFadeLevel();
         }
 
         public void setLeapTrailFX(bool state)
@@ -147,41 +137,12 @@ namespace Panthera.BodyComponents
             new ServerSetAmbitionModeFX(base.gameObject, state).Send(NetworkDestination.Server);
         }
 
-        public void updateFadeLevel()
+        public static void UpdateRendererMaterialsHook(Action<RoR2.CharacterModel, Renderer, Material, bool> orig, RoR2.CharacterModel self, Renderer renderer, Material defaultMaterial, bool ignoreOverlays)
         {
-            float fadeLevel = this.ptraObj.modelLocator.modelTransform.GetComponent<CharacterModel>().fade;
-            if (this.ptraObj.stealthed == true)
-                fadeLevel = Math.Min(1f / 255f * 73f, fadeLevel);
-            SkinnedMeshRenderer redenrer = this.ptraObj.findModelChild("Body").gameObject.GetComponent<SkinnedMeshRenderer>();
-            if (fadeLevel >= 1)
-            {
-                Utils.Functions.ToOpaqueMode(redenrer.material);
-                if (this.ptraObj.PantheraSkinIndex >= 3)
-                {
-                    foreach (Material material in redenrer.materials)
-                    {
-                        if (material.name.Contains("fur_face") || material.name.Contains("tail_tip_d"))
-                            continue;
-                        Utils.Functions.ToOpaqueMode(material);
-                    }
-                }
-            }
+            if (self.visibility == VisibilityLevel.Visible)
+                renderer.material = defaultMaterial;
             else
-            {
-                Utils.Functions.ToFadeMode(redenrer.material);
-                Color color = new Color(1, 1, 1, fadeLevel);
-                redenrer.material.SetColor("_Color", color);
-                if (this.ptraObj.PantheraSkinIndex >= 3)
-                {
-                    foreach (Material material in redenrer.materials)
-                    {
-                        if (material.name.Contains("fur_face") || material.name.Contains("tail_tip_d"))
-                            continue;
-                        Utils.Functions.ToFadeMode(material);
-                        material.SetColor("_Color", color);
-                    }
-                }
-            }
+                renderer.material = PantheraAssets.skin1MatCloaked;
         }
 
     }

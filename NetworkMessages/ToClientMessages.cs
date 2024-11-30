@@ -107,6 +107,7 @@ namespace Panthera.NetworkMessages
             ptraObj.transform.localScale = new Vector3(scale, scale, scale);
             if (modelTransform == null) return;
             modelTransform.localScale = new Vector3(scale, scale, scale);
+            ptraObj.kinematicPantheraMotor.SetCapsuleDimensions(PantheraConfig.Model_defaultCapsuleRadius * ptraObj.actualModelScale, PantheraConfig.Model_defaultCapsuleHeight * ptraObj.actualModelScale, 0);
         }
 
         public void Serialize(NetworkWriter writer)

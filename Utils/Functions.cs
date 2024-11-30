@@ -243,7 +243,7 @@ namespace Panthera.Utils
             material.renderQueue = -1;
         }
 
-        public static void ToFadeMode(Material material)
+        public static void ToTransparentMode(Material material)
         {
             material.SetOverrideTag("RenderType", "Transparent");
             material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);

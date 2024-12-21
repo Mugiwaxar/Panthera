@@ -68,17 +68,17 @@ namespace Panthera.Base
         public static GameObject CreateCharacterPrefab(GameObject prefab, string name)
         {
             #region Prefab
-            GameObject CharacterPrefab = new GameObject(name);
+            GameObject characterPrefab = new GameObject(name);
             GameObject disabledGameObject = new GameObject(name + "DisabledObj");
             disabledGameObject.SetActive(false);
-            CharacterPrefab.transform.parent = disabledGameObject.transform;
+            characterPrefab.transform.parent = disabledGameObject.transform;
             UnityEngine.Object.DontDestroyOnLoad(disabledGameObject);
             #endregion
             #region NetworkIdentity
-            CharacterPrefab.AddComponent<NetworkIdentity>().localPlayerAuthority = true;
+            characterPrefab.AddComponent<NetworkIdentity>().localPlayerAuthority = true;
             #endregion
             #region PantheraObj
-            PantheraObj pantheraObj = CharacterPrefab.AddComponent<PantheraObj>();
+            PantheraObj pantheraObj = characterPrefab.AddComponent<PantheraObj>();
             #endregion
             #region Loading Model
             GameObject model = prefab;
@@ -89,7 +89,7 @@ namespace Panthera.Base
             #endregion
             #region Transform
             GameObject gameObject = new GameObject("ModelBase");
-            gameObject.transform.parent = CharacterPrefab.transform;
+            gameObject.transform.parent = characterPrefab.transform;
             gameObject.transform.localPosition = new Vector3(0f, 0f, 0f);
             gameObject.transform.localRotation = Quaternion.identity;
             gameObject.transform.localScale = new Vector3(1, 1, 1);
@@ -111,11 +111,11 @@ namespace Panthera.Base
             transform.localScale = new Vector3(PantheraConfig.Model_defaultModelScale, PantheraConfig.Model_defaultModelScale, PantheraConfig.Model_defaultModelScale);
             #endregion
             #region SkillLocator
-            PantheraSkillLocator skillLocator = CharacterPrefab.AddComponent<PantheraSkillLocator>();
+            PantheraSkillLocator skillLocator = characterPrefab.AddComponent<PantheraSkillLocator>();
             skillLocator.ptraObj = pantheraObj;
             #endregion
             #region CharacterDirection
-            CharacterDirection characterDirection = CharacterPrefab.AddComponent<CharacterDirection>();
+            CharacterDirection characterDirection = characterPrefab.AddComponent<CharacterDirection>();
             characterDirection.moveVector = Vector3.zero;
             characterDirection.targetTransform = gameObject.transform;
             characterDirection.overrideAnimatorForwardTransform = null;
@@ -125,7 +125,7 @@ namespace Panthera.Base
             characterDirection.turnSpeed = 720f;
             #endregion
             #region Panthera Body
-            PantheraBody bodyComponent = CharacterPrefab.AddComponent<PantheraBody>();
+            PantheraBody bodyComponent = characterPrefab.AddComponent<PantheraBody>();
             bodyComponent.bodyIndex = (BodyIndex)(-1);
             bodyComponent.name = "PantheraBody";
             bodyComponent.baseNameToken = PantheraTokens.Get("PANTHERA_NAME");
@@ -168,7 +168,7 @@ namespace Panthera.Base
             bodyComponent.preferredPodPrefab = null;
             #endregion
             #region Panthera Motor
-            PantheraMotor characterMotor = CharacterPrefab.AddComponent<PantheraMotor>();
+            PantheraMotor characterMotor = characterPrefab.AddComponent<PantheraMotor>();
             characterMotor.walkSpeedPenaltyCoefficient = 1f;
             characterMotor.characterDirection = characterDirection;
             characterMotor.muteWalkMotion = false;
@@ -180,12 +180,12 @@ namespace Panthera.Base
             characterMotor.isFlying = false;
             #endregion
             #region Panthera input bank
-            PantheraInputBank inputBankTest = CharacterPrefab.AddComponent<PantheraInputBank>();
+            PantheraInputBank inputBankTest = characterPrefab.AddComponent<PantheraInputBank>();
             inputBankTest.moveVector = Vector3.zero;
             inputBankTest.enabled = false;
             #endregion
             #region CameraTargetParams
-            CameraTargetParams cameraTargetParams = CharacterPrefab.AddComponent<CameraTargetParams>();
+            CameraTargetParams cameraTargetParams = characterPrefab.AddComponent<CameraTargetParams>();
             cameraTargetParams.cameraParams = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponent<CameraTargetParams>().cameraParams;
             cameraTargetParams.cameraPivotTransform = null;
             cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Standard);
@@ -193,7 +193,7 @@ namespace Panthera.Base
             cameraTargetParams.dontRaycastToPivot = false;
             #endregion
             #region ModelLocator
-            ModelLocator modelLocator = CharacterPrefab.AddComponent<ModelLocator>();
+            ModelLocator modelLocator = characterPrefab.AddComponent<ModelLocator>();
             modelLocator.modelTransform = transform;
             modelLocator.modelBaseTransform = gameObject.transform;
             modelLocator.dontReleaseModelOnDeath = false;
@@ -222,12 +222,12 @@ namespace Panthera.Base
             characterModel.mainSkinnedMeshRenderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
             #endregion
             #region TeamComponent
-            TeamComponent teamComponent = CharacterPrefab.GetComponent<TeamComponent>();
+            TeamComponent teamComponent = characterPrefab.GetComponent<TeamComponent>();
             teamComponent.hideAllyCardDisplay = false;
             teamComponent.teamIndex = TeamIndex.None;
             #endregion
             #region Panthera Health Component
-            PantheraHealthComponent healthComponent = CharacterPrefab.AddComponent<PantheraHealthComponent>();
+            PantheraHealthComponent healthComponent = characterPrefab.AddComponent<PantheraHealthComponent>();
             healthComponent.health = 90f;
             healthComponent.shield = 0f;
             healthComponent.barrier = 0f;
@@ -237,18 +237,18 @@ namespace Panthera.Base
             healthComponent.globalDeathEventChanceCoefficient = 1f;
             #endregion
             #region Interactor
-            PantheraInteractor interactor = CharacterPrefab.AddComponent<PantheraInteractor>();
+            PantheraInteractor interactor = characterPrefab.AddComponent<PantheraInteractor>();
             interactor.ptraObj = pantheraObj;
             interactor.maxInteractionDistance = 3f;
             #endregion
             #region InteractionDriver
-            CharacterPrefab.AddComponent<InteractionDriver>().highlightInteractor = true;
+            characterPrefab.AddComponent<InteractionDriver>().highlightInteractor = true;
             #endregion
             #region CharacterNetworkTransform
-            CharacterPrefab.AddComponent<CharacterNetworkTransform>();
+            characterPrefab.AddComponent<CharacterNetworkTransform>();
             #endregion
             #region SfxLocator
-            SfxLocator sfxLocator = CharacterPrefab.AddComponent<SfxLocator>();
+            SfxLocator sfxLocator = characterPrefab.AddComponent<SfxLocator>();
             sfxLocator.deathSound = "Play_ui_player_death";
             sfxLocator.barkSound = "";
             sfxLocator.openSound = "";
@@ -258,7 +258,7 @@ namespace Panthera.Base
             sfxLocator.aliveLoopStop = "";
             #endregion
             #region Rigidbody
-            Rigidbody rigidbody = CharacterPrefab.AddComponent<Rigidbody>();
+            Rigidbody rigidbody = characterPrefab.AddComponent<Rigidbody>();
             rigidbody.mass = 100f;
             rigidbody.drag = 0f;
             rigidbody.angularDrag = 0f;
@@ -269,7 +269,7 @@ namespace Panthera.Base
             rigidbody.constraints = RigidbodyConstraints.None;
             #endregion
             #region CapsuleCollider
-            CapsuleCollider capsuleCollider = CharacterPrefab.AddComponent<CapsuleCollider>();
+            CapsuleCollider capsuleCollider = characterPrefab.AddComponent<CapsuleCollider>();
             capsuleCollider.isTrigger = false;
             capsuleCollider.material = null;
             capsuleCollider.direction = 0;
@@ -278,7 +278,7 @@ namespace Panthera.Base
             capsuleCollider.center = Vector3.zero;
             #endregion
             #region Kinematic Panthera Motor
-            PantheraKinematicMotor kinematicCharacterMotor = CharacterPrefab.AddComponent<PantheraKinematicMotor>();
+            PantheraKinematicMotor kinematicCharacterMotor = characterPrefab.AddComponent<PantheraKinematicMotor>();
             kinematicCharacterMotor.CharacterController = characterMotor;
             kinematicCharacterMotor.Capsule = capsuleCollider;
             kinematicCharacterMotor.CapsuleRadius = capsuleCollider.radius;
@@ -353,41 +353,41 @@ namespace Panthera.Base
             aimAnimator.giveupDuration = 8f;
             #endregion
             #region EquipmentSlot
-            CharacterPrefab.AddComponent<EquipmentSlot>();
+            characterPrefab.AddComponent<EquipmentSlot>();
             #endregion
             #region Main Panthera Machine
-            PantheraMainMachine mainStateMachine = CharacterPrefab.AddComponent<PantheraMainMachine>();
+            PantheraMainMachine mainStateMachine = characterPrefab.AddComponent<PantheraMainMachine>();
             mainStateMachine.name = "Main Machine";
             mainStateMachine.enabled = false;
             #endregion
             #region Passive Panthera Machine
-            PantheraPassiveMachine pantheraPassiveMachine = CharacterPrefab.AddComponent<PantheraPassiveMachine>();
+            PantheraPassiveMachine pantheraPassiveMachine = characterPrefab.AddComponent<PantheraPassiveMachine>();
             pantheraPassiveMachine.name = "Passive Machine";
             pantheraPassiveMachine.enabled = false;
             #endregion
             #region Skill Machine 1
-            PantheraSkillsMachine skillMachine1 = CharacterPrefab.AddComponent<PantheraSkillsMachine>();
+            PantheraSkillsMachine skillMachine1 = characterPrefab.AddComponent<PantheraSkillsMachine>();
             skillMachine1.name = "Skill Machine 1";
             skillMachine1.enabled = false;
             #endregion
             #region Skill Machine 2
-            PantheraSkillsMachine skillMachine2 = CharacterPrefab.AddComponent<PantheraSkillsMachine>();
+            PantheraSkillsMachine skillMachine2 = characterPrefab.AddComponent<PantheraSkillsMachine>();
             skillMachine2.name = "Skill Machine 2";
             skillMachine2.enabled = false;
             #endregion
             #region Panthera Network Machine
-            PantheraNetworkMachine networkMachine = CharacterPrefab.AddComponent<PantheraNetworkMachine>();
+            PantheraNetworkMachine networkMachine = characterPrefab.AddComponent<PantheraNetworkMachine>();
             networkMachine.name = "Network Machine";
             networkMachine.enabled = false;
             #endregion
             #region Panthera Death Behavion
-            PantheraDeathBehavior characterDeathBehavior = CharacterPrefab.AddComponent<PantheraDeathBehavior>();
+            PantheraDeathBehavior characterDeathBehavior = characterPrefab.AddComponent<PantheraDeathBehavior>();
             characterDeathBehavior.ptraObj = pantheraObj;
             characterDeathBehavior.deathMachine = skillMachine1;
             characterDeathBehavior.deathState = new SerializableEntityStateType(typeof(GenericCharacterDeath));
             #endregion
             #region SetStateOnHurt  < -------- TO SEE
-            SetStateOnHurt stateOnHurt = CharacterPrefab.AddComponent<SetStateOnHurt>();
+            SetStateOnHurt stateOnHurt = characterPrefab.AddComponent<SetStateOnHurt>();
             stateOnHurt.canBeStunned = false;
             stateOnHurt.canBeHitStunned = false;
             stateOnHurt.canBeFrozen = false;
@@ -397,33 +397,30 @@ namespace Panthera.Base
             stateOnHurt.hurtState = new SerializableEntityStateType(typeof(Idle));
             #endregion
             #region Panthera FX
-            PantheraFX pantheraFX = CharacterPrefab.AddComponent<PantheraFX>();
+            PantheraFX pantheraFX = characterPrefab.AddComponent<PantheraFX>();
             #endregion
             #region Tracker
-            var tracker = CharacterPrefab.AddComponent<HuntressTracker>();
+            var tracker = characterPrefab.AddComponent<HuntressTracker>();
             tracker.maxTrackingDistance = PantheraConfig.Tracker_maxDistance;
             tracker.maxTrackingAngle = PantheraConfig.Tracker_maxAngle;
             tracker.enabled = true;
             #endregion
             #region Hitboxes
-            Functions.CreateHitbox(model, childLocator.FindChild("RipHitBox"), "Rip");
-            //Functions.CreateHitbox(model, childLocator.FindChild("FrontRipHitBox"), "FrontRip");
-            //Functions.CreateHitbox(model, childLocator.FindChild("RightRipHitBox"), "RightRip");
-            //Functions.CreateHitbox(model, childLocator.FindChild("LeftRipHitBox"), "LeftRip");
-            Functions.CreateHitbox(model, childLocator.FindChild("ClawsStormHitBox"), "ClawStorm");
+            Functions.CreateHitbox(model, childLocator.FindChild("RipHitBox"), PantheraConfig.Rip_hitboxName);
+            Functions.CreateHitbox(model, childLocator.FindChild("ClawsStormHitBox"), PantheraConfig.ClawsStorm_hitboxName);
             #endregion
             #region ItemChange
-            PantheraItemChange itemChange = CharacterPrefab.AddComponent<PantheraItemChange>();
+            PantheraItemChange itemChange = characterPrefab.AddComponent<PantheraItemChange>();
             itemChange.ptraObj = pantheraObj;
             #endregion
             #region Combo Component
-            PantheraComboComponent comboComponent = CharacterPrefab.AddComponent<PantheraComboComponent>();
+            PantheraComboComponent comboComponent = characterPrefab.AddComponent<PantheraComboComponent>();
             comboComponent.ptraObj = pantheraObj;
             #endregion
             #region Register
-            bodyPrefabs.Add(CharacterPrefab);
-            CharacterPrefab.RegisterNetworkPrefab();
-            return CharacterPrefab;
+            bodyPrefabs.Add(characterPrefab);
+            characterPrefab.RegisterNetworkPrefab();
+            return characterPrefab;
             #endregion
         }
 

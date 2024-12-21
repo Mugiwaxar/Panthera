@@ -729,7 +729,7 @@ namespace Panthera.BodyComponents
                 if (hitbox is BoxCollider box)
                 {
                     visualizer.transform.position = box.transform.position;
-                    visualizer.transform.localScale = box.size * box.transform.localScale.y;
+                    visualizer.transform.localScale = box.size * box.transform.lossyScale.y;
                     visualizer.transform.rotation = box.transform.rotation;
                 }
                 else if (hitbox is SphereCollider sphere)
@@ -749,19 +749,19 @@ namespace Panthera.BodyComponents
         {
 
             // Ajuste la position du plan à la hauteur du CapsuleCollider
-            visualHeightPlane.transform.position = new Vector3(
-                transform.position.x,
-                transform.position.y,
-                transform.position.z
-            );
-            visualHeightPlane.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
+//            visualHeightPlane.transform.position = new Vector3(
+//                transform.position.x,
+//                transform.position.y,
+//                transform.position.z
+//            );
+//            visualHeightPlane.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
 
-            visualHeightPlaneFoot.transform.position = new Vector3(
-            body.footPosition.x,
-            body.footPosition.y,
-            body.footPosition.z
-);
-            visualHeightPlaneFoot.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
+//            visualHeightPlaneFoot.transform.position = new Vector3(
+//            body.footPosition.x,
+//            body.footPosition.y,
+//            body.footPosition.z
+//);
+//            visualHeightPlaneFoot.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
         }
 
 

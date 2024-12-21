@@ -39,14 +39,11 @@ namespace Panthera.Utils
             #endregion
 
             #region Model
-            string ModelName1 = "Orange";
-            PantheraTokens.Add("PANTHERA_MODEL_NAME_1", ModelName1);
-            //string ModelName2 = "Orange";
-            //PantheraTokens.Add("PANTHERA_MODEL_NAME_2", ModelName2);
-            //string ModelName3 = "Primal Stalker";
-            //PantheraTokens.Add("PANTHERA_MODEL_NAME_3", ModelName3);
-            //string ModelName4 = "RED XIII";
-            //PantheraTokens.Add("PANTHERA_MODEL_NAME_4", ModelName4);
+            PantheraTokens.Add("PANTHERA_MODEL_NAME_1", "Leopard");
+            PantheraTokens.Add("PANTHERA_MODEL_NAME_2", "Tiger");
+            PantheraTokens.Add("PANTHERA_MODEL_NAME_3", "Armored");
+            PantheraTokens.Add("PANTHERA_MODEL_NAME_4", "Ashamane");
+            PantheraTokens.Add("PANTHERA_MODEL_NAME_5", "Primal Stalker");
             #endregion
 
             #region Attributes

@@ -20,6 +20,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.XR;
 using static Rewired.UI.ControlMapper.ControlMapper;
 
 namespace Panthera.Base
@@ -104,13 +105,31 @@ namespace Panthera.Base
 
         #region Materials
         public static Material skin1Mat;
+        public static Material skin2Mat;
+        public static Material skin3Mat;
+        public static Material skin4Mat;
+        public static Material skin5Mat;
         public static Material skin1MatCloaked;
+        public static Material skin2MatCloaked;
+        public static Material skin3MatCloaked;
+        public static Material skin4MatCloaked;
+        public static Material skin5MatCloaked;
+        public static Mesh mesh1;
+        public static Mesh mesh2;
+        public static Mesh mesh3;
+        public static Mesh mesh4;
+        public static Mesh mesh5;
         public static Material XRayMat;
         public static GameObject PantheraPostProcess;
         #endregion
 
         #region Portraits
+        public static Sprite DefaultPortrait;
         public static Sprite Portrait1;
+        public static Sprite Portrait2;
+        public static Sprite Portrait3;
+        public static Sprite Portrait4;
+        public static Sprite Portrait5;
         public static Sprite OverviewPortrait1;
         #endregion
 
@@ -351,15 +370,34 @@ namespace Panthera.Base
             CrosshairPrefab = MainAssetBundle.LoadAsset<GameObject>("CrosshairPrefab");
             #endregion
 
-            #region Materials
-            skin1Mat = MainAssetBundle.LoadAsset<Material>("CombinedCat1");
-            skin1MatCloaked = MainAssetBundle.LoadAsset<Material>("ClokedCombinedCat1 1");
+            #region Materials and Meshs
+            skin1Mat = MainAssetBundle.LoadAsset<Material>("Cat1Mat");
+            skin2Mat = MainAssetBundle.LoadAsset<Material>("Cat2Mat");
+            skin3Mat = MainAssetBundle.LoadAsset<Material>("Cat3Mat");
+            skin4Mat = MainAssetBundle.LoadAsset<Material>("Cat4Mat");
+            skin5Mat = MainAssetBundle.LoadAsset<Material>("Cat5Mat");
+            skin1MatCloaked = MainAssetBundle.LoadAsset<Material>("CloakedCat1Mat");
+            skin2MatCloaked = MainAssetBundle.LoadAsset<Material>("CloakedCat2Mat");
+            skin3MatCloaked = MainAssetBundle.LoadAsset<Material>("CloakedCat3Mat");
+            skin4MatCloaked = MainAssetBundle.LoadAsset<Material>("CloakedCat4Mat");
+            skin5MatCloaked = MainAssetBundle.LoadAsset<Material>("CloakedCat5Mat");
+            GameObject pantheraGLB = MainAssetBundle.LoadAsset<GameObject>("NewPanthera");
+            mesh1 = pantheraGLB.transform.Find("Cat1").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            mesh2 = pantheraGLB.transform.Find("Cat2").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            mesh3 = pantheraGLB.transform.Find("Cat3").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            mesh4 = pantheraGLB.transform.Find("Cat4").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            mesh5 = pantheraGLB.transform.Find("Cat5").GetComponent<SkinnedMeshRenderer>().sharedMesh;
             XRayMat = MainAssetBundle.LoadAsset<Material>("XRayMaterial");
             PantheraPostProcess = MainAssetBundle.LoadAsset<GameObject>("PantheraPostProcess");
             #endregion
 
             #region Portraits
-            Portrait1 = MainAssetBundle.LoadAsset<Sprite>("Portrait");
+            DefaultPortrait = MainAssetBundle.LoadAsset<Sprite>("Portrait");
+            Portrait1 = MainAssetBundle.LoadAsset<Sprite>("Cat1Portrait");
+            Portrait2 = MainAssetBundle.LoadAsset<Sprite>("Cat2Portrait");
+            Portrait3 = MainAssetBundle.LoadAsset<Sprite>("Cat3Portrait");
+            Portrait4 = MainAssetBundle.LoadAsset<Sprite>("Cat4Portrait");
+            Portrait5 = MainAssetBundle.LoadAsset<Sprite>("Cat5Portrait");
             OverviewPortrait1 = MainAssetBundle.LoadAsset<Sprite>("PantheraOverviewPortraitPrimalStalker");
             #endregion
 

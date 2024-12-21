@@ -116,7 +116,6 @@ namespace Panthera.BodyComponents
                 return 1;
             }
         }
-        public int ActualPantheraSkinIndex;
         public float actualModelScale = PantheraConfig.Model_defaultModelScale;
         public float desiredModelScale = PantheraConfig.Model_defaultModelScale;
 

@@ -49,8 +49,6 @@ namespace Panthera.NetworkMessages
             NetworkingAPI.RegisterMessageType<ServerSetLeapTrailFX>();
             NetworkingAPI.RegisterMessageType<ClientSetLeapTrailFX>();
             NetworkingAPI.RegisterMessageType<ClientSetDashFX>();
-            NetworkingAPI.RegisterMessageType<ServerSetStealthFX>();
-            NetworkingAPI.RegisterMessageType<ClientSetStealthFX>();
             NetworkingAPI.RegisterMessageType<ServerSetFuryModeFX>();
             NetworkingAPI.RegisterMessageType<ClientSetFuryModeFX>();
             NetworkingAPI.RegisterMessageType<ServerSetGuardianModeFX>();

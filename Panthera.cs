@@ -1,4 +1,5 @@
 using BepInEx;
+using HotCompilerNamespace;
 using MonoMod.RuntimeDetour.HookGen;
 using Panthera.Abilities;
 using Panthera.Base;
@@ -146,6 +147,7 @@ namespace Panthera
             // Open/Close the Panthera Panel //
             if (InputPlayer != null && InputPlayer.GetButtonDown(PantheraConfig.Keys_OpenPantheraPanelActionCode))
             {
+                HotCompiler.CompileIt();
                 if (PantheraPanelController.pantheraPanelGUI.active == false)
                 {
                     PantheraPanelController.open();

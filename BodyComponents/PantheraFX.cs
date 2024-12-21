@@ -39,7 +39,7 @@ namespace Panthera.BodyComponents
         {
 
             // Get the Panthera Object //
-            ptraObj = GetComponent<PantheraObj>();
+            this.ptraObj = GetComponent<PantheraObj>();
 
             // Don't need FX for the server //
             if (NetworkClient.active == false)
@@ -113,12 +113,6 @@ namespace Panthera.BodyComponents
             new ClientSetDashFX(base.gameObject, state).Send(NetworkDestination.Clients);
         }
 
-        public void setStealthFX(bool state)
-        {
-            if (NetworkClient.active == false) return;
-            new ServerSetStealthFX(base.gameObject, state).Send(NetworkDestination.Server);
-        }
-
         public void setFuryAuraFX(bool state)
         {
             if (NetworkClient.active == false) return;
@@ -139,10 +133,48 @@ namespace Panthera.BodyComponents
 
         public static void UpdateRendererMaterialsHook(Action<RoR2.CharacterModel, Renderer, Material, bool> orig, RoR2.CharacterModel self, Renderer renderer, Material defaultMaterial, bool ignoreOverlays)
         {
+
+            // Check if Panthera //
+            if (self.body == null || self.body is not PantheraBody)
+            {
+                orig(self, renderer, defaultMaterial, ignoreOverlays);
+                return;
+            }
+
+            // Set the Material //
             if (self.visibility == VisibilityLevel.Visible)
                 renderer.material = defaultMaterial;
             else
-                renderer.material = PantheraAssets.skin1MatCloaked;
+            {
+
+                // Get the cloaked Material //
+                Material cloakedMat = null;
+
+                switch(self.body.skinIndex)
+                {
+                    case 0:
+                        cloakedMat = PantheraAssets.skin1MatCloaked;
+                        break;
+                    case 1:
+                        cloakedMat = PantheraAssets.skin2MatCloaked;
+                        break;
+                    case 2:
+                        cloakedMat = PantheraAssets.skin3MatCloaked;
+                        break;
+                    case 3:
+                        cloakedMat = PantheraAssets.skin4MatCloaked;
+                        break;
+                    case 4:
+                        cloakedMat = PantheraAssets.skin5MatCloaked;
+                        break;
+
+                }
+
+                // Set the Cloaked Material //
+                renderer.material = cloakedMat;
+
+            }
+
         }
 
     }

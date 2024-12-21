@@ -161,7 +161,7 @@ namespace Panthera.Base
             bodyComponent._defaultCrosshairPrefab = null;
             bodyComponent.aimOriginTransform = gameObject3.transform;
             bodyComponent.hullClassification = HullClassification.Human;
-            bodyComponent.portraitIcon = PantheraAssets.Portrait1.texture;
+            bodyComponent.portraitIcon = PantheraAssets.DefaultPortrait.texture;
             bodyComponent.isChampion = false;
             bodyComponent.currentVehicle = null;
             bodyComponent.skinIndex = 0U;
@@ -439,14 +439,11 @@ namespace Panthera.Base
             // Get the display model //
             GameObject model = prefab;
 
-            // Up the model //
-            model.transform.localPosition = new Vector3(0f, 0.7f, 0f);
-
             // Set up the display model //
             GameObject modelBase = new GameObject("ModelBase");
             modelBase.transform.parent = DisplayCharacterPrefab.transform;
             modelBase.transform.position = new Vector3(0f, 0f, 0f);
-            modelBase.transform.localPosition = new Vector3(0f, 0f, 0f);
+            modelBase.transform.localPosition = new Vector3(0f, 0.7f, 0f);
             modelBase.transform.localRotation = Quaternion.identity;
             modelBase.transform.localScale = new Vector3(1, 1, 1);
 
@@ -472,7 +469,7 @@ namespace Panthera.Base
             characterModel.baseRendererInfos = DisplayCharacterPrefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
 
             // Add the Sound Component //
-            model.gameObject.AddComponent<DisplayPrefabSound>();
+            model.gameObject.AddComponent<DisplayModelComponent>();
 
             // Return the Display Prefab //
             return model;

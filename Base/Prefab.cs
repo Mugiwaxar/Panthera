@@ -306,7 +306,7 @@ namespace Panthera.Base
             #region HurtBoxGroup
             HurtBoxGroup hurtBoxGroup = model.AddComponent<HurtBoxGroup>();
             HurtBox mainHurtbox = childLocator.FindChild("MainHurtbox").gameObject.AddComponent<HurtBox>();
-            mainHurtbox.transform.localPosition = new Vector3(0f, 0.8f, -0.3f);
+            mainHurtbox.transform.localPosition = new Vector3(0f, 0f, -0.3f);
             mainHurtbox.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
             mainHurtbox.gameObject.layer = LayerIndex.entityPrecise.intVal;
             mainHurtbox.healthComponent = healthComponent;

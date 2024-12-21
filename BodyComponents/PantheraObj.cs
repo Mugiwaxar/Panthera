@@ -641,142 +641,79 @@ namespace Panthera.BodyComponents
     public class CapsuleColliderVisualizerWithHeight : MonoBehaviour
     {
 
-        CharacterBody body;
-        Transform model;
+    private CapsuleCollider capsuleCollider;
+    private GameObject topSphere;
+    private GameObject bottomSphere;
+    private GameObject cylinder;
 
-        public Color hitboxColor = new Color(1f, 0f, 0f, 0.3f); // Couleur des hitbox (semi-transparente)
-
-        private Collider[] hitboxes = new Collider[1];
-        private GameObject[] visualizers;
-
-        private GameObject visualHeightPlane;
-        private GameObject visualHeightPlaneFoot;
-
-        void Start()
+    void Start()
+    {
+        capsuleCollider = GetComponent<CharacterBody>().mainHurtBox.GetComponent<CapsuleCollider>();
+        if (capsuleCollider == null)
         {
-            this.body = transform.GetComponent<CharacterBody>();
-            this.model = transform.GetComponent<PantheraObj>().modelTransform;
-            CapsuleCollider capsule = GetComponent<CapsuleCollider>();
-
-            // Récupérer tous les colliders des enfants
-            //hitboxes = model.GetComponentsInChildren<Collider>();
-            hitboxes[0] = model.GetComponent<HitBoxGroup>().hitBoxes[0].gameObject.GetComponent<Collider>();
-            visualizers = new GameObject[hitboxes.Length];
-            CreateVisualizers();
-
-
-            //// Crée un plan pour visualiser la hauteur
-            //visualHeightPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            //Destroy(visualHeightPlane.GetComponent<Collider>()); // Supprime le collider du plan
-            //visualHeightPlane.transform.SetParent(transform);
-            //visualHeightPlane.transform.localScale = new Vector3(
-            //    7,
-            //    1, // Le plan est toujours plat sur l'axe Z
-            //    1
-            //);
-
-            //visualHeightPlaneFoot = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            //Destroy(visualHeightPlaneFoot.GetComponent<Collider>()); // Supprime le collider du plan
-            //visualHeightPlaneFoot.transform.SetParent(transform);
-            //visualHeightPlaneFoot.transform.localScale = new Vector3(
-            //    7,
-            //    1, // Le plan est toujours plat sur l'axe Z
-            //    1
-            //);
-
-            //UpdateVisualHeightPlane();
-
+            Debug.LogError("CapsuleCollider component not found on the GameObject.");
+            return;
         }
 
-        private void CreateVisualizers()
+        CreateCapsuleVisualization();
+    }
+
+    void Update()
+    {
+        UpdateCapsuleVisualization();
+    }
+
+    void CreateCapsuleVisualization()
+    {
+        // Create top sphere
+        topSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        topSphere.transform.parent = transform;
+        topSphere.transform.localScale = Vector3.one * capsuleCollider.radius * 2;
+        topSphere.transform.localPosition = capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
+        DisableCollider(topSphere);
+
+        // Create bottom sphere
+        bottomSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        bottomSphere.transform.parent = transform;
+        bottomSphere.transform.localScale = Vector3.one * capsuleCollider.radius * 2;
+        bottomSphere.transform.localPosition = capsuleCollider.center - Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
+        DisableCollider(bottomSphere);
+
+        // Create cylinder
+        cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        cylinder.transform.parent = transform;
+        cylinder.transform.localScale = new Vector3(capsuleCollider.radius * 2, capsuleCollider.height / 2, capsuleCollider.radius * 2);
+        cylinder.transform.localPosition = capsuleCollider.center;
+        DisableCollider(cylinder);
+    }
+
+    void UpdateCapsuleVisualization()
+    {
+        if (topSphere != null && bottomSphere != null && cylinder != null)
         {
-            for (int i = 0; i < hitboxes.Length; i++)
-            {
-                Collider hitbox = hitboxes[i];
-                GameObject visualizer = null;
+            // Update top sphere
+            topSphere.transform.localScale = Vector3.one * capsuleCollider.radius * 2;
+            topSphere.transform.localPosition = capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
 
-                // Créer une primitive correspondant au type de collider
-                if (hitbox is BoxCollider)
-                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                else if (hitbox is SphereCollider)
-                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                else if (hitbox is CapsuleCollider)
-                    visualizer = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            // Update bottom sphere
+            bottomSphere.transform.localScale = Vector3.one * capsuleCollider.radius * 2;
+            bottomSphere.transform.localPosition = capsuleCollider.center - Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
 
-                if (visualizer != null)
-                {
-                    //visualizer.transform.SetParent(hitbox.transform, false);
-                    visualizer.GetComponent<Renderer>().material.color = hitboxColor;
-                    visualizer.GetComponent<Collider>().enabled = false; // Désactiver la collision sur les visualisateurs
-                    visualizers[i] = visualizer;
-                }
-            }
+            // Update cylinder
+            cylinder.transform.localScale = new Vector3(capsuleCollider.radius * 2, capsuleCollider.height / 2, capsuleCollider.radius * 2);
+            cylinder.transform.localPosition = capsuleCollider.center;
         }
+    }
 
-        void Update()
+    void DisableCollider(GameObject obj)
+    {
+        Collider collider = obj.GetComponent<Collider>();
+        if (collider != null)
         {
-            UpdateVisualizers();
-            //UpdateVisualHeightPlane();
+            collider.enabled = false;
         }
+    }
 
-        private void UpdateVisualizers()
-        {
-            for (int i = 0; i < hitboxes.Length; i++)
-            {
-                Collider hitbox = hitboxes[i];
-                GameObject visualizer = visualizers[i];
-
-                if (hitbox is BoxCollider box)
-                {
-                    visualizer.transform.position = box.transform.position;
-                    visualizer.transform.localScale = box.size * box.transform.lossyScale.y;
-                    visualizer.transform.rotation = box.transform.rotation;
-                }
-                else if (hitbox is SphereCollider sphere)
-                {
-                    visualizer.transform.localPosition = sphere.center;
-                    visualizer.transform.localScale = Vector3.one * sphere.radius * 2f;
-                }
-                else if (hitbox is CapsuleCollider capsule)
-                {
-                    visualizer.transform.localPosition = capsule.center;
-                    visualizer.transform.localScale = new Vector3(capsule.radius * 2f, capsule.height / 2f, capsule.radius * 2f);
-                }
-            }
-        }
-
-        private void UpdateVisualHeightPlane()
-        {
-
-            // Ajuste la position du plan à la hauteur du CapsuleCollider
-//            visualHeightPlane.transform.position = new Vector3(
-//                transform.position.x,
-//                transform.position.y,
-//                transform.position.z
-//            );
-//            visualHeightPlane.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
-
-//            visualHeightPlaneFoot.transform.position = new Vector3(
-//            body.footPosition.x,
-//            body.footPosition.y,
-//            body.footPosition.z
-//);
-//            visualHeightPlaneFoot.transform.rotation = model.rotation * Quaternion.Euler(90, 0, 0);
-        }
-
-
-        void OnDestroy()
-        {
-
-            foreach (var visualizer in visualizers)
-            {
-                if (visualizer != null)
-                    Destroy(visualizer);
-            }
-
-            if (visualHeightPlane != null) Destroy(visualHeightPlane);
-
-        }
     }
 
 }

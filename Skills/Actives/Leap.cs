@@ -57,11 +57,11 @@ namespace Panthera.Skills.Actives
             base.skillID = PantheraConfig.Leap_SkillID;
             base.priority = PantheraConfig.Leap_priority;
             base.interruptPower = PantheraConfig.Leap_interruptPower;
+            base.machineToUse = 2;
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
         {
-            //if (ptraObj.characterBody.stamina < PantheraConfig.Leap_requiredStamina) return false;
             if (ptraObj.skillLocator.getStock(PantheraConfig.Leap_SkillID) <= 0) return false;
             return true;
         }
@@ -71,9 +71,6 @@ namespace Panthera.Skills.Actives
 
             // Save the time //
             this.startingTime = Time.time;
-
-            // Remove the Stamina //
-            //base.characterBody.stamina -= PantheraConfig.Leap_requiredStamina;
 
             // Set the Air control //
             this.previousAirControl = base.characterMotor.airControl;
@@ -121,9 +118,6 @@ namespace Panthera.Skills.Actives
 
             }
 
-            // Make the Character Sprint //
-            base.pantheraObj.pantheraMotor.isSprinting = true;
-
             // Calculate the Velocity //
             direction.y *= PantheraConfig.Leap_aimRayYMultiplier;
             direction.y = Mathf.Max(direction.y, minimumY);
@@ -141,6 +135,9 @@ namespace Panthera.Skills.Actives
             // Play the sound // 
             Sound.playSound(Sound.Leap, base.gameObject);
 
+            // Spawn the Effect //
+            FXManager.SpawnEffect(base.gameObject, PantheraAssets.LeapFX, base.characterBody.footPosition, base.pantheraObj.actualModelScale, null, base.modelTransform.rotation);
+
             // Enable the Trail //
             base.pantheraFX.setLeapTrailFX(true);
 
@@ -150,44 +147,11 @@ namespace Panthera.Skills.Actives
                 cooldown -= PantheraConfig.RelentlessStalker_CooldownReduction;
             base.skillLocator.startCooldown(PantheraConfig.Leap_SkillID, cooldown);
 
-            // Set the Fake Skill Cooldown //
-            //skillLocator.utility.DeductStock(1);
-
             // Launch the Fake Skill //
             base.characterBody.OnSkillActivated(base.skillLocator.utility);
 
-            //if (this.targetFound == true)
-            //{
-
-            //    int leapLevel = CharacterAbilities.getAbilityLevel(PantheraConfig.LeapAbilityID);
-
-            //    if (leapLevel == 0)
-            //        skillLocator.setCooldownTime(getSkillDef().skillID, Time.time);
-            //    else if (leapLevel == 1)
-            //        skillLocator.setCooldownTime(getSkillDef().skillID, Time.time - PantheraConfig.Leap_targetReduction1);
-            //    else if (leapLevel == 2)
-            //        skillLocator.setCooldownTime(getSkillDef().skillID, Time.time - PantheraConfig.Leap_targetReduction2);
-            //    else if (leapLevel == 3)
-            //        skillLocator.setCooldownTime(getSkillDef().skillID, Time.time - PantheraConfig.Leap_targetReduction3);
-            //}
-            //else
-            //{
-            //    skillLocator.startCooldown(getSkillDef().skillID);
-            //}
-
-            // Spawn the Leap cercle //
-            //if (base.pantheraObj.actualLeapCerle != null)
-            //{
-            //	GameObject.Destroy(base.pantheraObj.actualLeapCerle.gameObject, PantheraConfig.LeapCerle_delayBeforeDestroyed);
-            //	base.pantheraObj.actualLeapCerle.destroying = true;
-            //	base.pantheraObj.actualLeapCerle = null;
-            //}
-            //Vector3 leapCerclePosition = base.characterBody.footPosition;
-            //leapCerclePosition += Vector3.up;
-            //GameObject effect = Utils.Functions.SpawnEffect(base.gameObject, PantheraAssets.LeapCercleFX, leapCerclePosition, PantheraConfig.Model_generalScale, null, Util.QuaternionSafeLookRotation(player.transform.localRotation.eulerAngles), false);
-            //this.pantheraObj.actualLeapCerle = effect.GetComponent<LeapCercleComponent>();
-            //this.pantheraObj.actualLeapCerle.ptraObj = this.pantheraObj;
-            //if(NetworkServer.active == false) new ClientCreateLeapCercleFX(base.gameObject, leapCerclePosition).Send(NetworkDestination.Clients);
+            // Change the Camera Fov //
+            CamHelper.ApplyCameraType(CamHelper.AimType.Leap, base.pantheraObj, 1);
 
         }
 
@@ -243,7 +207,6 @@ namespace Panthera.Skills.Actives
                         this.targetBody.healthComponent != null && hurtbox.healthComponent == this.targetBody.healthComponent)
                     {
                         this.OnTargetHit();
-                        //OldPassives.Stealth.DidDamageUnstealth(pantheraObj);
                         return;
                     }
                 }
@@ -347,6 +310,9 @@ namespace Panthera.Skills.Actives
 
             // Make the character run after the jump //
             base.pantheraObj.pantheraMotor.isSprinting = true;
+
+            // Reset the Camera Fov //
+            CamHelper.ApplyCameraType(CamHelper.AimType.Standard, base.pantheraObj);
 
         }
 

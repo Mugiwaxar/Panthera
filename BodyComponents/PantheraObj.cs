@@ -455,24 +455,37 @@ namespace Panthera.BodyComponents
                 this.pantheraCam.transform.localScale = Camera.main.transform.localScale;
             }
 
-            // Check the Model Scale //
+            // Check the Model scale //
             if (this.hasAuthority() == true && this.actualModelScale != this.desiredModelScale)
             {
+
+                // Change the Model scale Variable //
                 if (this.actualModelScale > this.desiredModelScale)
                     this.actualModelScale -= 0.01f;
                 else if (this.actualModelScale < this.desiredModelScale)
                     this.actualModelScale += 0.01f;
+
+                // Check the Model scale //
                 if (Math.Abs(this.actualModelScale - this.desiredModelScale) < 0.02f)
                 {
                     this.actualModelScale = this.desiredModelScale;
                 }
-                this.transform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
+
+                // Change the Transform scale //
+                //this.transform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
                 this.modelTransform.localScale = new Vector3(this.actualModelScale, this.actualModelScale, this.actualModelScale);
+
+                // Send the scale to the Server //
                 new ServerChangePantheraScale(base.gameObject, this.actualModelScale).Send(NetworkDestination.Server);
+
+                // Change the Camera position //
                 Vector3 camPos = PantheraConfig.defaultCamPosition;
                 this.defaultCamPos = new Vector3(camPos.x, camPos.y, camPos.z * actualModelScale);
                 Utils.CamHelper.ApplyCameraType(Utils.CamHelper.AimType.Standard, this, 2);
+
+                // Set the Capsule Collider scale //
                 this.kinematicPantheraMotor.SetCapsuleDimensions(PantheraConfig.Model_defaultCapsuleRadius * this.actualModelScale, PantheraConfig.Model_defaultCapsuleHeight * this.actualModelScale, 0);
+
             }
 
             // Update the Front Shield Scale //

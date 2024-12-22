@@ -106,12 +106,14 @@ namespace Panthera.NetworkMessages
         {
             PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
             if (ptraObj == null) return;
-            Transform modelTransform = ptraObj.modelTransform;
-            ptraObj.actualModelScale = scale;
-            ptraObj.transform.localScale = new Vector3(scale, scale, scale);
-            if (modelTransform == null) return;
-            modelTransform.localScale = new Vector3(scale, scale, scale);
-            ptraObj.kinematicPantheraMotor.SetCapsuleDimensions(PantheraConfig.Model_defaultCapsuleRadius * ptraObj.actualModelScale, PantheraConfig.Model_defaultCapsuleHeight * ptraObj.actualModelScale, 0);
+            if(ptraObj.hasAuthority() == false)
+            {
+                Transform modelTransform = ptraObj.modelTransform;
+                ptraObj.actualModelScale = scale;
+                //ptraObj.transform.localScale = new Vector3(scale, scale, scale);
+                modelTransform.localScale = new Vector3(scale, scale, scale);
+                ptraObj.kinematicPantheraMotor.SetCapsuleDimensions(PantheraConfig.Model_defaultCapsuleRadius * ptraObj.actualModelScale, PantheraConfig.Model_defaultCapsuleHeight * ptraObj.actualModelScale, 0);
+            }
             new ClientChangePantheraScale(this.player, scale).Send(NetworkDestination.Clients);
         }
 

@@ -167,6 +167,7 @@ namespace Panthera.Base
         public static Sprite ArcaneAnchorSkillMenu;
         public static Sprite ConvergenceHookSkill;
         public static Sprite PortalSurgeSkill;
+        public static Sprite FeralBiteSkill;
         #endregion
 
         #region Abilities Icones
@@ -286,6 +287,7 @@ namespace Panthera.Base
         public static GameObject FireRipRightFX;
         public static GameObject FireAirCleaveLeftFX;
         public static GameObject FireAirCleaveRightFX;
+        public static GameObject FeralBiteFX;
         #endregion
 
         #region Orbs FX
@@ -439,6 +441,7 @@ namespace Panthera.Base
             ArcaneAnchorSkillMenu = MainAssetBundle.LoadAsset<Sprite>("ArcaneAnchorIconMenu");
             ConvergenceHookSkill = MainAssetBundle.LoadAsset<Sprite>("ConvergenceHookIcon");
             PortalSurgeSkill = MainAssetBundle.LoadAsset<Sprite>("PortalSurgeIcon");
+            FeralBiteSkill = MainAssetBundle.LoadAsset<Sprite>("FeralBiteIcon");
             #endregion
 
             #region Abilities Icones
@@ -558,6 +561,7 @@ namespace Panthera.Base
             FireRipRightFX = MainAssetBundle.LoadAsset<GameObject>("FireRipRightFX");
             FireAirCleaveLeftFX = MainAssetBundle.LoadAsset<GameObject>("FireAirCleaveLeftFX");
             FireAirCleaveRightFX = MainAssetBundle.LoadAsset<GameObject>("FireAirCleaveRightFX");
+            FeralBiteFX = MainAssetBundle.LoadAsset<GameObject>("BiteAttack");
             #endregion
 
             #region Orbs FX
@@ -671,6 +675,7 @@ namespace Panthera.Base
             LoadEffect(RegenerationFX);
             LoadEffect(FireRipLeftFX, 3);
             LoadEffect(FireRipRightFX, 3);
+            LoadEffect(FeralBiteFX, 1.5f);
             #endregion
 
             #region Create Projectiles

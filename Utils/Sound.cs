@@ -55,8 +55,9 @@ namespace Panthera.Utils
         public static string PortalChargeFailed = "PortalChargeFailed"; // Portal Surge
         public static string Regeneration = "Regeneration"; // Regeneration
         public static string Resilience = "Resilience"; // Resilience
-        public static string Enrage = "Enrage"; // Resilience
-        public static string FireRip1 = "FireRip1"; // Resilience
+        public static string Enrage = "Enrage"; // Enrage
+        public static string FireRip1 = "FireRip1"; // Fire Rip
+        public static string FeralBite = "FeralBite"; // Feral Bite
         public static string Dead1 = "Dead1"; // Death
         public static string Dead2 = "Dead2"; // Death
         public static string LevelUP = "LevelUP"; // Level UP

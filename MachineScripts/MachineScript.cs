@@ -5,6 +5,7 @@ using Panthera.BodyComponents;
 using Panthera.Components;
 using Panthera.Machines;
 using Panthera.MachineScripts;
+using Panthera.Skills;
 using Panthera.Utils;
 using RoR2;
 using System;

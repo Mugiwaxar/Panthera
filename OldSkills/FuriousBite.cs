@@ -10,6 +10,7 @@ using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
 using Panthera.OldSkills;
 using Panthera.Passives;
+using Panthera.Skills;
 using Panthera.Skills.Passives;
 using Panthera.Utils;
 using R2API.Networking;
@@ -21,7 +22,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static Panthera.Base.PantheraSkill;
+using static Panthera.Skills.PantheraSkill;
 
 namespace Panthera.OldSkills
 {

@@ -366,6 +366,13 @@ namespace Panthera.MachineScripts
         public void OnDamageDone(DamageDealtMessage damageDealtMessage)
         {
 
+            // Set the last damage time //
+            this.lastDamageTime = Time.time;
+
+            // Check if Feral Bite and heal //
+            if (Time.time - base.pantheraObj.lastFeralBiteUse < 0.5f)
+                new ServerHeal(base.gameObject, damageDealtMessage.damage * PantheraConfig.FeralBite_healMultiplier).Send(NetworkDestination.Server);
+
             // Check all values //
             if (damageDealtMessage.attacker == null || damageDealtMessage.victim == null || damageDealtMessage.victim == base.gameObject) return;
 
@@ -378,9 +385,6 @@ namespace Panthera.MachineScripts
             PredatorComponent predComp = damageDealtMessage.victim.GetComponent<PredatorComponent>();
             if (predComp != null)
                 predComp.damaged = true;
-
-            // Set the last damage time //
-            this.lastDamageTime = Time.time;
 
         }
 
@@ -472,6 +476,10 @@ namespace Panthera.MachineScripts
                 new ServerAddBuff(base.gameObject, base.gameObject, Buff.EclipseBuff).Send(NetworkDestination.Server);
                 base.skillLocator.setCooldown(PantheraConfig.Prowl_SkillID, 0);
             }
+
+            // Check if Feral Bite and reset Leap cooldown //
+            if (Time.time - base.pantheraObj.lastFeralBiteUse < 0.5f)
+                base.skillLocator.setCooldown(PantheraConfig.Leap_SkillID, 0);
 
         }
 

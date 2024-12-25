@@ -34,6 +34,7 @@ namespace Panthera.Base
             this.addSkillToList(PantheraConfig.ArcaneAnchor_SkillID, new ArcaneAnchor());
             this.addSkillToList(PantheraConfig.ConvergenceHook_SkillID, new ConvergenceHook());
             this.addSkillToList(PantheraConfig.PortalSurge_SkillID, new PortalSurge());
+            this.addSkillToList(PantheraConfig.FeralBite_SkillID, new FeralBite());
         }
 
         public void addSkillToList(int ID, MachineScript skill)

@@ -136,6 +136,7 @@ namespace Panthera.BodyComponents
         public bool clawsStormActivated = false;
         public bool portalSurgeActivated = false;
         public float furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime;
+        public float lastFeralBiteUse = 0;
 
         public GameObject frontShieldObj;
         public GameObject FrostedAirObj;

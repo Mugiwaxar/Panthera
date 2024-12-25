@@ -48,8 +48,8 @@ namespace Panthera.Utils
 
             #region Attributes
 
-            string attribute_Endurance = "Max Health: " + ColorHelper.SetUtility("+++") + Environment.NewLine
-                                       + "Health Regen: " + ColorHelper.SetUtility("+") + Environment.NewLine;
+            string attribute_Endurance = "Max health: " + ColorHelper.SetUtility("+++") + Environment.NewLine
+                                       + "Health regen: " + ColorHelper.SetUtility("+") + Environment.NewLine;
             PantheraTokens.Add("attribute_Endurance", attribute_Endurance);
 
             string attribute_Force = "Damage: " + ColorHelper.SetUtility("++") + Environment.NewLine
@@ -57,13 +57,13 @@ namespace Panthera.Utils
             PantheraTokens.Add("attribute_Force", attribute_Force);
 
 
-            string attribute_Agility = "Move Speed: " + ColorHelper.SetUtility("+") + Environment.NewLine
+            string attribute_Agility = "Move speed: " + ColorHelper.SetUtility("+") + Environment.NewLine
                                      + "Critic: " + ColorHelper.SetUtility("++") + Environment.NewLine
                                      + "Dodge: " + ColorHelper.SetUtility("+");
             PantheraTokens.Add("attribute_Agility", attribute_Agility);
 
-            string attribute_Swiftness = "Move Speed: " + ColorHelper.SetUtility("++") + Environment.NewLine
-                                       + "Attack Speed: " + ColorHelper.SetUtility("++") + Environment.NewLine;
+            string attribute_Swiftness = "Move speed: " + ColorHelper.SetUtility("++") + Environment.NewLine
+                                       + "Attack speed: " + ColorHelper.SetUtility("++") + Environment.NewLine;
             PantheraTokens.Add("attribute_Swiftness", attribute_Swiftness);
 
             string attribute_Dexterity = "Damages: " + ColorHelper.SetUtility("+") + Environment.NewLine
@@ -71,7 +71,7 @@ namespace Panthera.Utils
                                        + "Dodge: " + ColorHelper.SetUtility("++");
             PantheraTokens.Add("attribute_Dexterity", attribute_Dexterity);
 
-            string attribute_Spirit = "Health Regen: : " + ColorHelper.SetUtility("+") + Environment.NewLine
+            string attribute_Spirit = "Health regen: : " + ColorHelper.SetUtility("+") + Environment.NewLine
                                       + "Mastery: " + ColorHelper.SetUtility("+++");
             PantheraTokens.Add("attribute_Spirit", attribute_Spirit);
 
@@ -129,17 +129,17 @@ namespace Panthera.Utils
             // ------------------------------------------ SKILLS --------------------------------- //
             #region Passive
             string skill_passiveName = "[Power] Feline Skills";
-            string skill_passiveDesc = "Press [" + ColorHelper.SetGreen(PantheraConfig.Keys_OpenPantheraPanelActionDesc) + "] key (Default P) to open P4N7H3R4 Panel. This can be done in the lobby. Levels are retained between runs";
+            string skill_passiveDesc = "Press [" + ColorHelper.SetGreen(PantheraConfig.Keys_OpenPantheraPanelActionDesc) + "] key (Default P) to open P4N7H3R4 panel. This can be done in the lobby. Levels are retained between runs";
             PantheraTokens.Add("skill_passiveName", skill_passiveName);
             PantheraTokens.Add("skill_passiveDesc", skill_passiveDesc);
             #endregion
 
             #region Rip
             string skill_RipName = "Rip and Shred";
-            string skill_RipDesc = "Rips and Shreds all enemies in front of you for "
+            string skill_RipDesc = "Rips and shreds all enemies in front of you for "
                 + ColorHelper.SetDamage("{0}%")
                 + " damage." + Environment.NewLine
-                + "If there are no enemies, " + ColorHelper.SetUtility("Rip and Shred") + " becomes " + ColorHelper.SetUtility("Air Cleave") + ".";
+                + "If there are no enemies, [" + ColorHelper.SetUtility("Rip and Shred") + "] becomes [" + ColorHelper.SetUtility("Air Cleave") + "].";
             string skill_RipFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury("Every time " + skill_RipName + " hits an enemy, you generate {0} Fury Points.");
             PantheraTokens.Add("skill_RipName", skill_RipName);
             PantheraTokens.Add("skill_RipDesc", skill_RipDesc);
@@ -160,7 +160,8 @@ namespace Panthera.Utils
 
             #region Leap
             string skill_LeapName = "Predator Leap";
-            string skill_LeapDesc = "Leap forward or towards the focused target. Allows to jump again at the end of the leap.";
+            string skill_LeapDesc = "Leap forward or towards the focused target." + Environment.NewLine
+                                  + "Keep the " + ColorHelper.SetUtility("Primary Skill") + " Button pressed at the end of the jump to launch [" + ColorHelper.SetUtility("Feral Bite") + "].";
             PantheraTokens.Add("skill_LeapName", skill_LeapName);
             PantheraTokens.Add("skill_LeapDesc", skill_LeapDesc);
             #endregion
@@ -184,6 +185,20 @@ namespace Panthera.Utils
             PantheraTokens.Add("skill_SlashName", skill_SlashName);
             PantheraTokens.Add("skill_SlashDesc", skill_SlashDesc);
             PantheraTokens.Add("skill_SlashFuryDesc", skill_SlashFuryDesc);
+            #endregion
+
+            #region Feral Bite
+            string skill_FeralBiteName = "Feral Bite";
+            string skill_FeralBiteDesc = "Ferociously bites the target, dealing "
+                + ColorHelper.SetDamage("{0}%")
+                + " damage while converting "
+                + ColorHelper.SetHeal("{1}%")
+                + " of it into healing" + Environment.NewLine
+                + "If the target die, the [" + ColorHelper.SetUtility("Predator Leap") + "] cooldown is removed.";
+            string skill_FeralBiteFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury(skill_FeralBiteName + " generate {0} Fury Points, doubled if critic.");
+            PantheraTokens.Add("skill_FeralBiteName", skill_FeralBiteName);
+            PantheraTokens.Add("skill_FeralBiteDesc", skill_FeralBiteDesc);
+            PantheraTokens.Add("skill_FeralBiteFuryDesc", skill_FeralBiteFuryDesc);
             #endregion
 
             // ------------------------------------------ SPECIALS --------------------------------- //
@@ -253,7 +268,7 @@ namespace Panthera.Utils
             string ability_GuardianName = "Guardian";
             string ability_GuardianDesc = ColorHelper.SetBlue("Press again to cancel") + Environment.NewLine
                 + ColorHelper.SetBlue("Disable the Fury Mode") + Environment.NewLine + Environment.NewLine
-                + "P4N7H3R4 adopts a defensive stance,  increasing Armor by " + ColorHelper.SetUtility("{0}%") + " and Health Regeneration by " + ColorHelper.SetHeal("{1}%") + "." + Environment.NewLine
+                + "P4N7H3R4 adopts a defensive stance, increasing the Armor by " + ColorHelper.SetUtility("{0}%") + " and Health Regeneration by " + ColorHelper.SetHeal("{1}%") + "." + Environment.NewLine
                 + "Reduces the Barrier decay rate by " + ColorHelper.SetBarrier("{2}%") + "."
                 + Environment.NewLine + Environment.NewLine
                 + ColorHelper.SetFury("Fury Points are not generated while the Guardian Mode is active");
@@ -604,6 +619,7 @@ namespace Panthera.Utils
             PantheraTokens.Add("combo_MassiveHookName", "Massive Hook");
             PantheraTokens.Add("combo_AmbitionName", "Ambition");
             PantheraTokens.Add("combo_PortalSurgeName", "Portal Surge");
+            PantheraTokens.Add("combo_FeralBiteName", "Feral Bite");
             #endregion
 
 

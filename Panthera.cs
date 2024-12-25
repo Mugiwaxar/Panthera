@@ -81,7 +81,6 @@ namespace Panthera
             PantheraAssets.PopulateAssets();
             Prefab.RegisterCharacter();
             Skin.RegisterSkins();
-            PantheraSkill.RegisterSkills();
             Buff.RegisterBuffs();
             MessagesRegister.Register();
             Prefab.CreateDoppelganger();

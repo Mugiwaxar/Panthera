@@ -3,6 +3,7 @@ using KinematicCharacterController;
 using Panthera;
 using Panthera.Base;
 using Panthera.BodyComponents;
+using Panthera.Combos;
 using Panthera.Components;
 using Panthera.GUI;
 using Panthera.MachineScripts;
@@ -57,7 +58,7 @@ namespace Panthera.Skills.Actives
             base.skillID = PantheraConfig.Leap_SkillID;
             base.priority = PantheraConfig.Leap_priority;
             base.interruptPower = PantheraConfig.Leap_interruptPower;
-            base.machineToUse = 2;
+            base.machineToUse = 1;
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
@@ -313,6 +314,25 @@ namespace Panthera.Skills.Actives
 
             // Reset the Camera Fov //
             CamHelper.ApplyCameraType(CamHelper.AimType.Standard, base.pantheraObj);
+
+            // Try to launch Feral Bite //
+            if (this.targetFound == true && this.targetHit == true && base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill1))
+            {
+                // Check the Target //
+                HealthComponent targetHC = this.targetBody.healthComponent;
+                if (targetHC != null && targetHC.alive == true)
+                {
+                    // Get Feral Bite and check if the Skill can be used //
+                    FeralBite skill = (FeralBite)Panthera.PantheraCharacter.characterSkills.getSkillByID(PantheraConfig.FeralBite_SkillID).Clone();
+                    ComboSkill comboSkill = base.pantheraObj.characterCombos.CombosList[PantheraConfig.FeralBite_CombosID].comboSkillsList[1];
+                    skill.targetHC = targetHC;
+                    if (skill.CanBeUsed(base.pantheraObj))
+                    {
+                        // Launch the Skill //
+                        base.pantheraObj.comboComponent.executeSkill(comboSkill, skill);
+                    }
+                }
+            }
 
         }
 

@@ -120,14 +120,11 @@ namespace Panthera.Skills.Actives
             // Save the time //
             this.startTime = Time.time;
 
-            // Set in combat //
-            base.characterBody.outOfCombatStopwatch = 0f;
-
             // Stop the Sprint //
             base.pantheraObj.pantheraMotor.isSprinting = false;
 
             // Start the Aim Mode //
-            StartAimMode(PantheraConfig.Rip_minimumAimTime + this.baseDuration, false);
+            base.StartAimMode(PantheraConfig.Rip_minimumAimTime + this.baseDuration, false);
 
             // Set the character to forward //
             base.characterDirection.forward = GetAimRay().direction;
@@ -138,7 +135,7 @@ namespace Panthera.Skills.Actives
             this.attackTime = this.attackTime / base.attackSpeedStat;
 
             // Set the Cooldown //
-            base.skillLocator.startCooldown(PantheraConfig.Rip_SkillID, this.baseCooldown);
+            base.skillLocator.startCooldown(PantheraConfig.Rip_SkillID, base.baseCooldown);
 
             // Get the Combo Number //
             this.comboNumber = base.pantheraObj.attackNumber;
@@ -246,6 +243,11 @@ namespace Panthera.Skills.Actives
                 // Check if Enemies was Hit //
                 if (enemiesHit != null && enemiesHit.Count > 0)
                 {
+
+                    // Set in combat //
+                    base.characterBody.outOfCombatStopwatch = 0f;
+
+                    // Check all Enemies //
                     List<GameObject> enemiesHurt = new List<GameObject>();
                     foreach (HurtBox enemy in enemiesHit)
                     {

@@ -1,6 +1,7 @@
 ﻿using Panthera.Base;
 using Panthera.BodyComponents;
 using Panthera.Components;
+using Panthera.Skills;
 using R2API;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
@@ -12,7 +13,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.TextCore;
-using static Panthera.Base.PantheraSkill;
+using static Panthera.Skills.PantheraSkill;
 using static Rewired.UI.ControlMapper.ControlMapper;
 using static RoR2.DotController;
 

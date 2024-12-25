@@ -132,10 +132,11 @@ namespace Panthera
         public static readonly ScriptPriority PortalSurge_priority = ScriptPriority.MinimumPriority;
         public static readonly ScriptPriority PortalSurge_interruptPower = ScriptPriority.MinimumPriority;
 
+        public static readonly ScriptPriority FeralBite_priority = ScriptPriority.AveragePriority;
+        public static readonly ScriptPriority FeralBite_interruptPower = ScriptPriority.AveragePriority;
 
 
-        public static readonly ScriptPriority FuriousBite_priority = ScriptPriority.AveragePriority;
-        public static readonly ScriptPriority FuriousBite_interruptPower = ScriptPriority.AveragePriority;
+
 
         public static readonly ScriptPriority Dash_priority = ScriptPriority.MinimumPriority;
         public static readonly ScriptPriority Dash_interruptPower = ScriptPriority.MinimumPriority;
@@ -326,6 +327,7 @@ namespace Panthera
         public static readonly int ArcaneAnchor_SkillID = 15;
         public static readonly int ConvergenceHook_SkillID = 16;
         public static readonly int PortalSurge_SkillID = 17;
+        public static readonly int FeralBite_SkillID = 18;
         #endregion
 
         #region Portal Surge
@@ -531,6 +533,14 @@ namespace Panthera
         public static readonly float ConvergenceHook_compDuration = 5f;
         public static readonly float ConvergenceHook_hookSpeed = 2.5f;
         public static readonly float ConvergenceHook_StopDistance = 1f;
+        #endregion
+        #region Feral Bite
+        public static readonly float FeralBite_cooldown = 1;
+        public static readonly float FeralBite_skillDuration = 0.75f;
+        public static readonly float FeralBite_damagesMultiplier = 2.5f;
+        public static readonly float FeralBite_healMultiplier = 0.3f;
+        public static readonly int FeralBite_furyAdded = 3;
+        public static readonly float FeralBite_procCoefficient = 1.5f;
         #endregion
 
         // -- Abilities -- //
@@ -817,6 +827,7 @@ namespace Panthera
         public static readonly int MassiveHook_CombosID = 15;
         public static readonly int Ambition_CombosID = 16;
         public static readonly int PortalSurge_CombosID = 17;
+        public static readonly int FeralBite_CombosID = 18;
         #endregion
         #region Combos Config
         public static float Combos_maxTime = 3;

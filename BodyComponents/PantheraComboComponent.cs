@@ -90,26 +90,31 @@ namespace Panthera.BodyComponents
             }
             else
             {
-                // Execute the Skill //
-                if (skill.machineToUse == 1)
-                    this.ptraObj.skillsMachine1.TryScript((MachineScript)skill.Clone());
-                else if (skill.machineToUse == 2)
-                    this.ptraObj.skillsMachine2.TryScript((MachineScript)skill.Clone());
-                // Stop the Stealth //
-                if (skill.removeStealth == true)
-                    Skills.Passives.Stealth.DidDamageUnstealth(this.ptraObj);
-                // Check if new Combo //
-                if (newCombo == true)
-                    this.actualCombosList.Clear();
-                // Add the Skill to the Actual Combos List //
-                this.actualCombosList.Add(comboSkill);
-                // Set the ComboMaxTime //
-                this.comboMaxTime = skill.comboMaxTime;
-                // Set Machines running //
-                this.machinesIddle = false;
+                this.executeSkill(comboSkill, skill, newCombo);
             }
 
 
+        }
+
+        public void executeSkill(ComboSkill comboSkill, MachineScript skill, bool newCombo = false)
+        {
+            // Execute the Skill //
+            if (skill.machineToUse == 1)
+                this.ptraObj.skillsMachine1.TryScript((MachineScript)skill.Clone());
+            else if (skill.machineToUse == 2)
+                this.ptraObj.skillsMachine2.TryScript((MachineScript)skill.Clone());
+            // Stop the Stealth //
+            if (skill.removeStealth == true)
+                Skills.Passives.Stealth.DidDamageUnstealth(this.ptraObj);
+            // Check if new Combo //
+            if (newCombo == true)
+                this.actualCombosList.Clear();
+            // Add the Skill to the Actual Combos List //
+            this.actualCombosList.Add(comboSkill);
+            // Set the ComboMaxTime //
+            this.comboMaxTime = skill.comboMaxTime;
+            // Set Machines running //
+            this.machinesIddle = false;
         }
 
         private ComboSkill getSkill(List<ComboSkill> actualCombosList, List<KeysEnum> keys, KeysEnum direction)

@@ -70,6 +70,7 @@ namespace Panthera.Skills.Actives
 
             // Create the Effect //
             this.effectID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.PortalPlayerChargingFX, modelTransform.position, 1, base.gameObject, base.modelTransform.rotation, true);
+            this.effectID = Utils.FXManager.SpawnEffect(base.gameObject, PantheraAssets.PortalPlayerChargingFX, modelTransform.position, 1, base.gameObject, base.modelTransform.rotation, true);
 
             // Create the Teleporter Effect //
             if (this.teleporter != null)

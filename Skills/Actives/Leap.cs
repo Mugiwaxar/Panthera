@@ -174,6 +174,20 @@ namespace Panthera.Skills.Actives
                 return;
             }
 
+            // Stop if the character hit the ground //
+            if (totalDuration >= PantheraConfig.Leap_minimumDuration && base.characterMotor.Motor.GroundingStatus.IsStableOnGround)
+            {
+                base.machine.EndScript();
+                return;
+            }
+
+            // Stop if the target is dead //
+            if (this.targetBody == null || this.targetBody.healthComponent == null || this.targetBody.healthComponent.alive == false)
+            {
+                base.machine.EndScript();
+                return;
+            }
+
             // If there is a target //
             if (this.targetFound == true && this.targetHit == false)
             {
@@ -188,13 +202,6 @@ namespace Panthera.Skills.Actives
             {
                 base.characterMotor.velocity = this.originalVelocity;
                 this.originalVelocity = new Vector3(this.originalVelocity.x, this.originalVelocity.y - PantheraConfig.Leap_naturalDown, this.originalVelocity.z);
-            }
-
-            // Stop if the character hit the ground //
-            if (totalDuration >= PantheraConfig.Leap_minimumDuration && base.characterMotor.Motor.GroundingStatus.IsStableOnGround)
-            {
-                base.machine.EndScript();
-                return;
             }
 
             // Check if the Target can be hit //
@@ -316,7 +323,7 @@ namespace Panthera.Skills.Actives
             CamHelper.ApplyCameraType(CamHelper.AimType.Standard, base.pantheraObj);
 
             // Try to launch Feral Bite //
-            if (this.targetFound == true && this.targetHit == true && base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill1))
+            if (this.targetFound == true && this.targetHit == true && base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill3))
             {
                 // Check the Target //
                 HealthComponent targetHC = this.targetBody.healthComponent;

@@ -99,8 +99,8 @@ namespace Panthera
         public static readonly ScriptPriority Guardian_priority = ScriptPriority.AveragePriority;
         public static readonly ScriptPriority Guardian_interruptPower = ScriptPriority.AveragePriority;
 
-        public static readonly ScriptPriority Slash_priority = ScriptPriority.VerySmallPriority;
-        public static readonly ScriptPriority Slash_interruptPower = ScriptPriority.VerySmallPriority;
+        public static readonly ScriptPriority Slash_priority = ScriptPriority.AveragePriority;
+        public static readonly ScriptPriority Slash_interruptPower = ScriptPriority.AveragePriority;
 
         public static readonly ScriptPriority Detection_priority = ScriptPriority.AveragePriority;
         public static readonly ScriptPriority Detection_interruptPower = ScriptPriority.AveragePriority;
@@ -132,7 +132,7 @@ namespace Panthera
         public static readonly ScriptPriority PortalSurge_priority = ScriptPriority.MinimumPriority;
         public static readonly ScriptPriority PortalSurge_interruptPower = ScriptPriority.MinimumPriority;
 
-        public static readonly ScriptPriority FeralBite_priority = ScriptPriority.AveragePriority;
+        public static readonly ScriptPriority FeralBite_priority = ScriptPriority.SmallPriority;
         public static readonly ScriptPriority FeralBite_interruptPower = ScriptPriority.AveragePriority;
 
 

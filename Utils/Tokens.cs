@@ -161,7 +161,7 @@ namespace Panthera.Utils
             #region Leap
             string skill_LeapName = "Predator Leap";
             string skill_LeapDesc = "Leap forward or towards the focused target." + Environment.NewLine
-                                  + "Keep the " + ColorHelper.SetUtility("Primary Skill") + " Button pressed at the end of the jump to launch [" + ColorHelper.SetUtility("Feral Bite") + "].";
+                                  + "Keep this skill Button pressed at the end of the jump to launch [" + ColorHelper.SetUtility("Feral Bite") + "].";
             PantheraTokens.Add("skill_LeapName", skill_LeapName);
             PantheraTokens.Add("skill_LeapDesc", skill_LeapDesc);
             #endregion

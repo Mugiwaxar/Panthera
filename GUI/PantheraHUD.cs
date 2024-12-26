@@ -471,79 +471,79 @@ namespace Panthera.GUI
             PantheraInputBank input = this.ptraObj.pantheraInputBank;
 
             // Update the Ability 1 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) == false && input.keysPressedList.Contains(KeysEnum.Ability1))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) == false && input.keysPressed.HasFlag(KeysEnum.Ability1))
                 this.ability1Obj.transform.Find("Ability1ActiveImage").gameObject.active = true;
             else
                 this.ability1Obj.transform.Find("Ability1ActiveImage").gameObject.active = false;
 
             // Update the Ability 2 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) == false && input.keysPressedList.Contains(KeysEnum.Ability2))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) == false && input.keysPressed.HasFlag(KeysEnum.Ability2))
                 this.ability2Obj.transform.Find("Ability2ActiveImage").gameObject.active = true;
             else
                 this.ability2Obj.transform.Find("Ability2ActiveImage").gameObject.active = false;
 
             // Update the Ability 3 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) == false && input.keysPressedList.Contains(KeysEnum.Ability3))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) == false && input.keysPressed.HasFlag(KeysEnum.Ability3))
                 this.ability3Obj.transform.Find("Ability3ActiveImage").gameObject.active = true;
             else
                 this.ability3Obj.transform.Find("Ability3ActiveImage").gameObject.active = false;
 
             // Update the Ability 4 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) == false && input.keysPressedList.Contains(KeysEnum.Ability4))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) == false && input.keysPressed.HasFlag(KeysEnum.Ability4))
                 this.ability4Obj.transform.Find("Ability4ActiveImage").gameObject.active = true;
             else
                 this.ability4Obj.transform.Find("Ability4ActiveImage").gameObject.active = false;
 
             // Update the Spells Mode Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode))
                 this.spellsModeObj.transform.Find("SpellsModeActiveImage").gameObject.active = true;
             else
                 this.spellsModeObj.transform.Find("SpellsModeActiveImage").gameObject.active = false;
 
             // Update the Spell 1 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill1))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Skill1))
                 this.spell1Obj.transform.Find("Spell1ActiveImage").gameObject.active = true;
             else
                 this.spell1Obj.transform.Find("Spell1ActiveImage").gameObject.active = false;
 
             // Update the Spell 2 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill2))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Skill2))
                 this.spell2Obj.transform.Find("Spell2ActiveImage").gameObject.active = true;
             else
                 this.spell2Obj.transform.Find("Spell2ActiveImage").gameObject.active = false;
 
             // Update the Spell 3 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill3))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Skill3))
                 this.spell3Obj.transform.Find("Spell3ActiveImage").gameObject.active = true;
             else
                 this.spell3Obj.transform.Find("Spell3ActiveImage").gameObject.active = false;
 
             // Update the Spell 4 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Skill4))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Skill4))
                 this.spell4Obj.transform.Find("Spell4ActiveImage").gameObject.active = true;
             else
                 this.spell4Obj.transform.Find("Spell4ActiveImage").gameObject.active = false;
 
             // Update the Spell 5 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability1))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Ability1))
                 this.spell5Obj.transform.Find("Spell5ActiveImage").gameObject.active = true;
             else
                 this.spell5Obj.transform.Find("Spell5ActiveImage").gameObject.active = false;
 
             // Update the Spell 6 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability2))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Ability2))
                 this.spell6Obj.transform.Find("Spell6ActiveImage").gameObject.active = true;
             else
                 this.spell6Obj.transform.Find("Spell6ActiveImage").gameObject.active = false;
 
             // Update the Spell 7 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability3))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Ability3))
                 this.spell7Obj.transform.Find("Spell7ActiveImage").gameObject.active = true;
             else
                 this.spell7Obj.transform.Find("Spell7ActiveImage").gameObject.active = false;
 
             // Update the Spell 8 Frame //
-            if (input.keysPressedList.Contains(KeysEnum.SpellsMode) && input.keysPressedList.Contains(KeysEnum.Ability4))
+            if (input.keysPressed.HasFlag(KeysEnum.SpellsMode) && input.keysPressed.HasFlag(KeysEnum.Ability4))
                 this.spell8Obj.transform.Find("Spell8ActiveImage").gameObject.active = true;
             else
                 this.spell8Obj.transform.Find("Spell8ActiveImage").gameObject.active = false;

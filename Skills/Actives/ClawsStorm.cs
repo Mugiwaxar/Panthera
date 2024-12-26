@@ -124,7 +124,7 @@ namespace Panthera.Skills.Actives
         public override void FixedUpdate()
         {
 
-            if (base.characterBody.fury < PantheraConfig.ClawsStorm_continuousConsumedFury || this.wasInterrupted == true || base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill2) == false)
+            if (base.characterBody.fury < PantheraConfig.ClawsStorm_continuousConsumedFury || this.wasInterrupted == true || base.inputBank.keysPressed.HasFlag(KeysBinder.KeysEnum.Skill2) == false)
             {
                 base.EndScript();
             }

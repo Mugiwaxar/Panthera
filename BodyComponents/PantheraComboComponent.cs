@@ -55,20 +55,20 @@ namespace Panthera.BodyComponents
 
         }
 
-        public void tryLaunchSkill(List<KeysEnum> keys, KeysEnum direction)
+        public void tryLaunchSkill(KeysEnum keys)
         {
 
             // Create the New Combo Boolean //
             bool newCombo = false;
 
             // Try to find a Skill //
-            ComboSkill comboSkill = this.getSkill(this.actualCombosList, keys, direction);
+            ComboSkill comboSkill = this.getSkill(this.actualCombosList, keys);
 
             // If no skill found, try with a new Combo //
             if (comboSkill == null)
             {
                 newCombo = true;
-                comboSkill = this.getSkill(new List<ComboSkill>(), keys, direction);
+                comboSkill = this.getSkill(new List<ComboSkill>(), keys);
             }
 
             // Check the Skill //
@@ -117,7 +117,7 @@ namespace Panthera.BodyComponents
             this.machinesIddle = false;
         }
 
-        private ComboSkill getSkill(List<ComboSkill> actualCombosList, List<KeysEnum> keys, KeysEnum direction)
+        private ComboSkill getSkill(List<ComboSkill> actualCombosList, KeysEnum keys)
         {
 
             // Create a null Machine Script //
@@ -134,18 +134,18 @@ namespace Panthera.BodyComponents
                 filteredCombosList = this.filterCompatibleCombos(filteredCombosList, actualCombosList);
 
             // Try to get the Skill with the Direction //
-            comboSkill = this.getNextSkill(filteredCombosList, keys, direction, comboNumber, true);
+            comboSkill = this.getNextSkill(filteredCombosList, keys, comboNumber, true);
 
             // Try to get the Skill without the Direction //
             if (comboSkill == null)
-                comboSkill = this.getNextSkill(filteredCombosList, keys, 0, comboNumber, false);
+                comboSkill = this.getNextSkill(filteredCombosList, keys, comboNumber, false);
 
             // Return the Skill //
             return comboSkill;
 
         }
 
-        private ComboSkill getNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, List<KeysEnum> keys, KeysEnum direction, int comboNumber, bool checkDirection)
+        private ComboSkill getNextSkill(Dictionary<int, PantheraCombo> filteredCombosList, KeysEnum keys, int comboNumber, bool checkDirection)
         {
 
             // Create a null ComboSkill //
@@ -172,27 +172,35 @@ namespace Panthera.BodyComponents
                 MachineScript skill = comboSkill.skill;
 
                 // Check if the Direction Key is the same //
-                if (comboSkill.direction > 0 && comboSkill.direction != direction)
+                if (comboSkill.direction != KeysEnum.None && !keys.HasFlag(comboSkill.direction))
                     continue;
 
-                // Check the Keys //
-                if (keys.Count > 1)
+                // Find a Skill using directions //
+                if (checkDirection == true)
                 {
-                    if (keys.Contains(comboSkill.keyA) && keys.Contains(comboSkill.keyB))
+                    if (comboSkill.keyB != KeysEnum.None)
                     {
-                        if (checkDirection == true && direction == comboSkill.direction)
+                        if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.keyB) && keys.HasFlag(comboSkill.direction))
                             return comboSkill;
-                        else if (checkDirection == false)
+                    }
+                    else
+                    {
+                        if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.direction))
                             return comboSkill;
                     }
                 }
-                else if (comboSkill.keyB == 0)
+
+                // Find the Skill while ignoring the pressed direction //
+                else
                 {
-                    if (keys.Contains(comboSkill.keyA))
+                    if (comboSkill.keyB != KeysEnum.None)
                     {
-                        if (checkDirection == true && direction == comboSkill.direction)
+                        if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.keyB))
                             return comboSkill;
-                        else if (checkDirection == false)
+                    }
+                    else
+                    {
+                        if (keys.HasFlag(comboSkill.keyA))
                             return comboSkill;
                     }
                 }

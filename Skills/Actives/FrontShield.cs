@@ -70,7 +70,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Check if the Shield must stop //
-            if (base.characterBody.frontShield <= 0 || base.wasInterrupted == true || base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill2) == false)
+            if (base.characterBody.frontShield <= 0 || base.wasInterrupted == true || base.inputBank.keysPressed.HasFlag(KeysBinder.KeysEnum.Skill2) == false)
             {
                 base.EndScript();
                 return;

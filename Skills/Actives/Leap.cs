@@ -323,7 +323,7 @@ namespace Panthera.Skills.Actives
             CamHelper.ApplyCameraType(CamHelper.AimType.Standard, base.pantheraObj);
 
             // Try to launch Feral Bite //
-            if (this.targetFound == true && this.targetHit == true && base.inputBank.keysPressedList.Contains(KeysBinder.KeysEnum.Skill3))
+            if (this.targetFound == true && this.targetHit == true && base.inputBank.keysPressed.HasFlag(KeysBinder.KeysEnum.Skill3))
             {
                 // Check the Target //
                 HealthComponent targetHC = this.targetBody.healthComponent;

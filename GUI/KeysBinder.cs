@@ -430,25 +430,26 @@ namespace Panthera.GUI
 
         public enum KeysEnum
         {
-            Interact = 5,
-            Equipment = 6,
-            Sprint = 18,
-            Info = 19,
-            Ping = 28,
-            Forward = 1001,
-            Backward = 1002,
-            Left = 1003,
-            Right = 1004,
-            Jump = 4,
-            Skill1 = 7,
-            Skill2 = 8,
-            Skill3 = 9,
-            Skill4 = 10,
-            Ability1 = 1301,
-            Ability2 = 1302,
-            Ability3 = 1303,
-            Ability4 = 1304,
-            SpellsMode = 1310
+            None = 0,
+            Interact = 1,
+            Equipment = 2,
+            Sprint = 4,
+            Info = 8,
+            Ping = 16,
+            Forward = 32,
+            Backward = 64,
+            Left = 128,
+            Right = 256,
+            Jump = 512,
+            Skill1 = 1024,
+            Skill2 = 2048,
+            Skill3 = 4096,
+            Skill4 = 8192,
+            Ability1 = 16384,
+            Ability2 = 32768,
+            Ability3 = 65536,
+            Ability4 = 131072,
+            SpellsMode = 262144
         }
 
     }

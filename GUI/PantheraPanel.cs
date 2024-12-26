@@ -200,7 +200,7 @@ namespace Panthera.GUI
             // Enable the Cursor //
             if (this.ptraObj != null && Panthera.InputPlayer != null && MPEventSystemManager.FindEventSystem(Panthera.InputPlayer) != null)
             {
-                MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount = 1;
+                MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount += 1;
             }
 
             // Recalculate Stats //
@@ -237,7 +237,7 @@ namespace Panthera.GUI
             // Disable the Cursor //
             if (this.ptraObj != null && Panthera.InputPlayer != null && MPEventSystemManager.FindEventSystem(Panthera.InputPlayer) != null)
             {
-                MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount = 0;
+                MPEventSystemManager.FindEventSystem(Panthera.InputPlayer).cursorOpenerCount -= 1;
             }
 
             // Recalculate Stats //

@@ -1,5 +1,4 @@
 using BepInEx;
-using HotCompilerNamespace;
 using MonoMod.RuntimeDetour.HookGen;
 using Panthera.Abilities;
 using Panthera.Base;

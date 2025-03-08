@@ -645,7 +645,7 @@ namespace Panthera.Base
             // Build the Skill //
             SkillDef skill4Def = ScriptableObject.CreateInstance<SkillDef>();
             skill4Def.skillNameToken = PantheraTokens.Get("skill_MightyRoarName");
-            skill4Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration);
+            skill4Def.skillDescriptionToken = String.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration, PantheraConfig.MightyRoar_damage * 100, PantheraConfig.MightyRoar_damageCount);
             skill4Def.skillName = PantheraTokens.Get("skill_MightyRoarName");
             skill4Def.keywordTokens = new string[] { };
             skill4Def.icon = PantheraAssets.MightyRoarSkillMenu;

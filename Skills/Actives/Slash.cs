@@ -101,7 +101,7 @@ namespace Panthera.Skills.Actives
                     enemiesHurt.Add(hc.gameObject);
 
                     // Play the Hit Sound //
-                    Sound.playSound(Sound.Slash, hc.gameObject);
+                    Sound.playSound(Sound.RipHit1, hc.gameObject);
 
                     // Spawn the Hit Effect //
                     FXManager.SpawnEffect(hc.gameObject, PantheraAssets.SlashHitFX, enemy.hitPosition);

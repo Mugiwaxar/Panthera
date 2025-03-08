@@ -169,12 +169,14 @@ namespace Panthera.Utils
             #region Mighty Roar
             string skill_MightyRoarName = "Mighty Roar";
             string skill_MightyRoarDesc = "Unleash a ferocious roar that stuns all enemies within "
-                + ColorHelper.SetUtility("{0}m")
-                + " for "
-                + ColorHelper.SetUtility("{1}s")
-                + ".";
+                + ColorHelper.SetUtility("{0}m") + " for "
+                + ColorHelper.SetUtility("{1}s") + " and inflict "
+                + ColorHelper.SetDamage("{2}%") + " damage "
+                + ColorHelper.SetDamage("{3}") + " times.";
+            string skill_MightyRoarFuryDesc = Environment.NewLine + Environment.NewLine + ColorHelper.SetFury("Each enemy hits by " + skill_MightyRoarName + " generate {0} Fury Points.");
             PantheraTokens.Add("skill_MightyRoarName", skill_MightyRoarName);
             PantheraTokens.Add("skill_MightyRoarDesc", skill_MightyRoarDesc);
+            PantheraTokens.Add("skill_MightyRoarFuryDesc", skill_MightyRoarFuryDesc);
             #endregion
 
             #region Slash

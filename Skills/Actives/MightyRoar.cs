@@ -15,8 +15,10 @@ using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
+using static RoR2.BlastAttack;
 
 namespace Panthera.Skills.Actives
 {
@@ -25,13 +27,16 @@ namespace Panthera.Skills.Actives
 
         public float startTime;
         public bool hasFired = false;
+        public int attackCount = 0;
+        public float attackTime = 0;
 
         public MightyRoar()
         {
             base.icon = PantheraAssets.MightyRoarSkill;
             base.name = PantheraTokens.Get("skill_MightyRoarName");
             base.baseCooldown = PantheraConfig.MightyRoar_cooldown;
-            base.desc1 = string.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration);
+            base.desc1 = string.Format(PantheraTokens.Get("skill_MightyRoarDesc"), PantheraConfig.MightyRoar_radius, PantheraConfig.MightyRoar_stunDuration, PantheraConfig.MightyRoar_damage * 100, PantheraConfig.MightyRoar_damageCount);
+            base.desc1 += string.Format(PantheraTokens.Get("skill_MightyRoarFuryDesc"), PantheraConfig.MightyRoar_furyPointAdded);
             base.desc2 = null;
             base.skillID = PantheraConfig.MightyRoar_SkillID;
             base.priority = PantheraConfig.MightyRoar_priority;
@@ -111,6 +116,59 @@ namespace Panthera.Skills.Actives
                 return;
             }
 
+            // Fire the Attack //
+            if (this.attackCount < PantheraConfig.MightyRoar_damageCount && Time.time - this.attackTime > PantheraConfig.MightyRoar_damageTime)
+            {
+                // Increase the attack count //
+                this.attackCount++;
+                this.attackTime = Time.time;
+
+                // Create the Attack //
+                bool isCrit = RollCrit();
+                float damage = base.characterBody.damage * PantheraConfig.MightyRoar_damage;
+                float scale = PantheraConfig.MightyRoar_radius * base.pantheraObj.actualModelScale;
+
+                // Fire //
+                BlastAttack attack = Functions.CreateBlastAttack(base.gameObject, damage, FalloffModel.Linear, isCrit, PantheraConfig.Slash_procCoefficient, base.characterBody.corePosition, scale);
+
+                // Get the Result //
+                Result result = attack.Fire();
+
+                // Check the Enemies Hit //
+                List<HitPoint> enemiesHit = result.hitPoints.ToList();
+
+                if (enemiesHit != null && result.hitCount > 0)
+                {
+                    List<GameObject> enemiesHurt = new List<GameObject>();
+                    foreach (HitPoint enemy in enemiesHit)
+                    {
+
+                        // Get the Enemy //
+                        HealthComponent hc = enemy.hurtBox?.healthComponent;
+                        if (hc == null) continue;
+                        if (enemiesHurt.Contains(hc.gameObject)) continue;
+                        enemiesHurt.Add(hc.gameObject);
+
+                        // Play the Hit Sound //
+                        Sound.playSound(Sound.RipHit1, hc.gameObject);
+
+                        // Spawn the Hit Effect //
+                        FXManager.SpawnEffect(hc.gameObject, PantheraAssets.SlashHitFX, enemy.hitPosition);
+
+                        // Knockback //
+                        float forceRand = Utils.Functions.RandomLog(PantheraConfig.MightyRoar_knockbackPowerMin, PantheraConfig.MightyRoar_knockbackPowerMax, 2);
+                        Utils.Functions.ApplyKnockback(base.gameObject, hc.gameObject, forceRand);
+
+                        // Add Fury Point //
+                        //if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                        //    base.characterBody.fury += PantheraConfig.MightyRoar_furyPointAdded;
+
+                    }
+                }
+
+            }
+
+            
             // Do the Mighty Roar //
             if (this.hasFired == false)
             {
@@ -127,8 +185,8 @@ namespace Panthera.Skills.Actives
                 // Play the Sound //
                 Sound.playSound(Sound.MightyRoar, gameObject);
 
-                // Get all Stats Radius //
-                float radius = PantheraConfig.MightyRoar_radius;
+                // Get all Stats //
+                float radius = PantheraConfig.MightyRoar_radius * base.pantheraObj.actualModelScale;
                 float stunDuration = PantheraConfig.MightyRoar_stunDuration;
                 //float bleedingDuration = CharacterAbilities.mightyRoar_bleedDuration;
                 //float bleedDamage = CharacterAbilities.mightyRoar_bleedDamage;
@@ -154,6 +212,10 @@ namespace Panthera.Skills.Actives
                     // Stun the Target //
                     new ServerStunTarget(hc.gameObject, stunDuration).Send(NetworkDestination.Server);
 
+                    // Add Fury Point //
+                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                        base.characterBody.fury += PantheraConfig.MightyRoar_furyPointAdded;
+
                     // Add the Tenacity Buff //
                     if (base.pantheraObj.getAbilityLevel(PantheraConfig.RoarOfResilience_AbilityID) > 0)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.TenacityBuff).Send(NetworkDestination.Server);
@@ -165,6 +227,11 @@ namespace Panthera.Skills.Actives
                 }
 
             }
+
+        }
+
+        public void fireAttack()
+        {
 
         }
 

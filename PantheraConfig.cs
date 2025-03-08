@@ -379,7 +379,7 @@ namespace Panthera
         public static readonly float AirCleave_projectileForce = 15;
         public static readonly float AirCleave_pushForce = 10;
         public static readonly float AirCleave_minimumAimTime = 1f;
-        public static readonly float AirCleave_furyAdded = 5;
+        public static readonly float AirCleave_furyAdded = 4;
         public static readonly float AirCleave_projScale = 0.5f;
         #endregion
         #region Leap
@@ -402,8 +402,14 @@ namespace Panthera
         #region Myghty Roar
         public static readonly float MightyRoar_cooldown = 20;
         public static readonly float MightyRoar_radius = 15;
+        public static readonly float MightyRoar_damage = 0.8f;
+        public static readonly int MightyRoar_damageCount = 3;
+        public static readonly float MightyRoar_damageTime = 0.20f;
         public static readonly float MightyRoar_stunDuration = 3f;
-        public static readonly float MightyRoar_duration = 0.5f;
+        public static readonly float MightyRoar_duration = 0.7f;
+        public static readonly float MightyRoar_knockbackPowerMin = 2;
+        public static readonly float MightyRoar_knockbackPowerMax = 7;
+        public static readonly int MightyRoar_furyPointAdded = 1;
         #endregion
         #region fury
         public static readonly float Fury_cooldown = 30;
@@ -539,7 +545,7 @@ namespace Panthera
         public static readonly float FeralBite_skillDuration = 0.75f;
         public static readonly float FeralBite_damagesMultiplier = 2.5f;
         public static readonly float FeralBite_healMultiplier = 0.3f;
-        public static readonly int FeralBite_furyAdded = 3;
+        public static readonly int FeralBite_furyAdded = 4;
         public static readonly float FeralBite_procCoefficient = 1.5f;
         #endregion
 

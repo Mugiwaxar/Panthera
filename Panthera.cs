@@ -28,11 +28,11 @@ namespace Panthera
 
     // Loading dependencies //
     [BepInPlugin("com.Dexy.Panthera", "P4N7H3R4", "0.0.1")]
-    [BepInDependency("com.bepis.r2api")]
+    [BepInDependency(R2API.R2API.PluginGUID)]
+    [BepInDependency(R2API.ContentManagement.R2APIContentManager.PluginGUID)]
+    [BepInDependency(R2API.PrefabAPI.PluginGUID)]
+    [BepInDependency(R2API.Networking.NetworkingAPI.PluginGUID)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(
-        nameof(NetworkingAPI)
-        )]
 
     public class Panthera : BaseUnityPlugin
     {

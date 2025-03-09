@@ -22,7 +22,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
-using static R2API.LoadoutAPI;
 using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
 using static RoR2.Navigation.NodeGraph;
 

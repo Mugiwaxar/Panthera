@@ -15,7 +15,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking.Match;
-using static R2API.LoadoutAPI;
 using static RoR2.SkinDef;
 using static UnityEngine.ParticleSystem;
 

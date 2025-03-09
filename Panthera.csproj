@@ -45,8 +45,17 @@
     <Reference Include="Decalicious">
       <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\Decalicious.dll</HintPath>
     </Reference>
-    <Reference Include="R2API">
-      <HintPath>libs\R2API.dll</HintPath>
+    <Reference Include="R2API.ContentManagement">
+      <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API.ContentManagement\R2API.ContentManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.Core">
+      <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API.Core\R2API.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.Networking">
+      <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API.Networking\R2API.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.Prefab">
+      <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API.Prefab\R2API.Prefab.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>D:\jeux_steam\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>

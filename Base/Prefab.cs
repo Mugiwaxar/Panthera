@@ -18,7 +18,6 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using static R2API.LoadoutAPI;
 using static RoR2.CharacterSelectSurvivorPreviewDisplayController;
 
 namespace Panthera.Base
@@ -36,7 +35,6 @@ namespace Panthera.Base
         public static GameObject CharacterDisplayPrefab;
 
         public static readonly Color CharacterColor = new Color(1, 1, 1);
-        public static DamageAPI.ModdedDamageType BarrierDamageType;
 
         public static void RegisterCharacter()
         {

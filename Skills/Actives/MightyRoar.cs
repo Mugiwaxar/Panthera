@@ -185,6 +185,9 @@ namespace Panthera.Skills.Actives
                 // Play the Sound //
                 Sound.playSound(Sound.MightyRoar, gameObject);
 
+                // Add camera recoil
+                base.RandomVerticalRecoil(6, 8);
+
                 // Get all Stats //
                 float radius = PantheraConfig.MightyRoar_radius * base.pantheraObj.actualModelScale;
                 float stunDuration = PantheraConfig.MightyRoar_stunDuration;

@@ -145,6 +145,7 @@ namespace Panthera.Machines
         {
             if (script == null) return false;
             if (forceInterupt == false && this.currentScript != null && this.currentScript.GetType() == script.GetType()) return false;
+            
             if (forceInterupt == false && this.currentScript != null && script.interruptPower <= this.currentScript.priority) return false;
             this.nextScript = script;
             return true;

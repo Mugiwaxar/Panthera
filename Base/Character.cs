@@ -123,7 +123,8 @@ namespace Panthera.Base
         {
             get
             {
-                return totalSkillsPoints - this.usedSkillPoints;
+                return totalSkillsPoints
+                    - this.usedSkillPoints;
             }
         }
         public int usedSkillPoints

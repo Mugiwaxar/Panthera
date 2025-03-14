@@ -15,7 +15,6 @@ namespace Panthera.GUI.Tabs
 
         public PantheraPanel pantheraPanel;
         public GameObject tabObj;
-        public SkillsTreeController skillTreeController;
 
         public TextMeshProUGUI skill1Text;
         public TextMeshProUGUI skill2Text;
@@ -59,9 +58,6 @@ namespace Panthera.GUI.Tabs
 
             // Find the Skills Tab Game Object //
             this.tabObj = pantheraPanel.pantheraPanelGUI.transform.Find("MainPanel/TabContents/TabContentSkills").gameObject;
-
-            // Create the Skills Tree Controller //
-            this.skillTreeController = new SkillsTreeController(this.pantheraPanel);
 
             // Find all Texts //
             this.skill1Text = this.tabObj.transform.Find("PrimarySkillsLayer").Find("Skill1Layer").Find("Skill1Text").GetComponent<TextMeshProUGUI>();
@@ -133,9 +129,6 @@ namespace Panthera.GUI.Tabs
 
         public void update()
         {
-            // Update the Skills Tree Controller //
-            if (this.skillTreeController.skillsTreeWindow.active == true)
-                this.skillTreeController.update();
             // Update all Skills Icons //
             this.updateSkillsIcons();
         }

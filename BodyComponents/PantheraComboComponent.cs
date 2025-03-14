@@ -181,12 +181,22 @@ namespace Panthera.BodyComponents
                     if (comboSkill.keyB != KeysEnum.None)
                     {
                         if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.keyB) && keys.HasFlag(comboSkill.direction))
-                            return comboSkill;
+                        {
+                            if (foundComboSkill != null && foundComboSkill.skill.priority > skill.priority)
+                                foundComboSkill = comboSkill;
+                            else if (foundComboSkill == null)
+                                foundComboSkill = comboSkill;
+                        }
                     }
                     else
                     {
                         if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.direction))
-                            return comboSkill;
+                        {
+                            if (foundComboSkill != null && foundComboSkill.skill.priority > skill.priority)
+                                foundComboSkill = comboSkill;
+                            else if (foundComboSkill == null)
+                                foundComboSkill = comboSkill;
+                        }
                     }
                 }
 
@@ -196,19 +206,29 @@ namespace Panthera.BodyComponents
                     if (comboSkill.keyB != KeysEnum.None)
                     {
                         if (keys.HasFlag(comboSkill.keyA) && keys.HasFlag(comboSkill.keyB))
-                            return comboSkill;
+                        {
+                            if (foundComboSkill != null && foundComboSkill.skill.priority > skill.priority)
+                                foundComboSkill = comboSkill;
+                            else if (foundComboSkill == null)
+                                foundComboSkill = comboSkill;
+                        }
                     }
                     else
                     {
                         if (keys.HasFlag(comboSkill.keyA))
-                            return comboSkill;
+                        {
+                            if (foundComboSkill != null && foundComboSkill.skill.priority > skill.priority)
+                                foundComboSkill = comboSkill;
+                            else if (foundComboSkill == null)
+                                foundComboSkill = comboSkill;
+                        }
                     }
                 }
 
             }
 
             // Return null //
-            return null;
+            return foundComboSkill;
 
         }
 

@@ -41,6 +41,7 @@ namespace Panthera.GUI
         public SkillsTab skillsTab;
         public CombosTab combosTab;
         public KeysBindTab keysBindTab;
+        public SkillsTreeController skillTreeController;
 
         public bool scaled
         {
@@ -119,6 +120,10 @@ namespace Panthera.GUI
             this.keysBindTab = new KeysBindTab(this);
             this.keysBindTab.tabObj.SetActive(false);
 
+            // Create the Skills Tree Controller //
+            this.skillTreeController = new SkillsTreeController(this);
+            this.skillTreeController.skillsTreeWindow.SetActive(false);
+
         }
 
         private void registerAllButtons()
@@ -168,6 +173,11 @@ namespace Panthera.GUI
                 this.combosTab.update();
             if (this.keysBindTab.tabObj.active == true)
                 this.keysBindTab.update();
+
+            // Update the Skills Tree Controller //
+            if (this.skillTreeController.skillsTreeWindow.active == true)
+                this.skillTreeController.update();
+
 
         }
 
@@ -232,7 +242,7 @@ namespace Panthera.GUI
             KeysBinder.GamepadSetEnable(true);
 
             // Close the Skills Tree Window //
-            this.skillsTab.skillTreeController.skillsTreeWindow.active = false;
+            this.skillTreeController.skillsTreeWindow.active = false;
 
             // Disable the Cursor //
             if (this.ptraObj != null && Panthera.InputPlayer != null && MPEventSystemManager.FindEventSystem(Panthera.InputPlayer) != null)

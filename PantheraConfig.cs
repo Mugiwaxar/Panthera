@@ -81,10 +81,10 @@ namespace Panthera
         public static readonly int Keys_SpellModeDefaultJoystickIdentifierID = 7;
         #endregion
         #region Priorities
-        public static readonly ScriptPriority Rip_priority = ScriptPriority.AveragePriority;
+        public static readonly ScriptPriority Rip_priority = ScriptPriority.MinimumPriority;
         public static readonly ScriptPriority Rip_interruptPower = ScriptPriority.MinimumPriority;
 
-        public static readonly ScriptPriority AirCleave_priority = ScriptPriority.AveragePriority;
+        public static readonly ScriptPriority AirCleave_priority = ScriptPriority.MinimumPriority;
         public static readonly ScriptPriority AirCleave_interruptPower = ScriptPriority.MinimumPriority;
 
         public static readonly ScriptPriority Leap_priority = ScriptPriority.SmallPriority;

@@ -226,7 +226,7 @@ namespace Panthera.GUI
             // Skills Open Skills Tree Button //
             if (this.gameObject.name == "OpenSkillsTreeButton" == true)
             {
-                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.active = true;
+                this.pantheraPanel.skillTreeController.skillsTreeWindow.active = true;
                 Utils.Sound.playSound(Utils.Sound.Click1, this.gameObject, false);
                 return;
             }
@@ -234,7 +234,7 @@ namespace Panthera.GUI
             // Skills Tree Window Exit Button //
             if (this.name == "SkillsTreeWindowExitButton")
             {
-                this.pantheraPanel.skillsTab.skillTreeController.skillsTreeWindow.active = false;
+                this.pantheraPanel.skillTreeController.skillsTreeWindow.active = false;
                 return;
             }
 

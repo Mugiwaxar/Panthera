@@ -278,6 +278,14 @@ namespace Panthera.MachineScripts
             else
                 this.AddRecoil(0, 0, 1 - min, 1 - max);
         }
+        public void RandomVerticalRecoil(float min, float max)
+        {
+            int rand = UnityEngine.Random.Range(0, 2);
+            if (rand == 0)
+                this.AddRecoil(min, max, 0, 0);
+            else
+                this.AddRecoil(1 - min, 1 - max, 0, 0);
+        }
         public int getAbilityLevel(int ID)
         {
             return this.pantheraObj.getAbilityLevel(ID);

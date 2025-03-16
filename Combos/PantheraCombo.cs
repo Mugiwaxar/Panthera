@@ -14,7 +14,6 @@ namespace Panthera.Combos
         public string name = "Undefined";
         public int comboID = 0;
         public bool visible = true;
-        public bool activated = true;
-
+        public bool enabled = true;
     }
 }

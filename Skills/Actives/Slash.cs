@@ -114,11 +114,11 @@ namespace Panthera.Skills.Actives
                     new ServerAddBuff(base.gameObject, hc.gameObject, Buff.BleedOutDebuff, 1, PantheraConfig.Slash_BleedDuration).Send(NetworkDestination.Server);
 
                     // Add Fury Point //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                    if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                         base.characterBody.fury += PantheraConfig.Slash_furyAdded;
 
                     // Add the Razors Buff //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.ClawsSharpening_AbilityID) > 0 && base.characterBody.GetBuffCount(Buff.RazorsBuff) < PantheraConfig.Tenacity_maxStacks)
+                    if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.ClawsSharpening_AbilityID) > 0 && base.characterBody.GetBuffCount(Buff.RazorsBuff) < PantheraConfig.Tenacity_maxStacks)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.RazorsBuff).Send(NetworkDestination.Server);
 
                 }

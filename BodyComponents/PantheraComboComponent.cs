@@ -72,7 +72,7 @@ namespace Panthera.BodyComponents
             }
 
             // Check the Skill //
-            if (comboSkill == null || this.ptraObj.isSkillUnlocked(comboSkill.skill.skillID) == false)
+            if (comboSkill == null || this.ptraObj.profileComponent.isSkillUnlocked(comboSkill.skill.skillID) == false)
                 return;
 
             // Get the Skill //
@@ -120,7 +120,7 @@ namespace Panthera.BodyComponents
         private ComboSkill getSkill(List<ComboSkill> actualCombosList, KeysEnum keys)
         {
 
-            // Create a null Machine Script //
+            // Create a null Combo Skill //
             ComboSkill comboSkill = null;
 
             // Create the filtered List //
@@ -156,11 +156,15 @@ namespace Panthera.BodyComponents
             {
 
                 // Check if the Combo is locked //
-                if (this.ptraObj.isComboUnlocked(pair.Value.comboID) == false)
+                if (this.ptraObj.profileComponent.isComboUnlocked(pair.Value) == false)
                     continue;
 
-                // Check if the Combo is activated //
-                if (this.ptraObj.activatedComboList[pair.Key] == false)
+                // Check if the Combo is Disabled //
+                if(pair.Value.enabled == false)
+                    continue;
+
+                // Check if the Combo have a Skill disabled //
+                if (this.ptraObj.profileComponent.comboHaveSkillDisabled(pair.Value))
                     continue;
 
                 // Check the Combo number //
@@ -171,9 +175,13 @@ namespace Panthera.BodyComponents
                 ComboSkill comboSkill = pair.Value.comboSkillsList[comboNumber];
                 MachineScript skill = comboSkill.skill;
 
+                // Check if the Skill can be executed //
+                if (Machines.PantheraMachine.CanBeProcessed(this.ptraObj, skill) == false)
+                    continue;
+
                 // Check if the Direction Key is the same //
                 if (comboSkill.direction != KeysEnum.None && !keys.HasFlag(comboSkill.direction))
-                    continue;
+                continue;
 
                 // Find a Skill using directions //
                 if (checkDirection == true)

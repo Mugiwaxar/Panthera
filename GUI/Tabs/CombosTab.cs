@@ -63,14 +63,14 @@ namespace Panthera.GUI.Tabs
             // Add the Unlocked Combos to the List //
             foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
             {
-                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == true)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value) == true)
                     combosList.Add(combo.Key, combo.Value);
             }
 
             // Add the Locked Combos to the List //
             foreach (KeyValuePair<int, PantheraCombo> combo in Panthera.PantheraCharacter.characterCombos.CombosList)
             {
-                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == false)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value) == false)
                     combosList.Add(combo.Key, combo.Value);
             }
 
@@ -87,7 +87,7 @@ namespace Panthera.GUI.Tabs
                 // Change the Name and the Color //
                 TextMeshProUGUI name = comboElem.transform.Find("ComboName").GetComponent<TextMeshProUGUI>();
                 name.text = combo.Value.name;
-                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value.comboID) == false)
+                if (Panthera.ProfileComponent.isComboUnlocked(combo.Value) == false)
                     name.m_fontColor = PantheraConfig.ComboLockedColor;
                 else
                     name.m_fontColor = PantheraConfig.ComboNormalColor;

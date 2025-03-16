@@ -216,11 +216,11 @@ namespace Panthera.Skills.Actives
                     new ServerStunTarget(hc.gameObject, stunDuration).Send(NetworkDestination.Server);
 
                     // Add Fury Point //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                    if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                         base.characterBody.fury += PantheraConfig.MightyRoar_furyPointAdded;
 
                     // Add the Tenacity Buff //
-                    if (base.pantheraObj.getAbilityLevel(PantheraConfig.RoarOfResilience_AbilityID) > 0)
+                    if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.RoarOfResilience_AbilityID) > 0)
                         new ServerAddBuff(base.gameObject, base.gameObject, Buff.TenacityBuff).Send(NetworkDestination.Server);
 
                     // Bleed the Target //

@@ -69,7 +69,6 @@ namespace Panthera.BodyComponents
             }
         }
 
-        public Dictionary<int, bool> activatedComboList = new Dictionary<int, bool>();
         public NetworkIdentity networkID;
         public PantheraBody characterBody;
         public PantheraSkillLocator skillLocator;
@@ -293,12 +292,6 @@ namespace Panthera.BodyComponents
             // Start the HUD //
             Panthera.PantheraHUD.StartHUD(this);
 
-            // Create the Activated Combots List //
-            foreach (KeyValuePair<int, PantheraCombo> pair in characterCombos.CombosList)
-            {
-                this.activatedComboList.Add(pair.Key, pair.Value.activated);
-            }
-
             // Set Panthera Object to the Active Preset //
             //if (this.activePreset != null)
             //    this.activePreset.ptraObj = this;
@@ -334,7 +327,7 @@ namespace Panthera.BodyComponents
 
             // Get the minimum Fury //
             float minFury = 0;
-            int eternalFuryLvl = this.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
+            int eternalFuryLvl = this.profileComponent.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
             if (eternalFuryLvl == 1)
                 minFury = this.characterBody.maxFury * PantheraConfig.EternalFury_startPercent1;
             else if (eternalFuryLvl == 2)
@@ -354,6 +347,9 @@ namespace Panthera.BodyComponents
 
             // Apply all Stats //
             this.characterBody.RecalculateStats();
+
+            // Create the Disabled Skills List //
+            this.profileComponent.createDisabledSkillsList();
 
             // Create the Panthera Camera //
             GameObject camObj = GameObject.Instantiate(Camera.main.gameObject);
@@ -539,26 +535,6 @@ namespace Panthera.BodyComponents
             // Add the Predator Component //
             if (body.gameObject.GetComponent<PredatorComponent>() == null)
                 body.gameObject.AddComponent<PredatorComponent>();
-        }
-
-        public int getAbilityLevel(int abilityID)
-        {
-            return this.profileComponent.getAbilityLevel(abilityID);
-        }
-
-        public bool isMastery(int abilityID)
-        {
-            return this.profileComponent.isMastery(abilityID);
-        }
-
-        public bool isSkillUnlocked(int skillId)
-        {
-            return this.profileComponent.isSkillUnlocked(skillId);
-        }
-
-        public bool isComboUnlocked(int comboID)
-        {
-            return this.profileComponent.isComboUnlocked(comboID);
         }
 
         public Transform findModelChild(string childName)

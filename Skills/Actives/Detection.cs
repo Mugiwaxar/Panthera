@@ -83,7 +83,7 @@ namespace Panthera.Skills.Actives
             this.objectsList = UnityEngine.Object.FindObjectsOfType<GameObject>().ToList();
 
             // Check Sixth Sense Ability //
-            if (this.pantheraObj.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
+            if (this.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.SixthSense_AbilityID) > 0)
                 sixthSense = true;
 
         }

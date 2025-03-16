@@ -264,7 +264,6 @@ namespace Panthera.GUI
             // Sync //
             Panthera.ProfileComponent.syncProfile();
 
-
         }
 
         public void setScaled(bool scale)

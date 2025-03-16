@@ -52,6 +52,7 @@ namespace Panthera.Skills.Actives
             base.priority = PantheraConfig.ClawsStorm_priority;
             base.requiredAbilityID = PantheraConfig.ClawsStorm_AbilityID;
             base.interruptPower = PantheraConfig.ClawsStorm_interruptPower;
+            base.activated = false;
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)
@@ -93,7 +94,7 @@ namespace Panthera.Skills.Actives
             base.pantheraObj.characterModel.invisibilityCount += 1;
 
             // Get the Damages //
-            int tornadoLevel = base.pantheraObj.getAbilityLevel(PantheraConfig.Tornado_AbilityID);
+            int tornadoLevel = base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.Tornado_AbilityID);
             if (tornadoLevel == 1)
                 this.damageMultiplier *= 1 + PantheraConfig.Tornado_damagePercent1;
             else if (tornadoLevel == 2)

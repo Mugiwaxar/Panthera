@@ -116,6 +116,7 @@ namespace Panthera.MachineScripts
         public float comboMaxTime = PantheraConfig.Combos_maxTime;
         public ScriptPriority priority = ScriptPriority.NoPriority;
         public ScriptPriority interruptPower = ScriptPriority.NoPriority;
+        public bool activated = true;
 
         public void SetUpScript(GameObject player, PantheraMachine machine)
         {
@@ -288,7 +289,7 @@ namespace Panthera.MachineScripts
         }
         public int getAbilityLevel(int ID)
         {
-            return this.pantheraObj.getAbilityLevel(ID);
+            return this.pantheraObj.profileComponent.getAbilityLevel(ID);
         }
         public object Clone()
         {

@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using EntityStates;
+using Newtonsoft.Json.Linq;
 using Panthera.Abilities;
 using Panthera.BodyComponents;
 using Panthera.Combos;
+using Panthera.MachineScripts;
 using Panthera.NetworkMessages;
 using Panthera.Utils;
 using R2API.Networking.Interfaces;
@@ -24,11 +26,17 @@ namespace Panthera.Components
             }
         }
 
-        // (Ability ID 1 - ??, int unlockLevel) Represent a list of all unlocked Ability with level)
+        // (Ability ID 1 - ??, int unlockLevel) Represent a list of all unlocked Abilities with level)
         public Dictionary<int, int> unlockedAbilitiesList = new Dictionary<int, int>();
 
         // (Ability ID 1 - ??, bool mastery) Represent a list of all Skills with Mastery enabled)
         public Dictionary<int, bool> masteryAbilitiesList = new Dictionary<int, bool>();
+
+        // (Ability ID 1 - ??, bool mastery) This is a cached list that represent all unlocked/locked Skills)
+        private Dictionary<int, bool> unlockedSkillsList = new Dictionary<int, bool>();
+
+        // (Ability ID 1 - ??, bool mastery) This is a cached list that represent all disabled Skills)
+        private List<int> disabledSkillsList = new List<int>();
 
         public int totalMasteryPoints = 0;
 
@@ -95,7 +103,7 @@ namespace Panthera.Components
             float shieldHealthPercent = PantheraConfig.FrontShield_maxShieldHealthPercent;
             if (this.body != null)
             {
-                int improvedShieldAbilityLevel = this.body.ptraObj.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
+                int improvedShieldAbilityLevel = this.getAbilityLevel(PantheraConfig.ImprovedShield_AbilityID);
                 if (improvedShieldAbilityLevel == 1) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent1 * this.body.level;
                 else if (improvedShieldAbilityLevel == 2) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent2 * this.body.level;
                 else if (improvedShieldAbilityLevel == 3) shieldHealthPercent += PantheraConfig.ImprovedShield_addedPercent3 * this.body.level;
@@ -504,7 +512,7 @@ namespace Panthera.Components
         public void syncProfile()
         {
 
-            // Check  the Panthera Object //
+            // Check the Panthera Object //
             if (Panthera.PantheraCharacter.pantheraObj == null)
                 return;
 
@@ -530,14 +538,23 @@ namespace Panthera.Components
                 return this.unlockedAbilitiesList[abilityID];
             return 0;
         }
-
+        
+        public void updateCachedUnlockedSkillList()
+        {
+            // Create the Unlocked Skills List //
+            this.unlockedSkillsList.Clear();
+            foreach (KeyValuePair<int, MachineScript> pair in Panthera.PantheraCharacter.characterSkills.SkillsList)
+            {
+                bool unlocked = this.getAbilityLevel(pair.Value.requiredAbilityID) > 0 ? true : false;
+                this.unlockedSkillsList.Add(pair.Key, unlocked);
+            }
+            // Save to the Main Profil Component //
+            Panthera.ProfileComponent.unlockedSkillsList = this.unlockedSkillsList;
+        }
+        
         public bool isSkillUnlocked(int skillID)
         {
-            int abilityID = Panthera.PantheraCharacter.characterSkills.SkillsList[skillID].requiredAbilityID;
-            if (getAbilityLevel(abilityID) > 0)
-                return true;
-            else
-                return false;
+            return this.unlockedSkillsList[skillID];
         }
 
         public bool abilityCanBeUpgraded(int abilityID)
@@ -561,22 +578,14 @@ namespace Panthera.Components
 
         }
 
-        public bool isComboUnlocked(int comboID)
+        public bool isComboUnlocked(PantheraCombo combo)
         {
-
-            // Get the Combo //
-            PantheraCombo combo = Panthera.PantheraCharacter.characterCombos.CombosList[comboID];
-
-            // Check the Combo Skills List //
-            foreach (ComboSkill comboSkill in combo.comboSkillsList)
+            foreach(ComboSkill comboSkill in combo.comboSkillsList)
             {
-                if (this.isSkillUnlocked(comboSkill.skill.skillID) == false)
+                if(this.isSkillUnlocked(comboSkill.skill.skillID) == false)
                     return false;
             }
-
-            // Return true //
             return true;
-
         }
 
         public void upgradeAbility(int abilityID)
@@ -676,6 +685,43 @@ namespace Panthera.Components
                 return this.masteryAbilitiesList[abilityID];
             else
                 return false;
+        }
+
+        public void createDisabledSkillsList()
+        {
+            foreach (MachineScript skill in Panthera.PantheraCharacter.characterSkills.SkillsList.Values)
+            {
+                if (skill.activated == false)
+                    this.disabledSkillsList.Add(skill.skillID);
+            }
+            Panthera.ProfileComponent.disabledSkillsList = this.disabledSkillsList;
+        }
+
+        public void disableSkill(int skillID, bool disable)
+        {
+            if(disable == true)
+                this.disabledSkillsList.Add(skillID);
+            else
+                this.disabledSkillsList.Remove(skillID);
+            Panthera.ProfileComponent.disabledSkillsList = this.disabledSkillsList;
+        }
+
+        public bool isSkillDisabled(int skillID)
+        {
+            if (this.disabledSkillsList.Contains(skillID) == true)
+                return true;
+            else
+                return false;
+        }
+
+        public bool comboHaveSkillDisabled(PantheraCombo combo)
+        {
+            foreach(ComboSkill comboSkill in combo.comboSkillsList)
+            {
+                if (this.isSkillDisabled(comboSkill.skill.skillID) == true)
+                    return true;
+            }
+            return false;   
         }
 
     }

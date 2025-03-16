@@ -174,7 +174,7 @@ namespace Panthera.Skills.Actives
         {
 
             // Check Kinetic Resorption Level //
-            int kineticResorptionLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.KineticResorption_AbilityID);
+            int kineticResorptionLvl = base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.KineticResorption_AbilityID);
             if (kineticResorptionLvl <= 0) return;
 
             // Get the Regen amount //

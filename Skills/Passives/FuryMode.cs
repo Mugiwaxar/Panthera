@@ -37,10 +37,10 @@ namespace Panthera.Skills.Passives
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID, 1);
 
             // Change the Skills //
-            if (ptraObj.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
+            if (ptraObj.profileComponent.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
             {
-                ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = false;
-                ptraObj.activatedComboList[PantheraConfig.ClawsStorm_CombosID] = true;
+                ptraObj.profileComponent.disableSkill(PantheraConfig.Slash_SkillID, true);
+                ptraObj.profileComponent.disableSkill(PantheraConfig.ClawsStorm_SkillID, false);
             }
 
             // Start the Aura FX //
@@ -64,8 +64,8 @@ namespace Panthera.Skills.Passives
             ptraObj.skillLocator.startCooldown(PantheraConfig.Fury_SkillID);
 
             // Set back the Skills //
-            ptraObj.activatedComboList[PantheraConfig.Slash_CombosID] = true;
-            ptraObj.activatedComboList[PantheraConfig.ClawsStorm_CombosID] = false;
+            ptraObj.profileComponent.disableSkill(PantheraConfig.Slash_SkillID, false);
+            ptraObj.profileComponent.disableSkill(PantheraConfig.ClawsStorm_SkillID, true);
 
             // Stop the Aura FX //
             ptraObj.GetComponent<PantheraFX>().setFuryAuraFX(false);

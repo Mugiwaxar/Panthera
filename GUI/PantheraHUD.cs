@@ -234,7 +234,7 @@ namespace Panthera.GUI
             float value = this.ptraObj.characterBody.frontShield;
             float max = this.ptraObj.characterBody.maxFrontShield;
 
-            if (this.ptraObj.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
+            if (this.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
             {
                 if (this.ptraObj.frontShieldObj.active == true || value < max)
                     this.shieldBar.SetActive(true);
@@ -604,9 +604,9 @@ namespace Panthera.GUI
             GenericSkill targetSkill1 = this.origMainContainer.transform.Find("MainUIArea").Find("SpringCanvas").Find("BottomRightCluster").Find("Scaler").Find("Skill1Root").GetComponent<SkillIcon>().targetSkill;
             if (targetSkill1 != null && targetSkill1.skillDef != null)
             {
-                if (this.ptraObj.stealthed == true && this.ptraObj.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
+                if (this.ptraObj.stealthed == true && this.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
                     targetSkill1.skillDef.icon = PantheraAssets.GhostRipSkillMenu;
-                else if (this.ptraObj.ambitionMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID) > 0)
+                else if (this.ptraObj.ambitionMode == true && this.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID) > 0)
                     targetSkill1.skillDef.icon = PantheraAssets.GoldenRipSkillMenu;
                 else
                     targetSkill1.skillDef.icon = PantheraAssets.RipSkillMenu;
@@ -618,9 +618,9 @@ namespace Panthera.GUI
             {
                 if (this.ptraObj.frontShieldDeployed == true)
                     targetSkill2.skillDef.icon = PantheraAssets.ArcaneAnchorSkillMenu;
-                else if (this.ptraObj.guardianMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
+                else if (this.ptraObj.guardianMode == true && this.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.FrontShield_AbilityID) > 0)
                     targetSkill2.skillDef.icon = PantheraAssets.FrontShieldSkillMenu;
-                else if (this.ptraObj.furyMode == true && this.ptraObj.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
+                else if (this.ptraObj.furyMode == true && this.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.ClawsStorm_AbilityID) > 0)
                     targetSkill2.skillDef.icon = PantheraAssets.ClawStormSkillMenu;
                 else
                     targetSkill2.skillDef.icon = PantheraAssets.SlashSkillMenu;

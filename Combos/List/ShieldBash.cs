@@ -20,7 +20,6 @@ namespace Panthera.Combos.List
             comboSkillsList.Add(comboSkill2);
             comboID = PantheraConfig.ShieldBash_CombosID;
             name = PantheraTokens.Get("combo_ShieldBashName");
-            activated = true;
         }
 
     }

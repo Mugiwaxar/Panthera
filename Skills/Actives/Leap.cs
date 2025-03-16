@@ -144,7 +144,7 @@ namespace Panthera.Skills.Actives
 
             // Apply the Cooldown //
             float cooldown = this.baseCooldown;
-            if (this.targetFound == true && base.pantheraObj.getAbilityLevel(PantheraConfig.RelentlessStalker_AbilityID) > 0)
+            if (this.targetFound == true && base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.RelentlessStalker_AbilityID) > 0)
                 cooldown -= PantheraConfig.RelentlessStalker_CooldownReduction;
             base.skillLocator.startCooldown(PantheraConfig.Leap_SkillID, cooldown);
 

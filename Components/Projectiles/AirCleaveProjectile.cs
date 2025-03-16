@@ -69,11 +69,11 @@ namespace Panthera.Components.Projectiles
             {
 
                 // Add Fury //
-                if (base.ptraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                if (base.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                     new ClientAddFury(base.ptraObj.gameObject, PantheraConfig.AirCleave_furyAdded).Send(NetworkDestination.Clients);
 
                 // Add the Convergence Hook Component //
-                if (base.ptraObj.getAbilityLevel(PantheraConfig.ConvergenceHook_AbilityID) > 0 && tc.body.isBoss == false)
+                if (base.ptraObj.profileComponent.getAbilityLevel(PantheraConfig.ConvergenceHook_AbilityID) > 0 && tc.body.isBoss == false)
                 {
                     if (NetworkClient.active == false)
                     {

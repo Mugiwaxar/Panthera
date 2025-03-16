@@ -19,7 +19,6 @@ namespace Panthera.Combos.List
             comboID = PantheraConfig.FrontShield_CombosID;
             name = PantheraTokens.Get("combo_FrontShieldName");
             visible = false;
-            activated = false;
         }
 
     }

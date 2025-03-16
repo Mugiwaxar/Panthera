@@ -19,7 +19,6 @@ namespace Panthera.Combos.List
             comboID = PantheraConfig.ClawsStorm_CombosID;
             name = PantheraTokens.Get("combo_ClawsStormName");
             visible = false;
-            activated = false;
         }
 
     }

@@ -220,7 +220,7 @@ namespace Panthera.BodyComponents
             self.maxJumpCount = (int)profile.getJumpCount();
 
             // Check Wind Walker //
-            if (ptraObj.getAbilityLevel(PantheraConfig.WindWalker_AbilityID) > 0)
+            if (ptraObj.profileComponent.getAbilityLevel(PantheraConfig.WindWalker_AbilityID) > 0)
                 self.maxJumpCount++;
 
             // Apply the Fury Mode //
@@ -241,7 +241,7 @@ namespace Panthera.BodyComponents
                 self.characterMotor.walkSpeedPenaltyCoefficient = PantheraConfig.Guardian_increasedMoveSpeedCoef;
 
                 // Apply the Warden's Vitality //
-                int wardensVitalityLevel = ptraObj.getAbilityLevel(PantheraConfig.WardensVitality_AbilityID);
+                int wardensVitalityLevel = ptraObj.profileComponent.getAbilityLevel(PantheraConfig.WardensVitality_AbilityID);
                 if (wardensVitalityLevel == 1)
                     self.maxHealth *= PantheraConfig.WardensVitality_maxHealthPercent1;
                 else if (wardensVitalityLevel == 2)
@@ -265,7 +265,7 @@ namespace Panthera.BodyComponents
                 self.armor *= PantheraConfig.Resilience_percentArmor * resilienceCount + 1;
 
             // Add max Health from Bizon Steak //
-            if (self.inventory != null && ptraObj.getAbilityLevel(PantheraConfig.Predator_AbilityID) > 0)
+            if (self.inventory != null && ptraObj.profileComponent.getAbilityLevel(PantheraConfig.Predator_AbilityID) > 0)
             {
                 int flatHealthItem = self.inventory.GetItemCount(PantheraConfig.ItemChange_steak);
                 self.maxHealth += (float)flatHealthItem * PantheraConfig.Predator_steakHealthAdded;
@@ -275,7 +275,7 @@ namespace Panthera.BodyComponents
             if (ptraObj.stealthed == true)
             {
                 float movePenality = 1 - PantheraConfig.Prowl_moveSpeedMultiplier;
-                int swiftMovesLevel = ptraObj.getAbilityLevel(PantheraConfig.SwiftMoves_AbilityID);
+                int swiftMovesLevel = ptraObj.profileComponent.getAbilityLevel(PantheraConfig.SwiftMoves_AbilityID);
                 if (swiftMovesLevel == 1)
                     movePenality *= 1 - PantheraConfig.SwiftMoves_percent1;
                 else if (swiftMovesLevel == 2)
@@ -344,7 +344,7 @@ namespace Panthera.BodyComponents
             }
 
             // Apply the Eternal Fury Ability //
-            int eternalFuryLvl = ptraObj.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
+            int eternalFuryLvl = ptraObj.profileComponent.getAbilityLevel(PantheraConfig.EternalFury_AbilityID);
             float furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime;
             if (eternalFuryLvl == 1)
                 furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime * (1 + PantheraConfig.EternalFury_reductionPercent1);
@@ -353,6 +353,9 @@ namespace Panthera.BodyComponents
             else if (eternalFuryLvl == 3)
                 furyDecreaseTime = PantheraConfig.Fury_furyPointsDecreaseTime * (1 + PantheraConfig.EternalFury_reductionPercent3);
             ptraObj.furyDecreaseTime = furyDecreaseTime;
+
+            // Update the cached list //
+            ptraObj.profileComponent.updateCachedUnlockedSkillList();
 
             // Debug //
             //Utils.DebugInfo.addText("maxHealth", "maxHealth: " + self.maxHealth);

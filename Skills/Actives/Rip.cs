@@ -79,7 +79,7 @@ namespace Panthera.Skills.Actives
             base.pantheraObj.crosshairComp.unHideCrosshair();
 
             // Check if Ghost Rip //
-            if (base.pantheraObj.stealthed == true && base.pantheraObj.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
+            if (base.pantheraObj.stealthed == true && base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.GhostRip_AbilityID) > 0)
             {
                 this.isGhostRip = true;
                 this.damageMultiplier = PantheraConfig.GhostRip_damageMultiplier;
@@ -88,7 +88,7 @@ namespace Panthera.Skills.Actives
             }
 
             // Check if Golden Rip //
-            if (base.pantheraObj.ambitionMode == true && base.pantheraObj.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID) > 0)
+            if (base.pantheraObj.ambitionMode == true && base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID) > 0)
             {
                 this.isGoldenRip = true;
                 this.damageMultiplier = PantheraConfig.GoldenRip_DamageMultiplier;
@@ -97,7 +97,7 @@ namespace Panthera.Skills.Actives
 
             // Check if Infernal Swipe //
             if (base.pantheraObj.furyMode == true)
-                this.infernalSwipeLvl = base.pantheraObj.getAbilityLevel(PantheraConfig.InfernalSwipe_AbilityID);
+                this.infernalSwipeLvl = base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.InfernalSwipe_AbilityID);
 
             // Scan if no Enemies //
             bool enemyFound = false;
@@ -262,7 +262,7 @@ namespace Panthera.Skills.Actives
                         Sound.playSound(Sound.RipHit1, hc.gameObject);
 
                         // Add Fury //
-                        if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+                        if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                             base.characterBody.fury += this.furyAdded;
 
                         // Move the target //
@@ -277,7 +277,7 @@ namespace Panthera.Skills.Actives
                         if (this.isGhostRip)
                         {
                             new ServerStunTarget(enemy.healthComponent.gameObject, PantheraConfig.GhostRip_stunDuration).Send(NetworkDestination.Server);
-                            if (base.pantheraObj.getAbilityLevel(PantheraConfig.StealthStrike_AbilityID) > 0 && isCrit == true)
+                            if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.StealthStrike_AbilityID) > 0 && isCrit == true)
                             {
                                 if (hc.alive == false)
                                 {
@@ -297,7 +297,7 @@ namespace Panthera.Skills.Actives
                         {
                             Sound.playSound(Utils.Sound.GoldenRip, hc.gameObject);
                             int moneyAdded = 0;
-                            int glodenRipLevel = base.pantheraObj.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID);
+                            int glodenRipLevel = base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.GoldenRip_AbilityID);
                             if (glodenRipLevel == 1)
                                 moneyAdded = PantheraConfig.GoldenRip_addedCoin1;
                             else if (glodenRipLevel == 2)

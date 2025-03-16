@@ -20,7 +20,6 @@ namespace Panthera.Combos.List
             comboSkillsList.Add(comboSkill2);
             comboID = PantheraConfig.ArcaneAnchor_CombosID;
             name = PantheraTokens.Get("combo_ArcaneAnchorName");
-            activated = true;
         }
 
     }

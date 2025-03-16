@@ -40,7 +40,7 @@ namespace Panthera.NetworkMessages
         public void OnReceived()
         {
             if (this.player == null) return;
-            PantheraObj ptraObj = player.GetComponent<PantheraObj>();
+            PantheraObj ptraObj = this.player.GetComponent<PantheraObj>();
             if (ptraObj == null)
                 return;
             if (ptraObj.hasAuthority() == true)

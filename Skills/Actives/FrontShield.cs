@@ -34,6 +34,7 @@ namespace Panthera.Skills.Actives
             base.requiredAbilityID = PantheraConfig.FrontShield_AbilityID;
             base.priority = PantheraConfig.FrontShield_priority;
             base.interruptPower = PantheraConfig.FrontShield_interruptPower;
+            base.activated = false;
         }
 
         public override bool CanBeUsed(PantheraObj ptraObj)

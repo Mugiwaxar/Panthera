@@ -80,7 +80,7 @@ namespace Panthera.Skills.Actives
             new ServerInflictDamage(gameObject, this.targetHC.gameObject, this.targetHC.transform.position, damage, isCrit, PantheraConfig.FeralBite_procCoefficient).Send(NetworkDestination.Server);
 
             // Add Fury //
-            if (base.pantheraObj.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
+            if (base.pantheraObj.profileComponent.getAbilityLevel(PantheraConfig.Fury_AbilityID) > 0)
                 base.characterBody.fury += isCrit == true ? PantheraConfig.FeralBite_furyAdded * 2 : PantheraConfig.FeralBite_furyAdded;
 
         }

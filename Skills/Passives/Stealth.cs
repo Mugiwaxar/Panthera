@@ -81,7 +81,7 @@ namespace Panthera.Skills.Passives
             if (ptraObj.stealthed == false) return;
 
             // Check the Shadow Stalker Ability //
-            int shadowStalkerLevel = ptraObj.getAbilityLevel(PantheraConfig.ShadowStalker_AbilityID);
+            int shadowStalkerLevel = ptraObj.profileComponent.getAbilityLevel(PantheraConfig.ShadowStalker_AbilityID);
 
             // UnStealth //
             if (shadowStalkerLevel == 0)
@@ -100,7 +100,7 @@ namespace Panthera.Skills.Passives
             if (ptraObj.stealthed == false) return;
 
             // Check the Shadow Stalker Ability //
-            int shadowStalkerLevel = ptraObj.getAbilityLevel(PantheraConfig.ShadowStalker_AbilityID);
+            int shadowStalkerLevel = ptraObj.profileComponent.getAbilityLevel(PantheraConfig.ShadowStalker_AbilityID);
 
             // UnStealth //
             if (shadowStalkerLevel == 0)
